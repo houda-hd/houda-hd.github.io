@@ -69,7 +69,7 @@ houda-hd.github.io/
 ## 🛑 通知页面停更公告
 由于官网已全面接入 **GitHub Pages 与 Issues 系统**，  
 **notice.html** 页面已无限期停更。  
-未来更新与公告将统一在 [GitHub Issues](https://github.com/houda-hd/houda-hd.github.io/issues) 发布。
+未来更新与公告将统一在 [CHANGELOG.md](./CHANGELOG.md) 发布。
 
 ---
 
