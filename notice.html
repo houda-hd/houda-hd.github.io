@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<style>
+button, .toggle-btn {
+  outline: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  border: none; /* 去掉边框 */
+  border-radius: 6px;
+  color: #000;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: none !important;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+button:hover, .toggle-btn:hover {
+  background-color: #f5f5f5 !important;
+}
+
+button:active, .toggle-btn:active {
+  background-color: transparent !important;
+}
+
+button::-moz-focus-inner, .toggle-btn::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+</style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HOUDA+ 官方通知</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+        primary: '#111111',
+        secondary: '#555555',
+        accent: '#e0e0e0',
+        dark: '#000000',
+        light: '#f9f9f9'
+    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .transition-custom {
+                transition: all 0.3s ease;
+            }
+        }
+    
+html, body {
+  overflow-x: hidden !important;
+}
+#mobileMenu {
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+}
+#mobileMenu.open {
+  max-height: 500px;
+  opacity: 1;
+}
+#menuBtn i {
+  transition: transform 0.3s ease;
+}
+#menuBtn.open i {
+  transform: rotate(90deg);
+}
+</style>
+<style>
+.notice-content {
+  max-height: 8rem;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+}
+.notice-content.expanded {
+  max-height: 200rem;
+}
+.toggle-btn {
+  @apply absolute bottom-3 right-4 inline-flex items-center justify-center px-3 py-1.5 
+         text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 
+         shadow-sm hover:bg-gray-100 hover:shadow-md 
+         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 
+         transition-all duration-200;
+}
+</style><style>
+.notice-wrapper {
+  position: relative;
+}
+.notice-content {
+  max-height: 8rem;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+  position: relative;
+}
+.notice-content::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.notice-content.expanded {
+  max-height: 200rem;
+}
+.notice-content.expanded::after {
+  opacity: 0;
+}
+.toggle-btn {
+  @apply absolute bottom-3 right-4 inline-flex items-center justify-center px-3 py-1.5 
+         text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 
+         shadow-sm hover:bg-gray-100 hover:shadow-md 
+         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 
+         transition-all duration-200;
+}
+.toggle-btn.hidden {
+  display: none;
+}
+</style><style>
+/* Dock栏核心样式 */
+.dock-container {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+    z-index: 1000;
+}
+.dock {
+    display: flex;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50px;
+    padding: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+.dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+.dock-item:hover {
+    transform: translateY(-6px) scale(1.1);
+}
+.dock-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+.dock-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+}
+.back-to-top {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+}
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+body.scrolled .dock-item {
+    width: 50px;
+    height: 50px;
+}
+body.scrolled .dock-icon {
+    font-size: 20px;
+}
+body.scrolled .dock-label {
+    display: none;
+}
+</style><style>
+.dock-icon {
+    font-size: 22px !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    display: inline-block !important;
+}
+.dock-item i {
+    transition: transform 0.25s ease;
+}
+.dock-item:hover i {
+    transform: scale(1.15);
+}
+</style><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/></head>
+<body class="font-sans bg-light text-dark antialiased overflow-x-hidden">
+<!-- 导航栏 -->
+<header class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm" id="navbar">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center py-4">
+<a class="flex items-center space-x-2" href="index.html">
+<div class="w-10 h-10 rounded-md bg-primary flex items-center justify-center">
+<img alt="侯大标志" class="w-full h-full object-cover rounded-md" src="https://youke1.picui.cn/s1/2025/10/30/69025e3102aca.png"/>
+</div>
+<span class="text-2xl font-bold text-primary">HOUDA+</span>
+</a>
+<!-- 桌面导航 -->
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-secondary hover:text-primary transition-custom font-medium" href="index.html#about">关于我们<br/><span class="block text-secondary text-sm sm:text-base font-light italic">About Us</span></a>
+<a class="text-secondary hover:text-primary transition-custom font-medium" href="index.html#history">发展历程<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Our Story</span></a>
+<a class="text-secondary hover:text-primary transition-custom font-medium" href="index.html#activities">活动回顾<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Event Highlights</span></a>
+<a class="text-secondary hover:text-primary transition-custom font-medium" href="index.html#landmarks">特色地标<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Signature Landmarks</span></a>
+<a class="text-secondary hover:text-primary transition-custom font-medium" href="index.html#contact">关注我们<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Stay Connected</span></a>
+<a class="bg-primary hover:opacity-80 text-white px-6 py-2 rounded-md transition-custom font-medium" href="notice.html">官方通知<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Official Notice</span></a>
+</nav>
+<!-- 移动端菜单按钮 -->
+<button class="md:hidden text-dark focus:outline-none" id="menuBtn">
+<i class="fa fa-bars text-2xl"></i>
+</button>
+</div>
+</div>
+<!-- 移动端导航菜单 -->
+<div class="md:hidden bg-white border-t" id="mobileMenu">
+<div class="container mx-auto px-4 py-3 space-y-3">
+<a class="block text-secondary hover:text-primary transition-custom py-2" href="index.html#about">关于我们<br/><span class="block text-secondary text-sm sm:text-base font-light italic">About Us</span></a>
+<a class="block text-secondary hover:text-primary transition-custom py-2" href="index.html#history">发展历程<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Our Story</span></a>
+<a class="block text-secondary hover:text-primary transition-custom py-2" href="index.html#activities">活动回顾<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Event Highlights</span></a>
+<a class="block text-secondary hover:text-primary transition-custom py-2" href="index.html#landmarks">特色地标<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Signature Landmarks</span></a>
+<a class="block text-secondary hover:text-primary transition-custom py-2" href="index.html#contact">关注我们<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Stay Connected</span></a>
+<a class="block bg-primary hover:opacity-80 text-white px-6 py-2 rounded-md text-center transition-custom" href="notice.html">官方通知<br/><span class="block text-secondary text-sm sm:text-base font-light italic">Official Notice</span></a>
+</div>
+</div>
+</header>
+<!-- 主体内容 -->
+<main class="pt-28 pb-20 container mx-auto px-4 sm:px-6 lg:px-8" id="notices">
+<div class="text-center mb-12">
+<h1 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-dark mb-3">HOUDA+ 官方通知</h1>
+<p class="text-secondary text-base sm:text-lg italic">Official Notice of HOUDA+</p>
+<div class="w-20 h-1 bg-accent mx-auto mt-4"></div>
+</div>
+<!-- 通知卡片 -->
+<div class="mb-10 bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div class="flex flex-1 items-center gap-3">
+<div class="flex-1">
+<input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:outline-none" id="searchInput" placeholder="🔍 搜索通知标题或内容..." type="text"/>
+</div>
+<div class="relative">
+<select class="block w-full appearance-none bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-md leading-tight focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" id="filterSelect">
+<option value="all">全部类型</option>
+<option value="version">版本更新</option>
+<option value="notice">官方公告</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+<svg class="fill-current h-4 w-4" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 7l4.5 4.5L14.5 7z"></path></svg>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-10 hover:shadow-lg transition border border-gray-100">
+    <div class="flex items-center justify-between mb-4 flex-wrap">
+        <h2 class="text-xl sm:text-2xl font-bold text-primary">📢 HOUDA+ 官网 1.3.3 版本正式发布！</h2>
+        <span class="text-sm text-secondary italic">发布日期：2025年11月2日 07:00</span>
+    </div>
+    <p class="text-secondary mb-6 text-sm sm:text-base leading-relaxed">
+        持续优化，焕新体验。<br/>
+        本次更新重点：<br/><br/>
+        ✨ 新增圆形 Dock 栏<br/>
+        • 页面底部新增轻盈圆润的 Dock 栏，快速访问「首页」与「通知」；<br/>
+        • 支持滚动自动隐藏与回到顶部按钮，操作更顺畅。<br/><br/>
+        🎨 视觉升级<br/>
+        • Dock 栏采用 Font Awesome 6 Free 图标库，线条更细腻，风格更现代；<br/>
+        • 图标大小与动画过渡优化，整体更协调。<br/><br/>
+        🧩 性能优化<br/>
+        • 精简样式与脚本加载逻辑，保持轻量与高流畅度。<br/><br/>
+        🚀 更多改进<br/>
+        • 修复部分设备上的 Dock 栏层级与模糊渲染问题；<br/>
+        • 优化与通知页的兼容性。<br/>
+    </p>
+    <div class="flex flex-col sm:flex-row items-center sm:justify-between bg-gray-50 rounded-md p-4 sm:p-6 border border-accent/20 attachment-section mt-4">
+        <div class="flex items-center mb-4 sm:mb-0">
+            <i class="fa text-black text-3xl mr-4 fa-ban"></i>
+            <div>
+                <h3 class="font-semibold text-dark text-base sm:text-lg">暂无附件</h3>
+                <p class="text-secondary text-sm">当前公告暂无可用附件</p>
+            </div>
+        </div>
+        <button class="inline-flex items-center border border-black text-black px-5 py-2 rounded-md hover:bg-black hover:text-white transition attachment-btn cursor-not-allowed opacity-60" data-no-attachment="true">
+            <i class="fa fa-ban mr-2"></i>暂无附件
+        </button>
+    </div>
+</div>
+<div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-10 hover:shadow-lg transition border border-gray-100">
+<div class="flex items-center justify-between mb-4 flex-wrap">
+<h2 class="text-xl sm:text-2xl font-bold text-primary">📢 HOUDA+ 官网 1.3.2 版本正式发布！</h2>
+<span class="text-sm text-secondary italic">发布日期：2025年10月31日 05:34</span>
+</div>
+<p class="text-secondary mb-6 text-sm sm:text-base leading-relaxed">
+    持续优化，体验再提升。<br/>
+        本次更新重点：<br/><br/>
+        ✨ 页面统一化<br/>
+        • 完成 404 页面视觉与布局统一，保持主站一致性；<br/>
+        • 优化整体配色与结构层级，视觉更轻盈。<br/><br/>
+        🔍 通知系统升级<br/>
+        • 新增搜索与筛选功能，可快速定位特定公告或版本更新；<br/>
+        • 改进筛选交互逻辑，使内容检索更直观。<br/><br/>
+        ⚙️ 性能与细节优化<br/>
+        • 改善加载逻辑与滚动体验；<br/>
+        • 修复部分设备的排版偏移问题；<br/>
+        • 提升移动端点击响应速度。<br/>
+    </p>
+<div class="flex flex-col sm:flex-row items-center sm:justify-between bg-gray-50 rounded-md p-4 sm:p-6 border border-accent/20 attachment-section mt-4">
+<div class="flex items-center mb-4 sm:mb-0">
+<i class="fa text-black text-3xl mr-4 f a - b a n"></i>
+<div>
+<h3 class="font-semibold text-dark text-base sm:text-lg">暂无附件</h3>
+<p class="text-secondary text-sm">当前公告暂无可用附件</p>
+</div>
+</div>
+<button class="inline-flex items-center border border-black text-black px-5 py-2 rounded-md hover:bg-black hover:text-white transition attachment-btn cursor-not-allowed opacity-60" data-no-attachment="true">
+<i class="fa fa-ban mr-2"></i>暂无附件
+    </button>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-10 hover:shadow-lg transition border border-gray-100"><div class="flex items-center justify-between mb-4 flex-wrap"><h2 class="text-xl sm:text-2xl font-bold text-primary">📢 HOUDA+ 官网 1.3.1 版本正式发布！</h2><span class="text-sm text-secondary italic">发布日期：2025年10月30日 23:55</span></div><p class="text-secondary mb-6 text-sm sm:text-base leading-relaxed">
+持续焕新，体验更进一步。<br/>
+在延续 1.3 版本「焕新升级、持续优化体验」的基础上，<br/>
+本次更新聚焦网站功能完善与视觉体验优化。<br/><br/>
+本次更新重点：<br/><br/>
+✨ 优化「特色地标」板块<br/>
+• 统一所有卡片结构与布局，间距更协调，展示更整齐；<br/>
+• 修复图片比例问题，保证地标展示更完整；<br/>
+• 呈现更鲜明的侯大文化氛围。<br/><br/>
+📰 新增「官方通知」页面<br/>
+• 发布平台公告、版本更新与重要信息；<br/>
+• 与主站视觉、页脚样式保持一致；<br/>
+• 支持从首页快速跳转访问。<br/><br/>
+🎨 视觉与交互体验优化<br/>
+• 页脚品牌字号放大，品牌辨识度更高；<br/>
+• 英文字体统一为灰色，视觉层次更柔和；<br/>
+• 平滑滚动体验升级，浏览更自然顺畅。<br/><br/>
+⸻<br/><br/>
+欢迎大家访问官网体验新版，探索更多侯大文化与故事。<br/>
+🌐 HOUDA+ 官方网站： <a class="text-primary underline" href="https://hd13{$rthSuffix}">https://hd13{$rthSuffix}</a><br/>
+📰 官方通知页： <a class="text-primary underline" href="https://hd13{$rthSuffix}/notice.html">https://hd13{$rthSuffix}/notice.html</a><br/><br/>
+「HOUDA+ — 记录我们的热爱与故事。」<br/> </p><div class="flex flex-col sm:flex-row items-center sm:justify-between bg-gray-50 rounded-md p-4 sm:p-6 border border-accent/20 attachment-section mt-4"><div class="flex items-center mb-4 sm:mb-0"><i class="fa text-black text-3xl mr-4 f a - b a n"></i><div><h3 class="font-semibold text-dark text-base sm:text-lg">暂无附件</h3><p class="text-secondary text-sm">当前公告暂无可用附件</p></div></div><button class="inline-flex items-center border border-black text-black px-5 py-2 rounded-md hover:bg-black hover:text-white transition attachment-btn cursor-not-allowed opacity-60" data-no-attachment="true"><i class="fa fa-ban mr-2"></i>暂无附件</button></div></div><div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-10 hover:shadow-lg transition border border-gray-100"><div class="flex items-center justify-between mb-4 flex-wrap"><h2 class="text-xl sm:text-2xl font-bold text-primary">📢 HOUDA+ 官网 1.3 版本正式发布！</h2><span class="text-sm text-secondary italic">发布日期：2025年10月30日 21:32</span></div><p class="text-secondary mb-6 text-sm sm:text-base leading-relaxed">
+焕新升级，持续优化体验。<br/>
+本次更新重点：<br/>
+✨ 新增两处特色地标<br/>
+• 盛香亭转转火锅（侯大成员的聚餐首选地）<br/>
+• 湖南金厚（北京）律师事务所（侯大法务唐律工作地）<br/><br/>
+欢迎大家访问官网查看详情，探索更多侯大文化与记忆。<br/>
+🌐 HOUDA+ 官方网站： <a class="text-primary underline" href="https://hd13{$rthSuffix}">https://hd13{$rthSuffix}</a><br/><br/>
+「HOUDA+ — 记录我们的热爱与故事。」<br/> </p><div class="flex flex-col sm:flex-row items-center sm:justify-between bg-gray-50 rounded-md p-4 sm:p-6 border border-accent/20 attachment-section mt-4"><div class="flex items-center mb-4 sm:mb-0"><i class="fa text-black text-3xl mr-4 f a - b a n"></i><div><h3 class="font-semibold text-dark text-base sm:text-lg">暂无附件</h3><p class="text-secondary text-sm">当前公告暂无可用附件</p></div></div><button class="inline-flex items-center border border-black text-black px-5 py-2 rounded-md hover:bg-black hover:text-white transition attachment-btn cursor-not-allowed opacity-60" data-no-attachment="true"><i class="fa fa-ban mr-2"></i>暂无附件</button></div></div><div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-10 hover:shadow-lg transition border border-gray-100">
+<div class="flex items-center justify-between mb-4 flex-wrap">
+<h2 class="text-xl sm:text-2xl font-bold text-primary">📢 HOUDA+关于《侯大编年史》暂停编撰的通知</h2>
+<span class="text-sm text-secondary italic">发布日期：2025年10月23日 21:08</span>
+</div>
+<p class="text-secondary mb-6 text-sm sm:text-base leading-relaxed">
+      HOUDA+关于《侯大编年史》暂停编撰的通知。
+    </p>
+<div class="flex flex-col sm:flex-row items-center sm:justify-between bg-gray-50 rounded-md p-4 sm:p-6 border border-accent/20">
+<div class="flex items-center mb-4 sm:mb-0">
+<i class="fa fa-file-pdf-o text-black text-3xl mr-4"></i>
+<div>
+<h3 class="font-semibold text-dark text-base sm:text-lg">公告文件：侯大人发〔2025〕2778号</h3>
+<p class="text-secondary text-sm">点击下方按钮打开完整公告 PDF 文档</p>
+</div>
+</div>
+<a class="inline-flex items-center border border-black text-black px-5 py-2 rounded-md hover:bg-black hover:text-white transition" href="https://houda.edgeone.app/tzbzhdbns.pdf" target="_blank">
+<i class="fa fa-external-link mr-2"></i> 打开公告 PDF
+      </a>
+</div>
+</div>
+<div class="text-center text-secondary text-sm italic mt-8">
+    更多公告将陆续发布，敬请关注。
+  </div>
+</main>
+<!-- 页脚 -->
+<div class="dock-container">
+<div class="dock">
+<a class="dock-item" href="index.html">
+<i class="fa-solid fa-house dock-icon"></i>
+<span class="dock-label">首页</span>
+</a>
+<a class="dock-item" href="notice.html">
+<i class="fa-solid fa-bell dock-icon"></i>
+<span class="dock-label">通知</span>
+</a>
+</div>
+<div class="back-to-top" id="backToTop">
+<i class="fa-solid fa-arrow-up"></i>
+</div>
+</div>
+<footer class="bg-dark text-white py-10 md:py-12">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 mb-6 md:mb-8">
+<div>
+<a class="flex items-center space-x-2 mb-4 text-gray-400 active:text-primary transition-colors" href="#">
+<div class="w-10 h-10 rounded-md bg-primary flex items-center justify-center">
+<img alt="侯大标志" class="w-full h-full object-cover rounded-md" loading="lazy" src="https://youke1.picui.cn/s1/2025/10/30/69025e3102aca.png"/>
+</div>
+<span class="text-2xl font-bold text-white">
+        HOUDA+
+       </span>
+</a>
+<p class="text-gray-400 mb-4 text-sm">
+       侯明昊碗慧通讯录互吃大学，长沙霉粉联盟六群分支
+      </p>
+
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="#">
+<i class="fa fa-wechat text-xl">
+</i>
+</a>
+</div>
+</div>
+<div>
+<h3 class="text-lg font-bold mb-4">
+       快速链接
+      </h3>
+<ul class="space-y-2">
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="#about">
+         关于我们
+         <br/>
+<span class="sm:text-base text-gray-600 text-secondary block text-sm">
+          About Us
+         </span>
+</a>
+</li>
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="#history">
+         发展历程
+         <br/>
+<span class="sm:text-base text-gray-600 text-secondary block text-sm">
+          Our Story
+         </span>
+</a>
+</li>
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="#activities">
+         活动回顾
+         <br/>
+<span class="sm:text-base text-gray-600 text-secondary block text-sm">
+          Event Highlights
+         </span>
+</a>
+</li>
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="#landmarks">
+         特色地标
+         <br/>
+<span class="sm:text-base text-gray-600 text-secondary block text-sm">
+          Signature Landmarks
+         </span>
+</a>
+</li>
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="#contact">
+         关注我们
+         <br/>
+<span class="sm:text-base text-gray-600 text-secondary block text-sm">
+          Stay Connected
+         </span>
+</a>
+</li>
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="https://hd13{$rthSuffix}/notice.html">
+         官方通知
+         <br/>
+<span class="block text-gray-600 text-sm sm:text-base">
+          Official Notice
+         </span>
+</a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-lg font-bold mb-4">
+       相关组织
+      </h3>
+<ul class="space-y-2">
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="https://cscsu{$rthSuffix}" rel="noopener noreferrer" target="_blank">
+         长沙霉粉联盟
+        </a>
+</li>
+<li>
+<a class="text-gray-400 transition-custom active:text-primary transition-colors" href="#">
+         联盟金卡客户群
+        </a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-lg font-bold mb-4">
+       联系我们
+       <br/>
+<span class="block text-gray-600 text-sm sm:text-base">
+        Contact Us
+       </span>
+</h3>
+<ul class="space-y-2">
+<li class="flex items-center text-gray-400">
+<i class="fa fa-map-marker mr-2">
+</i>
+        长沙市
+       </li>
+<li class="flex items-center text-gray-400">
+<i class="fa fa-wechat mr-2">
+</i>
+        HOUDA+官方微信
+       </li>
+</ul>
+</div>
+</div>
+<div class="border-t border-gray-800 pt-6 md:pt-8 text-center text-gray-500 text-sm">
+<p>
+      © 2025 HOUDA+ All rights reserved.
+     </p>
+</div>
+</div>
+</footer>
+<!-- 在这里插入 -->
+<script>
+  // 移动端菜单展开动画
+  document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const icon = menuBtn.querySelector("i");
+
+    menuBtn.addEventListener("click", function () {
+      const isOpen = mobileMenu.classList.toggle("open");
+      menuBtn.classList.toggle("open");
+      if (isOpen) {
+        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+        mobileMenu.style.opacity = "1";
+        icon.style.transform = "rotate(90deg)";
+      } else {
+        mobileMenu.style.maxHeight = "0";
+        mobileMenu.style.opacity = "0";
+        icon.style.transform = "rotate(0deg)";
+      }
+    });
+  });
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const toast = document.getElementById("toast-notice");
+  document.querySelectorAll("[data-no-attachment]").forEach(btn => {
+    btn.addEventListener("click", function(e) {
+      e.preventDefault();
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
+    });
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const container = document.getElementById("notices");
+  const searchInput = document.getElementById("searchInput");
+  const filterSelect = document.getElementById("filterSelect");
+  const maxLines = 5;
+
+  function normalizeText(text) {
+    return (text || "").toLowerCase().replace(/\s+/g, "");
+  }
+  function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  function highlightText(element, keyword) {
+    if (!element || !keyword) return;
+    const safe = escapeRegex(keyword);
+    const regex = new RegExp(safe, "gi");
+    element.innerHTML = element.textContent.replace(regex, match => `<mark class="bg-yellow-200">${match}</mark>`);
+  }
+
+  function applyFoldState(card) {
+    const content = card.querySelector("p");
+    const btn = card.querySelector(".toggle-btn");
+    if (!content || !btn) return;
+
+    const lineHeightPx = parseFloat(getComputedStyle(content).lineHeight) || 20;
+    const thresholdPx = lineHeightPx * maxLines;
+    const contentHeight = content.scrollHeight;
+
+    content.style.transition = "max-height 0.25s ease";
+    content.style.overflow = "hidden";
+
+    if (contentHeight <= thresholdPx) {
+      btn.classList.add("hidden");
+      content.classList.add("expanded");
+      content.style.maxHeight = "none";
+    } else {
+      content.classList.remove("expanded");
+      content.style.maxHeight = thresholdPx + "px";
+      btn.classList.remove("hidden");
+      btn.textContent = "展开通知";
+    }
+  }
+
+  function initExpandableCards() {
+    document.querySelectorAll("main#notices > div.bg-white").forEach(card => {
+      const content = card.querySelector("p");
+      if (!content) return;
+      if (content.closest(".notice-wrapper")) return;
+
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("notice-wrapper");
+      content.parentNode.insertBefore(wrapper, content);
+      wrapper.appendChild(content);
+      content.classList.add("notice-content");
+
+      const btn = document.createElement("button");
+      btn.className = "toggle-btn";
+      btn.textContent = "展开通知";
+      btn.setAttribute("tabindex", "-1"); // 防止按钮获得焦点
+      btn.style.outline = "none"; // 移除默认焦点样式
+      btn.style.transition = "background-color 0.2s ease";
+      wrapper.appendChild(btn);
+
+      requestAnimationFrame(() => applyFoldState(card));
+
+      let isAnimating = false;
+      btn.addEventListener("click", () => {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const expanded = content.classList.toggle("expanded");
+        const lineHeightPx = parseFloat(getComputedStyle(content).lineHeight) || 20;
+        const thresholdPx = lineHeightPx * maxLines;
+
+        if (expanded) {
+          content.style.maxHeight = content.scrollHeight + "px";
+          btn.textContent = "收起通知";
+          // 完全展开后解除 max-height 限制
+          setTimeout(() => {
+            content.style.maxHeight = "none";
+          }, 250);
+        } else {
+          content.style.maxHeight = thresholdPx + "px";
+          btn.textContent = "展开通知";
+        }
+
+        // 快速解锁点击
+        setTimeout(() => { isAnimating = false; }, 150);
+      });
+    });
+  }
+
+  function classifyNotices() {
+    document.querySelectorAll("main#notices > div.bg-white").forEach(card => {
+      const title = card.querySelector("h2") ? card.querySelector("h2").textContent : "";
+      card.dataset.type = title.includes("版本") ? "version" : "notice";
+    });
+  }
+
+  function getNoticeCards() {
+    return Array.from(container.querySelectorAll("div.bg-white"));
+  }
+
+  function filterAndSearch() {
+    const rawKeyword = searchInput && searchInput.value ? searchInput.value.trim() : "";
+    const keyword = normalizeText(rawKeyword);
+    const filterValue = filterSelect && filterSelect.value ? filterSelect.value : "all";
+    const notices = getNoticeCards();
+
+    notices.forEach(card => {
+      const titleEl = card.querySelector("h2");
+      const contentEl = card.querySelector("p");
+      const btn = card.querySelector(".toggle-btn");
+      const title = titleEl ? titleEl.textContent : "";
+      const content = contentEl ? contentEl.textContent : "";
+      const matchText = normalizeText(title + content);
+
+      const isVisible = (keyword === "" ? true : matchText.includes(keyword)) &&
+                        (filterValue === "all" || card.dataset.type === filterValue);
+
+      card.style.display = isVisible ? "" : "none";
+
+      card.querySelectorAll("mark").forEach(m => {
+        m.replaceWith(document.createTextNode(m.textContent));
+      });
+
+      if (isVisible && rawKeyword) {
+        contentEl && contentEl.classList.add("expanded");
+        if (btn && !btn.classList.contains("hidden")) btn.textContent = "收起通知";
+        highlightText(titleEl, rawKeyword);
+        highlightText(contentEl, rawKeyword);
+      } else {
+        contentEl && contentEl.classList.remove("expanded");
+        if (btn && !btn.classList.contains("hidden")) btn.textContent = "展开通知";
+      }
+
+      if (isVisible) {
+        requestAnimationFrame(() => applyFoldState(card));
+      }
+    });
+  }
+
+  if (searchInput) searchInput.addEventListener("input", filterAndSearch);
+  if (filterSelect) filterSelect.addEventListener("change", filterAndSearch);
+
+  initExpandableCards();
+  classifyNotices();
+  filterAndSearch();
+});
+</script>
+<style>
+#toast-notice {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: rgba(255, 255, 255, 0.25);
+  color: #000;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25), inset 0 0 1px rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(220%);
+  -webkit-backdrop-filter: blur(28px) saturate(220%);
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 9999;
+}
+#toast-notice.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+#toast-notice i {
+  color: #007aff;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 3px rgba(0,122,255,0.4));
+}
+</style>
+<div id="toast-notice"><i class="fa fa-paperclip"></i><span>当前公告暂无可用附件。</span></div>
+<script>
+window.addEventListener('scroll', function() {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 100) {
+        document.body.classList.add('scrolled');
+        backToTop.classList.add('visible');
+    } else {
+        document.body.classList.remove('scrolled');
+        backToTop.classList.remove('visible');
+    }
+});
+document.getElementById('backToTop').addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+<script>
+window.addEventListener('scroll', function() {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 100) {
+        document.body.classList.add('scrolled');
+        backToTop.classList.add('visible');
+    } else {
+        document.body.classList.remove('scrolled');
+        backToTop.classList.remove('visible');
+    }
+});
+document.getElementById('backToTop').addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+
+</html>
