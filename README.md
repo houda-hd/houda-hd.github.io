@@ -1,4 +1,4 @@
-<img src="assets/logo.jpeg" alt="HOUDA+ Logo" width="200">
+<img src="assets/houda.jpeg" alt="HOUDA+ Logo" width="200">
 # 🌐 HOUDA+ 官网
 
 [![Website](https://img.shields.io/badge/Visit-houda--hd.github.io-blue?style=flat-square)](https://houda-hd.github.io)
