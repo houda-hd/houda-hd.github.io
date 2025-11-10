@@ -1,5 +1,11 @@
 # HOUDA+ 网站
 
+[![GitHub stars](https://img.shields.io/github/stars/houda-hd/houda-hd.github.io?style=flat-square)](https://github.com/houda-hd/houda-hd.github.io/stargazers)
+
+[![GitHub last commit](https://img.shields.io/github/last-commit/houda-hd/houda-hd.github.io?style=flat-square)](https://github.com/houda-hd/houda-hd.github.io/commits/main)
+
+[![Website](https://img.shields.io/badge/Visit-houda--hd.github.io-blue?style=flat-square)](https://houda-hd.github.io)
+
 欢迎访问 **HOUDA+** 官网！这是一个基于 GitHub Pages 构建的个人网站，旨在提供最新的公告、项目更新和其他相关信息。
 
 ## 项目概述
