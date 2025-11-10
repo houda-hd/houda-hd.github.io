@@ -6,25 +6,25 @@
 
 ### 🧩 提交流程
 
-1. **Fork 本仓库**  
+1. **Fork 本仓库**  
    点击右上角 **Fork** 按钮，将仓库复制到你的 GitHub 账号下。
 
-2. **创建新分支**
+3. **创建新分支**
    ```bash
    git checkout -b fix-footer-icon
 
-3. **进行修改并提交**
+4. **进行修改并提交**
    ```
    git add .
    git commit -m "修复页脚图标显示异常"
    ```
 
-4. **推送分支到你的仓库**
+5. **推送分支到你的仓库**
    ```
    git push origin fix-footer-icon
    ```
 
-5.	**发起 Pull Request**  
+6.	**发起 Pull Request**  
     打开你仓库页面，点击 Compare & pull request；  
     填写修改说明；  
     提交后等待审核与合并。  
