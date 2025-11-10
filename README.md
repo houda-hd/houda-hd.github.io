@@ -44,9 +44,6 @@
 houda-hd.github.io/
 ├── index.html           # 首页
 ├── notice.html          # 通知与更新页面（已停更）
-├── assets/              # 图片与媒体资源
-├── css/                 # 样式表
-├── js/                  # 前端脚本
 ├── README.md            # 项目说明
 └── wiki/                # 项目文档与版本记录
 ```
