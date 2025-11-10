@@ -13,30 +13,30 @@
    ```bash
    git checkout -b fix-footer-icon
 
-	3.	进行修改并提交
+3. **进行修改并提交**
+   ```
+   git add .
+   git commit -m "修复页脚图标显示异常"
+   ```
 
-git add .
-git commit -m "修复页脚图标显示异常"
+4. **推送分支到你的仓库**
+   ```
+   git push origin fix-footer-icon
+   ```
 
-
-	4.	推送分支到你的仓库
-
-git push origin fix-footer-icon
-
-
-	5.	发起 Pull Request
-	•	打开你仓库页面，点击 Compare & pull request；
-	•	填写修改说明；
-	•	提交后等待审核与合并。
+5.	**发起 Pull Request**  
+    打开你仓库页面，点击 Compare & pull request；  
+    填写修改说明；  
+    提交后等待审核与合并。  
 
 ⸻
 
-📋 注意事项
-	•	保持代码格式与项目风格一致。
+📋 **注意事项**  
+	•	保持代码格式与项目风格一致。  
 	•	若修复了已存在的 Issue，请在说明中附上编号：
-Fixes #12
-	•	不要直接在 main 分支提交修改。
-	•	建议使用分支命名规则：
-	•	功能：feature/xxx
-	•	修复：fix/xxx
-	•	文档：docs/xxx
+Fixes #12  
+	•	不要直接在 main 分支提交修改。  
+	•	建议使用分支命名规则：  
+	•	功能：feature/xxx  
+	•	修复：fix/xxx  
+	•	文档：docs/xxx  
