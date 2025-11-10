@@ -49,22 +49,8 @@ houda-hd.github.io/
 ```
 ---
 
-## 🕓 版本更新记录
-
-### 📢 v1.3.3 — 圆形 Dock 栏与视觉优化
-发布日期：2025-11-02  
-- 新增圆形 Dock 栏；  
-- 使用 Font Awesome 6；  
-- 改进滚动隐藏与返回顶部逻辑；  
-- 优化动画与加载性能。  
-
-### 📢 v1.3.2 — 页面统一化与通知系统升级
-发布日期：2025-10-31  
-- 完成 404 页面视觉统一；  
-- 新增公告搜索与筛选功能；  
-- 优化加载体验与响应速度。  
-
-更多版本说明请查看 [Releases](https://github.com/houda-hd/houda-hd.github.io/releases)。
+## 📜 更新日志
+查看完整更新记录请见 [CHANGELOG.md](./CHANGELOG.md)
 
 ---
 
