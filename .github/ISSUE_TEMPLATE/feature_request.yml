@@ -1,0 +1,36 @@
+name: 💡 功能建议
+description: 提出一个新功能或改进想法
+title: "[Feature] 简要描述你的建议"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        欢迎提出你的想法！请填写以下内容帮助我们理解你的需求。
+  - type: textarea
+    id: idea
+    attributes:
+      label: 🚀 建议内容
+      description: 简要说明你希望添加或改进的功能。
+      placeholder: 例如：希望在通知页增加筛选标签。
+    validations:
+      required: true
+  - type: checkboxes
+    id: motivation
+    attributes:
+      label: 🎯 主要动机
+      options:
+        - label: 提升使用体验
+        - label: 美化界面
+        - label: 增强功能
+        - label: 修复交互逻辑
+  - type: textarea
+    id: expected
+    attributes:
+      label: 💭 预期效果
+      description: 描述理想的使用方式或视觉效果。
+  - type: textarea
+    id: reference
+    attributes:
+      label: 🔗 附加资料
+      description: 可附上示意图、参考网站或补充说明。
