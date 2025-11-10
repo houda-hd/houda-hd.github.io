@@ -1,0 +1,16 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📘 HOUDA+ 官网反馈中心
+    url: https://houda-hd.github.io
+    about: 前往官网了解更多项目信息或提交反馈
+
+issue_template:
+  - name: 🐞 Bug 反馈
+    description: 提交网站或功能使用中的问题
+    file: bug_report.md
+  - name: 💡 功能建议
+    description: 提出一个新功能或改进想法
+    file: feature_request.md
+  - name: 🧰 自定义反馈
+    description: 其他类型的反馈或沟通
+    file: custom.md
