@@ -1,8 +1,4 @@
 blank_issues_enabled: false
-contact_links:
-  - name: 📘 HOUDA+ 官网反馈中心
-    url: https://houda-hd.github.io
-    about: 前往官网了解更多项目信息或提交反馈
 
 issue_template:
   - name: 🐞 Bug 反馈
