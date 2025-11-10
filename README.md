@@ -47,6 +47,18 @@ cd houda-hd.github.io
 
 请随时查看每个版本更新的内容和公告，确保你使用的是最新版本。
 
+## 📢 官网通知页面停更公告
+
+由于 **HOUDA+ 官网** 已正式接入 **GitHub Pages 与 Issues 系统**，  
+后续的公告与更新将统一迁移至 **GitHub** 发布。  
+
+自即日起，**原官网通知页面将无限期停更**。  
+
+如需查看最新公告或反馈问题，请访问：  
+👉 [https://github.com/houda-hd/houda-hd.github.io/issues](https://github.com/houda-hd/houda-hd.github.io/issues)
+
+感谢大家的理解与支持。  
+
 1.3.3 版本
 	• 新增圆形 Dock 栏，支持快速访问首页和通知页面。
 	• 改进了滚动隐藏效果和回到顶部按钮。
