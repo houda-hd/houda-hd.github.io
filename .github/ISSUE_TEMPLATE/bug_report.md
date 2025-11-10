@@ -1,38 +1,26 @@
 ---
-name: 错误报告
-about: 创建一份报告来帮助我们改进
-title: ''
-labels: ''
+name: 🐞 Bug 反馈
+about: 提交网站或功能使用中的问题
+title: "[Bug] 请简要描述问题"
+labels: bug
 assignees: ''
-
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## 🧩 问题描述
+请清晰描述你遇到的 Bug。
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## 🔁 复现步骤
+1. 打开页面...
+2. 点击...
+3. 出现错误...
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## 📸 截图或录屏
+如果有，请上传截图或录屏帮助我们更快定位问题。
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## 🌐 环境信息
+- 浏览器版本：
+- 操作系统：
+- 设备类型（电脑 / 手机）：
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+## 📝 其他信息
+如有额外说明，请补充。
