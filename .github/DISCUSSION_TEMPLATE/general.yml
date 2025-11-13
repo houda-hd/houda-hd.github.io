@@ -1,0 +1,19 @@
+name: 💬 一般讨论 General Discussion
+description: 自由讨论、分享见解或日常聊天
+title: "[讨论] 标题内容"
+labels: ["discussion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 💬 欢迎分享你的想法！
+        用于开放性话题、反馈、或随意交流。
+
+  - type: textarea
+    id: topic
+    attributes:
+      label: 讨论主题 / Topic
+      description: 请写下你想聊的话题内容。
+      placeholder: |
+        💡 我最近在想……
+        💬 想听听大家对……的看法。
