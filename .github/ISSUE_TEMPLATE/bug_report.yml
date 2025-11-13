@@ -1,6 +1,6 @@
 name: 🐞 Bug Report | 错误报告
 description: 报告一个问题或异常情况 | Report a problem or unexpected behavior
-title: "[BUG] 简要描述问题"
+title: "[Bug] 简要描述问题"
 labels: ["bug", "needs triage"]
 assignees: []
 
@@ -8,24 +8,24 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## 🐞 感谢你的反馈！
-        请详细填写以下内容，以帮助我们更快定位问题。  
-        Please fill out the following details to help us fix the issue faster.
+        ## 🐞 感谢你的反馈！  
+        请尽量完整填写以下内容，帮助我们快速定位和修复问题。  
+        Please provide as much detail as possible to help us reproduce the issue.
 
   - type: input
     id: version
     attributes:
       label: 🔖 版本 Version
-      description: 出现问题的 HOUDA+ 版本或网页版本号（如 1.3.3）
-      placeholder: "例如：v1.3.3 或 最新版 main 分支"
+      description: 出现问题的 HOUDA+ 版本或网页构建版本。
+      placeholder: "例如：v1.3.3 / main 分支（2025-11-02 发布）"
     validations:
       required: true
 
   - type: textarea
     id: description
     attributes:
-      label: 📋 问题描述 | Description
-      description: 简要说明出现了什么问题。
+      label: 🧩 问题描述 | Description
+      description: 简要说明你遇到的问题。
       placeholder: |
         示例：
         - 页面底部的 Dock 栏在滚动时无法隐藏
@@ -33,15 +33,27 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: reproducibility
+    attributes:
+      label: 🔁 是否可复现 | Reproducibility
+      description: 请选择问题出现的频率。
+      options:
+        - 总是出现 / Always
+        - 偶尔出现 / Sometimes
+        - 仅特定设备出现 / Device-specific
+        - 暂未确认 / Not sure
+      default: 0
+
   - type: textarea
     id: reproduce
     attributes:
-      label: 🔁 重现步骤 | Steps to Reproduce
-      description: 请写出如何重现问题（最好包含截图或视频）。
+      label: 🧭 重现步骤 | Steps to Reproduce
+      description: 请说明如何触发问题，最好包含截图或视频。
       placeholder: |
-        1. 打开首页
-        2. 滚动页面到底部
-        3. Dock 栏未隐藏
+        1. 打开首页  
+        2. 滚动页面到底部  
+        3. Dock 栏未隐藏  
         4. 控制台出现报错
     validations:
       required: true
@@ -50,38 +62,38 @@ body:
     id: expected
     attributes:
       label: ✅ 预期行为 | Expected Behavior
-      description: 理想情况下应该发生什么？
+      description: 理想情况下你希望页面如何表现？
       placeholder: "例如：Dock 栏应在滚动到底部时自动隐藏"
 
   - type: textarea
     id: screenshot
     attributes:
       label: 📸 截图或视频 | Screenshots
-      description: 如果有截图或屏幕录制，请粘贴或上传以帮助定位。
-      placeholder: "在此处粘贴图片或视频链接（可选）"
+      description: 如果有截图或屏幕录制，请粘贴或上传以帮助定位问题。
+      placeholder: "在此处粘贴图片、视频链接或控制台报错内容（可选）"
 
   - type: input
     id: environment
     attributes:
-      label: 💻 环境信息 | Environment
-      description: 请说明你使用的系统或浏览器环境。
-      placeholder: "示例：iPhone 15 Safari / macOS Chrome 130 / Edge 版本 130"
+      label: 🌐 环境信息 | Environment
+      description: 请说明你使用的系统与浏览器。
+      placeholder: "示例：iPhone 15 Safari / macOS Chrome 130 / Edge 130"
 
   - type: dropdown
     id: severity
     attributes:
       label: 🚨 严重程度 | Severity
+      description: 请选择问题的影响范围。
       options:
-        - 🟢 轻微（不影响主要功能）
-        - 🟡 中等（影响部分使用）
-        - 🔴 严重（主要功能不可用）
-      description: 选择问题的严重程度。
-      default: 2
+        - 🟢 轻微（不影响主要功能） / Minor
+        - 🟡 中等（影响部分使用） / Moderate
+        - 🔴 严重（主要功能不可用） / Critical
+      default: 1
 
   - type: checkboxes
     id: confirmations
     attributes:
-      label: ✅ 确认事项 | Confirmation
+      label: ✅ 提交前确认 | Confirmation
       options:
         - label: 我已确认此问题在最新版本中仍存在 / I confirmed the issue exists in the latest version
           required: true
