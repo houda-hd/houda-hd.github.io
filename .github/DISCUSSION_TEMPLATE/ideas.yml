@@ -1,0 +1,19 @@
+name: 💡 想法 Ideas
+description: 分享或建议 HOUDA+ 的新功能或改进
+title: "[提议] 功能/改进点标题"
+labels: ["idea", "suggestion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 💡 功能提议 / Feature Idea
+        请描述你的创意或想法！
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: 想法详情 / Idea Details
+      description: 写下你希望实现的功能、原因或灵感来源。
+      placeholder: |
+        ✨ 我希望新增……
+        🚀 这样做的好处是……
