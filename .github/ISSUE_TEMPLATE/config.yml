@@ -1,12 +1,18 @@
-blank_issues_enabled: false
+blank_issues_enabled: false  # 禁止用户提交空白 Issue，必须用模板
+contact_links:
+  - name: 💬 讨论区 | Discussions
+    url: https://github.com/houda-hd/houda-hd.github.io/discussions
+    about: 如果你想提出想法、问题或展示作品，请转到 Discussions 区。
 
 issue_template:
-  - name: 🐞 Bug 反馈
-    description: 提交网站或功能使用中的问题
-    file: bug_report.md
-  - name: 💡 功能建议
-    description: 提出一个新功能或改进想法
-    file: feature_request.md
-  - name: 🧰 自定义反馈
-    description: 其他类型的反馈或沟通
-    file: custom.md
+  - name: 🐞 Bug Report | 错误报告
+    description: 报告一个问题或异常情况
+    file: bug_report.yml
+
+  - name: 💡 Feature Request | 功能建议
+    description: 提出新功能或改进建议
+    file: feature_request.yml
+
+  - name: 🧩 Custom Request | 自定义需求
+    description: 请求 UI / 设计 / 视觉相关改动
+    file: custom.yml
