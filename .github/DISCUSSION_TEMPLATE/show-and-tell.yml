@@ -1,0 +1,20 @@
+name: 🎨 展示与分享 Show and Tell
+description: 分享你的作品、项目或创意！
+title: "[展示] 项目/作品名称"
+labels: ["showcase", "community"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 🎨 展示你的作品 / Show and Tell
+        欢迎分享你与 HOUDA+ 相关的作品、设计或想法！
+
+  - type: textarea
+    id: showcase
+    attributes:
+      label: 作品介绍 / Description
+      description: 简要介绍你的作品、灵感、特点等。
+      placeholder: |
+        🖼️ 项目介绍：
+        💡 灵感来源：
+        🔗 链接 / 预览：
