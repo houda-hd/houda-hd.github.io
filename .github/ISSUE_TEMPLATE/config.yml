@@ -1,5 +1,8 @@
 blank_issues_enabled: false  # 禁止用户提交空白 Issue，必须用模板
 contact_links:
+  - name: 📌 提交前请阅读说明
+    url: https://github.com/houda-hd/houda-hd.github.io/issues/1
+    about: 请先阅读此说明，了解如何正确提交 Bug 或功能建议。
   - name: 💬 讨论区 | Discussions
     url: https://github.com/houda-hd/houda-hd.github.io/discussions
     about: 如果你想提出想法、问题或展示作品，请转到 Discussions 区。
