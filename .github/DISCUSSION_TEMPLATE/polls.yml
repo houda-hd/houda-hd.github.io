@@ -1,0 +1,20 @@
+name: 🗳️ 投票 Polls
+description: 创建社区投票或收集意见
+title: "[投票] 主题名称"
+labels: ["poll", "community"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 🗳️ 投票主题 / Poll Topic
+        说明投票目的或讨论的议题。
+
+  - type: textarea
+    id: options
+    attributes:
+      label: 投票选项 / Options
+      description: 请列出可选项（每行一个）。
+      placeholder: |
+        选项 1
+        选项 2
+        选项 3
