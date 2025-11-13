@@ -1,36 +1,52 @@
-name: 💡 功能建议
-description: 提出一个新功能或改进想法
+name: 💡 Feature Request | 功能建议
+description: 提出新功能或改进建议 | Suggest a new feature or improvement
 title: "[Feature] 简要描述你的建议"
-labels: ["enhancement"]
+labels: ["enhancement", "needs triage"]
+assignees: []
+
 body:
   - type: markdown
     attributes:
       value: |
-        欢迎提出你的想法！请填写以下内容帮助我们理解你的需求。
+        ## 💡 感谢你的创意！
+        请详细描述你希望新增或改进的功能。  
+        Please describe your idea or feature request below.
+
   - type: textarea
-    id: idea
-    attributes:
-      label: 🚀 建议内容
-      description: 简要说明你希望添加或改进的功能。
-      placeholder: 例如：希望在通知页增加筛选标签。
-    validations:
-      required: true
-  - type: checkboxes
     id: motivation
     attributes:
-      label: 🎯 主要动机
+      label: 🧭 背景与动机 | Motivation
+      description: 说明为什么需要这个功能，或遇到了什么问题。
+      placeholder: "示例：当前 Dock 栏功能有限，希望增加自定义入口。"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: ✨ 功能提案 | Proposal
+      description: 具体描述你想要的功能或改进。
+      placeholder: |
+        示例：
+        - 增加深色模式切换
+        - 通知页支持关键字搜索
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🚀 优先级 | Priority
       options:
-        - label: 提升使用体验
-        - label: 美化界面
-        - label: 增强功能
-        - label: 修复交互逻辑
-  - type: textarea
-    id: expected
+        - 🟢 建议功能（非紧急）
+        - 🟡 改进体验（中等优先）
+        - 🔴 关键功能（高优先）
+      default: 1
+
+  - type: checkboxes
+    id: confirmation
     attributes:
-      label: 💭 预期效果
-      description: 描述理想的使用方式或视觉效果。
-  - type: textarea
-    id: reference
-    attributes:
-      label: 🔗 附加资料
-      description: 可附上示意图、参考网站或补充说明。
+      label: ✅ 确认事项 | Confirmation
+      options:
+        - label: 我确认此功能尚未存在 / I confirmed this feature doesn’t exist yet
+          required: true
