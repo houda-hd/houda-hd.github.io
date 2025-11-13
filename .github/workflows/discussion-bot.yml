@@ -1,0 +1,134 @@
+name: 🤖 Discussion Bot (with Summary)
+
+on:
+  discussion:
+    types: [created, edited]
+  discussion_comment:
+    types: [created]
+
+permissions:
+  discussions: write
+  contents: read
+
+jobs:
+  discussion-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🤖 自动欢迎与分类
+        uses: peter-evans/create-or-update-comment@v3
+        if: github.event_name == 'discussion' && github.event.action == 'created'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.discussion.number }}
+          body: |
+            👋 欢迎来到 **HOUDA+ 社区讨论区**！
+
+            感谢你发起新话题～请确保你的标题清晰、内容详细。
+            - 如果是报告 bug，请附上截图或重现步骤 🐞  
+            - 如果是功能建议，请说明使用场景 💡  
+            - 如果只是闲聊，欢迎尽情发挥 😄  
+
+            我是自动助手，会帮忙给话题加上合适的标签并提示管理员。
+
+      - name: 🏷 自动标签
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const discussion = context.payload.discussion;
+            const title = discussion.title.toLowerCase();
+
+            let labels = [];
+
+            if (title.includes('bug') || discussion.body.includes('错误')) {
+              labels.push('🐞 Bug');
+            } else if (title.includes('建议') || title.includes('feature')) {
+              labels.push('💡 建议');
+            } else {
+              labels.push('💬 一般讨论');
+            }
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: discussion.number,
+                labels: labels
+              });
+            }
+
+      - name: 💬 关键词回复
+        uses: actions/github-script@v7
+        if: github.event_name == 'discussion_comment'
+        with:
+          script: |
+            const comment = context.payload.comment.body.toLowerCase();
+            const discussion_number = context.payload.discussion.number;
+
+            let reply = null;
+
+            if (comment.includes('/close')) {
+              reply = "🛑 已请求关闭此讨论，请等待管理员确认。";
+            } else if (comment.includes('/thanks')) {
+              reply = "💖 谢谢你的反馈与支持！";
+            } else if (comment.includes('bug')) {
+              reply = "🐞 已检测到关键字 **bug**，我们会尽快查看！";
+            }
+
+            if (reply) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: discussion_number,
+                body: reply
+              });
+            }
+
+      - name: 🧠 自动总结活跃讨论
+        if: github.event_name == 'discussion_comment'
+        uses: actions/github-script@v7
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          script: |
+            const discussion = context.payload.discussion;
+            const discussion_number = discussion.number;
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: discussion_number,
+              per_page: 10,
+            });
+
+            // 把最近几条评论拼成简要文本
+            const summaryInput = comments.data.map(c => `@${c.user.login}: ${c.body}`).join("\n");
+
+            // 调用 OpenAI 生成摘要（你需要在仓库的 Secrets 里添加 OPENAI_API_KEY）
+            const fetch = require("node-fetch");
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+              },
+              body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                  { role: "system", content: "你是一个简洁的会议记录助手，请用一句中文总结讨论核心内容。" },
+                  { role: "user", content: summaryInput }
+                ],
+                max_tokens: 100,
+              }),
+            });
+
+            const data = await response.json();
+            const summary = data.choices?.[0]?.message?.content?.trim();
+
+            if (summary) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: discussion_number,
+                body: `🧾 **自动摘要：** ${summary}`,
+              });
+            }
