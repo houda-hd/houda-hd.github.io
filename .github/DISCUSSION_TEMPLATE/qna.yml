@@ -1,0 +1,19 @@
+name: 🙋 问答 Q&A
+description: 提问或回答关于 HOUDA+ 的问题
+title: "[问答] 问题标题"
+labels: ["qna", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### ❓ 问题描述 / Question
+        请详细描述你的问题，或希望解决的情况。
+
+  - type: textarea
+    id: question
+    attributes:
+      label: 详情 / Details
+      description: 说明出现的情况、操作步骤、期望结果等。
+      placeholder: |
+        🔍 我遇到的问题是……
+        ⚙️ 我尝试过的方法是……
