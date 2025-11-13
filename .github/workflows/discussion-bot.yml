@@ -16,20 +16,20 @@ jobs:
 
     steps:
       - name: 🤖 自动欢迎与分类
-        uses: peter-evans/create-or-update-comment@v3
-        if: github.event_name == 'discussion' && github.event.action == 'created'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.discussion.number }}
-          body: |
-            👋 欢迎来到 **HOUDA+ 社区讨论区**！
+  uses: peter-evans/create-or-update-discussion-comment@v2
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
+    discussion-number: ${{ github.event.discussion.number }}
+    repository: ${{ github.repository }}
+    body: |
+      👋 欢迎来到 **HOUDA+ 社区讨论区**！
 
-            感谢你发起新话题～请确保你的标题清晰、内容详细。
-            - 如果是报告 bug，请附上截图或重现步骤 🐞  
-            - 如果是功能建议，请说明使用场景 💡  
-            - 如果只是闲聊，欢迎尽情发挥 😄  
-
-            我是自动助手，会帮忙给话题加上合适的标签并提示管理员。
+      感谢你发起新话题～请确保你的标题清晰、内容详细。
+      - 如果是报告 bug，请附上截图或重现步骤 🐞
+      - 如果是功能建议，请说明使用场景 💡
+      - 如果只是闲聊，欢迎尽情发挥 😄
+      
+      我是自动助手，会帮忙给话题加上合适的标签并提示管理员。
 
       - name: 🏷 自动标签
         uses: actions/github-script@v7
