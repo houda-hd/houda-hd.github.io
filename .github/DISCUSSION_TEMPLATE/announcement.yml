@@ -1,0 +1,20 @@
+name: 📢 公告 Announcements
+description: 用于发布更新、活动或官方说明
+title: "[公告] 标题内容"
+labels: ["announcement", "official"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 📢 公告说明 / Announcement
+        请简要描述此次公告内容。
+
+  - type: textarea
+    id: details
+    attributes:
+      label: 公告详情 / Details
+      description: 写下公告的主要内容、时间、更新点等。
+      placeholder: |
+        🗓️ 发布日期：
+        🧩 内容摘要：
+        ✨ 更新重点：
