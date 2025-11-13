@@ -1,30 +1,49 @@
-name: 🧰 自定义反馈
-description: 提交其他类型的反馈或沟通
-title: "[Feedback] 简要描述你的反馈内容"
-labels: ["feedback"]
+name: 🧩 Custom Request | 自定义需求
+description: 请求非功能类的改动（如样式、布局、视觉调整）| Suggest UI or design tweaks
+title: "[Custom] 简要描述需求"
+labels: ["design", "enhancement"]
+assignees: []
+
 body:
   - type: markdown
     attributes:
       value: |
-        无论是疑问、想法还是鼓励，都可以在这里告诉我们。
-  - type: dropdown
-    id: category
+        ## 🧩 视觉与交互反馈
+        提出关于设计、排版或动效的修改建议。  
+        Suggestions related to UI, layout, or animations.
+
+  - type: textarea
+    id: area
     attributes:
-      label: 📋 反馈类别
-      options:
-        - 其他问题
-        - 网站外观
-        - 内容建议
-        - 合作咨询
+      label: 🎯 涉及区域 | Affected Area
+      description: 哪个页面或组件需要调整？
+      placeholder: "例如：首页 Dock 栏、404 页面、页脚导航栏"
+    validations:
+      required: true
+
   - type: textarea
     id: details
     attributes:
-      label: 🧠 详细说明
-      placeholder: 请输入具体内容...
+      label: 💬 具体说明 | Details
+      description: 请详细说明想要的改动。
+      placeholder: |
+        示例：
+        - Dock 栏图标可以稍微缩小一些
+        - 404 页面配色希望更亮眼
     validations:
       required: true
-  - type: textarea
-    id: extra
+
+  - type: input
+    id: reference
     attributes:
-      label: 📎 附加信息
-      description: 如果有截图、链接或文件，请在此补充。
+      label: 🔗 参考样式 | References (可选)
+      description: 可附带设计图、链接或灵感来源。
+      placeholder: "例如：https://dribbble.com/xxxx"
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: ✅ 确认事项 | Confirmation
+      options:
+        - label: 我已检查该建议未被提交 / I verified it’s not duplicated
+          required: true
