@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HOUDA+ · 情侣盘点</title>
+<meta name="description" content="HOUDA+ 社区情侣盘点 — 来自民间的甜与酸" />
+<style>
+  :root{
+    --bg:#0f1724;        /* 深夜背景 */
+    --card:#0b1220;
+    --muted:#9aa4b2;
+    --accent:#7c3aed;    /* HOUDA+ 紫色主色 */
+    --accent-2:#06b6d4;
+    --glass: rgba(255,255,255,0.03);
+    --glass-2: rgba(255,255,255,0.02);
+    --success:#10b981;
+    --danger:#ef4444;
+    --maxw:1100px;
+    --radius:12px;
+    font-family: "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+  }
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(800px 400px at 10% 10%, rgba(124,58,237,0.08), transparent 8%),
+      radial-gradient(700px 350px at 90% 90%, rgba(6,182,212,0.04), transparent 8%),
+      var(--bg);
+    color:#e6eef6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:36px 20px;
+    box-sizing:border-box;
+    display:flex;
+    justify-content:center;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:var(--maxw);
+  }
+
+  header{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .logo{
+    width:64px;height:64px;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 18px rgba(7,10,20,0.6);
+    font-weight:700;font-size:20px;
+  }
+  .title{
+    line-height:1;
+  }
+  .title h1{ margin:0;font-size:20px;}
+  .title p{ margin:2px 0 0;font-size:13px;color:var(--muted);}
+
+  .intro{
+    margin:18px 0 28px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:14px 16px;border-radius:10px;color:var(--muted);
+    display:flex;align-items:center;gap:12px;
+  }
+  .intro b{color:#fff;}
+
+  /* grid */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:18px;
+  }
+  @media (max-width:980px){ .grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:620px){ .grid{ grid-template-columns: 1fr; } }
+
+  .card{
+    background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.01));
+    border-radius:var(--radius);
+    padding:14px;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+    transition: transform .18s ease, box-shadow .18s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .card:hover{ transform: translateY(-6px); box-shadow: 0 14px 34px rgba(2,6,23,0.7); }
+
+  .avatars{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .avatar{
+    width:56px;height:56px;border-radius:12px;
+    background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.1));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:18px;color:var(--muted);
+    box-shadow:inset 0 -6px 18px rgba(0,0,0,0.15);
+  }
+  .pair-name{
+    margin-left:10px;
+  }
+  .pair-name h3{ margin:0;font-size:16px;display:flex;gap:8px;align-items:center; }
+  .pair-meta{ margin:6px 0 0;color:var(--muted);font-size:13px; }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+    color:#071023;
+  }
+  .badge.ongoing{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; }
+  .badge.past{ background:linear-gradient(90deg,#f97316,#f43f5e); color:white; }
+  .badge.sus{ background:linear-gradient(90deg,#f59e0b,#ef4444); color:white; }
+
+  .desc{ margin-top:10px;color:var(--muted);font-size:14px;min-height:44px; }
+
+  .foot{
+    display:flex;justify-content:space-between;align-items:center;margin-top:12px;
+  }
+  .foot .score{ color:var(--muted);font-size:13px; }
+  .btn{
+    background:transparent;border:1px solid rgba(255,255,255,0.06);
+    color:var(--accent);padding:8px 10px;border-radius:8px;font-size:13px;cursor:pointer;
+    transition: all .14s;
+  }
+  .btn:hover{ transform:translateY(-2px); box-shadow: 0 8px 20px rgba(124,58,237,0.08); }
+
+  /* modal */
+  .modal-backdrop{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);
+    z-index:1200;padding:20px;
+  }
+  .modal{
+    width:100%;max-width:720px;background:linear-gradient(180deg,#071426,#0b1c2b);border-radius:12px;padding:18px;color:#eaf3ff;
+    box-shadow:0 28px 80px rgba(2,6,23,0.7);
+  }
+  .modal h2{margin:0 0 8px;font-size:18px;}
+  .modal p{ color:var(--muted); margin:8px 0; line-height:1.6;}
+  .meta-tags{ display:flex;gap:8px;flex-wrap:wrap;margin-top:8px; }
+  .tag{ padding:6px 10px;border-radius:999px;background:var(--glass-2);font-size:13px;color:var(--muted); }
+
+  .close{
+    background:transparent;border:none;color:var(--muted);font-size:14px;padding:6px 8px;cursor:pointer;
+  }
+
+  /* footer */
+  footer{ margin-top:28px;color:var(--muted);font-size:13px;text-align:center;padding-bottom:40px;}
+  .small{ font-size:12px;color:#7f8a97; }
+
+  /* tiny badge ribbon */
+  .ribbon{
+    position:absolute;right:12px;top:12px;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));color:var(--muted);
+  }
+  .ribbon .dot{ display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px; }
+  .dot.green{background:var(--success);} .dot.red{background:var(--danger);} .dot.yellow{background:#f59e0b;}
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div class="logo">H+</div>
+      <div class="title">
+        <h1>HOUDA+ · 情侣盘点</h1>
+        <p>社区口水精选 · 真实感情不保修 · 我们只负责记录</p>
+      </div>
+    </header>
+
+    <div class="intro">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:0 0 20px;">
+        <path d="M12 21s-7-4.35-9-7.5A5.5 5.5 0 0 1 7 4.5c2.1 0 3.1 1.36 5 3.5 1.9-2.14 2.9-3.5 5-3.5 3.06 0 4 2.88 3.99 4.98C19 16.65 12 21 12 21z" stroke="url(#g)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+      </svg>
+      <div>
+        本页面根据社区流言、同学圈互动与公开动态整理。条目随时更新 — 真相以当事人声明为准。
+      </div>
+    </div>
+
+    <section class="grid" aria-label="情侣列表">
+      <!-- CARD 1: 王宇煊 × 陈贤（已分手） -->
+      <article class="card" data-id="c1" aria-labelledby="c1-title">
+        <div class="ribbon"><span class="dot red"></span>已分手</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;">
+            <div class="avatars">
+              <div class="avatar" title="王宇煊">王宇<br>煊</div>
+              <div class="avatar" title="陈贤">陈<br>贤</div>
+            </div>
+            <div class="pair-name">
+              <h3 id="c1-title">王宇煊 <span style="opacity:.6;font-weight:500;font-size:13px;">×</span> 陈贤</h3>
+              <div class="pair-meta">状态：<strong style="color:#f97316">已分手</strong> · 社区口径：已结束</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="badge past">历史档案</div>
+          </div>
+        </div>
+
+        <div class="desc">
+          从热闹到冰点走得快。两人的互动曾被认为“很配”，但最终以干脆分手收场——社区也停止了为他们捏把汗。
+        </div>
+
+        <div class="foot">
+          <div class="score">甜度（历史）：🌙🌙🌙✨✨</div>
+          <div>
+            <button class="btn" onclick="openModal('c1')">查看详情</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 2: 王宇煊 × 陈子瑞（持续发展中） -->
+      <article class="card" data-id="c2" aria-labelledby="c2-title">
+        <div class="ribbon"><span class="dot green"></span>进行中</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;">
+            <div class="avatars">
+              <div class="avatar" title="王宇煊">王宇<br>煊</div>
+              <div class="avatar" title="陈子瑞">陈<br>子瑞</div>
+            </div>
+            <div class="pair-name">
+              <h3 id="c2-title">王宇煊 <span style="opacity:.6;font-weight:500;font-size:13px;">×</span> 陈子瑞</h3>
+              <div class="pair-meta">状态：<strong style="color:#34d399">持续发展中</strong> · 社区口径：稳定低调</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="badge ongoing">主线 CP</div>
+          </div>
+        </div>
+
+        <div class="desc">
+          互动节奏稳、出镜不高调但互相出现在重要场合。社区评价：天然官配、默契稳定。
+        </div>
+
+        <div class="foot">
+          <div class="score">甜度：🌙🌙🌙🌙✨</div>
+          <div>
+            <button class="btn" onclick="openModal('c2')">查看详情</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 3: 陈子瑞 × 史浩然（疑似） -->
+      <article class="card" data-id="c3" aria-labelledby="c3-title">
+        <div class="ribbon"><span class="dot yellow"></span>疑似</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;">
+            <div class="avatars">
+              <div class="avatar" title="陈子瑞">陈<br>子瑞</div>
+              <div class="avatar" title="史浩然">史<br>浩然</div>
+            </div>
+            <div class="pair-name">
+              <h3 id="c3-title">陈子瑞 <span style="opacity:.6;font-weight:500;font-size:13px;">×</span> 史浩然</h3>
+              <div class="pair-meta">状态：<strong style="color:#f59e0b">疑似/暗线</strong> · 社区口径：未确认</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="badge sus">疑似 CP</div>
+          </div>
+        </div>
+
+        <div class="desc">
+          同框与互动频率让人怀疑，但双方从未正面官宣。属于“有故事但不表态”的类型。
+        </div>
+
+        <div class="foot">
+          <div class="score">甜度（猜测）：🌙🌙🌙✨✨</div>
+          <div>
+            <button class="btn" onclick="openModal('c3')">查看详情</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 可以按需再复制卡片模板，下面留空位或备用卡 -->
+      <article class="card" style="opacity:.9;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="font-size:28px;margin-bottom:8px;">✨</div>
+        <div style="color:var(--muted);text-align:center;max-width:220px;">
+          想增加更多情侣？把名单丢过来，我直接补到这页，实时更新、风格一致。
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn" onclick="alert('把情侣名单直接发到聊天框，我会继续补上页面')">补名</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- modal template -->
+    <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target===this) closeModal();">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h2 id="modalTitle">详细档案</h2>
+          <button class="close" onclick="closeModal()">关闭 ✕</button>
+        </div>
+        <div id="modalBody">
+          <!-- dynamic content -->
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+          <button class="btn" onclick="closeModal()">好 的</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="small">* 本页为 HOUDA+ 社区编辑整理（非官方声明）。如需更改/下架条目，请联系页面维护者。</div>
+    </footer>
+  </div>
+
+<script>
+  const DATA = {
+    c1: {
+      title: '王宇煊 × 陈贤',
+      status: '已分手',
+      ribbon: '已分手',
+      summary: '从热闹到冰点走得快。两人的互动曾被认为“很配”，但最终以干脆分手收场——社区也停止了为他们捏把汗。',
+      details: [
+        '历史甜度：🌙🌙🌙✨✨',
+        '分手口径：社区与公开动态汇总，双方已无互动迹象。',
+        '备注：条目为社区舆论整理，不代表本人声明。'
+      ],
+      tags: ['历史档案','分手']
+    },
+    c2: {
+      title: '王宇煊 × 陈子瑞',
+      status: '持续发展中',
+      ribbon: '进行中',
+      summary: '互动节奏稳、出镜不高调但互相出现在重要场合。社区评价：天然官配、默契稳定。',
+      details: [
+        '甜度：🌙🌙🌙🌙✨',
+        '互动特点：低调但稳定的互相关注与出席。',
+        '备注：如有官方声明将第一时间更新。'
+      ],
+      tags: ['主线CP','低调']
+    },
+    c3: {
+      title: '陈子瑞 × 史浩然',
+      status: '疑似',
+      ribbon: '疑似',
+      summary: '同框与互动频率让人怀疑，但双方从未正面官宣。属于“有故事但不表态”的类型。',
+      details: [
+        '甜度（猜测）：🌙🌙🌙✨✨',
+        '社区线索：多次氛围相合、互动私信迹象（未确认）。',
+        '备注：高度“猜测性”条目，慎看。'
+      ],
+      tags: ['疑似','暗线']
+    }
+  };
+
+  function openModal(id){
+    const data = DATA[id];
+    if(!data) return;
+    const mb = document.getElementById('modalBody');
+    mb.innerHTML = '';
+    const h = document.createElement('h3');
+    h.style.margin='8px 0';
+    h.textContent = data.title + ' · ' + data.status;
+    mb.appendChild(h);
+
+    const p = document.createElement('p');
+    p.textContent = data.summary;
+    mb.appendChild(p);
+
+    const ul = document.createElement('ul');
+    ul.style.margin='10px 0 0';
+    ul.style.color='var(--muted)';
+    data.details.forEach(it=>{
+      const li = document.createElement('li');
+      li.style.margin='6px 0';
+      li.textContent = it;
+      ul.appendChild(li);
+    });
+    mb.appendChild(ul);
+
+    // tags
+    const tagWrap = document.createElement('div');
+    tagWrap.className = 'meta-tags';
+    data.tags.forEach(t=>{
+      const span = document.createElement('span');
+      span.className='tag';
+      span.textContent = t;
+      tagWrap.appendChild(span);
+    });
+    mb.appendChild(tagWrap);
+
+    const backdrop = document.getElementById('modalBackdrop');
+    backdrop.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.getElementById('modalTitle').textContent = data.title;
+  }
+
+  function closeModal(){
+    const backdrop = document.getElementById('modalBackdrop');
+    backdrop.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // optional: keyboard close
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeModal();
+  });
+
+  // Accessibility tiny: focus trap naive
+  document.getElementById('modalBackdrop').addEventListener('keydown', (e)=>{
+    if(e.key === 'Tab') e.stopPropagation();
+  });
+</script>
+</body>
+</html>
