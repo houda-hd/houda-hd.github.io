@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOUDA+ 抽奖系统</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #result {
+      font-size: 1.5em;
+      color: green;
+    }
+    .hidden {
+      display: none;
+    }
+    #drawButton:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>HOUDA+ 抽奖系统</h1>
+  <p>奖品为 **1989原版CD**，中奖概率为 **2%**。</p>
+  
+  <button id="drawButton" onclick="drawLottery()">抽奖</button>
+  <div id="result" class="hidden"></div>
+
+  <script>
+    const githubApiUrl = "https://api.github.com/repos/houda-hd/houda-hd.github.io/contents/status.json"; // 使用你的仓库路径
+    const token = "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";  // 你生成的 GitHub Token
+
+    const drawButton = document.getElementById('drawButton');
+    const resultDiv = document.getElementById('result');
+
+    // 检查是否已经有人中奖
+    async function checkIfWon() {
+      const response = await fetch(githubApiUrl, {
+        method: "GET",
+        headers: {
+          "Authorization": `token ${token}`,
+          "Accept": "application/vnd.github.v3.raw"
+        }
+      });
+      const data = await response.json();
+      const status = JSON.parse(atob(data.content));  // 解码base64内容
+
+      if (status.hasWon) {
+        drawButton.disabled = true;
+        drawButton.textContent = "抽奖已结束";
+      }
+    }
+
+    // 更新中奖状态
+    async function updateLotteryStatus() {
+      const content = JSON.stringify({ hasWon: true });
+      const encodedContent = btoa(content);  // Base64 编码
+
+      const response = await fetch(githubApiUrl, {
+        method: "PUT",
+        headers: {
+          "Authorization": `token ${token}`,
+          "Accept": "application/vnd.github.v3+json"
+        },
+        body: JSON.stringify({
+          message: "Update lottery status",
+          content: encodedContent,
+          sha: "YOUR_FILE_SHA"  // 需要提供当前文件的 SHA 值
+        })
+      });
+    }
+
+    // 抽奖逻辑
+    function drawLottery() {
+      // 生成一个 0 到 100 的随机数，判断是否中奖
+      const randomChance = Math.random() * 100;
+      const prize = "1989原版 CD";
+
+      if (randomChance <= 2) {
+        resultDiv.textContent = `恭喜！你赢得了奖品：${prize}`;
+        updateLotteryStatus();  // 更新中奖状态
+      } else {
+        resultDiv.textContent = "很遗憾，未中奖。";
+      }
+
+      resultDiv.classList.remove('hidden');
+      drawButton.classList.add('hidden'); // 隐藏抽奖按钮
+    }
+
+    // 初始状态检查
+    checkIfWon();
+  </script>
+</body>
+</html>
