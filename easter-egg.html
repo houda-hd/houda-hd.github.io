@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOUDA+ | Christmas Easter Egg</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#111111',
+            secondary: '#555555',
+            accent: '#e0e0e0',
+            christmasRed: '#9b1c1c',
+            christmasGreen: '#14532d'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <link rel="icon" href="assets/HOUDA_squre.jpeg" />
+
+  <style>
+    /* 雪花 */
+    .snow {
+      position: fixed;
+      top: -10px;
+      color: #e5e7eb;
+      font-size: 12px;
+      animation: fall linear infinite;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-[#fafafa] text-primary font-sans antialiased overflow-hidden">
+
+  <!-- 雪花容器 -->
+  <div id="snow-container"></div>
+
+  <main class="min-h-screen flex items-center justify-center px-4 relative z-10">
+    <div class="max-w-xl w-full bg-white rounded-xl shadow-lg p-8 md:p-10 text-center">
+
+      <!-- 标题 -->
+      <h1 class="text-2xl md:text-3xl font-bold mb-2">
+        🎄 HOUDA+ 圣诞彩蛋
+      </h1>
+      <p class="text-secondary text-sm mb-8">
+        Christmas · Easter Egg
+      </p>
+
+      <!-- 倒计时 -->
+      <div class="mb-10">
+        <p class="text-sm text-secondary mb-3">
+          距离 2025 跨年还有
+        </p>
+        <div class="flex justify-center gap-4 text-center">
+          <div>
+            <div id="days" class="text-3xl font-bold text-christmasRed">0</div>
+            <div class="text-xs text-secondary">天</div>
+          </div>
+          <div>
+            <div id="hours" class="text-3xl font-bold text-christmasGreen">0</div>
+            <div class="text-xs text-secondary">时</div>
+          </div>
+          <div>
+            <div id="minutes" class="text-3xl font-bold text-christmasRed">0</div>
+            <div class="text-xs text-secondary">分</div>
+          </div>
+          <div>
+            <div id="seconds" class="text-3xl font-bold text-christmasGreen">0</div>
+            <div class="text-xs text-secondary">秒</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 文案 -->
+      <div class="space-y-5 text-left text-secondary leading-relaxed text-base">
+
+        <p>
+          📅 <span class="font-medium text-primary">2025 年 12 月 31 日</span>
+        </p>
+
+        <p>
+          📍 长沙 · 霉粉联盟  
+          <br />
+          <span class="text-sm text-gray-500">
+            跨年观影活动
+          </span>
+        </p>
+
+        <p>
+          若当日 <span class="font-medium text-primary">HOUDA+ 网站运营者本人到场</span>，
+          将在现场面向 <span class="font-medium text-primary">HOUDA+ 成员</span>
+          进行一次特别抽选。
+        </p>
+
+        <p>
+          🎁 <span class="font-medium text-primary">奖品</span>：
+          <br />
+          Taylor Swift《1989》原版 CD
+        </p>
+
+        <p class="text-sm text-gray-500">
+          · 奖品仅此一份  
+          <br />
+          · 具体规则以当天现场说明为准  
+          <br />
+          · 本页面不构成官方公开公告
+        </p>
+
+      </div>
+
+      <!-- 底部 -->
+      <div class="mt-10 pt-6 border-t border-accent text-xs text-gray-500">
+        HOUDA+ · 2025  
+        <br />
+        This page is intentionally hidden.
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 倒计时逻辑 -->
+  <script>
+    const target = new Date('2025-12-31T23:59:59').getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = target - now;
+
+      if (diff <= 0) return;
+
+      document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+      document.getElementById('hours').innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      document.getElementById('minutes').innerText = Math.floor((diff / (1000 * 60)) % 60);
+      document.getElementById('seconds').innerText = Math.floor((diff / 1000) % 60);
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+
+  <!-- 生成雪花 -->
+  <script>
+    const snowContainer = document.getElementById('snow-container');
+    for (let i = 0; i < 40; i++) {
+      const snow = document.createElement('div');
+      snow.className = 'snow';
+      snow.innerText = '❄';
+      snow.style.left = Math.random() * 100 + 'vw';
+      snow.style.animationDuration = 5 + Math.random() * 10 + 's';
+      snow.style.opacity = Math.random();
+      snowContainer.appendChild(snow);
+    }
+  </script>
+
+</body>
+</html>
