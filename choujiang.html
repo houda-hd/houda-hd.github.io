@@ -25,112 +25,71 @@
   </div>
 
 <script>
-  const owner = 'houda-hd';          
-  const repo = 'houda-hd.github.io'; 
-  const path = 'status.json';         
-  const token = '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'; // 替换为你的PAT
+const drawButton = document.getElementById('drawButton');
+const resultDiv = document.getElementById('result');
 
-  const drawButton = document.getElementById('drawButton');
-  const resultDiv = document.getElementById('result');
+let isDrawing = false;
+const owner = 'houda-hd';
+const repo = 'houda-hd.github.io';
 
-  let isDrawing = false; // 控制抽奖过程
-
-  // 获取最新状态和SHA
-  async function getLotteryStatus() {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`);
-    if (!res.ok) {
-      const errorData = await res.json();
-      console.error("获取状态失败：", errorData);
-      throw new Error(`获取状态失败：${res.status} ${res.statusText}`);
+async function checkStatus() {
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/main/status.json`);
+    if (!res.ok) throw new Error("无法获取状态");
+    const json = await res.json();
+    if (json.hasWon) {
+      drawButton.disabled = true;
+      resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
+    } else {
+      drawButton.disabled = false;
     }
-    const data = await res.json();
-    const content = atob(data.content);
-    const json = JSON.parse(content);
-    return { hasWon: json.hasWon, sha: data.sha };
+  } catch (err) {
+    console.error(err);
+    resultDiv.textContent = "加载状态出错 ⚠️";
   }
+}
 
-  // 更新状态
-  async function updateLotteryStatus(sha) {
-    const body = {
-      message: "Update lottery status",
-      content: btoa(JSON.stringify({ hasWon: true })),
-      sha: sha
-    };
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-      method: 'PUT',
+// 前端模拟抽奖点击，触发 workflow
+async function drawLottery() {
+  isDrawing = true;
+  drawButton.disabled = true;
+  resultDiv.textContent = "正在抽奖，请稍候...";
+
+  try {
+    await checkStatus();
+    if (drawButton.disabled) {
+      isDrawing = false;
+      return;
+    }
+
+    resultDiv.textContent = "抽奖请求已发送，结果由后台 Actions 判定 🎁";
+
+    // 触发 Actions workflow
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
+      method: 'POST',
       headers: {
-        'Authorization': `token ${token}`,
-        'Content-Type': 'application/json'
+        'Accept': 'application/vnd.github.v3+json',
+        'Authorization': 'token YOUR_TRIGGER_PAT' // 仅用于触发 workflow，不写入仓库
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ event_type: 'lottery-trigger' })
     });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      console.error("更新状态失败：", errorData);
-      throw new Error("更新状态失败，请检查PAT和文件路径");
-    }
-
-    const data = await res.json();
-    console.log("更新成功，新的SHA：", data.content.sha);
+  } catch (err) {
+    console.error(err);
+    resultDiv.textContent = "抽奖出错，请检查控制台 ⚠️";
+    drawButton.disabled = false;
+  } finally {
+    isDrawing = false;
   }
+}
 
-  // 抽奖逻辑
-  async function drawLottery() {
-    isDrawing = true;
-    drawButton.disabled = true;
-    resultDiv.textContent = "正在抽奖，请稍候...";
+drawButton.addEventListener('click', drawLottery);
 
-    try {
-      const { hasWon, sha } = await getLotteryStatus();
-
-      if (hasWon) {
-        resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
-        isDrawing = false;
-        return;
-      }
-
-      const randomChance = Math.random() * 100;
-      if (randomChance <= 2) {
-        resultDiv.innerHTML = "🎉 恭喜！你赢得了奖品：1989原版 CD 🎁";
-        await updateLotteryStatus(sha);
-      } else {
-        resultDiv.textContent = "很遗憾，未中奖 😢";
-        drawButton.disabled = false;
-      }
-
-    } catch (err) {
-      console.error(err);
-      resultDiv.textContent = "抽奖出错，请检查控制台 ⚠️";
-      drawButton.disabled = false;
-    } finally {
-      isDrawing = false;
-    }
-  }
-
-  drawButton.addEventListener('click', drawLottery);
-
-  // 页面加载时检查状态
-  async function checkStatus() {
-    try {
-      const { hasWon } = await getLotteryStatus();
-      if (hasWon) {
-        drawButton.disabled = true;
-        resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
-      }
-    } catch (err) {
-      console.error(err);
-      resultDiv.textContent = "加载状态出错，请刷新页面 ⚠️";
-    }
-  }
-
-  // 初始化
-  checkStatus();
-
-  // 自动轮询，每5秒检查一次状态（多人共享）
-  setInterval(() => {
-    if (!isDrawing) checkStatus();
-  }, 5000);
+// 自动轮询状态
+checkStatus();
+setInterval(() => {
+  if (!isDrawing) checkStatus();
+}, 5000);
 
 </script>
 </body>
