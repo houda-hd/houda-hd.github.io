@@ -1,0 +1,49 @@
+name: Lottery Draw
+
+on:
+  repository_dispatch:
+    types: [lottery-trigger]
+
+jobs:
+  lottery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 获取当前状态
+        id: status
+        run: |
+          STATUS=$(cat status.json)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+      - name: 检查是否已中奖
+        run: |
+          if echo "${{ steps.status.outputs.status }}" | grep '"hasWon": true'; then
+            echo "已有人中奖，退出"
+            exit 0
+          fi
+
+      - name: 抽奖判断
+        id: lottery
+        run: |
+          PROB=$(awk -v seed=$RANDOM 'BEGIN {srand(seed); print rand()*100}')
+          echo "概率值: $PROB"
+          if (( $(echo "$PROB <= 2" | bc -l) )); then
+            echo "中奖"
+            echo "true" > won.txt
+          else
+            echo "未中奖"
+            echo "false" > won.txt
+          fi
+
+      - name: 更新状态
+        if: success() && steps.lottery.outputs.won == 'true'
+        run: |
+          echo '{"hasWon": true}' > status.json
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add status.json
+          git commit -m "Lottery won"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
