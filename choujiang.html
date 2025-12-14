@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOUDA+ 抽奖系统</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    #result { font-size: 1.5em; color: green; }
+    #drawButton:disabled { background-color: gray; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<h1>HOUDA+ 抽奖系统</h1>
+<p>奖品：1989原版CD，中奖概率 2%</p>
+
+<button id="drawButton" onclick="drawLottery()">抽奖</button>
+<div id="result"></div>
+
+<script>
+// 检查是否有人中奖
+function getLotteryStatus() {
+  return localStorage.getItem('hasWon') === 'true';  // 判断是否已经有用户中奖
+}
+
+// 更新中奖状态
+function updateLotteryStatus() {
+  localStorage.setItem('hasWon', 'true');  // 标记已中奖
+}
+
+// 抽奖逻辑
+function drawLottery() {
+  const drawButton = document.getElementById('drawButton');
+  const resultDiv = document.getElementById('result');
+
+  // 禁用按钮，避免重复点击
+  drawButton.disabled = true;
+  resultDiv.textContent = "正在抽奖，请稍候...";
+
+  // 如果已经有用户中奖，直接显示提示
+  if (getLotteryStatus()) {
+    resultDiv.textContent = "抽奖已结束，奖品已被抽出";
+    return;
+  }
+
+  // 抽奖概率 2%
+  const randomChance = Math.random() * 100;
+  if (randomChance <= 2) {
+    resultDiv.textContent = "恭喜！你赢得了奖品：1989原版 CD 🎉";
+    updateLotteryStatus();  // 更新中奖状态
+  } else {
+    resultDiv.textContent = "很遗憾，未中奖";
+  }
+}
+
+// 页面加载时检查状态
+function init() {
+  // 检查是否已经有人中奖，如果中奖则禁用按钮
+  if (getLotteryStatus()) {
+    document.getElementById('drawButton').disabled = true;  // 禁用按钮
+    document.getElementById('result').textContent = "抽奖已结束，奖品已被抽出";
+  }
+}
+
+// 页面初始化时检查状态
+init();
+</script>
+
+</body>
+</html>
