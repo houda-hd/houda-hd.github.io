@@ -25,50 +25,84 @@
   </div>
 
 <script>
-  // 检查是否有人中奖
-  function getLotteryStatus() {
-    return localStorage.getItem('hasWon') === 'true';
+  const owner = 'houda-hd';          // 仓库用户名
+  const repo = 'houda-hd.github.io'; // 仓库名
+  const path = 'status.json';         // 状态文件路径
+  const token = 'YOUR_PERSONAL_ACCESS_TOKEN'; // GitHub PAT（请替换为你的PAT）
+
+  const drawButton = document.getElementById('drawButton');
+  const resultDiv = document.getElementById('result');
+
+  // 获取最新状态
+  async function getLotteryStatus() {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`);
+    const data = await res.json();
+    const content = atob(data.content);
+    const json = JSON.parse(content);
+    return { hasWon: json.hasWon, sha: data.sha };
   }
 
-  // 更新中奖状态
-  function updateLotteryStatus() {
-    localStorage.setItem('hasWon', 'true');
+  // 更新状态
+  async function updateLotteryStatus(sha) {
+    const body = {
+      message: "Update lottery status",
+      content: btoa(JSON.stringify({ hasWon: true })),
+      sha: sha
+    };
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
   }
 
   // 抽奖逻辑
-  function drawLottery() {
-    const drawButton = document.getElementById('drawButton');
-    const resultDiv = document.getElementById('result');
-
+  async function drawLottery() {
     drawButton.disabled = true;
     resultDiv.textContent = "正在抽奖，请稍候...";
 
-    if (getLotteryStatus()) {
-      resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
-      return;
-    }
+    try {
+      const { hasWon, sha } = await getLotteryStatus();
 
-    const randomChance = Math.random() * 100;
-    if (randomChance <= 2) {
-      resultDiv.innerHTML = "🎉 恭喜！你赢得了奖品：1989原版 CD 🎁";
-      updateLotteryStatus();
-    } else {
-      resultDiv.textContent = "很遗憾，未中奖 😢";
+      if (hasWon) {
+        resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
+        return;
+      }
+
+      const randomChance = Math.random() * 100;
+      if (randomChance <= 2) {
+        resultDiv.innerHTML = "🎉 恭喜！你赢得了奖品：1989原版 CD 🎁";
+        await updateLotteryStatus(sha);
+      } else {
+        resultDiv.textContent = "很遗憾，未中奖 😢";
+      }
+
+    } catch (err) {
+      console.error(err);
+      resultDiv.textContent = "抽奖出错，请刷新页面重试 ⚠️";
+      drawButton.disabled = false;
     }
   }
+
+  drawButton.addEventListener('click', drawLottery);
 
   // 页面加载检查状态
-  function init() {
-    const drawButton = document.getElementById('drawButton');
-    const resultDiv = document.getElementById('result');
-    if (getLotteryStatus()) {
-      drawButton.disabled = true;
-      resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
+  (async function init() {
+    try {
+      const { hasWon } = await getLotteryStatus();
+      if (hasWon) {
+        drawButton.disabled = true;
+        resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
+      }
+    } catch (err) {
+      console.error(err);
+      resultDiv.textContent = "加载状态出错，请刷新页面 ⚠️";
     }
-  }
+  })();
 
-  init();
 </script>
-
 </body>
 </html>
