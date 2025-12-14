@@ -25,17 +25,24 @@
   </div>
 
 <script>
-  const owner = 'houda-hd';          // 仓库用户名
-  const repo = 'houda-hd.github.io'; // 仓库名
-  const path = 'status.json';         // 状态文件路径
-  const token = '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'; // GitHub PAT（请替换为你的PAT）
+  const owner = 'houda-hd';          
+  const repo = 'houda-hd.github.io'; 
+  const path = 'status.json';         
+  const token = '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'; // 替换为你的PAT
 
   const drawButton = document.getElementById('drawButton');
   const resultDiv = document.getElementById('result');
 
-  // 获取最新状态
+  let isDrawing = false; // 控制抽奖过程
+
+  // 获取最新状态和SHA
   async function getLotteryStatus() {
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`);
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("获取状态失败：", errorData);
+      throw new Error(`获取状态失败：${res.status} ${res.statusText}`);
+    }
     const data = await res.json();
     const content = atob(data.content);
     const json = JSON.parse(content);
@@ -49,7 +56,7 @@
       content: btoa(JSON.stringify({ hasWon: true })),
       sha: sha
     };
-    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
       method: 'PUT',
       headers: {
         'Authorization': `token ${token}`,
@@ -57,10 +64,20 @@
       },
       body: JSON.stringify(body)
     });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("更新状态失败：", errorData);
+      throw new Error("更新状态失败，请检查PAT和文件路径");
+    }
+
+    const data = await res.json();
+    console.log("更新成功，新的SHA：", data.content.sha);
   }
 
   // 抽奖逻辑
   async function drawLottery() {
+    isDrawing = true;
     drawButton.disabled = true;
     resultDiv.textContent = "正在抽奖，请稍候...";
 
@@ -69,6 +86,7 @@
 
       if (hasWon) {
         resultDiv.textContent = "抽奖已结束，奖品已被抽出 ❌";
+        isDrawing = false;
         return;
       }
 
@@ -78,19 +96,22 @@
         await updateLotteryStatus(sha);
       } else {
         resultDiv.textContent = "很遗憾，未中奖 😢";
+        drawButton.disabled = false;
       }
 
     } catch (err) {
       console.error(err);
-      resultDiv.textContent = "抽奖出错，请刷新页面重试 ⚠️";
+      resultDiv.textContent = "抽奖出错，请检查控制台 ⚠️";
       drawButton.disabled = false;
+    } finally {
+      isDrawing = false;
     }
   }
 
   drawButton.addEventListener('click', drawLottery);
 
-  // 页面加载检查状态
-  (async function init() {
+  // 页面加载时检查状态
+  async function checkStatus() {
     try {
       const { hasWon } = await getLotteryStatus();
       if (hasWon) {
@@ -101,7 +122,15 @@
       console.error(err);
       resultDiv.textContent = "加载状态出错，请刷新页面 ⚠️";
     }
-  })();
+  }
+
+  // 初始化
+  checkStatus();
+
+  // 自动轮询，每5秒检查一次状态（多人共享）
+  setInterval(() => {
+    if (!isDrawing) checkStatus();
+  }, 5000);
 
 </script>
 </body>
