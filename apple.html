@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>HOUDA+ | 官方网站</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        apple: {
+                            bg: '#f5f5f7',       /* Apple 官网浅灰背景 */
+                            text: '#1d1d1f',     /* Apple 标准黑 */
+                            gray: '#86868b',     /* 辅助说明灰 */
+                            blue: '#0066cc',     /* Apple 链接蓝 */
+                            blueHover: '#004499',
+                            card: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'San Francisco', 'Helvetica Neue', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'apple': '2px 4px 12px rgba(0,0,0,0.08)',
+                        'dock': '0 10px 20px rgba(0,0,0,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="assets/HOUDA_squre.jpeg" rel="icon" />
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-balance { text-wrap: balance; }
+            .glass {
+                @apply bg-white/70 backdrop-blur-xl border-b border-white/20;
+            }
+            .apple-card {
+                @apply bg-white rounded-[24px] shadow-sm hover:shadow-apple transition-all duration-500 ease-out hover:scale-[1.01];
+            }
+            .apple-btn {
+                @apply bg-[#0071e3] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#0077ed] transition-colors duration-300;
+            }
+            .apple-btn-outline {
+                @apply text-[#0071e3] border border-[#0071e3] px-5 py-2 rounded-full text-sm font-medium hover:bg-[#0071e3] hover:text-white transition-colors duration-300;
+            }
+        }
+    </style>
+
+    <style>
+        body {
+            background-color: #f5f5f7; /* Apple 背景色 */
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更清晰 */
+        }
+
+        /* 动画：淡入上浮 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Dock 栏 macOS 风格 */
+        .dock-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            pointer-events: none; /* 让容器不阻挡点击 */
+        }
+        
+        .dock {
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 24px;
+            padding: 8px 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .dock-item {
+            width: 48px;
+            height: 48px;
+            margin: 0 4px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 20px;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+        }
+        
+        .dock-item:hover {
+            background: rgba(255,255,255,0.5);
+            transform: translateY(-8px) scale(1.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dock-tooltip {
+            position: absolute;
+            top: -35px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .dock-item:hover .dock-tooltip { opacity: 1; }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            pointer-events: auto;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        .back-to-top.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 移动端菜单 */
+        #mobileMenu {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: top;
+            clip-path: inset(0 0 100% 0);
+        }
+        #mobileMenu.open {
+            clip-path: inset(0 0 0 0);
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-apple-blue selection:text-white">
+
+    <header class="fixed w-full top-0 z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-[980px] mx-auto px-4 h-12 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2 group">
+                <div class="w-6 h-6 rounded bg-black flex items-center justify-center overflow-hidden">
+                     <img src="assets/HOUDA_squre.jpeg" alt="Logo" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <span class="font-semibold text-sm tracking-tight text-apple-text">HOUDA+</span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8 text-[12px] font-normal text-apple-text/80">
+                <a href="https://hd13{$rthSuffix}/notice.html" target="_blank" class="hover:text-apple-blue transition-colors">通知</a>
+                <a href="#about" class="hover:text-apple-blue transition-colors">关于</a>
+                <a href="#history" class="hover:text-apple-blue transition-colors">历程</a>
+                <a href="#activities" class="hover:text-apple-blue transition-colors">活动</a>
+                <a href="#landmarks" class="hover:text-apple-blue transition-colors">地标</a>
+                <a href="#contact" class="hover:text-apple-blue transition-colors">关注</a>
+            </nav>
+
+            <button id="menuBtn" class="md:hidden text-apple-text p-2">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="md:hidden absolute top-12 left-0 w-full bg-white/95 backdrop-blur-xl border-b border-gray-200">
+            <div class="px-6 py-6 flex flex-col gap-4 text-sm font-medium">
+                <a href="#about" class="py-2 border-b border-gray-100">关于我们</a>
+                <a href="#history" class="py-2 border-b border-gray-100">发展历程</a>
+                <a href="#activities" class="py-2 border-b border-gray-100">活动回顾</a>
+                <a href="#contact" class="py-2 text-apple-blue">关注我们</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="pt-32 pb-20 md:pt-40 md:pb-32 bg-white text-center px-4 overflow-hidden relative">
+        <div class="max-w-4xl mx-auto z-10 relative reveal active">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-apple-text mb-4">
+                HOUDA+
+            </h1>
+            <p class="text-2xl md:text-3xl font-medium text-apple-text mb-6">
+                Simpler. Bolder. More HOUDA.
+            </p>
+            <p class="text-lg text-apple-gray max-w-xl mx-auto mb-10 text-balance leading-relaxed">
+                侯明昊碗慧通讯录互吃大学。<br>
+                长沙霉粉联盟六群分支，一个充满活力的特色粉丝社群。
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#about" class="bg-[#0071e3] text-white px-6 py-3 rounded-full text-[17px] hover:bg-[#0077ed] transition-colors min-w-[120px]">
+                    了解更多
+                </a>
+                <a href="#contact" class="text-[#0071e3] hover:underline flex items-center text-[17px]">
+                    关注我们 <i class="fa-solid fa-chevron-right text-xs ml-1 mt-1"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="mt-16 md:mt-24 max-w-5xl mx-auto reveal">
+            <div class="relative rounded-[30px] overflow-hidden shadow-2xl mx-4 md:mx-0 bg-gray-100 aspect-video md:aspect-[21/9]">
+                 <img src="assets/HOUDA_squre.jpeg" alt="Hero" class="w-full h-full object-cover hover:scale-105 transition-transform duration-[2s]" />
+                 <div class="absolute bottom-8 left-8 text-white z-10 hidden md:block">
+                     <p class="text-sm font-semibold uppercase tracking-wider opacity-80">Community</p>
+                     <p class="text-2xl font-bold">因热爱而聚</p>
+                 </div>
+                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 md:py-28 bg-apple-bg px-4">
+        <div class="max-w-[980px] mx-auto">
+            <div class="mb-12 text-center reveal">
+                <h2 class="text-4xl md:text-5xl font-bold text-apple-text mb-4">关于社群</h2>
+                <p class="text-lg text-apple-gray">从线上聊到线下聚，我们的故事由此开始。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 apple-card p-8 md:p-10 flex flex-col justify-between min-h-[300px] reveal">
+                    <div>
+                        <div class="text-apple-gray font-semibold uppercase text-xs tracking-wider mb-2">ORIGIN</div>
+                        <h3 class="text-3xl font-bold mb-4">源于热爱</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            "HOUDA+"全称"侯明昊碗慧通讯录互吃大学"，源于长沙霉粉联盟六群。
+                            这里的成员以大学生为主，因共同喜爱的明星和独特的社群文化而紧密相连。
+                        </p>
+                    </div>
+                    <div class="mt-8 flex gap-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800"><i class="fa fa-map-marker mr-1"></i> 长沙</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800"><i class="fa fa-users mr-1"></i> 大学生</span>
+                    </div>
+                </div>
+
+                <div class="apple-card overflow-hidden relative min-h-[300px] group reveal">
+                     <img src="https://p3-search.byteimg.com/obj/labis/89b4f074691e9b643ffcf3e71f02779d" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Team" />
+                     <div class="absolute bottom-0 w-full p-6 bg-gradient-to-t from-black/60 to-transparent">
+                         <p class="text-white font-bold text-xl">活跃社群</p>
+                         <p class="text-white/80 text-sm">Offline Activities</p>
+                     </div>
+                </div>
+
+                <div class="apple-card p-8 flex flex-col items-center justify-center text-center reveal">
+                    <i class="fa fa-heart text-red-500 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold">情感联结</h3>
+                    <p class="text-sm text-gray-500 mt-2">打卡、聚会、应援</p>
+                </div>
+
+                <div class="md:col-span-2 apple-card p-8 flex items-center justify-between reveal">
+                    <div>
+                         <h3 class="text-2xl font-bold">了解我们的发展历程</h3>
+                         <p class="text-gray-500 text-sm mt-1">从2024年春到焕新启航</p>
+                    </div>
+                    <a href="#history" class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-gray-800 transition-colors">
+                        <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="history" class="py-20 bg-white px-4">
+        <div class="max-w-3xl mx-auto">
+             <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 reveal">重要时刻</h2>
+             
+             <div class="relative border-l-2 border-gray-100 ml-4 md:ml-0 space-y-12">
+                 <div class="relative pl-8 md:pl-12 reveal">
+                     <div class="absolute -left-[9px] top-1 w-5 h-5 rounded-full bg-white border-4 border-apple-blue"></div>
+                     <span class="text-sm font-mono text-apple-blue font-bold tracking-wide">2024 SPRING</span>
+                     <h3 class="text-2xl font-bold mt-1 mb-2">在联盟六群活跃</h3>
+                     <p class="text-gray-600">侯大的成员开始在联盟六群活跃，发生了"杨晟AirPods事件"等趣事。</p>
+                 </div>
+                 
+                 <div class="relative pl-8 md:pl-12 reveal">
+                     <div class="absolute -left-[9px] top-1 w-5 h-5 rounded-full bg-white border-4 border-gray-300"></div>
+                     <span class="text-sm font-mono text-gray-500 font-bold tracking-wide">2024 APRIL</span>
+                     <h3 class="text-2xl font-bold mt-1 mb-2">侯大正式创立</h3>
+                     <p class="text-gray-600">4月22日，因新群规颁布，谢祥泽联系牛继哲与侯婉慧正式创立"侯大"。</p>
+                 </div>
+
+                 <div class="relative pl-8 md:pl-12 reveal">
+                     <div class="absolute -left-[9px] top-1 w-5 h-5 rounded-full bg-white border-4 border-gray-300"></div>
+                     <span class="text-sm font-mono text-gray-500 font-bold tracking-wide">2024 SEP</span>
+                     <h3 class="text-2xl font-bold mt-1 mb-2">社群规模扩大</h3>
+                     <p class="text-gray-600">多名成员进入联盟金卡客户群体，浣莎澜为首的成员扩充了社群力量。</p>
+                 </div>
+
+                 <div class="relative pl-8 md:pl-12 reveal">
+                     <div class="absolute -left-[9px] top-1 w-5 h-5 rounded-full bg-white border-4 border-black"></div>
+                     <span class="text-sm font-mono text-black font-bold tracking-wide">2025 OCT</span>
+                     <h3 class="text-2xl font-bold mt-1 mb-2">HOUDA+ 焕新</h3>
+                     <p class="text-gray-600">正式启用新视觉以及新名称。</p>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+    <section id="activities" class="py-20 bg-apple-bg px-4">
+        <div class="max-w-[980px] mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 reveal">精彩活动 & 地标</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="apple-card overflow-hidden group reveal">
+                    <div class="h-48 overflow-hidden">
+                        <img src="assets/activites/none.png" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="518">
+                    </div>
+                    <div class="p-6">
+                        <div class="text-[10px] font-bold text-apple-blue uppercase mb-1">特色活动</div>
+                        <h4 class="text-lg font-bold">518 创群纪念</h4>
+                        <p class="text-sm text-gray-500 mt-2 line-clamp-2">欢聚一堂，共同庆祝创群纪念日。</p>
+                    </div>
+                </div>
+                
+                <div class="apple-card overflow-hidden group reveal">
+                    <div class="h-48 overflow-hidden">
+                        <img src="assets/activites/h.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="地铁站">
+                    </div>
+                    <div class="p-6">
+                        <div class="text-[10px] font-bold text-purple-600 uppercase mb-1">精神地标</div>
+                        <h4 class="text-lg font-bold">侯家塘地铁站</h4>
+                        <p class="text-sm text-gray-500 mt-2 line-clamp-2">本命地铁站，打卡圣地，身份认同。</p>
+                    </div>
+                </div>
+
+                <div class="apple-card overflow-hidden group reveal">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="药房">
+                    </div>
+                    <div class="p-6">
+                        <div class="text-[10px] font-bold text-green-600 uppercase mb-1">日常打卡</div>
+                        <h4 class="text-lg font-bold">老百姓大药房</h4>
+                        <p class="text-sm text-gray-500 mt-2 line-clamp-2">彭家巷分店，独特的社群记忆点。</p>
+                    </div>
+                </div>
+                
+                <div class="apple-card p-6 flex flex-col justify-center bg-gray-900 text-white reveal">
+                    <h4 class="text-xl font-bold mb-2">夏日歌会</h4>
+                    <p class="text-gray-400 text-sm">联盟夏季盛典，音乐与狂欢。</p>
+                </div>
+                 <div class="apple-card p-6 flex flex-col justify-center reveal">
+                    <h4 class="text-xl font-bold mb-2">盛香亭热卤</h4>
+                    <p class="text-gray-500 text-sm">社群聚餐首选圣地，转转火锅。</p>
+                </div>
+                 <div class="apple-card p-6 flex flex-col justify-center reveal">
+                    <h4 class="text-xl font-bold mb-2">跨年观影</h4>
+                    <p class="text-gray-500 text-sm">时代巡演大电影，共迎新年。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-white px-4">
+        <div class="max-w-2xl mx-auto text-center reveal">
+            <h2 class="text-4xl font-bold mb-6">保持联络</h2>
+            <p class="text-lg text-gray-500 mb-10">关注我们的官方账号，获取最新动态。</p>
+            
+            <div class="flex justify-center gap-8 mb-12">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center shadow-sm">
+                        <i class="fab fa-weixin text-3xl text-[#07c160]"></i>
+                    </div>
+                    <span class="text-xs font-medium text-gray-500">公众号</span>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center shadow-sm">
+                         <i class="fa fa-mobile text-3xl text-blue-500"></i>
+                    </div>
+                    <span class="text-xs font-medium text-gray-500">小程序</span>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-6 rounded-2xl inline-block">
+                <p class="text-xs text-gray-400 mb-2">SCAN QR CODE</p>
+                <img src="assets/gzh.jpeg" class="w-32 h-32 rounded-lg mix-blend-multiply" alt="QR">
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-apple-bg text-[12px] text-gray-500 py-10 border-t border-gray-200 pb-32">
+        <div class="max-w-[980px] mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="text-gray-900 font-semibold mb-2">了解与探索</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="hover:underline">关于 HOUDA+</a></li>
+                        <li><a href="#history" class="hover:underline">发展历程</a></li>
+                        <li><a href="#landmarks" class="hover:underline">特色地标</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-gray-900 font-semibold mb-2">服务</h4>
+                    <ul class="space-y-2">
+                        <li><a href="notice.html" class="hover:underline">官方通知</a></li>
+                        <li><a href="#" class="hover:underline">社群活动</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-gray-900 font-semibold mb-2">联盟</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:underline">长沙霉粉联盟</a></li>
+                        <li><a href="#" class="hover:underline">金卡客户群</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-300 pt-4 flex flex-col md:flex-row justify-between items-center gap-2">
+                <p>Copyright © 2025 HOUDA+. 保留所有权利。</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:underline">隐私政策</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="#" class="hover:underline">使用条款</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="dock-container">
+        <div class="dock">
+            <a href="index.html" class="dock-item">
+                <i class="fa-solid fa-house"></i>
+                <span class="dock-tooltip">首页</span>
+            </a>
+            <a href="notice.html" class="dock-item">
+                <i class="fa-solid fa-bell"></i>
+                <span class="dock-tooltip">通知</span>
+            </a>
+        </div>
+        
+        <div class="back-to-top" id="backToTop">
+            <i class="fa-solid fa-arrow-up text-gray-600"></i>
+        </div>
+    </div>
+
+    <script>
+        // 1. 滚动显现动画 (Intersection Observer)
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 2. 移动端菜单
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        let isMenuOpen = false;
+
+        menuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileMenu.classList.add('open');
+                menuBtn.innerHTML = '<i class="fa fa-times"></i>';
+            } else {
+                mobileMenu.classList.remove('open');
+                menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+            }
+        });
+
+        // 3. 回到顶部 & 导航栏效果
+        const backToTop = document.getElementById('backToTop');
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+            
+            // 导航栏在滚动时增加模糊度
+            if (window.scrollY > 0) {
+                navbar.classList.add('shadow-sm');
+            } else {
+                navbar.classList.remove('shadow-sm');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
