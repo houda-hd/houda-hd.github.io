@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>HOUDA+ - 官方网站</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#111111',
+                        secondary: '#555555',
+                        accent: '#e0e0e0',
+                        dark: '#000000',
+                        light: '#f9f9f9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
+                        'pulse-gentle': 'pulseGentle 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        pulseGentle: {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+                            '50%': { transform: 'scale(1.05)', opacity: '0.8' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '33%': { transform: 'translateY(-10px)' },
+                            '66%': { transform: 'translateY(5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .transition-custom {
+                transition: all 0.3s ease;
+            }
+            .gradient-text {
+                @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+            }
+        }
+    </style>
+    
+    <style>
+        html, body {
+            overflow-x: hidden !important;
+            scroll-behavior: smooth;
+        }
+        
+        /* 视觉焕新动画提示 */
+        .visual-update {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+        
+        .visual-update.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 导航栏样式 */
+        #mobileMenu {
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+        }
+        
+        #mobileMenu.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        
+        #menuBtn i {
+            transition: transform 0.3s ease;
+        }
+        
+        #menuBtn.open i {
+            transform: rotate(90deg);
+        }
+        
+        /* Dock栏核心样式 */
+        .dock-container {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .dock {
+            display: flex;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+            padding: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .dock-item:hover {
+            transform: translateY(-6px) scale(1.1);
+        }
+        
+        .dock-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .dock-label {
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .back-to-top {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(15px);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        body.scrolled .dock-item {
+            width: 50px;
+            height: 50px;
+        }
+        
+        body.scrolled .dock-icon {
+            font-size: 20px;
+        }
+        
+        body.scrolled .dock-label {
+            display: none;
+        }
+        
+        .dock-icon {
+            font-size: 22px !important;
+            line-height: 1 !important;
+            vertical-align: middle !important;
+            display: inline-block !important;
+        }
+        
+        .dock-item i {
+            transition: transform 0.25s ease;
+        }
+        
+        .dock-item:hover i {
+            transform: scale(1.15);
+        }
+        
+        /* 滚动动画 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 导航栏滚动效果 */
+        .navbar-scroll {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+        }
+        
+        /* 卡片悬停效果 */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 渐变背景 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        /* 时间线样式优化 */
+        .timeline-dot {
+            position: relative;
+        }
+        
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #111111;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px #111111;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .timeline-dot::before {
+                left: 32px;
+            }
+        }
+        
+        /* 加载动画 */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #111111;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 图片加载效果 */
+        .image-loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* 按钮点击效果 */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-ripple::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-ripple:active::before {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+    
+    <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
+    <meta content="HOUDA+官网 - 长沙霉粉联盟六群分支，侯明昊碗慧通讯录互吃大学官方站点。" name="description"/>
+    <meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群" name="keywords"/>
+    <meta content="HOUDA+ Official" name="author"/>
+    <meta content="index, follow" name="robots"/>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+</head>
+
+<body class="font-sans bg-light text-dark antialiased overflow-x-hidden">
+    <!-- 🔥 HOUDA+视觉焕新动画提示开始 -->
+    <div class="visual-update" id="visualUpdate">
+        <img alt="HOUDA+新标志" class="w-24 h-24 mb-6 animate-bounce-gentle loading-spinner" src="assets/HOUDA_squre.jpeg"/>
+        <h1 class="text-2xl font-bold text-primary mb-2 animate-fade-in-up">
+            HOUDA+ 焕新登场
+        </h1>
+        <p class="text-secondary animate-fade-in-up" style="animation-delay: 0.2s;">
+            Simpler. Bolder. More HOUDA.
+        </p>
+    </div>
+    <!-- 🔥 HOUDA+视觉焕新动画提示结束 -->
+
+    <!-- 导航栏 -->
+    <header class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/70 backdrop-blur-md shadow-sm" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a class="flex items-center space-x-3 group" href="#">
+                    <div class="w-10 h-10 rounded-md bg-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <img alt="侯大标志" class="w-full h-full object-cover rounded-md" src="assets/HOUDA_squre.jpeg"/>
+                    </div>
+                    <span class="text-2xl font-bold text-primary group-hover:text-secondary transition-colors">
+                        HOUDA+
+                    </span>
+                </a>
+                
+                <!-- 桌面导航 -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a class="text-secondary hover:text-primary transition-custom font-medium group" href="https://hd13{$rthSuffix}/notice.html" target="_blank">
+                        官方通知
+                        <span class="block text-xs text-gray-500 group-hover:text-primary transition-colors">Official Notice</span>
+                    </a>
+                    <a class="text-secondary hover:text-primary transition-custom font-medium group" href="#about">
+                        关于我们
+                        <span class="block text-xs text-gray-500 group-hover:text-primary transition-colors">About Us</span>
+                    </a>
+                    <a class="text-secondary hover:text-primary transition-custom font-medium group" href="#history">
+                        发展历程
+                        <span class="block text-xs text-gray-500 group-hover:text-primary transition-colors">Our Story</span>
+                    </a>
+                    <a class="text-secondary hover:text-primary transition-custom font-medium group" href="#activities">
+                        活动回顾
+                        <span class="block text-xs text-gray-500 group-hover:text-primary transition-colors">Event Highlights</span>
+                    </a>
+                    <a class="text-secondary hover:text-primary transition-custom font-medium group" href="#landmarks">
+                        特色地标
+                        <span class="block text-xs text-gray-500 group-hover:text-primary transition-colors">Signature Landmarks</span>
+                    </a>
+                    <a class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-full transition-custom font-medium btn-ripple" href="#contact">
+                        关注我们
+                        <span class="block text-xs text-gray-300">Stay Connected</span>
+                    </a>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <button class="md:hidden text-dark focus:outline-none p-2 hover:bg-gray-100 rounded-md transition-colors" id="menuBtn">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div class="md:hidden bg-white border-t" id="mobileMenu">
+            <div class="container mx-auto px-4 py-3 space-y-3">
+                <a class="block text-secondary hover:text-primary transition-custom py-2" href="https://hd13{$rthSuffix}/notice.html" target="_blank">
+                    官方通知
+                    <span class="block text-xs text-gray-500">Official Notice</span>
+                </a>
+                <a class="block text-secondary hover:text-primary transition-custom py-2" href="#about">
+                    关于我们
+                    <span class="block text-xs text-gray-500">About Us</span>
+                </a>
+                <a class="block text-secondary hover:text-primary transition-custom py-2" href="#history">
+                    发展历程
+                    <span class="block text-xs text-gray-500">Our Story</span>
+                </a>
+                <a class="block text-secondary hover:text-primary transition-custom py-2" href="#activities">
+                    活动回顾
+                    <span class="block text-xs text-gray-500">Event Highlights</span>
+                </a>
+                <a class="block text-secondary hover:text-primary transition-custom py-2" href="#landmarks">
+                    特色地标
+                    <span class="block text-xs text-gray-500">Signature Landmarks</span>
+                </a>
+                <a class="block bg-primary hover:bg-secondary text-white px-6 py-2 rounded-full text-center transition-custom btn-ripple" href="#contact">
+                    关注我们
+                    <span class="block text-xs text-gray-300">Stay Connected</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="py-20 md:py-32 bg-gradient-to-br from-white to-gray-50 pt-[5.5rem] md:pt-[7rem] min-h-screen flex items-center">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
+                    <h1 class="text-[clamp(2rem,5vw,4rem)] font-bold leading-tight text-dark mb-6">
+                        <span class="block text-2xl sm:text-3xl md:text-4xl text-secondary mb-2 animate-fade-in-up">欢迎来到</span>
+                        <span class="block text-sm text-gray-500 mb-4 animate-fade-in-up" style="animation-delay: 0.1s;">Welcome to</span>
+                        <span class="text-primary text-[clamp(3rem,7vw,5rem)] animate-fade-in-up" style="animation-delay: 0.2s;">HOUDA+</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-secondary mb-4 max-w-lg mx-auto md:mx-0 animate-fade-in-up" style="animation-delay: 0.3s;">
+                        全称：侯明昊碗慧通讯录互吃大学
+                    </p>
+                    <p class="text-base md:text-lg text-secondary mb-8 max-w-lg mx-auto md:mx-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+                        长沙霉粉联盟六群分支，特色粉丝社群
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start animate-fade-in-up" style="animation-delay: 0.5s;">
+                        <a class="bg-primary hover:bg-secondary text-white px-8 py-3 rounded-full text-center transition-custom font-medium btn-ripple group" href="#about">
+                            了解更多
+                            <i class="fa fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a class="bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full text-center transition-custom font-medium btn-ripple group" href="#contact">
+                            关注我们
+                            <i class="fa fa-heart ml-2 group-hover:scale-110 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 w-full animate-fade-in-up" style="animation-delay: 0.6s;">
+                    <div class="relative">
+                        <div class="absolute -top-4 -left-4 w-32 h-32 bg-primary/10 rounded-full animate-float"></div>
+                        <div class="absolute -bottom-6 -right-6 w-40 h-40 bg-accent/30 rounded-full animate-float" style="animation-delay: 2s;"></div>
+                        <div class="relative z-10">
+                            <img alt="侯大logo" class="rounded-2xl shadow-2xl w-full object-cover h-[300px] sm:h-[400px] md:h-[500px]" src="assets/HOUDA_squre.jpeg"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section class="py-20 md:py-32 bg-white" id="about">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 md:mb-20 reveal">
+                <h2 class="text-[clamp(2rem,4vw,3rem)] font-bold text-dark mb-4">
+                    关于<span class="text-primary">HOUDA+</span>
+                </h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-secondary max-w-2xl mx-auto text-lg">
+                    我们是一个充满活力的特色粉丝社群，因共同的热爱而聚集
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <div class="relative">
+                        <img alt="侯大组织成员合影" class="rounded-2xl shadow-xl w-full h-[400px] sm:h-[500px] object-cover" src="https://p3-search.byteimg.com/obj/labis/89b4f074691e9b643ffcf3e71f02779d"/>
+                        <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-lg max-w-xs card-hover">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-primary/10 p-3 rounded-lg mr-4">
+                                    <i class="fa fa-users text-primary text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-lg">社群规模</h3>
+                            </div>
+                            <p class="text-secondary text-sm">
+                                从长沙霉粉联盟六群分支发展而来的活跃社群
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reveal">
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-6 text-primary">我们的社群</h3>
+                    <p class="text-secondary mb-6 text-lg leading-relaxed">
+                        "HOUDA+"全称"侯明昊碗慧通讯录互吃大学"，是由长沙霉粉联盟六群分支出的一个特色粉丝社群，其名称源于成员共同喜爱的明星"侯明昊碗慧"。
+                    </p>
+                    <p class="text-secondary mb-8 text-lg leading-relaxed">
+                        该群体以大学生为主，其中性少数占大多数，成员通过共同参与线下活动等方式维系情感联结，例如"侯家塘"地铁站打卡、老百姓大药房打卡和参加联盟活动等。
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-start card-hover p-4 rounded-lg">
+                            <div class="bg-primary/10 p-3 rounded-lg mr-4">
+                                <i class="fa fa-heart text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">共同热爱</h4>
+                                <p class="text-secondary text-sm">因明星侯明昊碗慧而聚集</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start card-hover p-4 rounded-lg">
+                            <div class="bg-primary/10 p-3 rounded-lg mr-4">
+                                <i class="fa fa-map-marker text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">地域特色</h4>
+                                <p class="text-secondary text-sm">以长沙为活动中心</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start card-hover p-4 rounded-lg">
+                            <div class="bg-primary/10 p-3 rounded-lg mr-4">
+                                <i class="fa fa-graduation-cap text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">成员构成</h4>
+                                <p class="text-secondary text-sm">以大学生为主</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start card-hover p-4 rounded-lg">
+                            <div class="bg-primary/10 p-3 rounded-lg mr-4">
+                                <i class="fa fa-calendar-check-o text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">活动丰富</h4>
+                                <p class="text-secondary text-sm">线下打卡与聚会活动</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a class="inline-flex items-center text-primary font-medium hover:text-secondary transition-colors group" href="#history">
+                        查看我们的发展历程
+                        <i class="fa fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发展历程 -->
+    <section class="py-20 md:py-32 bg-gray-50" id="history">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 md:mb-20 reveal">
+                <h2 class="text-[clamp(2rem,4vw,3rem)] font-bold text-dark mb-4">
+                    <span class="text-primary">HOUDA+</span>发展历程
+                </h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-secondary max-w-2xl mx-auto text-lg">
+                    记录HOUDA+从创立到发展的重要时刻
+                </p>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-primary/20"></div>
+                
+                <!-- 时间点1 -->
+                <div class="relative mb-16 pl-20 md:pl-0 reveal">
+                    <div class="flex flex-col md:flex-row items-start md:items-center">
+                        <div class="md:w-1/2 md:pr-12 md:text-right mb-6 md:mb-0">
+                            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                                <h3 class="text-xl font-bold mb-3 text-primary">在联盟六群活跃</h3>
+                                <p class="text-secondary mb-3">2024年春，侯大的成员开始在联盟六群活跃，在此期间发生了许多著名事件，如"杨晟AirPods事件"。</p>
+                                <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">2024年春季</span>
+                            </div>
+                        </div>
+                        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-primary rounded-full z-10 timeline-dot"></div>
+                    </div>
+                </div>
+                
+                <!-- 时间点2 -->
+                <div class="relative mb-16 pl-20 md:pl-0 reveal">
+                    <div class="flex flex-col md:flex-row items-start md:items-center">
+                        <div class="md:w-1/2 md:pr-12 hidden md:block"></div>
+                        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-primary rounded-full z-10 timeline-dot"></div>
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                                <h3 class="text-xl font-bold mb-3 text-primary">侯明昊婉慧宣发新专辑</h3>
+                                <p class="text-secondary mb-3">2024年4月，长沙新生代歌手侯明昊婉慧开始在六群宣发新专辑《我是侯明昊》，引起了众多粉丝支持。</p>
+                                <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">2024年4月</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 时间点3 -->
+                <div class="relative mb-16 pl-20 md:pl-0 reveal">
+                    <div class="flex flex-col md:flex-row items-start md:items-center">
+                        <div class="md:w-1/2 md:pr-12 md:text-right mb-6 md:mb-0">
+                            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                                <h3 class="text-xl font-bold mb-3 text-primary">侯大正式创立</h3>
+                                <p class="text-secondary mb-3">2024年4月22日，长沙霉粉联盟工作成员小墨颁布群规"不得讨论与霉霉无关的内容"。于是，谢祥泽联系了牛继哲与侯婉慧创立了"侯大"。</p>
+                                <span class="inline-block bg-primary text-white px-3 py-1 rounded-full text-sm">2024年4月22日</span>
+                            </div>
+                        </div>
+                        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-primary rounded-full z-10 timeline-dot"></div>
+                    </div>
+                </div>
+                
+                <!-- 时间点4 -->
+                <div class="relative mb-16 pl-20 md:pl-0 reveal">
+                    <div class="flex flex-col md:flex-row items-start md:items-center">
+                        <div class="md:w-1/2 md:pr-12 hidden md:block"></div>
+                        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-primary rounded-full z-10 timeline-dot"></div>
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                                <h3 class="text-xl font-bold mb-3 text-primary">社群规模扩大</h3>
+                                <p class="text-secondary mb-3">2024年9月，侯大的多名成员被拉入联盟金卡客户群体，以浣莎澜为首的侯大成员，从中扩充了多名新成员。</p>
+                                <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">2024年9月</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 时间点5 -->
+                <div class="relative pl-20 md:pl-0 reveal">
+                    <div class="flex flex-col md:flex-row items-start md:items-center">
+                        <div class="md:w-1/2 md:pr-12 md:text-right mb-6 md:mb-0">
+                            <div class="bg-gradient-to-r from-primary to-secondary text-white p-6 rounded-xl shadow-lg card-hover">
+                                <h3 class="text-xl font-bold mb-3">焕新启航</h3>
+                                <p class="mb-3">2025年10月，侯大正式启用新视觉以及新名称"HOUDA+"。</p>
+                                <span class="inline-block bg-white/20 px-3 py-1 rounded-full text-sm">2025年10月</span>
+                            </div>
+                        </div>
+                        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full z-10 timeline-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 活动回顾 -->
+    <section class="py-20 md:py-32 bg-white" id="activities">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 md:mb-20 reveal">
+                <h2 class="text-[clamp(2rem,4vw,3rem)] font-bold text-dark mb-4">活动回顾</h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-secondary max-w-2xl mx-auto text-lg">
+                    HOUDA+组织和参与的各类线下活动
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 活动1 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="518活动照片" class="w-full h-48 sm:h-60 object-cover object-center transition-transform duration-500 hover:scale-110" src="assets/activites/none.png"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-primary text-white px-3 py-1 rounded-full text-sm">特色活动</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">518创群纪念活动</h3>
+                        <p class="text-secondary mb-4">2024年5月18日举行的"518"活动以庆祝侯大创群一个月，成员们欢聚一堂，共同庆祝这个特别的日子。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-calendar mr-2"></i>
+                            2024年5月18日
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 活动2 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="夏日歌会活动照片" class="w-full h-48 sm:h-60 object-cover object-center transition-transform duration-500 hover:scale-110" src="assets/activites/1.jpeg"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-accent text-white px-3 py-1 rounded-full text-sm">联盟活动</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">夏日歌会活动</h3>
+                        <p class="text-secondary mb-4">2024年长沙霉粉联盟"夏日歌会"活动，侯大成员积极参与，共同享受音乐盛宴。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-calendar mr-2"></i>
+                            2024年夏季
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 活动3 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="跨年观影活动照片" class="w-full h-48 sm:h-60 object-cover object-center transition-transform duration-500 hover:scale-110" src="assets/activites/2.jpeg"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-accent text-white px-3 py-1 rounded-full text-sm">联盟活动</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">时代巡演大电影跨年观影</h3>
+                        <p class="text-secondary mb-4">侯大成员参与长沙霉粉联盟组织的时代巡演大电影跨年观影活动，共同迎接新年。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-calendar mr-2"></i>
+                            2024-2025跨年
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 活动4 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="侯家塘地铁站打卡" class="w-full h-48 sm:h-60 object-cover object-center transition-transform duration-500 hover:scale-110" src="assets/activites/h.jpeg"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-primary text-white px-3 py-1 rounded-full text-sm">常驻活动</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">侯家塘地铁站打卡</h3>
+                        <p class="text-secondary mb-4">侯大成员在本命地铁站"侯家塘"站进行的常规打卡活动，这是社群的标志性活动之一。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-calendar-check-o mr-2"></i>
+                            长期开展，随时参与
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 活动5 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="老百姓大药房打卡" class="w-full h-48 sm:h-60 object-cover object-center transition-transform duration-500 hover:scale-110" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-primary text-white px-3 py-1 rounded-full text-sm">常驻活动</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">老百姓大药房打卡</h3>
+                        <p class="text-secondary mb-4">成员们在本命药房"老百姓大药房（彭家巷分店）"的常规打卡活动，体现了社群的独特文化。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-calendar-check-o mr-2"></i>
+                            长期开展，随时参与
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 活动6 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="联盟其他活动" class="w-full h-48 sm:h-60 object-cover object-center transition-transform duration-500 hover:scale-110" src="assets/activites/cscsu.jpeg"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-accent text-white px-3 py-1 rounded-full text-sm">联盟活动</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">长沙霉粉联盟其他活动</h3>
+                        <p class="text-secondary mb-4">HOUDA+作为长沙霉粉联盟的重要组成部分，参与了联盟组织的多项其他活动。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-calendar mr-2"></i>
+                            不定期举行
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特色地标 -->
+    <section class="py-20 md:py-32 bg-gray-50" id="landmarks">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 md:mb-20 reveal">
+                <h2 class="text-[clamp(2rem,4vw,3rem)] font-bold text-dark mb-4">
+                    特色<span class="text-primary">地标</span>
+                </h2>
+                <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-secondary max-w-2xl mx-auto text-lg">
+                    HOUDA+成员钟爱的打卡地点，承载着社群的共同记忆
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <!-- 地标1 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="侯家塘地铁站" class="w-full h-48 sm:h-64 object-cover transition-transform duration-500 hover:scale-110" src="assets/activites/h.jpeg"/>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fa fa-subway text-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-primary">侯家塘地铁站</h3>
+                        </div>
+                        <p class="text-secondary mb-6">侯大的本命地铁站，位于长沙地铁1号线，是成员们最常打卡的地点之一，也成为了社群身份认同的重要象征。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-map-marker mr-2 text-primary"></i>
+                            长沙地铁1号线 侯家塘站
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 地标2 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="老百姓大药房（彭家巷分店）" class="w-full h-48 sm:h-64 object-cover transition-transform duration-500 hover:scale-110" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png"/>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fa fa-medkit text-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-primary">老百姓大药房</h3>
+                        </div>
+                        <p class="text-secondary mb-6">侯大的本命药房，是社群文化中一个富有特色的打卡点，成员们经常在这里聚会交流，形成了独特的社群记忆。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-map-marker mr-2 text-primary"></i>
+                            老百姓大药房 彭家巷分店
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 地标3 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="盛香亭转转热卤" class="w-full h-48 sm:h-64 object-cover transition-transform duration-500 hover:scale-110" src="assets/activites/sxt.jpeg"/>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fa fa-fire text-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-primary">盛香亭转转热卤</h3>
+                        </div>
+                        <p class="text-secondary mb-6">侯大成员钟爱的转转火锅品牌，是社群聚餐的首选圣地。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-map-marker mr-2 text-primary"></i>
+                            长沙市
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 地标4 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover reveal">
+                    <div class="relative overflow-hidden">
+                        <img alt="湖南金厚（北京）律师事务所" class="w-full h-48 sm:h-64 object-cover transition-transform duration-500 hover:scale-110" src="assets/activites/tl.jpeg"/>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fa fa-balance-scale text-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-primary">湖南金厚律师事务所</h3>
+                        </div>
+                        <p class="text-secondary mb-6">因侯大法务唐律在此工作，该律所被视为侯大法务象征地。</p>
+                        <div class="flex items-center text-sm text-secondary">
+                            <i class="fa fa-map-marker mr-2 text-primary"></i>
+                            北京市
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关注我们 -->
+    <section class="py-20 md:py-32 bg-white" id="contact">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12 md:mb-16 reveal">
+                    <h2 class="text-[clamp(2rem,4vw,3rem)] font-bold text-dark mb-4">关注<span class="text-primary">HOUDA+</span></h2>
+                    <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+                    <p class="text-secondary max-w-2xl mx-auto text-lg">
+                        通过以下平台关注HOUDA+，了解最新活动和动态
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center card-hover reveal">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fab fa-weixin text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">微信公众号</h3>
+                        <p class="text-secondary mb-6">扫码关注我们的公众号，获取最新资讯</p>
+                        <img alt="HOUDA+公众号二维码" class="w-full max-w-[200px] mx-auto rounded-lg shadow-sm" src="assets/gzh.jpeg"/>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center card-hover reveal">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fa fa-mobile-alt text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">微信小程序</h3>
+                        <p class="text-secondary mb-6">扫码使用我们的小程序，参与互动活动</p>
+                        <img alt="侯大小程序二维码" class="w-full max-w-[200px] mx-auto rounded-lg shadow-sm" src="assets/xcx.jpeg"/>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center reveal">
+                    <p class="text-secondary text-lg">
+                        通过社交媒体关注我们，了解更多社群动态
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dock栏 -->
+    <div class="dock-container">
+        <div class="dock">
+            <a class="dock-item hover:bg-primary hover:text-white" href="index.html">
+                <i class="fa-solid fa-house dock-icon"></i>
+                <span class="dock-label">首页</span>
+            </a>
+            <a class="dock-item hover:bg-primary hover:text-white" href="notice.html">
+                <i class="fa-solid fa-bell dock-icon"></i>
+                <span class="dock-label">通知</span>
+            </a>
+        </div>
+        <div class="back-to-top" id="backToTop">
+            <i class="fa-solid fa-arrow-up"></i>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="reveal">
+                    <a class="flex items-center space-x-3 mb-6" href="#">
+                        <div class="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
+                            <img alt="侯大标志" class="w-full h-full object-cover rounded-lg" src="assets/HOUDA_squre.jpeg"/>
+                        </div>
+                        <span class="text-2xl font-bold text-white">HOUDA+</span>
+                    </a>
+                    <p class="text-gray-400 mb-6">
+                        侯明昊碗慧通讯录互吃大学，长沙霉粉联盟六群分支
+                    </p>
+                    <a class="text-gray-400 hover:text-white transition-colors" href="#">
+                        <i class="fa fa-wechat text-2xl"></i>
+                    </a>
+                </div>
+                
+                <div class="reveal">
+                    <h3 class="text-lg font-bold mb-6">快速链接</h3>
+                    <ul class="space-y-3">
+                        <li><a class="text-gray-400 hover:text-white transition-colors" href="#about">关于我们</a></li>
+                        <li><a class="text-gray-400 hover:text-white transition-colors" href="#history">发展历程</a></li>
+                        <li><a class="text-gray-400 hover:text-white transition-colors" href="#activities">活动回顾</a></li>
+                        <li><a class="text-gray-400 hover:text-white transition-colors" href="#landmarks">特色地标</a></li>
+                        <li><a class="text-gray-400 hover:text-white transition-colors" href="#contact">关注我们</a></li>
+                    </ul>
+                </div>
+                
+                <div class="reveal">
+                    <h3 class="text-lg font-bold mb-6">相关组织</h3>
+                    <ul class="space-y-3">
+                        <li><a class="text-gray-400 hover:text-white transition-colors" href="https://cscsu{$rthSuffix}" rel="noopener noreferrer" target="_blank">长沙霉粉联盟</a></li>
+                        <li><a class="text-gray-400 hover:text-white transition-colors" href="#">联盟金卡客户群</a></li>
+                    </ul>
+                </div>
+                
+                <div class="reveal">
+                    <h3 class="text-lg font-bold mb-6">联系我们</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-gray-400">
+                            <i class="fa fa-map-marker mr-3"></i>
+                            长沙市
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fa fa-wechat mr-3"></i>
+                            HOUDA+官方微信
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p>&copy; 2025 HOUDA+ All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 视觉焕新动画 - 加载后淡出
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const el = document.getElementById('visualUpdate');
+                el.classList.add('fade-out');
+                setTimeout(() => el.style.display = 'none', 1000);
+            }, 2000);
+        });
+
+        // 移动端菜单
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuBtn = document.getElementById('menuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const icon = menuBtn.querySelector('i');
+
+            if (!menuBtn || !mobileMenu) return;
+
+            menuBtn.addEventListener('click', function () {
+                const isOpen = mobileMenu.classList.toggle('open');
+                icon.classList.toggle('fa-bars', !isOpen);
+                icon.classList.toggle('fa-times', isOpen);
+            });
+
+            const menuLinks = mobileMenu.querySelectorAll('a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('open');
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                });
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('navbar-scroll');
+            } else {
+                navbar.classList.remove('navbar-scroll');
+            }
+        });
+
+        // 回到顶部按钮
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 100) {
+                document.body.classList.add('scrolled');
+                backToTop.classList.add('visible');
+            } else {
+                document.body.classList.remove('scrolled');
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 滚动显示动画
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // 图片懒加载
+        const images = document.querySelectorAll('img');
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.style.opacity = '0';
+                    img.onload = () => {
+                        img.style.transition = 'opacity 0.3s';
+                        img.style.opacity = '1';
+                    };
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        images.forEach(img => imageObserver.observe(img));
+    </script>
+</body>
+</html>
