@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HOUDA+ - 官方网站</title>
+<meta name="description" content="HOUDA+官网 - 长沙霉粉联盟六群分支，侯明昊碗慧通讯录互吃大学官方站点。">
+<meta name="keywords" content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群">
+<link rel="icon" href="assets/HOUDA_squre.jpeg">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#111111',
+        secondary: '#555555',
+        accent: '#e0e0e0',
+      }
+    }
+  }
+}
+</script>
+<style>
+/* 基础设置 */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  overflow-x: hidden;
+}
+
+body {
+overflow-x: hidden;
+}
+
+/* 导航菜单动画 */
+#mobileMenu {
+transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+overflow: hidden;
+max-height: 0;
+opacity: 0;
+}
+
+#mobileMenu.open {
+max-height: 500px;
+opacity: 1;
+}
+
+/* Dock栏样式优化 */
+.dock-container {
+position: fixed;
+bottom: 15px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 1000;
+pointer-events: none;
+}
+
+.dock {
+display: flex;
+align-items: center;
+gap: 8px;
+background: rgba(255, 255, 255, 0.25);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.4);
+border-radius: 50px;
+padding: 10px;
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+pointer-events: auto;
+}
+
+.dock-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 60px;
+height: 60px;
+border-radius: 50%;
+cursor: pointer;
+text-decoration: none;
+color: #333;
+transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dock-item:hover {
+transform: translateY(-8px) scale(1.15);
+}
+
+.dock-icon {
+font-size: 24px;
+transition: transform 0.25s ease;
+}
+
+.dock-label {
+font-size: 11px;
+font-weight: 500;
+margin-top: 4px;
+}
+
+.back-to-top {
+width: 60px;
+height: 60px;
+background: rgba(255, 255, 255, 0.4);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-left: 12px;
+cursor: pointer;
+transition: all 0.3s ease;
+border: 1px solid rgba(255, 255, 255, 0.4);
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+opacity: 0;
+visibility: hidden;
+transform: translateY(15px);
+pointer-events: auto;
+}
+
+.back-to-top.visible {
+opacity: 1;
+visibility: visible;
+transform: translateY(0);
+}
+
+.back-to-top:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+.dock-item {
+width: 50px;
+height: 50px;
+}
+
+.dock-icon {
+font-size: 20px;
+}
+
+.dock-label {
+display: none;
+}
+
+.back-to-top {
+width: 50px;
+height: 50px;
+}
+}
+
+/* 卡片悬停效果优化 */
+.card-hover {
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+transform: translateY(-8px);
+box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* 图片缩放效果 */
+.img-zoom-container {
+overflow: hidden;
+}
+
+.img-zoom {
+transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.img-zoom-container:hover .img-zoom {
+transform: scale(1.08);
+}
+
+/* 时间线优化 */
+.timeline-dot {
+width: 32px;
+height: 32px;
+background: #111111;
+border: 4px solid white;
+box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.1);
+}
+
+/* 加载动画 */
+.splash-screen {
+position: fixed;
+inset: 0;
+background: white;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 9999;
+transition: opacity 1s ease;
+}
+
+.splash-screen.fade-out {
+opacity: 0;
+pointer-events: none;
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+animation: float 2s ease-in-out infinite;
+}
+</style>
+
+</head>
+
+<body class="font-sans bg-white text-gray-900 antialiased">
+
+<!-- 启动画面 -->
+
+<div id="splashScreen" class="splash-screen">
+  <img src="assets/HOUDA_squre.jpeg" alt="HOUDA+" class="w-24 h-24 mb-6 animate-float">
+  <h1 class="text-2xl font-bold text-primary mb-2">HOUDA+ 焕新登场</h1>
+  <p class="text-secondary">Simpler. Bolder. More HOUDA.</p>
+</div>
+
+<!-- 导航栏 -->
+
+<header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/70 backdrop-blur-md shadow-sm">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="flex justify-between items-center py-4">
+      <a href="#" class="flex items-center space-x-2">
+        <img src="assets/HOUDA_squre.jpeg" alt="HOUDA+" class="w-10 h-10 rounded-md">
+        <span class="text-2xl font-bold text-primary">HOUDA+</span>
+      </a>
+
+```
+  <!-- 桌面导航 -->
+  <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
+    <a href="#about" class="text-secondary hover:text-primary transition-colors font-medium">关于我们</a>
+    <a href="#history" class="text-secondary hover:text-primary transition-colors font-medium">发展历程</a>
+    <a href="#activities" class="text-secondary hover:text-primary transition-colors font-medium">活动回顾</a>
+    <a href="#landmarks" class="text-secondary hover:text-primary transition-colors font-medium">特色地标</a>
+    <a href="#contact" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-md transition-all font-medium">关注我们</a>
+  </div>
+
+  <!-- 移动端菜单按钮 -->
+  <button id="menuBtn" class="md:hidden text-dark focus:outline-none" aria-label="菜单">
+    <i class="fa fa-bars text-2xl"></i>
+  </button>
+</nav>
+
+<!-- 移动端菜单 -->
+<div id="mobileMenu" class="md:hidden bg-white border-t">
+  <div class="container mx-auto px-4 py-3 space-y-3">
+    <a href="#about" class="block text-secondary hover:text-primary transition-colors py-2">关于我们</a>
+    <a href="#history" class="block text-secondary hover:text-primary transition-colors py-2">发展历程</a>
+    <a href="#activities" class="block text-secondary hover:text-primary transition-colors py-2">活动回顾</a>
+    <a href="#landmarks" class="block text-secondary hover:text-primary transition-colors py-2">特色地标</a>
+    <a href="#contact" class="block bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-md text-center transition-all">关注我们</a>
+  </div>
+</div>
+```
+
+  </div>
+</header>
+
+<!-- 英雄区域 -->
+
+<section class="pt-24 md:pt-32 pb-16 md:pb-20 bg-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center gap-12">
+      <div class="md:w-1/2 text-center md:text-left">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-dark mb-6">
+          欢迎来到<br>
+          <span class="text-primary text-5xl sm:text-6xl lg:text-7xl">HOUDA+</span>
+        </h1>
+        <p class="text-lg md:text-xl text-secondary mb-4">全称：侯明昊碗慧通讯录互吃大学</p>
+        <p class="text-lg md:text-xl text-secondary mb-8">长沙霉粉联盟六群分支，特色粉丝社群</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+          <a href="#about" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-md text-center transition-all font-medium">了解更多</a>
+          <a href="#contact" class="bg-white border-2 border-primary text-primary hover:bg-primary/5 px-8 py-3 rounded-md text-center transition-all font-medium">关注我们</a>
+        </div>
+      </div>
+      <div class="md:w-1/2">
+        <div class="relative">
+          <div class="absolute -top-4 -left-4 w-24 h-24 bg-accent/20 rounded-full"></div>
+          <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/20 rounded-full"></div>
+          <img src="assets/HOUDA_squre.jpeg" alt="HOUDA+" class="relative z-10 rounded-md shadow-xl w-full h-[300px] sm:h-[400px] object-cover">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 关于我们 -->
+
+<section id="about" class="py-16 md:py-20 bg-gray-50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-4">关于HOUDA+</h2>
+      <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+      <p class="text-secondary max-w-2xl mx-auto text-lg">我们是一个充满活力的特色粉丝社群，因共同的热爱而聚集</p>
+    </div>
+
+```
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+  <div class="relative">
+    <img src="https://p3-search.byteimg.com/obj/labis/89b4f074691e9b643ffcf3e71f02779d" alt="社群活动" class="rounded-md shadow-lg w-full h-[350px] sm:h-[500px] object-cover">
+    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-md shadow-lg max-w-xs">
+      <div class="flex items-center mb-3">
+        <i class="fa fa-users text-primary text-2xl mr-3"></i>
+        <h3 class="font-bold text-lg">活跃社群</h3>
+      </div>
+      <p class="text-secondary text-sm">从长沙霉粉联盟六群分支发展而来</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl sm:text-3xl font-bold mb-4">我们的社群</h3>
+    <p class="text-secondary mb-6">"HOUDA+"全称"侯明昊碗慧通讯录互吃大学"，是由长沙霉粉联盟六群分支出的一个特色粉丝社群，其名称源于成员共同喜爱的明星"侯明昊碗慧"。</p>
+    <p class="text-secondary mb-6">该群体以大学生为主，其中性少数占大多数，成员通过共同参与线下活动等方式维系情感联结，例如"侯家塘"地铁站打卡、老百姓大药房打卡和参加联盟活动等。</p>
+    
+    <div class="grid grid-cols-2 gap-6">
+      <div class="flex items-start">
+        <div class="bg-primary/10 p-3 rounded-md mr-4">
+          <i class="fa fa-heart text-primary text-xl"></i>
+        </div>
+        <div>
+          <h4 class="font-bold mb-2">共同热爱</h4>
+          <p class="text-secondary text-sm">因明星侯明昊碗慧而聚集</p>
+        </div>
+      </div>
+      <div class="flex items-start">
+        <div class="bg-primary/10 p-3 rounded-md mr-4">
+          <i class="fa fa-map-marker text-primary text-xl"></i>
+        </div>
+        <div>
+          <h4 class="font-bold mb-2">地域特色</h4>
+          <p class="text-secondary text-sm">以长沙为活动中心</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- 发展历程 -->
+
+<section id="history" class="py-16 md:py-20 bg-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-4">
+        <span class="text-primary">发展历程</span>
+      </h2>
+      <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+      <p class="text-secondary max-w-2xl mx-auto text-lg">记录HOUDA+从创立到发展的重要时刻</p>
+    </div>
+
+```
+<div class="relative max-w-4xl mx-auto">
+  <div class="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 h-full w-0.5 bg-primary/20"></div>
+  
+  <!-- 时间线项目 -->
+  <div class="space-y-12">
+    <div class="relative pl-20 md:pl-0">
+      <div class="md:grid md:grid-cols-2 md:gap-8">
+        <div class="md:text-right mb-6 md:mb-0">
+          <h3 class="text-xl font-bold mb-2">在联盟六群活跃</h3>
+          <p class="text-secondary">2024年春，侯大的成员开始在联盟六群活跃，在此期间发生了许多著名事件，如"杨晟AirPods事件"。</p>
+        </div>
+        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 -translate-y-1 timeline-dot rounded-full"></div>
+      </div>
+    </div>
+
+    <div class="relative pl-20 md:pl-0">
+      <div class="md:grid md:grid-cols-2 md:gap-8">
+        <div class="md:order-2">
+          <h3 class="text-xl font-bold mb-2">侯明昊婉慧宣发新专辑</h3>
+          <p class="text-secondary">2024年4月，长沙新生代歌手侯明昊婉慧开始在六群宣发新专辑《我是侯明昊》，引起了众多粉丝支持。</p>
+        </div>
+        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 -translate-y-1 timeline-dot rounded-full"></div>
+      </div>
+    </div>
+
+    <div class="relative pl-20 md:pl-0">
+      <div class="md:grid md:grid-cols-2 md:gap-8">
+        <div class="md:text-right mb-6 md:mb-0">
+          <h3 class="text-xl font-bold mb-2">侯大正式创立</h3>
+          <p class="text-secondary">2024年4月22日，长沙霉粉联盟工作成员小墨颁布群规"不得讨论与霉霉无关的内容"。于是，谢祥泽联系了牛继哲与侯婉慧创立了"侯大"。</p>
+        </div>
+        <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 -translate-y-1 timeline-dot rounded-full"></div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- 活动回顾 -->
+
+<section id="activities" class="py-16 md:py-20 bg-gray-50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-4">活动回顾</h2>
+      <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+      <p class="text-secondary max-w-2xl mx-auto text-lg">HOUDA+组织和参与的各类线下活动</p>
+    </div>
+
+```
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  <div class="bg-white rounded-md shadow-lg overflow-hidden card-hover">
+    <div class="img-zoom-container">
+      <img src="assets/activites/none.png" alt="518活动" class="img-zoom w-full h-60 object-cover">
+    </div>
+    <div class="p-6">
+      <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm mb-3">特色活动</span>
+      <h3 class="text-xl font-bold mb-2">518创群纪念活动</h3>
+      <p class="text-secondary mb-4">2024年5月18日举行的"518"活动以庆祝侯大创群一个月，成员们欢聚一堂。</p>
+      <div class="flex items-center text-sm text-secondary">
+        <i class="fa fa-calendar mr-2"></i>2024年5月18日
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-md shadow-lg overflow-hidden card-hover">
+    <div class="img-zoom-container">
+      <img src="assets/activites/1.jpeg" alt="夏日歌会" class="img-zoom w-full h-60 object-cover">
+    </div>
+    <div class="p-6">
+      <span class="inline-block bg-accent/50 text-gray-700 px-3 py-1 rounded-full text-sm mb-3">联盟活动</span>
+      <h3 class="text-xl font-bold mb-2">夏日歌会活动</h3>
+      <p class="text-secondary mb-4">2024年长沙霉粉联盟"夏日歌会"活动，侯大成员积极参与。</p>
+      <div class="flex items-center text-sm text-secondary">
+        <i class="fa fa-calendar mr-2"></i>2024年夏季
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-md shadow-lg overflow-hidden card-hover">
+    <div class="img-zoom-container">
+      <img src="assets/activites/h.jpeg" alt="侯家塘打卡" class="img-zoom w-full h-60 object-cover">
+    </div>
+    <div class="p-6">
+      <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm mb-3">常驻活动</span>
+      <h3 class="text-xl font-bold mb-2">侯家塘地铁站打卡</h3>
+      <p class="text-secondary mb-4">侯大成员在本命地铁站"侯家塘"站进行的常规打卡活动。</p>
+      <div class="flex items-center text-sm text-secondary">
+        <i class="fa fa-calendar-check mr-2"></i>长期开展
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- 特色地标 -->
+
+<section id="landmarks" class="py-16 md:py-20 bg-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-4">
+        特色<span class="text-primary">地标</span>
+      </h2>
+      <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+      <p class="text-secondary max-w-2xl mx-auto text-lg">HOUDA+成员钟爱的打卡地点，承载着社群的共同记忆</p>
+    </div>
+
+```
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+  <div class="bg-white rounded-md shadow-lg overflow-hidden card-hover">
+    <img src="assets/activites/h.jpeg" alt="侯家塘地铁站" class="w-full h-64 object-cover">
+    <div class="p-8">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-primary/10 rounded-md flex items-center justify-center mr-4">
+          <i class="fa fa-subway text-primary text-xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold">侯家塘地铁站</h3>
+      </div>
+      <p class="text-secondary mb-6">侯大的本命地铁站，位于长沙地铁1号线，是成员们最常打卡的地点之一。</p>
+      <div class="flex items-center text-sm text-secondary">
+        <i class="fa fa-map-marker mr-2 text-primary"></i>长沙地铁1号线 侯家塘站
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-md shadow-lg overflow-hidden card-hover">
+    <img src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" class="w-full h-64 object-cover">
+    <div class="p-8">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-primary/10 rounded-md flex items-center justify-center mr-4">
+          <i class="fa fa-medkit text-primary text-xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold">老百姓大药房</h3>
+      </div>
+      <p class="text-secondary mb-6">侯大的本命药房，是社群文化中一个富有特色的打卡点。</p>
+      <div class="flex items-center text-sm text-secondary">
+        <i class="fa fa-map-marker mr-2 text-primary"></i>老百姓大药房 彭家巷分店
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- 关注我们 -->
+
+<section id="contact" class="py-16 md:py-20 bg-gray-50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-4">关注HOUDA+</h2>
+        <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+        <p class="text-secondary max-w-2xl mx-auto text-lg">通过以下平台关注HOUDA+，了解最新活动和动态</p>
+      </div>
+
+```
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+    <div class="bg-white p-8 rounded-md shadow-sm text-center card-hover">
+      <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fab fa-weixin text-primary text-3xl"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-3">微信公众号</h3>
+      <p class="text-secondary mb-6">扫码关注我们的公众号，获取最新资讯</p>
+      <img src="assets/gzh.jpeg" alt="公众号二维码" class="w-48 mx-auto rounded-md shadow-sm">
+    </div>
+
+    <div class="bg-white p-8 rounded-md shadow-sm text-center card-hover">
+      <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fa fa-mobile text-primary text-3xl"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-3">微信小程序</h3>
+      <p class="text-secondary mb-6">扫码使用我们的小程序，参与互动活动</p>
+      <img src="assets/xcx.jpeg" alt="小程序二维码" class="w-48 mx-auto rounded-md shadow-sm">
+```
