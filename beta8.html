@@ -183,17 +183,19 @@ html, body {
     transition: 0.7s ease-in-out;
 }
 
-/* --- Dock 栏 --- */
+/* --- 修复后的 Dock 栏样式 --- */
 .dock-container {
     position: fixed;
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    width: 100%; /* 占满全宽，方便内部居中 */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    width: auto;
+    padding: 0 10px; /* 防止贴边 */
+    box-sizing: border-box;
+    pointer-events: none; /* 穿透点击，不影响底层内容 */
 }
 
 .dock {
@@ -203,8 +205,16 @@ html, body {
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 9999px;
-    padding: 8px 16px;
+    padding: 8px 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    pointer-events: auto; /* 恢复点击 */
+    max-width: 100%; /* 关键：防止超出屏幕 */
+    overflow-x: auto; /* 如果太长可以滑动 */
+    scrollbar-width: none; /* 隐藏火狐滚动条 */
+}
+
+.dock::-webkit-scrollbar {
+    display: none; /* 隐藏 Chrome/Safari 滚动条 */
 }
 
 .dock-item {
@@ -212,9 +222,10 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
-    margin: 0 6px;
+    flex-shrink: 0; /* 防止图标被挤压 */
+    width: 52px; /* 稍微减小宽度提升兼容性 */
+    height: 52px;
+    margin: 0 4px;
     border-radius: 50%;
     cursor: pointer;
     text-decoration: none;
@@ -240,6 +251,8 @@ html, body {
 
 /* 回到顶部单独样式 */
 .back-to-top {
+    pointer-events: auto;
+    flex-shrink: 0;
     width: 50px;
     height: 50px;
     background: rgba(255, 255, 255, 0.3);
@@ -267,6 +280,15 @@ html, body {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+}
+@media (max-width: 400px) {
+    .dock-item {
+        width: 48px;
+        margin: 0 2px;
+    }
+    .dock-label {
+        font-size: 9px;
+    }
 }
 
 /* 滚动时Dock栏紧凑模式 */
