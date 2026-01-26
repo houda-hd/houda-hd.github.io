@@ -1015,31 +1015,33 @@ body.scrolled .dock-label {
 </div>
 </section>
 <div class="dock-container">
-<div class="dock">
-<a class="dock-item" href="#about">
-<i class="fa-solid fa-circle-info dock-icon"></i>
-<span class="dock-label">关于</span>
-</a>
-<a class="dock-item" href="#history">
-<i class="fa-solid fa-timeline dock-icon"></i>
-<span class="dock-label">历程</span>
-</a>
-<a class="dock-item" href="#activities">
-<i class="fa-solid fa-calendar-days dock-icon"></i>
-<span class="dock-label">活动</span>
-</a>
-<a class="dock-item" href="#landmarks">
-<i class="fa-solid fa-map-location-dot dock-icon"></i>
-<span class="dock-label">地标</span>
-</a>
-<a class="dock-item" href="#contact">
-<i class="fa-solid fa-paper-plane dock-icon"></i>
-<span class="dock-label">关注</span>
+    <div class="dock">
+        <a class="dock-item" href="#about">
+            <i class="fa-solid fa-circle-info dock-icon"></i>
+            <span class="dock-label">关于</span>
+        </a>
+        <a class="dock-item" href="#history">
+            <i class="fa-solid fa-timeline dock-icon"></i>
+            <span class="dock-label">历程</span>
+        </a>
+        <a class="dock-item" href="#activities">
+            <i class="fa-solid fa-calendar-days dock-icon"></i>
+            <span class="dock-label">活动</span>
+        </a>
+        <a class="dock-item" href="#landmarks">
+            <i class="fa-solid fa-map-location-dot dock-icon"></i>
+            <span class="dock-label">地标</span>
+        </a>
+        <a class="dock-item" href="#contact">
+            <i class="fa-solid fa-paper-plane dock-icon"></i>
+            <span class="dock-label">关注</span>
+        </a> 
+    </div>
+    <div class="back-to-top" id="backToTop">
+        <i class="fa-solid fa-arrow-up"></i>
+    </div>
 </div>
-<div class="back-to-top" id="backToTop">
-<i class="fa-solid fa-arrow-up"></i>
-</div>
-</div>
+
 <footer class="bg-dark/95 backdrop-blur-lg text-white py-10 md:py-12 border-t border-white/10 relative z-10">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -1160,18 +1162,27 @@ body.scrolled .dock-label {
 });
   </script>
 <script>
-window.addEventListener('scroll', function() {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
     const backToTop = document.getElementById('backToTop');
-    if (window.scrollY > 100) {
-        document.body.classList.add('scrolled');
-        backToTop.classList.add('visible');
-    } else {
-        document.body.classList.remove('scrolled');
-        backToTop.classList.remove('visible');
-    }
+    if (!backToTop) return;
+
+    window.addEventListener('scroll', function() {
+        const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollPos > 150) {
+            document.body.classList.add('scrolled');
+            backToTop.classList.add('visible');
+        } else {
+            document.body.classList.remove('scrolled');
+            backToTop.classList.remove('visible');
+        }
+    }, { passive: true });
+
+    backToTop.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 });
-document.getElementById('backToTop').addEventListener('click', function() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-</script></body>
+</script>
+</body>
 </html>
