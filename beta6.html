@@ -194,6 +194,8 @@ html, body {
     align-items: center;
     z-index: 1000;
     width: auto;
+    max-width: 90vw; /* 最大宽度为90%的视窗宽度，避免超出屏幕 */
+    overflow-x: hidden; /* 防止出现水平滚动条 */
 }
 
 .dock {
@@ -205,6 +207,7 @@ html, body {
     border-radius: 9999px;
     padding: 8px 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    flex-wrap: nowrap; /* 防止溢出时换行 */
 }
 
 .dock-item {
@@ -283,6 +286,15 @@ body.scrolled .dock-icon {
 }
 body.scrolled .dock-label {
     display: none;
+}
+@media (max-width: 640px) {
+    .dock {
+        padding: 6px 12px; /* 在小屏幕下缩小padding，使dock栏更紧凑 */
+    }
+    .dock-item {
+        width: 44px; /* 在小屏幕下缩小每个dock项的宽度 */
+        height: 44px; /* 在小屏幕下缩小每个dock项的高度 */
+    }
 }
   </style>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/></head>
