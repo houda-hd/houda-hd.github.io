@@ -870,7 +870,7 @@ body.scrolled .dock-label {
       HOUDA+成员钟爱的打卡地点，承载着社群的共同记忆
      </p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-14">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto">
 <div class="glass-card shine-effect rounded-md overflow-hidden">
 <img alt="侯家塘地铁站" class="w-full h-48 sm:h-64 object-cover" loading="lazy" src="assets/activites/h.jpeg"/>
 <div class="p-6 sm:p-8 flex-grow">
@@ -985,20 +985,19 @@ body.scrolled .dock-label {
 </div>
 </section>
 </section>
-<section
-  id="contact"
-  class="py-16 md:py-20 bg-transparent"
-  style="padding-bottom: 180px;"
->
-<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-16 md:py-20 bg-transparent" id="contact">
+<div class="containeriner mx-auto px-4 sm:px-6 lg:px-8">
 <div class="max-w-5xl mx-auto glass-card md:p-12 p-6 sm:p-8 rounded-xl">
 <div class="text-center mb-10 md:mb-12">
 <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">
        关注HOUDA+
        <br/>
-<span class="block text-gray-600 text-sm sm:text-base">Stay Connected</span>
+<span class="block text-gray-600 text-sm sm:text-base">
+        Stay Connected
+       </span>
 </h2>
-<div class="w-20 h-1 bg-accent mx-auto mb-6"></div>
+<div class="w-20 h-1 bg-accent mx-auto mb-6">
+</div>
 <p class="text-secondary max-w-2xl mx-auto text-base sm:text-lg">
        通过以下平台关注HOUDA+，了解最新活动和动态
       </p>
@@ -1016,14 +1015,17 @@ body.scrolled .dock-label {
 <p class="text-secondary mb-6 text-sm sm:text-base">
         扫码关注我们
         <br/>
-<span class="sm:text-base text-gray-600 text-secondary block text-sm">Stay Connected</span>
+<span class="sm:text-base text-gray-600 text-secondary block text-sm">
+         Stay Connected
+        </span>
         的公众号，获取最新资讯
        </p>
 <img alt="HOUDA+公众号二维码" class="w-full max-w-[180px] mx-auto rounded-md shadow-sm" loading="lazy" src="assets/gzh.jpeg"/>
 </div>
 <div class="bg-white/60 p-5 sm:p-6 rounded-md shadow-sm text-center transform transition-custom hover:scale-105 hover:shadow-md">
 <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-<i class="fa fa-mobile text-primary text-3xl"></i>
+<i class="fa fa-mobile text-primary text-3xl">
+</i>
 </div>
 <h3 class="text-lg sm:text-xl font-bold mb-3">
         微信小程序
@@ -1038,42 +1040,40 @@ body.scrolled .dock-label {
 <p class="text-secondary text-sm sm:text-base">
        通过社交媒体关注我们 
        <br/>
-<span class="sm:text-base text-gray-600 text-secondary block text-sm">Stay Connected</span>
+<span class="sm:text-base text-gray-600 text-secondary block text-sm">
+        Stay Connected
+       </span>
        ，了解更多社群动态
       </p>
 </div>
 </div>
 </div>
 </section>
-
 <div class="dock-container">
-  <div class="dock">
-    <a class="dock-item" href="#about">
-      <i class="fa-solid fa-circle-info dock-icon"></i>
-      <span class="dock-label">关于</span>
-    </a>
-    <a class="dock-item" href="#history">
-      <i class="fa-solid fa-timeline dock-icon"></i>
-      <span class="dock-label">历程</span>
-    </a>
-    <a class="dock-item" href="#activities">
-      <i class="fa-solid fa-calendar-days dock-icon"></i>
-      <span class="dock-label">活动</span>
-    </a>
-    <a class="dock-item" href="#landmarks">
-      <i class="fa-solid fa-map-location-dot dock-icon"></i>
-      <span class="dock-label">地标</span>
-    </a>
-    <a class="dock-item" href="#contact">
-      <i class="fa-solid fa-paper-plane dock-icon"></i>
-      <span class="dock-label">关注</span>
-    </a>
-  </div>
-  <div class="back-to-top" id="backToTop">
+<div class="dock">
+<a class="dock-item" href="#about">
+<i class="fa-solid fa-circle-info dock-icon"></i>
+<span class="dock-label">关于</span>
+</a>
+<a class="dock-item" href="#history">
+<i class="fa-solid fa-timeline dock-icon"></i>
+<span class="dock-label">历程</span>
+</a>
+<a class="dock-item" href="#activities">
+<i class="fa-solid fa-calendar-days dock-icon"></i>
+<span class="dock-label">活动</span>
+</a>
+<a class="dock-item" href="#landmarks">
+<i class="fa-solid fa-map-location-dot dock-icon"></i>
+<span class="dock-label">地标</span>
+</a>
+<a class="dock-item" href="#contact">
+    <i class="fa-solid fa-paper-plane dock-icon"></i>
+    <span class="dock-label">关注</span>
+</a>  </div> <div class="back-to-top" id="backToTop">
     <i class="fa-solid fa-arrow-up"></i>
-  </div>
 </div>
-<div style="height:180px;"></div>
+</div>
 <footer class="bg-dark/95 backdrop-blur-lg text-white py-10 md:py-12 border-t border-white/10 relative z-10">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -1126,7 +1126,6 @@ body.scrolled .dock-label {
         </div>
     </div>
 </footer>
-
 
 <script>
    // 视觉焕新动画 - 加载后淡出
