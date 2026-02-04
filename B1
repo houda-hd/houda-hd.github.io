@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>HOUDA+ - Liquid Glass Experience</title>
+
+```
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --glass-primary: rgba(255, 255, 255, 0.08);
+        --glass-secondary: rgba(255, 255, 255, 0.05);
+        --glass-accent: rgba(255, 255, 255, 0.12);
+        --text-primary: #ffffff;
+        --text-secondary: rgba(255, 255, 255, 0.7);
+        --accent-1: #8b5cf6;
+        --accent-2: #06b6d4;
+        --accent-3: #ec4899;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        overflow-x: hidden;
+        background: #0a0a0f;
+        color: var(--text-primary);
+        line-height: 1.6;
+    }
+
+    /* === LIQUID BACKGROUND === */
+    .liquid-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        background: radial-gradient(ellipse at 50% 50%, #1a1a2e 0%, #0a0a0f 100%);
+    }
+
+    .liquid-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.4;
+        animation: float 20s ease-in-out infinite;
+        mix-blend-mode: screen;
+    }
+
+    .orb-1 {
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--accent-1) 0%, transparent 70%);
+        top: -15%;
+        left: -10%;
+        animation-duration: 25s;
+    }
+
+    .orb-2 {
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, var(--accent-2) 0%, transparent 70%);
+        bottom: -10%;
+        right: -5%;
+        animation-duration: 30s;
+        animation-delay: -5s;
+    }
+
+    .orb-3 {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, var(--accent-3) 0%, transparent 70%);
+        top: 50%;
+        left: 50%;
+        animation-duration: 35s;
+        animation-delay: -10s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(100px, -100px) rotate(120deg); }
+        66% { transform: translate(-50px, 50px) rotate(240deg); }
+    }
+
+    /* === GLASS MORPHISM === */
+    .glass {
+        background: var(--glass-primary);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-card {
+        background: var(--glass-primary);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 2rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-8px);
+        background: var(--glass-accent);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-card:hover::before {
+        opacity: 1;
+    }
+
+    /* === CONTAINER === */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* === HEADER === */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 1.5rem 0;
+        transition: all 0.3s ease;
+    }
+
+    .header.scrolled {
+        background: rgba(10, 10, 15, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--text-primary);
+    }
+
+    .logo-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+    }
+
+    .nav {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+        transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--text-primary);
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+    /* === HERO === */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 8rem 0 4rem;
+    }
+
+    .hero-content {
+        max-width: 800px;
+    }
+
+    .hero-title {
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #ffffff, var(--accent-1), var(--accent-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from { filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.3)); }
+        to { filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.6)); }
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        color: var(--text-secondary);
+        margin-bottom: 0.75rem;
+    }
+
+    .hero-description {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 3rem;
+        line-height: 1.8;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        color: white;
+        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(139, 92, 246, 0.5);
+    }
+
+    .btn-glass {
+        background: var(--glass-primary);
+        backdrop-filter: blur(10px);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-glass:hover {
+        background: var(--glass-accent);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* === SECTIONS === */
+    .section {
+        padding: 8rem 0;
+        position: relative;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .section-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+    }
+
+    /* === GRID === */
+    .grid {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .grid-2 {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid-3 {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    /* === FEATURE CARD === */
+    .feature-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .feature-text {
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    /* === TIMELINE === */
+    .timeline {
+        position: relative;
+        padding-left: 3rem;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, var(--accent-1), var(--accent-2), var(--accent-3));
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 3rem;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -3.5rem;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+    }
+
+    .timeline-content {
+        background: var(--glass-primary);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .timeline-date {
+        color: var(--accent-2);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    /* === ACTIVITY CARD === */
+    .activity-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+    }
+
+    .activity-tag {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        background: rgba(139, 92, 246, 0.2);
+        color: var(--accent-1);
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .activity-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .activity-date {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* === LANDMARK CARD === */
+    .landmark-card {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        height: 400px;
+    }
+
+    .landmark-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .landmark-card:hover .landmark-image {
+        transform: scale(1.1);
+    }
+
+    .landmark-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 2rem;
+    }
+
+    .landmark-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .landmark-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .landmark-location {
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* === FOOTER === */
+    .footer {
+        background: rgba(10, 10, 15, 0.95);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 4rem 0 2rem;
+        margin-top: 8rem;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .footer-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .footer-link {
+        display: block;
+        color: var(--text-secondary);
+        text-decoration: none;
+        margin-bottom: 0.75rem;
+        transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+        color: var(--text-primary);
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    /* === FLOATING DOCK === */
+    .dock {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 999;
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .dock-item {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .dock-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-8px);
+    }
+
+    .dock-item i {
+        font-size: 1.2rem;
+    }
+
+    /* === MOBILE MENU === */
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+        .nav {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+        }
+
+        .hero {
+            padding: 6rem 0 3rem;
+        }
+
+        .section {
+            padding: 4rem 0;
+        }
+
+        .container {
+            padding: 0 1.5rem;
+        }
+
+        .timeline {
+            padding-left: 2rem;
+        }
+
+        .timeline-dot {
+            left: -2.5rem;
+        }
+
+        .dock {
+            bottom: 1rem;
+            padding: 0.5rem 0.75rem;
+            gap: 0.25rem;
+        }
+
+        .dock-item {
+            width: 40px;
+            height: 40px;
+        }
+
+        .dock-item i {
+            font-size: 1rem;
+        }
+    }
+
+    /* === SCROLL ANIMATIONS === */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* === LOADING SCREEN === */
+    .loader {
+        position: fixed;
+        inset: 0;
+        background: #0a0a0f;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+    }
+
+    .loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .loader-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .loader-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <img src="assets/HOUDA_squre.jpeg" alt="HOUDA+" class="loader-logo">
+        <div class="loader-text">HOUDA+</div>
+    </div>
+
+```
+<!-- Liquid Background -->
+<div class="liquid-bg">
+    <div class="liquid-orb orb-1"></div>
+    <div class="liquid-orb orb-2"></div>
+    <div class="liquid-orb orb-3"></div>
+</div>
+
+<!-- Header -->
+<header class="header" id="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                HOUDA+
+            </a>
+            <nav class="nav">
+                <a href="#about" class="nav-link">关于</a>
+                <a href="#history" class="nav-link">历程</a>
+                <a href="#activities" class="nav-link">活动</a>
+                <a href="#landmarks" class="nav-link">地标</a>
+                <a href="#contact" class="nav-link">关注</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">HOUDA+</h1>
+            <p class="hero-subtitle">侯明昊碗慧通讯录互吃大学</p>
+            <p class="hero-description">
+                长沙霉粉联盟六群分支 · 因共同热爱而聚集的特色粉丝社群
+            </p>
+            <div class="button-group">
+                <a href="#about" class="btn btn-primary">探索更多</a>
+                <a href="#contact" class="btn btn-glass">加入我们</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="section" id="about">
+    <div class="container">
+        <div class="section-header fade-in">
+            <h2 class="section-title">关于我们</h2>
+            <p class="section-subtitle">About HOUDA+</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="glass-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="feature-title">共同热爱</h3>
+                <p class="feature-text">
+                    因明星侯明昊碗慧而聚集，形成独特的粉丝文化和社群氛围，成员间建立深厚的情感联结。
+                </p>
+            </div>
+            <div class="glass-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3 class="feature-title">地域特色</h3>
+                <p class="feature-text">
+                    以长沙为活动中心，打造独具特色的本地化粉丝社群，侯家塘地铁站成为我们的精神地标。
+                </p>
+            </div>
+            <div class="glass-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">活跃社群</h3>
+                <p class="feature-text">
+                    以大学生为主体，成员多元包容，性少数群体占大多数，营造友善开放的交流环境。
+                </p>
+            </div>
+            <div class="glass-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="feature-title">丰富活动</h3>
+                <p class="feature-text">
+                    定期组织线下打卡、聚会活动，包括地标打卡、主题聚餐等，让成员在现实中建立连接。
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- History Section -->
+<section class="section" id="history">
+    <div class="container">
+        <div class="section-header fade-in">
+            <h2 class="section-title">发展历程</h2>
+            <p class="section-subtitle">Our Story</p>
+        </div>
+        <div class="timeline fade-in">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年春</div>
+                    <h3 class="timeline-title">联盟六群活跃</h3>
+                    <p class="feature-text">
+                        侯大成员开始在联盟六群活跃，期间发生了许多著名事件，如"杨晟AirPods事件"。
+                    </p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年4月</div>
+                    <h3 class="timeline-title">专辑宣发</h3>
+                    <p class="feature-text">
+                        长沙新生代歌手侯明昊婉慧在六群宣发新专辑《我是侯明昊》，引起众多粉丝支持。
+                    </p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年4月22日</div>
+                    <h3 class="timeline-title">侯大正式创立</h3>
+                    <p class="feature-text">
+                        谢祥泽联系牛继哲与侯婉慧，正式创立"侯大"，标志着社群的正式诞生。
+                    </p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年9月</div>
+                    <h3 class="timeline-title">社群扩大</h3>
+                    <p class="feature-text">
+                        以浣莎澜为首的成员从联盟金卡客户群体中扩充多名新成员，社群规模持续增长。
+                    </p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2025年10月</div>
+                    <h3 class="timeline-title">焕新启航</h3>
+                    <p class="feature-text">
+                        侯大正式启用新视觉系统以及新名称"HOUDA+"，开启全新发展篇章。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Activities Section -->
+<section class="section" id="activities">
+    <div class="container">
+        <div class="section-header fade-in">
+            <h2 class="section-title">活动回顾</h2>
+            <p class="section-subtitle">Event Highlights</p>
+        </div>
+        <div class="grid grid-3">
+            <div class="glass-card fade-in">
+                <img src="assets/activites/none.png" alt="518活动" class="activity-image">
+                <span class="activity-tag">特色活动</span>
+                <h3 class="activity-title">518创群纪念</h3>
+                <p class="feature-text">
+                    庆祝侯大创群一个月，成员欢聚一堂，共同纪念这个特别的日子。
+                </p>
+                <div class="activity-date">
+                    <i class="fas fa-calendar"></i>
+                    2024年5月18日
+                </div>
+            </div>
+            <div class="glass-card fade-in">
+                <img src="assets/activites/1.jpeg" alt="夏日歌会" class="activity-image">
+                <span class="activity-tag">联盟活动</span>
+                <h3 class="activity-title">夏日歌会</h3>
+                <p class="feature-text">
+                    参与长沙霉粉联盟夏日歌会，成员积极参与，共享音乐盛宴。
+                </p>
+                <div class="activity-date">
+                    <i class="fas fa-calendar"></i>
+                    2024年夏季
+                </div>
+            </div>
+            <div class="glass-card fade-in">
+                <img src="assets/activites/2.jpeg" alt="跨年观影" class="activity-image">
+                <span class="activity-tag">联盟活动</span>
+                <h3 class="activity-title">跨年观影</h3>
+                <p class="feature-text">
+                    时代巡演大电影跨年观影活动，共同迎接新的一年。
+                </p>
+                <div class="activity-date">
+                    <i class="fas fa-calendar"></i>
+                    2024-2025跨年
+                </div>
+            </div>
+            <div class="glass-card fade-in">
+                <img src="assets/activites/h.jpeg" alt="侯家塘打卡" class="activity-image">
+                <span class="activity-tag">常驻活动</span>
+                <h3 class="activity-title">侯家塘打卡</h3>
+                <p class="feature-text">
+                    在本命地铁站"侯家塘"的标志性打卡活动，随时欢迎参与。
+                </p>
+                <div class="activity-date">
+                    <i class="fas fa-calendar-check"></i>
+                    长期开展
+                </div>
+            </div>
+            <div class="glass-card fade-in">
+                <img src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="药房打卡" class="activity-image">
+                <span class="activity-tag">常驻活动</span>
+                <h3 class="activity-title">老百姓大药房打卡</h3>
+                <p class="feature-text">
+                    本命药房打卡活动，体现社群的独特文化特色。
+                </p>
+                <div class="activity-date">
+                    <i class="fas fa-calendar-check"></i>
+                    长期开展
+                </div>
+            </div>
+            <div class="glass-card fade-in">
+                <img src="assets/activites/cscsu.jpeg" alt="联盟活动" class="activity-image">
+                <span class="activity-tag">联盟活动</span>
+                <h3 class="activity-title">其他联盟活动</h3>
+                <p class="feature-text">
+                    作为长沙霉粉联盟重要组成部分，参与多项联盟活动。
+                </p>
+                <div class="activity-date">
+                    <i class="fas fa-calendar"></i>
+                    不定期举行
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Landmarks Section -->
+<section class="section" id="landmarks">
+    <div class="container">
+        <div class="section-header fade-in">
+            <h2 class="section-title">特色地标</h2>
+            <p class="section-subtitle">Signature Landmarks</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="landmark-card fade-in">
+                <img src="assets/activites/h.jpeg" alt="侯家塘地铁站" class="landmark-image">
+                <div class="landmark-overlay">
+                    <div class="landmark-icon">
+                        <i class="fas fa-subway"></i>
+                    </div>
+                    <h3 class="landmark-title">侯家塘地铁站</h3>
+                    <p class="feature-text">
+                        侯大的本命地铁站，社群身份认同的重要象征。
+                    </p>
+                    <div class="landmark-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        长沙地铁1号线
+                    </div>
+                </div>
+            </div>
+            <div class="landmark-card fade-in">
+                <img src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" class="landmark-image">
+                <div class="landmark-overlay">
+                    <div class="landmark-icon">
+                        <i class="fas fa-medkit"></i>
+                    </div>
+                    <h3 class="landmark-title">老百姓大药房</h3>
+                    <p class="feature-text">
+                        侯大本命药房，独特的社群文化打卡点。
+                    </p>
+                    <div class="landmark-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        彭家巷分店
+                    </div>
+                </div>
+            </div>
+            <div class="landmark-card fade-in">
+                <img src="assets/activites/sxt.jpeg" alt="盛香亭" class="landmark-image">
+                <div class="landmark-overlay">
+                    <div class="landmark-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3 class="landmark-title">盛香亭转转热卤</h3>
+                    <p class="feature-text">
+                        成员钟爱的转转火锅，社群聚餐首选圣地。
+                    </p>
+                    <div class="landmark-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        长沙市
+                    </div>
+                </div>
+            </div>
+            <div class="landmark-card fade-in">
+                <img src="assets/activites/tl.jpeg" alt="律所" class="landmark-image">
+                <div class="landmark-overlay">
+                    <div class="landmark-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3 class="landmark-title">湖南金厚律所</h3>
+                    <p class="feature-text">
+                        侯大法务唐律工作地，法务象征地标。
+                    </p>
+                    <div class="landmark-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        北京市
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section" id="contact">
+    <div class="container">
+        <div class="section-header fade-in">
+            <h2 class="section-title">关注我们</h2>
+            <p class="section-subtitle">Stay Connected</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="glass-card fade-in" style="text-align: center;">
+                <div class="feature-icon" style="margin-left: auto; margin-right: auto;">
+                    <i class="fab fa-weixin"></i>
+                </div>
+                <h3 class="feature-title">微信公众号</h3>
+                <p class="feature-text" style="margin-bottom: 2rem;">
+                    扫码关注获取最新资讯
+                </p>
+                <img src="assets/gzh.jpeg" alt="公众号二维码" style="max-width: 200px; border-radius: 16px; margin: 0 auto;">
+            </div>
+            <div class="glass-card fade-in" style="text-align: center;">
+                <div class="feature-icon" style="margin-left: auto; margin-right: auto;">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">微信小程序</h3>
+                <p class="feature-text" style="margin-bottom: 2rem;">
+                    扫码使用小程序参与互动
+                </p>
+                <img src="assets/xcx.jpeg" alt="小程序二维码" style="max-width: 200px; border-radius: 16px; margin: 0 auto;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <div class="logo" style="margin-bottom: 1rem;">
+                    <div class="logo-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    HOUDA+
+                </div>
+                <p class="feature-text">
+                    侯明昊碗慧通讯录互吃大学<br>
+                    长沙霉粉联盟六群分支
+                </p>
+            </div>
+            <div>
+                <h3 class="footer-title">快速导航</h3>
+                <a href="#about" class="footer-link">关于我们</a>
+                <a href="#history" class="footer-link">发展历程</a>
+                <a href="#activities" class="footer-link">活动回顾</a>
+                <a href="#landmarks" class="footer-link">特色地标</a>
+            </div>
+            <div>
+                <h3 class="footer-title">联系方式</h3>
+                <a href="#contact" class="footer-link">微信公众号</a>
+                <a href="#contact" class="footer-link">微信小程序</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 HOUDA+ All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Floating Dock -->
+<div class="dock">
+    <a href="#about" class="dock-item">
+        <i class="fas fa-info-circle"></i>
+    </a>
+    <a href="#history" class="dock-item">
+        <i class="fas fa-history"></i>
+    </a>
+    <a href="#activities" class="dock-item">
+        <i class="fas fa-calendar"></i>
+    </a>
+    <a href="#landmarks" class="dock-item">
+        <i class="fas fa-map-marked-alt"></i>
+    </a>
+    <a href="#contact" class="dock-item">
+        <i class="fas fa-paper-plane"></i>
+    </a>
+</div>
+
+<script>
+    // Loading Screen
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('hidden');
+        }, 1500);
+    });
+
+    // Header Scroll Effect
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('header');
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Intersection Observer for Fade In
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+    });
+</script>
+```
+
+</body>
+</html>
