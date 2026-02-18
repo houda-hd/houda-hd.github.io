@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侯大创立时间 - 倒计时</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- 液态背景装饰 (Liquid Blobs) --- */
+        .background-blobs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            filter: blur(60px);
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: move 25s infinite alternate ease-in-out;
+        }
+
+        .blob-1 { background: #1e3a8a; top: -10%; left: -5%; }
+        .blob-2 { background: #581c87; bottom: -10%; right: -5%; animation-delay: -5s; }
+        .blob-3 { background: #831843; top: 30%; left: 35%; animation-delay: -10s; width: 400px; height: 400px; }
+
+        @keyframes move {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { transform: translate(15vw, 15vh) scale(1.3) rotate(120deg); }
+        }
+
+        /* --- 液态玻璃容器 (Liquid Glass Container) --- */
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            padding: 60px 40px;
+            
+            /* 核心毛玻璃效果 */
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            
+            /* 液态不规则边缘与动画 */
+            border: 1px solid var(--glass-border);
+            animation: morph 12s ease-in-out infinite, fadeIn 1.5s ease-out;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes morph {
+            0% { border-radius: 40px 40px 40px 40px; }
+            33% { border-radius: 70% 30% 50% 50% / 50% 30% 70% 50%; }
+            66% { border-radius: 40% 60% 30% 70% / 60% 40% 60% 40%; }
+            100% { border-radius: 40px 40px 40px 40px; }
+        }
+
+        /* 标题样式 */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            background: linear-gradient(180deg, #fff, #999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* 倒计时网格 */
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .time-value {
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            /* 给数字增加一点点发光感 */
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .time-label {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+        }
+
+        /* 年份选择器 */
+        .target-control {
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 10px 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .target-control:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        select {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right center;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .countdown-grid { gap: 10px; }
+            .time-value { font-size: 2.2rem; }
+            .container { padding: 40px 20px; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <h1>距 侯大周年还有</h1>
+        <div class="subtitle">Designed by Hou Da</div>
+
+        <div class="countdown-grid">
+            <div class="time-box">
+                <span class="time-value" id="days">00</span>
+                <span class="time-label">Days</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="hours">00</span>
+                <span class="time-label">Hours</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="minutes">00</span>
+                <span class="time-label">Minutes</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="seconds">00</span>
+                <span class="time-label">Seconds</span>
+            </div>
+        </div>
+
+        <div class="target-control">
+            <select id="year-select"></select>
+        </div>
+    </div>
+
+    <script>
+        const targetMonth = 3; // 4月
+        const targetDay = 22;
+        
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const yearSelect = document.getElementById('year-select');
+
+        let targetDate;
+        let timerInterval;
+
+        function init() {
+            populateYears();
+            determineInitialTargetDate();
+            startTimer();
+        }
+
+        function populateYears() {
+            const currentYear = new Date().getFullYear();
+            for (let i = 0; i < 10; i++) {
+                const year = currentYear + i;
+                const option = document.createElement('option');
+                option.value = year;
+                option.text = `Target Year: ${year}`;
+                option.style.color = "#000"; 
+                yearSelect.appendChild(option);
+            }
+        }
+
+        function determineInitialTargetDate() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            let proposedDate = new Date(currentYear, targetMonth, targetDay, 0, 0, 0);
+            if (now > proposedDate) {
+                yearSelect.value = currentYear + 1;
+            } else {
+                yearSelect.value = currentYear;
+            }
+            updateTargetFromSelect();
+        }
+
+        yearSelect.addEventListener('change', () => {
+            updateTargetFromSelect();
+            clearInterval(timerInterval);
+            startTimer();
+        });
+
+        function updateTargetFromSelect() {
+            const selectedYear = parseInt(yearSelect.value);
+            targetDate = new Date(selectedYear, targetMonth, targetDay, 0, 0, 0);
+        }
+
+        function startTimer() {
+            function update() {
+                const now = new Date().getTime();
+                const distance = targetDate.getTime() - now;
+
+                if (distance < 0) {
+                    [daysEl, hoursEl, minutesEl, secondsEl].forEach(el => el.innerText = "00");
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.innerText = d < 10 ? `0${d}` : d;
+                hoursEl.innerText = h < 10 ? `0${h}` : h;
+                minutesEl.innerText = m < 10 ? `0${m}` : m;
+                secondsEl.innerText = s < 10 ? `0${s}` : s;
+            }
+            update();
+            timerInterval = setInterval(update, 1000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
