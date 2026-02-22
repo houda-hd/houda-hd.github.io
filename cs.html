@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>长沙火车站候车室 - 立体平面示意图</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2c3e50;
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 50px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .scene {
+            width: 800px;
+            height: 600px;
+            perspective: 1200px; /* 创造3D透视空间 */
+        }
+
+        .floor-plan {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            /* 调整角度形成轴测图 (Isometric) 视角 */
+            transform: rotateX(60deg) rotateZ(-35deg);
+            background-color: #34495e;
+            box-shadow: -20px 20px 50px rgba(0, 0, 0, 0.5);
+            border: 2px solid #7f8c8d;
+            transition: transform 0.5s ease;
+        }
+
+        .floor-plan:hover {
+            transform: rotateX(55deg) rotateZ(-30deg); /* 鼠标悬浮时视角微调 */
+        }
+
+        /* 基础区域样式 */
+        .zone {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            transform-style: preserve-3d;
+            transform: translateZ(10px); /* 基础高度 */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: -5px 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* 悬浮时产生立体弹起效果 */
+        .zone:hover {
+            transform: translateZ(40px);
+            box-shadow: -15px 15px 30px rgba(0,0,0,0.5);
+            filter: brightness(1.2);
+        }
+
+        /* 具体功能区定位与配色 */
+        /* 中央通道 */
+        .corridor {
+            width: 200px;
+            height: 500px;
+            left: 300px;
+            top: 50px;
+            background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+            transform: translateZ(5px);
+        }
+
+        /* 进站/安检口 (底部) */
+        .entrance {
+            width: 300px;
+            height: 80px;
+            left: 250px;
+            top: 550px;
+            background-color: #e67e22;
+        }
+
+        /* 检票口通往站台 (顶部) */
+        .gates {
+            width: 400px;
+            height: 60px;
+            left: 200px;
+            top: -10px;
+            background-color: #e74c3c;
+        }
+
+        /* 候车室 (左侧 1, 2) */
+        .waiting-room-1 { width: 250px; height: 200px; left: 30px; top: 50px; background-color: #2980b9; }
+        .waiting-room-2 { width: 250px; height: 200px; left: 30px; top: 270px; background-color: #2980b9; }
+
+        /* 候车室 (右侧 3, 4) */
+        .waiting-room-3 { width: 250px; height: 200px; left: 520px; top: 50px; background-color: #27ae60; }
+        .waiting-room-4 { width: 250px; height: 200px; left: 520px; top: 270px; background-color: #27ae60; }
+
+        /* 辅助设施 */
+        .restroom-left { width: 80px; height: 60px; left: 30px; top: 490px; background-color: #8e44ad; font-size: 12px; }
+        .store-right { width: 100px; height: 60px; left: 670px; top: 490px; background-color: #f1c40f; color: #333; text-shadow: none; font-size: 12px; }
+        .vip-lounge { width: 120px; height: 80px; left: 520px; top: 490px; background-color: #c0392b; font-size: 12px; }
+
+        /* 伪3D墙壁厚度模拟 */
+        .zone::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 20px; /* 厚度 */
+            background-color: rgba(0, 0, 0, 0.4);
+            transform-origin: top;
+            transform: rotateX(-90deg);
+        }
+        .zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -20px; /* 厚度 */
+            width: 20px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            transform-origin: right;
+            transform: rotateY(-90deg);
+        }
+        
+        .note {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #bdc3c7;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>长沙火车站候车室 - 立体平面图 (示意)</h1>
+
+    <div class="scene">
+        <div class="floor-plan">
+            <div class="zone gates">1-4号检票口 (通往站台)</div>
+            <div class="zone entrance">安检口 / 扶梯上行处</div>
+
+            <div class="zone corridor">中央大通道</div>
+
+            <div class="zone waiting-room-1">第一候车室 (特快/直达)</div>
+            <div class="zone waiting-room-2">第二候车室 (普快/管内)</div>
+            <div class="zone waiting-room-3">第三候车室 (城际/动车)</div>
+            <div class="zone waiting-room-4">第四候车室 (综合)</div>
+
+            <div class="zone restroom-left">洗手间/饮水处</div>
+            <div class="zone store-right">便利店/特产</div>
+            <div class="zone vip-lounge">软席/重点旅客</div>
+        </div>
+    </div>
+
+    <div class="note">
+        💡 提示：将鼠标悬浮在不同的候车区域上，可以查看 3D 浮动交互效果。<br>
+        (注：此为纯 CSS 构建的轴测透视示意图，非实际建筑级等比例图纸)
+    </div>
+
+</body>
+</html>
+
