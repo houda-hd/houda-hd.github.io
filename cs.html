@@ -3,155 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>长沙站移动版全景图</title>
+    <title>长沙站 - 3D空间分布图</title>
     <style>
         :root {
-            --wall-color: #34495e;
-            --floor-color: #2c3e50;
-            --platform-color: #2980b9;
-            --room-1-4: #27ae60;
-            --highlight: #e74c3c;
+            --bg: #0f172a;
+            --floor-1: rgba(51, 65, 85, 0.9);
+            --floor-2: rgba(30, 41, 59, 0.95);
+            --waiting-room: #0ea5e9;
+            --vip-room: #f43f5e;
+            --platform: #64748b;
+            --text: #f8fafc;
         }
 
         body {
-            margin: 0; background: #1a1a1a; color: white;
-            font-family: sans-serif; overflow: hidden;
+            margin: 0; background-color: var(--bg); color: var(--text);
+            font-family: -apple-system, sans-serif; overflow: hidden;
             display: flex; flex-direction: column; height: 100vh;
         }
 
-        .header { padding: 15px; text-align: center; background: #000; z-index: 10; }
-        .header h1 { margin: 0; font-size: 1.2rem; color: #f1c40f; }
+        /* 顶部信息 */
+        .ui-overlay {
+            padding: 20px; text-align: center; pointer-events: none; z-index: 100;
+        }
+        .ui-overlay h1 { margin: 0; font-size: 1.4rem; letter-spacing: 2px; }
+        .ui-overlay p { font-size: 0.8rem; opacity: 0.7; }
 
-        /* 3D 容器 */
-        .viewport {
-            flex: 1; perspective: 1000px;
+        /* 3D 舞台 */
+        .stage {
+            flex: 1; perspective: 1200px;
             display: flex; align-items: center; justify-content: center;
         }
 
-        .world {
-            width: 300px; height: 500px; /* 针对手机屏幕比例 */
+        .container {
+            width: 320px; height: 500px;
             position: relative; transform-style: preserve-3d;
-            transform: rotateX(65deg) rotateZ(-25deg);
-            transition: transform 0.5s ease;
+            transform: rotateX(60deg) rotateZ(-30deg);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 统一的基础块 */
-        .unit {
-            position: absolute; transform-style: preserve-3d;
-            border: 1px solid rgba(255,255,255,0.2);
+        /* 层级共用样式 */
+        .level {
+            position: absolute; width: 100%; transform-style: preserve-3d;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .label {
+            position: absolute; transform: rotateZ(30deg) rotateX(-60deg);
+            font-size: 10px; background: rgba(0,0,0,0.5); padding: 2px 5px;
+            white-space: nowrap; pointer-events: none;
+        }
+
+        /* ================= 3层：站台层 (最底层) ================= */
+        .platform-layer {
+            height: 180px; top: 0; background: var(--platform);
+            transform: translateZ(0px);
+        }
+        .rail {
+            height: 2px; width: 100%; background: #334155;
+            position: absolute;
+        }
+
+        /* ================= 1层：进站大厅 (地面层) ================= */
+        .floor-1-layer {
+            height: 120px; bottom: 0; background: var(--floor-1);
+            transform: translateZ(50px);
+        }
+        .hall-1 { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+
+        /* ================= 2层：核心候车室 (悬浮层) ================= */
+        .floor-2-layer {
+            height: 240px; bottom: 130px; 
+            background: var(--floor-2);
+            transform: translateZ(120px); /* 向上拉开距离 */
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        /* 候车室布局 */
+        .room {
+            position: absolute; background: var(--waiting-room);
+            border: 1px solid rgba(255,255,255,0.3);
             display: flex; align-items: center; justify-content: center;
-            font-size: 10px; text-align: center; font-weight: bold;
+            font-size: 11px; padding: 5px; box-sizing: border-box;
         }
 
-        /* 侧边墙模拟 */
-        .unit::after {
-            content: ''; position: absolute; top: 100%; left: 0; width: 100%;
-            height: 15px; background: rgba(0,0,0,0.4);
-            transform-origin: top; transform: rotateX(-90deg);
-        }
-
-        /* --- 站场区域 (后端) --- */
-        .platform { width: 280px; height: 30px; background: var(--platform-color); left: 10px; }
-        .p1 { top: 0px; transform: translateZ(5px); }
-        .p2 { top: 40px; transform: translateZ(5px); }
-        .p3 { top: 80px; transform: translateZ(5px); }
-        .p4 { top: 120px; transform: translateZ(5px); }
-
-        /* --- 候车室区域 (二楼 - 高位) --- */
-        .waiting-area { width: 280px; height: 220px; left: 10px; top: 170px; background: #34495e; transform: translateZ(40px); }
+        .wr-1 { width: 130px; height: 100px; left: 10px; top: 10px; }
+        .wr-2 { width: 130px; height: 100px; left: 10px; bottom: 10px; }
+        .wr-3 { width: 130px; height: 100px; right: 10px; top: 10px; background: #0284c7; }
+        .wr-4 { width: 130px; height: 100px; right: 10px; bottom: 10px; background: #0284c7; }
         
-        /* 内部房间分块 */
-        .room { position: absolute; background: var(--room-1-4); border: 1px solid #fff; }
-        .r1 { width: 110px; height: 90px; left: 10px; top: 10px; } /* 第一候车室 */
-        .r2 { width: 110px; height: 90px; left: 10px; top: 120px; } /* 第二候车室 */
-        .r3 { width: 110px; height: 90px; right: 10px; top: 10px; background: #2ecc71; } /* 第三候车室 */
-        .r4 { width: 110px; height: 90px; right: 10px; top: 120px; background: #2ecc71; } /* 第四候车室 */
-        
-        /* 中央走廊与检票口 */
-        .gate-line { width: 40px; height: 220px; left: 120px; top: 0; background: #95a5a6; display: flex; flex-direction: column; justify-content: space-around; }
-        .gate-node { height: 20px; background: var(--highlight); color: white; font-size: 8px; }
-
-        /* --- 进站大厅 (一楼 - 低位) --- */
-        .lobby { width: 280px; height: 80px; left: 10px; top: 400px; background: #7f8c8d; transform: translateZ(10px); }
-        .ticket-office { width: 60px; height: 60px; left: 10px; top: 10px; background: #e67e22; position: absolute; }
-        .exit { width: 60px; height: 60px; right: 10px; top: 10px; background: #d35400; position: absolute; }
-
-        /* 标志性钟楼 (手机端垂直拉高) */
-        .tower {
-            width: 40px; height: 40px; background: #ecf0f1;
-            left: 130px; top: 420px; transform: translateZ(100px);
-        }
-        .torch {
-            width: 20px; height: 20px; background: red; border-radius: 50% 50% 0 50%;
-            position: absolute; top: 10px; left: 10px; transform: translateZ(50px) rotateZ(45deg);
-            box-shadow: 0 0 15px red;
+        .central-path {
+            position: absolute; width: 40px; height: 100%; left: 140px;
+            background: rgba(255,255,255,0.1);
         }
 
-        .controls {
-            padding: 20px; background: #000; display: flex; justify-content: space-around;
+        .gate {
+            width: 100%; height: 15px; background: var(--vip-room);
+            position: absolute; top: 0; display: flex; align-items: center; justify-content: center;
+            font-size: 9px;
         }
-        button { padding: 10px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; }
+
+        /* 钟楼与火炬 */
+        .tower-structure {
+            position: absolute; width: 40px; height: 40px;
+            background: #cbd5e1; bottom: 20px; left: 140px;
+            transform: translateZ(60px); transform-style: preserve-3d;
+        }
+        .tower-structure::after {
+            content: '长沙站'; position: absolute; width: 40px; height: 40px;
+            background: #94a3b8; transform: rotateY(90deg) translateZ(-20px);
+            font-size: 10px; color: #1e293b; writing-mode: vertical-lr; padding-left: 15px;
+        }
+        .torch-top {
+            position: absolute; width: 15px; height: 25px; background: #ef4444;
+            bottom: 0; left: 12.5px; transform: translateZ(40px);
+            border-radius: 50% 50% 0 50%; box-shadow: 0 0 15px #ef4444;
+        }
+
+        /* 交互说明 */
+        .legend {
+            padding: 15px; background: rgba(0,0,0,0.8);
+            font-size: 0.75rem; line-height: 1.6;
+        }
+        .color-tag { display: inline-block; width: 10px; height: 10px; margin-right: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>长沙火车站全景示意图 (移动端)</h1>
+    <div class="ui-overlay">
+        <h1>长沙站 3D 空间结构</h1>
+        <p>双指缩放或滑动旋转观察</p>
     </div>
 
-    <div class="viewport" id="viewport">
-        <div class="world" id="world">
-            <div class="unit platform p1">1号站台</div>
-            <div class="unit platform p2">2号站台</div>
-            <div class="unit platform p3">3号站台</div>
-            <div class="unit platform p4">4号站台</div>
+    <div class="stage">
+        <div class="container" id="mainObj">
+            
+            <div class="level platform-layer">
+                <div class="rail" style="top: 20%"></div>
+                <div class="rail" style="top: 50%"></div>
+                <div class="rail" style="top: 80%"></div>
+                <div class="label" style="top: 50%; left: 10px;">1-4号站台区域</div>
+            </div>
 
-            <div class="unit waiting-area">
-                <div class="room r1">第一候车室</div>
-                <div class="room r2">第二候车室</div>
-                <div class="room r3">第三候车室</div>
-                <div class="room r4">第四候车室</div>
-                <div class="gate-line">
-                    <div class="gate-node">检票1</div>
-                    <div class="gate-node">检票2</div>
-                    <div class="gate-node">检票3</div>
-                    <div class="gate-node">检票4</div>
+            <div class="level floor-1-layer">
+                <div class="hall-1">一楼大厅 (安检/售票/出站)</div>
+                <div class="label" style="top:-20px;">F1 地面层</div>
+            </div>
+
+            <div class="level floor-2-layer">
+                <div class="central-path">
+                    <div class="gate">检票口</div>
                 </div>
+                
+                <div class="room wr-1">第一候车室<br>(1号检票)</div>
+                <div class="room wr-2">第二候车室<br>(2号检票)</div>
+                <div class="room wr-3">第三候车室<br>(3号检票)</div>
+                <div class="room wr-4">第四候车室<br>(4号检票)</div>
+
+                <div class="tower-structure">
+                    <div class="torch-top"></div>
+                </div>
+                
+                <div class="label" style="top:-20px;">F2 核心候车层</div>
             </div>
 
-            <div class="unit lobby">
-                <div class="ticket-office">售票处</div>
-                <div class="unit exit">出站口</div>
-                <span>中央大厅 (进站安检)</span>
-            </div>
-
-            <div class="unit tower">
-                <div class="torch"></div>
-            </div>
         </div>
     </div>
 
-    <div class="controls">
-        <button onclick="rotate(0)">俯视</button>
-        <button onclick="rotate(1)">侧视</button>
-        <button onclick="rotate(2)">进站视角</button>
+    <div class="legend">
+        <div><span class="color-tag" style="background:var(--waiting-room)"></span>蓝色：主要候车区域 (分居大厅两侧)</div>
+        <div><span class="color-tag" style="background:var(--vip-room)"></span>红色：检票口/火炬塔 (建筑灵魂)</div>
+        <div><span class="color-tag" style="background:var(--platform)"></span>灰色：站台层 (列车停靠区)</div>
     </div>
 
     <script>
-        const world = document.getElementById('world');
-        function rotate(type) {
-            if(type === 0) world.style.transform = 'rotateX(80deg) rotateZ(0deg)';
-            if(type === 1) world.style.transform = 'rotateX(65deg) rotateZ(-45deg)';
-            if(type === 2) world.style.transform = 'rotateX(45deg) rotateZ(-10deg) scale(0.8)';
-        }
+        const container = document.getElementById('mainObj');
+        let isMoving = false;
+        let startX, startY;
+        let rotateY = -30;
+        let rotateX = 60;
 
-        // 简单的移动端触摸旋转逻辑
-        let startX;
-        document.addEventListener('touchstart', e => startX = e.touches[0].pageX);
-        document.addEventListener('touchmove', e => {
-            let diff = e.touches[0].pageX - startX;
-            world.style.transform = `rotateX(65deg) rotateZ(${-25 + diff/5}deg)`;
+        // 移动端触摸旋转逻辑
+        document.addEventListener('touchstart', e => {
+            startX = e.touches[0].pageX;
+            startY = e.touches[0].pageY;
         });
+
+        document.addEventListener('touchmove', e => {
+            const x = e.touches[0].pageX;
+            const y = e.touches[0].pageY;
+            const diffX = x - startX;
+            const diffY = y - startY;
+            
+            // 限制旋转范围
+            const newRY = rotateY + diffX * 0.5;
+            const newRX = Math.max(30, Math.min(80, rotateX - diffY * 0.5));
+            
+            container.style.transform = `rotateX(${newRX}deg) rotateZ(${newRY}deg)`;
+            e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
