@@ -1,0 +1,171 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<style>
+/* 新增：时间线动效相关的 CSS */
+.timeline-container {
+    position: relative;
+    padding: 40px 0;
+}
+
+/* 动态增长的进度条容器 */
+.timeline-progress-bar {
+    position: absolute;
+    left: 32px; /* 移动端对齐 */
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+}
+@media (min-width: 768px) {
+    .timeline-progress-bar {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* 实际增长的颜色条 */
+.timeline-progress-inner {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 0%; /* 初始高度为0 */
+    background: #111111; /* 你的 primary 颜色 */
+    border-radius: 2px;
+}
+
+/* 初始状态：隐藏节点内容 */
+.timeline-item {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.2s ease-out;
+}
+
+/* 节点圆点缩放效果 */
+.timeline-dot {
+    transform: scale(0);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.timeline-dot.active {
+    transform: scale(1);
+}
+</style>
+
+<section class="py-16 md:py-32 bg-transparent" id="history">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">
+                <span class="text-primary">HOUDA+ 发展历程</span>
+                <br/>
+                <span class="block text-gray-600 text-sm sm:text-base">Our Story</span>
+            </h2>
+            <div class="w-20 h-1 bg-accent mx-auto mb-6"></div>
+        </div>
+
+        <div class="relative timeline-container" id="gsap-timeline-wrapper">
+            <div class="timeline-progress-bar">
+                <div class="timeline-progress-inner" id="progress-line"></div>
+            </div>
+
+            <div class="relative mb-24 pl-20 md:pl-0 timeline-item">
+                <div class="flex flex-col md:flex-row items-start md:items-center">
+                    <div class="md:w-1/2 md:pr-16 md:text-right">
+                        <span class="text-primary font-bold text-lg">2024 春</span>
+                        <h3 class="text-xl font-bold mb-2">在联盟六群活跃</h3>
+                        <p class="text-secondary text-sm md:text-base">成员开始在六群活跃，期间发生了著名的"杨晟AirPods事件"。</p>
+                    </div>
+                    <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full z-10 timeline-dot"></div>
+                    <div class="md:w-1/2 md:pl-16"></div>
+                </div>
+            </div>
+
+            <div class="relative mb-24 pl-20 md:pl-0 timeline-item">
+                <div class="flex flex-col md:flex-row items-start md:items-center">
+                    <div class="md:w-1/2 md:pr-16 hidden md:block"></div>
+                    <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full z-10 timeline-dot"></div>
+                    <div class="md:w-1/2 md:pl-16">
+                        <span class="text-primary font-bold text-lg">2024.04</span>
+                        <h3 class="text-xl font-bold mb-2">新专辑宣发</h3>
+                        <p class="text-secondary text-sm md:text-base">侯明昊碗慧宣发新专辑《我是侯明昊》，获得众多粉丝支持。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative mb-24 pl-20 md:pl-0 timeline-item">
+                <div class="flex flex-col md:flex-row items-start md:items-center">
+                    <div class="md:w-1/2 md:pr-16 md:text-right">
+                        <span class="text-primary font-bold text-lg">2024.04.22</span>
+                        <h3 class="text-xl font-bold mb-2">侯大正式创立</h3>
+                        <p class="text-secondary text-sm md:text-base">因六群颁布新规，谢祥泽、牛继哲与侯婉慧共同创立了"侯大"。</p>
+                    </div>
+                    <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full z-10 timeline-dot"></div>
+                    <div class="md:w-1/2 md:pl-16"></div>
+                </div>
+            </div>
+
+            <div class="relative mb-24 pl-20 md:pl-0 timeline-item">
+                <div class="flex flex-col md:flex-row items-start md:items-center">
+                    <div class="md:w-1/2 md:pr-16 hidden md:block"></div>
+                    <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full z-10 timeline-dot"></div>
+                    <div class="md:w-1/2 md:pl-16">
+                        <span class="text-primary font-bold text-lg">2024.09</span>
+                        <h3 class="text-xl font-bold mb-2">规模持续扩大</h3>
+                        <p class="text-secondary text-sm md:text-base">成员进入联盟金卡群体，以浣莎澜为首进一步扩充新血。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative mb-16 pl-20 md:pl-0 timeline-item">
+                <div class="flex flex-col md:flex-row items-start md:items-center">
+                    <div class="md:w-1/2 md:pr-16 md:text-right">
+                        <span class="text-primary font-bold text-lg">2025.10</span>
+                        <h3 class="text-xl font-bold mb-2">HOUDA+ 焕新启航</h3>
+                        <p class="text-secondary text-sm md:text-base">正式启用全新视觉系统及“HOUDA+”品牌名称。</p>
+                    </div>
+                    <div class="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full z-10 timeline-dot"></div>
+                    <div class="md:w-1/2 md:pl-16"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 1. 线条增长动画
+    gsap.to("#progress-line", {
+        height: "100%",
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#gsap-timeline-wrapper",
+            start: "top 70%", // 当时间线顶部到达视口 70% 位置时开始
+            end: "bottom 80%", // 到达视口 80% 时结束
+            scrub: 1.5, // 核心！让动画平滑跟踪滚动条，数值越大越有“惯性”
+        }
+    });
+
+    // 2. 节点依次弹出动画
+    const items = document.querySelectorAll(".timeline-item");
+    items.forEach((item) => {
+        const dot = item.querySelector(".timeline-dot");
+        
+        gsap.to(item, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: item,
+                start: "top 85%", 
+                end: "top 50%",
+                toggleActions: "play none none reverse", // 往回滚时动画反向
+                onEnter: () => dot.classList.add('active'),
+                onLeaveBack: () => dot.classList.remove('active')
+            }
+        });
+    });
+});
+</script>
