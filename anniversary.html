@@ -1,374 +1,182 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>侯大纪念日倒计时</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --glass-bg: rgba(255,255,255,0.08);
-    --glass-border: rgba(255,255,255,0.25);
-    --glass-shadow: rgba(0,0,0,0.3);
-    --glow: rgba(255,220,170,0.4);
-    --text-main: rgba(255,248,235,0.95);
-    --text-dim: rgba(255,235,200,0.6);
-    --accent: #f5c87a;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侯大纪念日倒计时</title>
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --primary-text: #2c3e50;
+            --accent-color: #6366f1;
+        }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-min-height: 100vh;
-background: radial-gradient(ellipse at 20% 30%, #1a0a2e 0%, #0d1a2e 40%, #0a0f1a 100%);
-overflow: hidden;
-font-family: ‘ZCOOL XiaoWei’, serif;
-display: flex;
-align-items: center;
-justify-content: center;
-position: relative;
-}
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 使用优美的渐变作为背景基底 */
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 100%);
+            font-family: "SF Pro Display", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
 
-/* 背景星粒 */
-.stars {
-position: fixed; inset: 0; pointer-events: none;
-background-image:
-radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
-radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
-radial-gradient(1.5px 1.5px at 70% 15%, rgba(255,255,255,0.7) 0%, transparent 100%),
-radial-gradient(1px 1px at 85% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
-radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
-radial-gradient(2px 2px at 30% 90%, rgba(255,255,255,0.2) 0%, transparent 100%),
-radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
-radial-gradient(1.5px 1.5px at 10% 55%, rgba(255,220,150,0.4) 0%, transparent 100%),
-radial-gradient(1px 1px at 60% 35%, rgba(255,255,255,0.3) 0%, transparent 100%),
-radial-gradient(2px 2px at 25% 75%, rgba(255,200,150,0.3) 0%, transparent 100%);
-}
+        /* 灵动背景光斑 */
+        .blob {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: move 20s infinite alternate;
+        }
 
-/* 光晕球 */
-.orb {
-position: fixed;
-border-radius: 50%;
-filter: blur(80px);
-opacity: 0.35;
-pointer-events: none;
-animation: drift 12s ease-in-out infinite alternate;
-}
-.orb1 {
-width: 500px; height: 500px;
-background: radial-gradient(circle, #6b3fa0 0%, transparent 70%);
-top: -150px; left: -100px;
-animation-delay: 0s;
-}
-.orb2 {
-width: 400px; height: 400px;
-background: radial-gradient(circle, #1a5fa0 0%, transparent 70%);
-bottom: -100px; right: -80px;
-animation-delay: -5s;
-}
-.orb3 {
-width: 300px; height: 300px;
-background: radial-gradient(circle, #a05030 0%, transparent 70%);
-top: 40%; left: 50%;
-animation-delay: -8s;
-}
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(52, 211, 153, 0.2);
+            left: 10%;
+            top: 10%;
+            animation-delay: -5s;
+        }
 
-@keyframes drift {
-0% { transform: translate(0,0) scale(1); }
-100% { transform: translate(30px, 20px) scale(1.1); }
-}
+        @keyframes move {
+            from { transform: translate(-10%, -10%) rotate(0deg); }
+            to { transform: translate(20%, 20%) rotate(360deg); }
+        }
 
-/* 主容器 液态玻璃 */
-.container {
-position: relative;
-z-index: 10;
-text-align: center;
-padding: 56px 64px 48px;
-border-radius: 32px;
-background: rgba(255,255,255,0.07);
-border: 1px solid rgba(255,255,255,0.18);
-box-shadow:
-0 8px 48px rgba(0,0,0,0.45),
-0 2px 0 rgba(255,255,255,0.12) inset,
-0 -2px 0 rgba(0,0,0,0.2) inset,
-0 0 80px rgba(180,140,255,0.1);
-backdrop-filter: blur(28px) saturate(180%) brightness(1.1);
--webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.1);
-max-width: 680px;
-width: 90vw;
-animation: fadeIn 1.2s ease both;
-}
+        /* 液态玻璃卡片 */
+        .glass-card {
+            position: relative;
+            z-index: 1;
+            padding: 3rem;
+            width: 90%;
+            max-width: 500px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
 
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(30px) scale(0.97); }
-to { opacity: 1; transform: translateY(0) scale(1); }
-}
+        h1 {
+            font-weight: 600;
+            color: var(--primary-text);
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            font-size: 1.5rem;
+        }
 
-/* 顶部光泽条 */
-.container::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 15%; right: 15%; height: 1px;
-background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-border-radius: 50%;
-}
+        .countdown-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
 
-/* 标题 */
-.title-cn {
-font-size: clamp(1.8rem, 5vw, 2.8rem);
-color: var(–text-main);
-letter-spacing: 0.25em;
-text-shadow: 0 0 30px rgba(255,220,150,0.4), 0 2px 4px rgba(0,0,0,0.5);
-margin-bottom: 4px;
-font-weight: 400;
-}
-.title-date {
-font-family: ‘Playfair Display’, serif;
-font-style: italic;
-font-size: clamp(0.9rem, 2vw, 1.1rem);
-color: var(–accent);
-letter-spacing: 0.1em;
-opacity: 0.85;
-margin-bottom: 44px;
-}
+        .time-box {
+            flex: 1;
+            padding: 1rem 0.5rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
 
-/* 倒计时卡片行 */
-.countdown-row {
-display: flex;
-gap: 16px;
-justify-content: center;
-flex-wrap: wrap;
-margin-bottom: 32px;
-}
+        .number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            font-feature-settings: "tnum"; /* 保持等宽数字，防止抖动 */
+        }
 
-/* 单个时间卡片 液态玻璃 */
-.card {
-position: relative;
-width: 120px;
-padding: 22px 10px 16px;
-border-radius: 20px;
-background: rgba(255,255,255,0.06);
-border: 1px solid rgba(255,255,255,0.15);
-box-shadow:
-0 4px 24px rgba(0,0,0,0.3),
-0 1px 0 rgba(255,255,255,0.1) inset;
-backdrop-filter: blur(16px) saturate(150%);
--webkit-backdrop-filter: blur(16px) saturate(150%);
-overflow: hidden;
-transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card:hover {
-transform: translateY(-4px) scale(1.03);
-box-shadow:
-0 12px 40px rgba(0,0,0,0.4),
-0 1px 0 rgba(255,255,255,0.15) inset,
-0 0 30px rgba(180,140,255,0.15);
-}
-.card::after {
-content: ‘’;
-position: absolute;
-top: 0; left: 10%; right: 10%; height: 1px;
-background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-}
+        .label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
 
-.card-num {
-font-family: ‘Playfair Display’, serif;
-font-size: clamp(2.4rem, 6vw, 3.2rem);
-font-weight: 700;
-color: #fff;
-line-height: 1;
-text-shadow: 0 0 20px rgba(255,220,150,0.5), 0 2px 8px rgba(0,0,0,0.6);
-letter-spacing: -0.02em;
-transition: all 0.3s ease;
-display: block;
-}
-.card-label {
-font-size: 0.75rem;
-color: var(–text-dim);
-letter-spacing: 0.2em;
-margin-top: 8px;
-text-transform: uppercase;
-}
-
-/* 分隔符 */
-.sep {
-font-family: ‘Playfair Display’, serif;
-font-size: 2rem;
-color: rgba(255,255,255,0.25);
-align-self: center;
-margin-bottom: 24px;
-line-height: 1;
-user-select: none;
-}
-
-/* 底部文字 */
-.footer-text {
-font-size: clamp(0.85rem, 2vw, 0.95rem);
-color: var(–text-dim);
-letter-spacing: 0.15em;
-line-height: 2;
-}
-.footer-text .highlight {
-color: var(–accent);
-font-size: 1.15em;
-}
-
-/* 已到来 */
-.arrived {
-font-size: clamp(1.6rem, 4vw, 2.4rem);
-color: var(–accent);
-letter-spacing: 0.3em;
-text-shadow: 0 0 40px rgba(255,220,100,0.6);
-animation: pulse 2s ease-in-out infinite;
-margin: 20px 0;
-}
-@keyframes pulse {
-0%,100% { opacity: 1; }
-50% { opacity: 0.6; }
-}
-
-/* 数字跳动动画 */
-@keyframes numFlip {
-0% { transform: translateY(-12px); opacity: 0; }
-100% { transform: translateY(0); opacity: 1; }
-}
-.flip { animation: numFlip 0.35s cubic-bezier(.22,1,.36,1) both; }
-
-/* 响应式 */
-@media (max-width: 500px) {
-.container { padding: 40px 20px 36px; }
-.card { width: 72px; padding: 16px 6px 12px; }
-.sep { font-size: 1.4rem; }
-}
-</style>
-
+        .target-date {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+    </style>
 </head>
 <body>
 
-<div class="stars"></div>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
+    <div class="blob"></div>
+    <div class="blob blob-2"></div>
 
-<div class="container">
-  <div class="title-cn">侯 大 纪 念 日</div>
-  <div class="title-date" id="target-date-label">— April 22 —</div>
+    <div class="glass-card">
+        <h1>距离 侯大纪念日 还有</h1>
+        
+        <div class="countdown-container">
+            <div class="time-box">
+                <span class="number" id="days">00</span>
+                <span class="label">天</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="hours">00</span>
+                <span class="label">时</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="minutes">00</span>
+                <span class="label">分</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="seconds">00</span>
+                <span class="label">秒</span>
+            </div>
+        </div>
 
-  <div id="countdown-wrap">
-    <div class="countdown-row" id="countdown-row">
-      <!-- 动态生成 -->
+        <div class="target-date">目标日期：每年 4 月 22 日</div>
     </div>
-    <div class="footer-text" id="footer-text">
-      距离 <span class="highlight" id="year-label"></span> 年侯大纪念日
-    </div>
-  </div>
 
-  <div class="arrived" id="arrived-msg" style="display:none;">
-    🌸 今天就是侯大纪念日 🌸
-  </div>
-</div>
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            let currentYear = now.getFullYear();
+            
+            // 设定今年的目标日期
+            let targetDate = new Date(currentYear, 3, 22); // 月份从0开始，3代表4月
 
-<script>
-const TARGET_MONTH = 4; // April
-const TARGET_DAY   = 22;
+            // 如果今年的日期已经过了，就计算明年的
+            if (now > targetDate) {
+                targetDate = new Date(currentYear + 1, 3, 22);
+            }
 
-function getTargetDate() {
-  const now  = new Date();
-  const year = now.getFullYear();
-  const thisYear = new Date(year, TARGET_MONTH - 1, TARGET_DAY, 0, 0, 0);
+            const diff = targetDate - now;
 
-  // 如果今年的日期还没过（或就是今天），用今年；否则用明年
-  if (thisYear >= now) {
-    return thisYear;
-  }
-  return new Date(year + 1, TARGET_MONTH - 1, TARGET_DAY, 0, 0, 0);
-}
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / 1000 / 60) % 60);
+            const s = Math.floor((diff / 1000) % 60);
 
-function isToday(d) {
-  const now = new Date();
-  return d.getFullYear() === now.getFullYear() &&
-         d.getMonth()    === now.getMonth()    &&
-         d.getDate()     === now.getDate();
-}
+            // 填充数字，保证两位数显示
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
 
-// 卡片元素缓存
-let cards = {};
-
-function buildCards() {
-  const row = document.getElementById('countdown-row');
-  row.innerHTML = '';
-  const units = [
-    { key: 'days',    label: '天' },
-    { key: 'hours',   label: '时' },
-    { key: 'minutes', label: '分' },
-    { key: 'seconds', label: '秒' },
-  ];
-
-  units.forEach((u, i) => {
-    if (i > 0) {
-      const sep = document.createElement('div');
-      sep.className = 'sep';
-      sep.textContent = ':';
-      row.appendChild(sep);
-    }
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `<span class="card-num" id="num-${u.key}">--</span>
-                      <div class="card-label">${u.label}</div>`;
-    row.appendChild(card);
-    cards[u.key] = document.getElementById('num-' + u.key);
-  });
-}
-
-function pad(n) { return String(n).padStart(2, '0'); }
-
-let prevVals = {};
-
-function tick() {
-  const target = getTargetDate();
-  const now    = new Date();
-
-  if (isToday(target)) {
-    document.getElementById('countdown-wrap').style.display = 'none';
-    document.getElementById('arrived-msg').style.display = 'block';
-    return;
-  }
-
-  const diff = target - now;
-  if (diff <= 0) {
-    // 触发重算（跨年零点）
-    tick();
-    return;
-  }
-
-  const days    = Math.floor(diff / 86400000);
-  const hours   = Math.floor((diff % 86400000) / 3600000);
-  const minutes = Math.floor((diff % 3600000) / 60000);
-  const seconds = Math.floor((diff % 60000) / 1000);
-
-  const vals = { days, hours, minutes, seconds };
-
-  Object.entries(vals).forEach(([key, val]) => {
-    const el = cards[key];
-    if (!el) return;
-    const str = key === 'days' ? String(val) : pad(val);
-    if (str !== prevVals[key]) {
-      el.textContent = str;
-      el.classList.remove('flip');
-      void el.offsetWidth; // reflow
-      el.classList.add('flip');
-      prevVals[key] = str;
-    }
-  });
-
-  document.getElementById('year-label').textContent = target.getFullYear();
-}
-
-buildCards();
-tick();
-setInterval(tick, 1000);
-</script>
-
+        // 初始执行并设置定时器
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
