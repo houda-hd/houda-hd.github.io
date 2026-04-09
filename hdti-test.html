@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HDTI 测试 | 侯大人格实验室</title>
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --card: rgba(255,255,255,.72);
+      --text: #1f2430;
+      --sub: #6b7280;
+      --primary: #222;
+      --accent: #7c8cff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 10% 10%, #dce6ff 0, transparent 35%),
+                  radial-gradient(circle at 90% 90%, #ffe3ef 0, transparent 35%),
+                  var(--bg);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 24px;
+      padding: 22px 18px;
+      box-shadow: 0 14px 36px rgba(31,36,48,.08);
+    }
+    h1 { margin: 2px 0 8px; font-size: clamp(26px, 6vw, 40px); }
+    .sub { color: var(--sub); margin-bottom: 16px; line-height: 1.65; }
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      color: #4a4f63;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,.65);
+      margin-bottom: 8px;
+    }
+    .q {
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 16px;
+      padding: 12px;
+      margin: 12px 0;
+      background: rgba(255,255,255,.55);
+    }
+    .q h3 { margin: 0 0 10px; font-size: 16px; }
+    .opts { display: grid; gap: 8px; }
+    label {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 8px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+    label:hover { background: rgba(124,140,255,.10); }
+    .bar { height: 10px; border-radius: 999px; background: rgba(0,0,0,.08); overflow: hidden; }
+    .fill { height: 100%; width: 0; background: linear-gradient(90deg,#6f8fff,#a07cff); transition: .35s; }
+    .actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .primary { background: var(--primary); color: #fff; }
+    .ghost { background: rgba(255,255,255,.85); color: var(--text); border: 1px solid rgba(0,0,0,.08); }
+    .result {
+      margin-top: 18px;
+      display: none;
+      border: 1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.7);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .type { font-size: 32px; font-weight: 800; letter-spacing: .03em; margin: 4px 0; }
+    .person {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(124,140,255,.09);
+      line-height: 1.6;
+    }
+    .muted { color: var(--sub); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <span class="pill">HOUDA+ Personality Lab</span>
+      <h1>HDTI 测试</h1>
+      <div class="sub">一个侯大版人格小测。共 12 题，选最像你的选项，立即得到你的 HDTI 类型与关联人物。</div>
+
+      <div id="questions"></div>
+
+      <div class="muted" id="progressText">完成 0 / 12</div>
+      <div class="bar"><div class="fill" id="progressFill"></div></div>
+
+      <div class="actions">
+        <button class="primary" id="submitBtn">查看我的 HDTI</button>
+        <button class="ghost" id="resetBtn">重置</button>
+      </div>
+
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    const qs = [
+      { dim: 'EI', t: '聚会中你通常？', a: { l: '主动开启话题、认识新朋友', v: 'E' }, b: { l: '先观察，和熟人深聊', v: 'I' } },
+      { dim: 'EI', t: '压力大时你更倾向？', a: { l: '找人聊聊，越聊越有能量', v: 'E' }, b: { l: '先独处整理，再输出', v: 'I' } },
+      { dim: 'SN', t: '做决定时你更看重？', a: { l: '现实细节、可执行性', v: 'S' }, b: { l: '可能性、未来图景', v: 'N' } },
+      { dim: 'SN', t: '你更像哪一种学习方式？', a: { l: '先学现成方法', v: 'S' }, b: { l: '先理解底层逻辑', v: 'N' } },
+      { dim: 'TF', t: '朋友求建议时你更常？', a: { l: '直接分析利弊给方案', v: 'T' }, b: { l: '先共情，再一起找方向', v: 'F' } },
+      { dim: 'TF', t: '团队争议时你会？', a: { l: '坚持标准和效率', v: 'T' }, b: { l: '优先照顾关系感受', v: 'F' } },
+      { dim: 'JP', t: '你的日程习惯？', a: { l: '提前规划，照表执行', v: 'J' }, b: { l: '留足弹性，临场调整', v: 'P' } },
+      { dim: 'JP', t: '旅行方式更接近？', a: { l: '行程攻略做满', v: 'J' }, b: { l: '随走随玩，灵感优先', v: 'P' } },
+      { dim: 'EI', t: '你在群里的状态？', a: { l: '活跃发言组织局', v: 'E' }, b: { l: '潜水观察偶尔精准发言', v: 'I' } },
+      { dim: 'SN', t: '你更容易被什么打动？', a: { l: '实打实的成果', v: 'S' }, b: { l: '新鲜的创意和愿景', v: 'N' } },
+      { dim: 'TF', t: '面对批评你会？', a: { l: '先判断是否合理', v: 'T' }, b: { l: '先感受语气与关系', v: 'F' } },
+      { dim: 'JP', t: '临近截止日，你通常？', a: { l: '早就收尾，稳稳提交', v: 'J' }, b: { l: '冲刺爆发，最后精彩', v: 'P' } },
+    ];
+
+    const relation = {
+      INFP: [
+        '邹梓铭：完全小蝴蝶型选手，灵动感强，年下 1️⃣。'
+      ],
+      INTJ: [
+        'old侯婉慧：侯大的灵魂人物，侯大最权威的歌手，整个侯大因她而存在。'
+      ],
+      ENTJ: [
+        'new侯婉慧：侯大的灵魂人物，侯大最权威的歌手，整个侯大因她而存在。'
+      ],
+      ENTP: [
+        'new王逸鑫：侯大最 I 之人，反差感很强。Key sentence：「青枫，等你回娄底，我请你吃饭吧！」'
+      ],
+      INFJ: [
+        '陆陵俊（609）：最会找“漂亮饭”，身材最好之人。'
+      ],
+      ENFJ: [
+        'old牛继哲：侯大创立之人，把侯大每个人串联起来的灵魂人物。'
+      ],
+      ENFP: [
+        '浣莎澜：完全灵魂人物，最会约人出来玩；现实生活中是药店药师。'
+      ],
+      ESTJ: [
+        '霉霉：执行力在线，风格干脆，稳定扛事。'
+      ],
+      ESFJ: [
+        '何玲：完全大美女来的，亲和力很强。'
+      ],
+      ISTP: [
+        '谢强：最闷骚的人，外冷内热型。'
+      ],
+      ISFP: [
+        '谢祥泽（小香猪）：很爱空耳（听错东西），有时候有点笨萌。'
+      ],
+      ESTP: [
+        'old王逸鑫：侯大最 I 之人，反差感很强。Key sentence：「青枫，等你回娄底，我请你吃饭吧！」'
+      ]
+    };
+
+    const questionsEl = document.getElementById('questions');
+    const resultEl = document.getElementById('result');
+    const progressText = document.getElementById('progressText');
+    const progressFill = document.getElementById('progressFill');
+
+    function renderQuestions() {
+      questionsEl.innerHTML = qs.map((q, i) => `
+        <div class="q">
+          <h3>${i + 1}. ${q.t}</h3>
+          <div class="opts">
+            <label><input type="radio" name="q${i}" value="${q.a.v}"> ${q.a.l}</label>
+            <label><input type="radio" name="q${i}" value="${q.b.v}"> ${q.b.l}</label>
+          </div>
+        </div>
+      `).join('');
+
+      questionsEl.querySelectorAll('input[type="radio"]').forEach(el => {
+        el.addEventListener('change', updateProgress);
+      });
+    }
+
+    function updateProgress() {
+      const answered = qs.filter((_, i) => document.querySelector(`input[name=q${i}]:checked`)).length;
+      progressText.textContent = `完成 ${answered} / ${qs.length}`;
+      progressFill.style.width = `${(answered / qs.length) * 100}%`;
+    }
+
+    function calcType() {
+      const score = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+      for (let i = 0; i < qs.length; i++) {
+        const checked = document.querySelector(`input[name=q${i}]:checked`);
+        if (!checked) return null;
+        score[checked.value] += 1;
+      }
+      const type = `${score.E >= score.I ? 'E':'I'}${score.S >= score.N ? 'S':'N'}${score.T >= score.F ? 'T':'F'}${score.J >= score.P ? 'J':'P'}`;
+      return { type, score };
+    }
+
+    function showResult() {
+      const r = calcType();
+      if (!r) {
+        alert('还有题目没选完哦～');
+        return;
+      }
+      const list = relation[r.type] || ['该类型的侯大关联人物暂未录入，等待你来补充！'];
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <div class="muted">你的 HDTI 类型</div>
+        <div class="type">${r.type}</div>
+        <div class="muted">维度得分：E${r.score.E}/I${r.score.I} · S${r.score.S}/N${r.score.N} · T${r.score.T}/F${r.score.F} · J${r.score.J}/P${r.score.P}</div>
+        ${list.map(item => `<div class="person">${item}</div>`).join('')}
+      `;
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetAll() {
+      document.querySelectorAll('input[type=radio]').forEach(i => i.checked = false);
+      resultEl.style.display = 'none';
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', showResult);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+    renderQuestions();
+    updateProgress();
+  </script>
+</body>
+</html>
