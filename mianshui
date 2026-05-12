@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HOUDA+ 美国免税州地址生成器</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#111111',
+          secondary: '#555555',
+          accent: '#e0e0e0',
+          dark: '#000000',
+          light: '#f9f9f9'
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+html, body {
+  overflow-x: hidden !important;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+/* --- Liquid Background --- */
+.liquid-background {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: -99;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 15% 10%, #f8fbff 0%, #eef3ff 38%, #f3efff 70%, #f7f8fc 100%);
+}
+.liquid-background::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.32) 80deg, rgba(176,196,255,0.2) 150deg, rgba(255,255,255,0) 240deg);
+  filter: blur(40px);
+  animation: liquidSheen 22s linear infinite;
+}
+.liquid-background::after {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background-image: radial-gradient(rgba(255,255,255,0.35) 0.7px, transparent 0.7px);
+  background-size: 3px 3px;
+  opacity: 0.2;
+  mix-blend-mode: soft-light;
+}
+@keyframes liquidSheen {
+  0%   { transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate3d(4%, 3%, 0) rotate(180deg) scale(1.04); }
+  100% { transform: translate3d(-3%, -2%, 0) rotate(360deg) scale(1); }
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(54px);
+  opacity: 0.55;
+  will-change: transform;
+  transform: translate3d(0,0,0);
+}
+.blob-1 {
+  top: -12%; left: -12%;
+  width: 72vw; height: 72vw;
+  background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+  animation: blobFloatA 28s ease-in-out infinite alternate;
+}
+.blob-2 {
+  bottom: -22%; right: -22%;
+  width: 82vw; height: 82vw;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  animation: blobFloatB 34s ease-in-out infinite alternate;
+}
+.blob-3 {
+  top: 38%; left: 38%;
+  width: 52vw; height: 52vw;
+  background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
+  opacity: 0.42;
+  animation: blobFloatC 26s ease-in-out infinite;
+}
+@keyframes blobFloatA {
+  0%   { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  50%  { transform: translate3d(8vw,3vh,0) scale(1.08) rotate(10deg); }
+  100% { transform: translate3d(3vw,8vh,0) scale(1.03) rotate(18deg); }
+}
+@keyframes blobFloatB {
+  0%   { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  50%  { transform: translate3d(-9vw,-4vh,0) scale(1.1) rotate(-12deg); }
+  100% { transform: translate3d(-4vw,-9vh,0) scale(1.04) rotate(-20deg); }
+}
+@keyframes blobFloatC {
+  0%   { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  33%  { transform: translate3d(5vw,-5vh,0) scale(1.08) rotate(120deg); }
+  66%  { transform: translate3d(-4vw,4vh,0) scale(0.96) rotate(240deg); }
+  100% { transform: translate3d(0,0,0) scale(1) rotate(360deg); }
+}
+
+/* --- Glass Card --- */
+:root {
+  --glass-bg: rgba(255,255,255,0.3);
+  --glass-bg-strong: rgba(255,255,255,0.42);
+  --glass-stroke: rgba(255,255,255,0.5);
+  --glass-shadow: 0 18px 48px rgba(104,117,245,0.12);
+}
+.glass-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.18) 100%);
+  backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+  -webkit-backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+  border: 1px solid var(--glass-stroke);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.66), inset 0 -1px 0 rgba(255,255,255,0.12);
+  transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease, background .4s ease, border-color .3s ease;
+  isolation: isolate;
+}
+.glass-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 70% at 0% 0%, rgba(255,255,255,0.64) 0%, transparent 58%),
+    linear-gradient(120deg, rgba(255,255,255,0.12) 10%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0.18) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.78;
+  animation: glassFlow 9s ease-in-out infinite alternate;
+}
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.22);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1px;
+  opacity: 0.9;
+}
+@keyframes glassFlow {
+  0%   { background-position: 0% 0%, 0% 50%; opacity: 0.72; }
+  50%  { background-position: 40% 20%, 70% 50%; opacity: 0.84; }
+  100% { background-position: 80% 40%, 100% 50%; opacity: 0.76; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .glass-card:hover {
+    background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.22) 100%);
+    border-color: rgba(255,255,255,0.68);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 24px 55px rgba(86,98,230,0.16), inset 0 1px 0 rgba(255,255,255,0.82), inset 0 -1px 0 rgba(255,255,255,0.2);
+  }
+}
+
+/* --- Navbar liquid glass --- */
+#navbar {
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+#navbar.liquid-header {
+  background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.24) 100%);
+  backdrop-filter: blur(20px) saturate(160%) contrast(105%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%) contrast(105%);
+  border-bottom: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 8px 30px rgba(104,117,245,0.08), inset 0 -1px 0 rgba(255,255,255,0.4);
+}
+
+#mobileMenu {
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+}
+#mobileMenu.open { max-height: 500px; opacity: 1; }
+
+/* --- State Badge --- */
+.state-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  color: #374151;
+}
+.state-badge .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.3); }
+}
+
+/* --- Generator card inputs --- */
+.gen-input {
+  width: 100%;
+  background: rgba(255,255,255,0.5);
+  border: 1.5px solid rgba(255,255,255,0.7);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  color: #111;
+  outline: none;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.gen-input:focus {
+  border-color: rgba(111,111,245,0.5);
+  box-shadow: 0 0 0 3px rgba(111,111,245,0.1);
+  background: rgba(255,255,255,0.7);
+}
+select.gen-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+.gen-input option { background: #fff; color: #111; }
+
+/* --- Result card --- */
+.result-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.65);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  position: relative;
+}
+.result-field:hover {
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(111,111,245,0.35);
+  transform: translateY(-1px);
+}
+.result-field .label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+}
+.result-field .value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111;
+  word-break: break-all;
+}
+.copy-hint {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.result-field:hover .copy-hint { opacity: 1; }
+
+/* --- Copy toast --- */
+#copyToast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(17,17,17,0.88);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 9999;
+  backdrop-filter: blur(12px);
+  white-space: nowrap;
+}
+#copyToast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* --- Generate button --- */
+.gen-btn {
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  letter-spacing: 0.01em;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  position: relative;
+  overflow: hidden;
+}
+.gen-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.gen-btn:hover { background: #222; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.22); }
+.gen-btn:hover::after { transform: translateX(100%); }
+.gen-btn:active { transform: translateY(0) scale(0.98); }
+
+/* --- Copy all button --- */
+.copy-all-btn {
+  background: rgba(255,255,255,0.5);
+  border: 1.5px solid rgba(255,255,255,0.7);
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  backdrop-filter: blur(8px);
+}
+.copy-all-btn:hover { background: rgba(255,255,255,0.75); border-color: rgba(111,111,245,0.4); transform: translateY(-1px); }
+.copy-all-btn:active { transform: scale(0.97); }
+
+/* --- State info card dots --- */
+.info-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.4); }
+.info-row:last-child { border-bottom: none; }
+.info-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.55); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+
+/* --- Shimmer loading --- */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 8px;
+  height: 18px;
+}
+
+/* --- Transition custom --- */
+.transition-custom { transition: all 0.4s cubic-bezier(0.4,0,0.2,1); }
+
+/* --- Section fade-in --- */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(.22,.61,.36,1), transform 0.6s cubic-bezier(.22,.61,.36,1);
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* --- History section state cards --- */
+.state-card {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(.22,.61,.36,1);
+}
+.state-card.selected {
+  border-color: rgba(111,111,245,0.45) !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.52) 0%, rgba(240,240,255,0.28) 100%) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(86,98,230,0.16), inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+/* --- Dock --- */
+.dock-container {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 0 10px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.dock {
+  display: flex;
+  background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.24) 100%);
+  backdrop-filter: blur(12px) saturate(150%) contrast(104%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%) contrast(104%);
+  border: 1px solid rgba(255,255,255,0.62);
+  border-radius: 9999px;
+  padding: 8px 12px;
+  box-shadow: 0 14px 32px rgba(67,76,183,0.14), inset 0 1px 0 rgba(255,255,255,0.74);
+  pointer-events: auto;
+  max-width: calc(100vw - 24px);
+  overflow: hidden;
+}
+.dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  margin: 0 4px;
+  border-radius: 50%;
+  cursor: pointer;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.2s cubic-bezier(0.2,0.8,0.2,1);
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  .dock-item:hover { transform: translateY(-8px) scale(1.15); background: rgba(255,255,255,0.6); }
+}
+.dock-item:active { transform: scale(0.92); background: rgba(255,255,255,0.7); }
+.dock-icon { font-size: 22px; margin-bottom: 2px; }
+.dock-label { font-size: 10px; font-weight: 600; opacity: 0.8; }
+
+.back-to-top {
+  pointer-events: auto;
+  flex-shrink: 0;
+  width: 50px; height: 50px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.52), rgba(255,255,255,0.22));
+  backdrop-filter: blur(16px) saturate(170%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 15px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.68);
+  box-shadow: 0 10px 28px rgba(76,88,202,0.16), inset 0 1px 0 rgba(255,255,255,0.82);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+@media (hover: hover) and (pointer: fine) {
+  .back-to-top:hover { background: rgba(255,255,255,0.9); transform: translateY(0) scale(1.1); }
+}
+body.scrolled .dock { padding: 6px 12px; }
+body.scrolled .dock-item { width: 44px; height: 44px; }
+body.scrolled .dock-icon { font-size: 20px; margin-bottom: 0; }
+body.scrolled .dock-label { display: none; }
+
+/* --- History tag --- */
+.history-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #555;
+}
+</style>
+</head>
+<body class="font-sans text-dark antialiased overflow-x-hidden bg-transparent">
+
+<!-- Liquid Background -->
+<div class="liquid-background">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Navbar -->
+<header class="fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center py-4">
+      <a class="flex items-center space-x-3 group" href="#">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md group-hover:shadow-lg transition-custom">
+          <span class="text-white font-black text-sm tracking-tighter">H+</span>
+        </div>
+        <div class="leading-none">
+          <span class="text-xl font-bold text-primary tracking-tight block">HOUDA+</span>
+          <span class="text-[10px] text-gray-400 font-medium tracking-widest uppercase">免税州地址生成器</span>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center space-x-6">
+        <a class="text-secondary hover:text-primary transition-custom font-medium text-sm" href="#generator">生成器</a>
+        <a class="text-secondary hover:text-primary transition-custom font-medium text-sm" href="#states">免税州</a>
+        <a class="text-secondary hover:text-primary transition-custom font-medium text-sm" href="#tips">使用须知</a>
+        <a class="bg-primary hover:bg-gray-800 text-white px-5 py-2 rounded-full shadow-md hover:shadow-lg transition-custom font-medium text-sm transform hover:-translate-y-0.5" href="#generator">
+          立即生成
+        </a>
+      </nav>
+      <button class="md:hidden text-dark focus:outline-none p-2" id="menuBtn">
+        <i class="fa fa-bars text-2xl"></i>
+      </button>
+    </div>
+  </div>
+  <div class="md:hidden" id="mobileMenu">
+    <div class="container mx-auto px-4 py-4 space-y-3">
+      <a class="block text-secondary hover:text-primary transition-custom py-2 px-4 rounded-xl hover:bg-white/30 text-sm" href="#generator">生成器</a>
+      <a class="block text-secondary hover:text-primary transition-custom py-2 px-4 rounded-xl hover:bg-white/30 text-sm" href="#states">免税州</a>
+      <a class="block text-secondary hover:text-primary transition-custom py-2 px-4 rounded-xl hover:bg-white/30 text-sm" href="#tips">使用须知</a>
+      <a class="block bg-primary text-white px-6 py-3 rounded-xl text-center shadow-md mt-2 text-sm" href="#generator">立即生成</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="py-16 md:py-24 pt-[6.5rem] md:pt-[8rem] bg-transparent">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="fade-up">
+      <div class="inline-flex items-center gap-2 mb-6">
+        <span class="state-badge"><span class="dot"></span>5个免税州 · 数据持续更新</span>
+      </div>
+      <h1 class="text-[clamp(2.2rem,5vw,4rem)] font-extrabold leading-tight text-dark mb-4 tracking-tight">
+        美国免税州<br/>
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-500">地址生成器</span>
+      </h1>
+      <p class="text-base sm:text-lg text-secondary mb-3 max-w-xl mx-auto font-medium">
+        HOUDA+ 出品 · 一键生成真实格式的美国免税州收货地址
+      </p>
+      <p class="text-sm text-gray-400 mb-10 max-w-lg mx-auto">
+        覆盖俄勒冈 · 蒙大拿 · 新罕布什尔 · 特拉华 · 阿拉斯加，助力海淘省税
+      </p>
+      <a href="#generator" class="inline-flex items-center gap-2 bg-primary hover:bg-gray-800 text-white px-8 py-3.5 rounded-full text-center shadow-lg hover:shadow-xl transition-custom font-medium transform hover:-translate-y-1">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> 开始生成地址
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- States Overview -->
+<section class="py-12 bg-transparent" id="states">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10 fade-up">
+      <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-extrabold text-dark mb-3">美国五大免税州</h2>
+      <div class="w-12 h-1.5 bg-primary/80 rounded-full mx-auto mb-4"></div>
+      <p class="text-secondary text-base max-w-xl mx-auto">点击卡片可在生成器中快速选择该州</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 fade-up" id="stateCards">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Generator -->
+<section class="py-16 bg-transparent" id="generator">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10 fade-up">
+      <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-extrabold text-dark mb-3">地址生成器</h2>
+      <div class="w-12 h-1.5 bg-primary/80 rounded-full mx-auto mb-4"></div>
+      <p class="text-secondary text-base max-w-xl mx-auto">选择州份与类型，一键生成可用于购物的格式化地址</p>
+    </div>
+    <div class="max-w-3xl mx-auto fade-up">
+      <div class="glass-card p-6 sm:p-8 rounded-3xl">
+        <!-- Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">选择免税州</label>
+            <select class="gen-input" id="stateSelect">
+              <option value="">随机州份</option>
+              <option value="OR">俄勒冈 Oregon (OR)</option>
+              <option value="MT">蒙大拿 Montana (MT)</option>
+              <option value="NH">新罕布什尔 New Hampshire (NH)</option>
+              <option value="DE">特拉华 Delaware (DE)</option>
+              <option value="AK">阿拉斯加 Alaska (AK)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">地址类型</label>
+            <select class="gen-input" id="typeSelect">
+              <option value="residential">住宅地址</option>
+              <option value="apartment">公寓地址</option>
+              <option value="po">转运仓地址</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">姓名语言</label>
+            <select class="gen-input" id="nameSelect">
+              <option value="en">英文姓名</option>
+              <option value="cn">中文拼音</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
+        </div>
+        <div id="customNameRow" class="mb-6 hidden">
+          <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">自定义姓名</label>
+          <input type="text" id="customName" class="gen-input" placeholder="例：Zhang San / 张三（将自动转拼音）" />
+        </div>
+        <button class="gen-btn mb-6" id="generateBtn">
+          <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>生成地址
+        </button>
+
+        <!-- Result -->
+        <div id="resultSection">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">生成结果</span>
+            <button class="copy-all-btn" id="copyAllBtn" onclick="copyAll()">
+              <i class="fa-regular fa-copy text-sm"></i>复制全部
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="resultGrid">
+            <div class="result-field sm:col-span-2" onclick="copyField(this)">
+              <span class="label">收件人 Recipient</span>
+              <span class="value" id="r-name">—</span>
+              <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
+            </div>
+            <div class="result-field sm:col-span-2" onclick="copyField(this)">
+              <span class="label">街道地址 Street Address</span>
+              <span class="value" id="r-street">—</span>
+              <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
+            </div>
+            <div class="result-field" onclick="copyField(this)">
+              <span class="label">城市 City</span>
+              <span class="value" id="r-city">—</span>
+              <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
+            </div>
+            <div class="result-field" onclick="copyField(this)">
+              <span class="label">州 State</span>
+              <span class="value" id="r-state">—</span>
+              <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
+            </div>
+            <div class="result-field" onclick="copyField(this)">
+              <span class="label">邮编 ZIP Code</span>
+              <span class="value" id="r-zip">—</span>
+              <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
+            </div>
+            <div class="result-field" onclick="copyField(this)">
+              <span class="label">电话 Phone</span>
+              <span class="value" id="r-phone">—</span>
+              <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
+            </div>
+            <div class="result-field sm:col-span-2" onclick="copyField(this)">
+              <span class="label">完整地址（一行）Full Address</span>
+              <span class="value" id="r-full">—</span>
+              <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tips -->
+<section class="py-16 bg-transparent" id="tips">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10 fade-up">
+      <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-extrabold text-dark mb-3">使用须知</h2>
+      <div class="w-12 h-1.5 bg-primary/80 rounded-full mx-auto mb-4"></div>
+    </div>
+    <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 fade-up">
+      <div class="glass-card p-5 rounded-2xl">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-shield-halved text-gray-700"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900 mb-1 text-sm">免税原理</h3>
+            <p class="text-gray-500 text-xs leading-relaxed">以上5个州在州级层面无销售税，在这些州收货可节省3%~10%税费，适合海淘转运。</p>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-5 rounded-2xl">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-truck-fast text-gray-700"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900 mb-1 text-sm">配合转运使用</h3>
+            <p class="text-gray-500 text-xs leading-relaxed">建议配合转运公司在免税州的仓库地址使用。生成的地址仅供参考格式，实际请填写转运仓真实地址。</p>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-5 rounded-2xl">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-circle-info text-gray-700"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900 mb-1 text-sm">地址格式说明</h3>
+            <p class="text-gray-500 text-xs leading-relaxed">生成地址遵循美式地址规范：门牌号 + 街道名 + 城市 + 州缩写 + 邮编。可直接复制填写到购物网站。</p>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-5 rounded-2xl">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-triangle-exclamation text-gray-700"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900 mb-1 text-sm">免责声明</h3>
+            <p class="text-gray-500 text-xs leading-relaxed">本工具生成地址仅供测试与了解地址格式参考，请勿用于欺诈或违规目的。税务规则以当地法规为准。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white pt-10 pb-32 relative z-10">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
+      <div>
+        <a class="flex items-center space-x-3 mb-4" href="#">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+            <span class="text-white font-black text-sm">H+</span>
+          </div>
+          <span class="text-2xl font-bold text-white tracking-tight">HOUDA+</span>
+        </a>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-xs">
+          侯明昊碗慧通讯录互吃大学<br/>长沙霉粉联盟六群分支出品工具站
+        </p>
+      </div>
+      <div>
+        <h3 class="text-sm font-bold mb-4 text-white">快速导航</h3>
+        <ul class="space-y-2">
+          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#generator">地址生成器</a></li>
+          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#states">免税州介绍</a></li>
+          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#tips">使用须知</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 pt-6 text-center text-gray-500 text-xs">
+      <p>© 2026 HOUDA+ · All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Dock -->
+<div class="dock-container">
+  <div class="dock">
+    <a class="dock-item" href="#generator">
+      <i class="fa-solid fa-wand-magic-sparkles dock-icon"></i>
+      <span class="dock-label">生成</span>
+    </a>
+    <a class="dock-item" href="#states">
+      <i class="fa-solid fa-map-location-dot dock-icon"></i>
+      <span class="dock-label">免税州</span>
+    </a>
+    <a class="dock-item" href="#tips">
+      <i class="fa-solid fa-circle-info dock-icon"></i>
+      <span class="dock-label">须知</span>
+    </a>
+  </div>
+  <div class="back-to-top" id="backToTop">
+    <i class="fa-solid fa-arrow-up"></i>
+  </div>
+</div>
+
+<!-- Copy toast -->
+<div id="copyToast">✓ 已复制到剪贴板</div>
+
+<script>
+// ===== DATA =====
+const STATE_DATA = {
+  OR: {
+    name: "俄勒冈", nameEn: "Oregon", abbr: "OR",
+    tax: "0%", icon: "🌲", color: "#22c55e",
+    desc: "美国西海岸最大免税州，购物天堂",
+    cities: [
+      { city: "Portland", zips: ["97201","97202","97203","97204","97205","97206","97209","97210","97211","97212","97213","97214","97215","97216","97217","97218","97219","97220","97221","97222","97225","97227","97229","97230","97232","97233","97236","97239"] },
+      { city: "Eugene", zips: ["97401","97402","97403","97404","97405"] },
+      { city: "Salem", zips: ["97301","97302","97303","97304","97305","97306","97317"] },
+      { city: "Beaverton", zips: ["97003","97005","97006","97007","97008"] },
+      { city: "Bend", zips: ["97701","97702","97703","97707"] },
+      { city: "Hillsboro", zips: ["97123","97124"] },
+      { city: "Medford", zips: ["97501","97502","97504"] },
+      { city: "Corvallis", zips: ["97330","97331","97333"] },
+      { city: "Springfield", zips: ["97477","97478"] },
+      { city: "Gresham", zips: ["97030","97080"] }
+    ],
+    areaCodes: ["503","541","971"]
+  },
+  MT: {
+    name: "蒙大拿", nameEn: "Montana", abbr: "MT",
+    tax: "0%", icon: "🏔️", color: "#3b82f6",
+    desc: "美国西北部大州，自然风光与免税并存",
+    cities: [
+      { city: "Billings", zips: ["59101","59102","59105","59106"] },
+      { city: "Missoula", zips: ["59801","59802","59803","59804","59808"] },
+      { city: "Great Falls", zips: ["59401","59404","59405"] },
+      { city: "Bozeman", zips: ["59715","59717","59718"] },
+      { city: "Butte", zips: ["59701","59703"] },
+      { city: "Helena", zips: ["59601","59602","59604"] },
+      { city: "Kalispell", zips: ["59901","59903"] },
+      { city: "Havre", zips: ["59501"] },
+      { city: "Anaconda", zips: ["59711"] },
+      { city: "Miles City", zips: ["59301"] }
+    ],
+    areaCodes: ["406"]
+  },
+  NH: {
+    name: "新罕布什尔", nameEn: "New Hampshire", abbr: "NH",
+    tax: "0%", icon: "🍂", color: "#f59e0b",
+    desc: "东北部老牌免税州，近波士顿交通便利",
+    cities: [
+      { city: "Manchester", zips: ["03101","03102","03103","03104","03105"] },
+      { city: "Nashua", zips: ["03060","03061","03062","03063","03064"] },
+      { city: "Concord", zips: ["03301","03302","03303"] },
+      { city: "Dover", zips: ["03820","03821","03824"] },
+      { city: "Rochester", zips: ["03867","03868"] },
+      { city: "Salem", zips: ["03079"] },
+      { city: "Portsmouth", zips: ["03801","03802"] },
+      { city: "Merrimack", zips: ["03054"] },
+      { city: "Derry", zips: ["03038"] },
+      { city: "Keene", zips: ["03431","03435"] }
+    ],
+    areaCodes: ["603"]
+  },
+  DE: {
+    name: "特拉华", nameEn: "Delaware", abbr: "DE",
+    tax: "0%", icon: "🏙️", color: "#8b5cf6",
+    desc: "东海岸小而精的免税州，商业注册圣地",
+    cities: [
+      { city: "Wilmington", zips: ["19801","19802","19803","19805","19806","19807","19808","19809"] },
+      { city: "Dover", zips: ["19901","19902","19903","19904"] },
+      { city: "Newark", zips: ["19702","19711","19713","19716"] },
+      { city: "Middletown", zips: ["19709"] },
+      { city: "Smyrna", zips: ["19977"] },
+      { city: "Milford", zips: ["19963"] },
+      { city: "Seaford", zips: ["19973"] },
+      { city: "Georgetown", zips: ["19947"] },
+      { city: "Elsmere", zips: ["19805"] },
+      { city: "Brookside", zips: ["19713"] }
+    ],
+    areaCodes: ["302"]
+  },
+  AK: {
+    name: "阿拉斯加", nameEn: "Alaska", abbr: "AK",
+    tax: "0%", icon: "🐻‍❄️", color: "#06b6d4",
+    desc: "美国最北端大州，无州级销售税",
+    cities: [
+      { city: "Anchorage", zips: ["99501","99502","99503","99504","99505","99506","99507","99508","99510","99515","99516","99517","99518","99519","99520","99524"] },
+      { city: "Fairbanks", zips: ["99701","99702","99703","99704","99705","99706","99707","99708","99709","99710","99712"] },
+      { city: "Juneau", zips: ["99801","99802","99803"] },
+      { city: "Sitka", zips: ["99835"] },
+      { city: "Ketchikan", zips: ["99901","99950"] },
+      { city: "Wasilla", zips: ["99654","99687"] },
+      { city: "Kenai", zips: ["99611"] },
+      { city: "Kodiak", zips: ["99615"] },
+      { city: "Bethel", zips: ["99559"] },
+      { city: "Palmer", zips: ["99645"] }
+    ],
+    areaCodes: ["907"]
+  }
+};
+
+const STREET_TYPES = ["St","Ave","Blvd","Dr","Ln","Rd","Way","Ct","Pl","Cir","Pkwy","Ter"];
+const STREET_NAMES = ["Oak","Maple","Cedar","Pine","Elm","Main","Park","Lake","River","Hill","Sunset","Spring","Valley","Forest","Meadow","Willow","Green","Highland","Ridge","Washington","Lincoln","Jefferson","Madison","Adams","Harrison","Monroe","Franklin","Grant","Sherman","Pioneer","Heritage","Colonial","Liberty","Freedom","Eagle","Mountain","Pacific","Atlantic","Prairie","Garden"];
+const APT_PREFIXES = ["Apt","Suite","Unit","#"];
+const EN_FIRST = ["James","John","Robert","Michael","William","David","Richard","Joseph","Thomas","Charles","Christopher","Daniel","Matthew","Anthony","Mark","Donald","Steven","Paul","Andrew","Kenneth","Joshua","Kevin","Brian","George","Edward","Ronald","Timothy","Jason","Jeffrey","Ryan","Sarah","Jennifer","Amanda","Jessica","Melissa","Emily","Rachel","Lauren","Ashley","Nicole","Elizabeth","Stephanie","Megan","Christina","Amy","Katherine","Michelle","Kimberly","Angela","Patricia"];
+const EN_LAST = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin","Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson","Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores","Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts"];
+const CN_LAST = ["张","王","李","赵","陈","刘","杨","黄","周","吴","郑","林","孙","徐","马","高","胡","郭","唐","何"];
+const CN_LAST_PINYIN = ["Zhang","Wang","Li","Zhao","Chen","Liu","Yang","Huang","Zhou","Wu","Zheng","Lin","Sun","Xu","Ma","Gao","Hu","Guo","Tang","He"];
+const CN_FIRST_PINYIN = ["Wei","Fang","Jun","Lei","Xin","Hao","Jing","Ming","Tao","Yun","Qian","Rui","Yang","Yu","Xiao","Ke","Chen","Hui","Zhe","Bo","Shan","Nan","Jin","Lan","Yi"];
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateName(type, customVal) {
+  if (type === "custom" && customVal.trim()) return customVal.trim();
+  if (type === "cn") {
+    const lastIdx = randInt(0, CN_LAST.length - 1);
+    return CN_LAST_PINYIN[lastIdx] + " " + rand(CN_FIRST_PINYIN);
+  }
+  return rand(EN_FIRST) + " " + rand(EN_LAST);
+}
+
+function generatePhone(areaCodes) {
+  const area = rand(areaCodes);
+  const mid = randInt(200, 999);
+  const end = randInt(1000, 9999);
+  return `(${area}) ${mid}-${end}`;
+}
+
+function generateAddress(stateKey, type) {
+  const state = STATE_DATA[stateKey];
+  const cityData = rand(state.cities);
+  const zip = rand(cityData.zips);
+  const streetNum = randInt(100, 9999);
+  const streetName = rand(STREET_NAMES);
+  const streetType = rand(STREET_TYPES);
+  let street = `${streetNum} ${streetName} ${streetType}`;
+  if (type === "apartment") {
+    const aptPrefix = rand(APT_PREFIXES);
+    const aptNum = randInt(1, 500);
+    street += ` ${aptPrefix} ${aptNum}`;
+  } else if (type === "po") {
+    street = `${randInt(1000,9999)} ${streetName} ${streetType}, Ste ${randInt(100,999)}`;
+  }
+  return { city: cityData.city, zip, street, state: state.abbr, stateFull: state.nameEn };
+}
+
+// ===== RENDER STATE CARDS =====
+function renderStateCards(selectedKey) {
+  const container = document.getElementById("stateCards");
+  container.innerHTML = Object.entries(STATE_DATA).map(([key, s]) => `
+    <div class="glass-card state-card p-4 rounded-2xl text-center ${selectedKey === key ? 'selected' : ''}" onclick="selectState('${key}')">
+      <div class="text-3xl mb-2">${s.icon}</div>
+      <div class="font-bold text-sm text-gray-900">${s.name}</div>
+      <div class="text-xs text-gray-400 mb-2">${s.nameEn} · ${s.abbr}</div>
+      <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style="background:${s.color}22; color:${s.color};">
+        销售税 ${s.tax}
+      </div>
+      <p class="text-xs text-gray-400 mt-2 leading-relaxed hidden sm:block">${s.desc}</p>
+    </div>
+  `).join("");
+}
+
+function selectState(key) {
+  document.getElementById("stateSelect").value = key;
+  renderStateCards(key);
+  document.getElementById("generator").scrollIntoView({ behavior: "smooth" });
+  generate();
+}
+
+// ===== GENERATE =====
+function generate() {
+  const stateKey = document.getElementById("stateSelect").value || rand(Object.keys(STATE_DATA));
+  const type = document.getElementById("typeSelect").value;
+  const nameType = document.getElementById("nameSelect").value;
+  const customVal = document.getElementById("customName").value;
+
+  const state = STATE_DATA[stateKey];
+  const addr = generateAddress(stateKey, type);
+  const name = generateName(nameType, customVal);
+  const phone = generatePhone(state.areaCodes);
+  const full = `${name}, ${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}, USA`;
+
+  document.getElementById("r-name").textContent = name;
+  document.getElementById("r-street").textContent = addr.street;
+  document.getElementById("r-city").textContent = addr.city;
+  document.getElementById("r-state").textContent = `${addr.state} (${addr.stateFull})`;
+  document.getElementById("r-zip").textContent = addr.zip;
+  document.getElementById("r-phone").textContent = phone;
+  document.getElementById("r-full").textContent = full;
+
+  renderStateCards(stateKey);
+  document.getElementById("stateSelect").value = stateKey;
+}
+
+// ===== COPY =====
+function showToast(msg) {
+  const toast = document.getElementById("copyToast");
+  toast.textContent = msg || "✓ 已复制到剪贴板";
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2000);
+}
+
+function copyField(el) {
+  const val = el.querySelector(".value").textContent;
+  if (val === "—") return;
+  navigator.clipboard.writeText(val).then(() => showToast("✓ 已复制"));
+}
+
+function copyAll() {
+  const name = document.getElementById("r-name").textContent;
+  if (name === "—") { showToast("请先生成地址"); return; }
+  const full = document.getElementById("r-full").textContent;
+  navigator.clipboard.writeText(full).then(() => showToast("✓ 完整地址已复制"));
+}
+
+// ===== INIT =====
+document.addEventListener("DOMContentLoaded", function () {
+  renderStateCards("");
+
+  document.getElementById("generateBtn").addEventListener("click", generate);
+
+  document.getElementById("nameSelect").addEventListener("change", function () {
+    const row = document.getElementById("customNameRow");
+    row.classList.toggle("hidden", this.value !== "custom");
+  });
+
+  // Navbar scroll
+  const navbar = document.getElementById("navbar");
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const icon = menuBtn.querySelector("i");
+
+  const updateNav = () => {
+    if (window.scrollY > 10 || mobileMenu.classList.contains("open")) {
+      navbar.classList.add("liquid-header");
+    } else {
+      navbar.classList.remove("liquid-header");
+    }
+  };
+
+  menuBtn.addEventListener("click", function () {
+    const isOpen = mobileMenu.classList.toggle("open");
+    if (isOpen) {
+      mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+      mobileMenu.style.opacity = "1";
+      icon.style.transform = "rotate(90deg)";
+    } else {
+      mobileMenu.style.maxHeight = "0px";
+      mobileMenu.style.opacity = "0";
+      icon.style.transform = "rotate(0deg)";
+    }
+    updateNav();
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      mobileMenu.style.maxHeight = "0px";
+      mobileMenu.style.opacity = "0";
+      icon.style.transform = "rotate(0deg)";
+      updateNav();
+    });
+  });
+
+  window.addEventListener("scroll", () => {
+    updateNav();
+    const btn = document.getElementById("backToTop");
+    if (window.scrollY > 100) {
+      document.body.classList.add("scrolled");
+      btn.classList.add("visible");
+    } else {
+      document.body.classList.remove("scrolled");
+      btn.classList.remove("visible");
+    }
+  }, { passive: true });
+
+  document.getElementById("backToTop").addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Fade-up observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add("visible"), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".fade-up").forEach(el => observer.observe(el));
+
+  updateNav();
+});
+</script>
+</body>
+</html>
