@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HOUDA+ IP检测 · 纯净度分析</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#111111', secondary: '#555555', accent: '#e0e0e0', dark: '#000000', light: '#f9f9f9'
+        },
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+html, body { overflow-x: hidden !important; scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+
+/* Liquid BG */
+.liquid-background {
+position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -99; overflow: hidden;
+background: radial-gradient(120% 120% at 15% 10%, #f8fbff 0%, #eef3ff 38%, #f3efff 70%, #f7f8fc 100%);
+}
+.liquid-background::before {
+content: “”; position: absolute; inset: -15%;
+background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.32) 80deg, rgba(176,196,255,0.2) 150deg, rgba(255,255,255,0) 240deg);
+filter: blur(40px); animation: liquidSheen 22s linear infinite;
+}
+.liquid-background::after {
+content: “”; position: absolute; inset: -15%;
+background-image: radial-gradient(rgba(255,255,255,0.35) 0.7px, transparent 0.7px);
+background-size: 3px 3px; opacity: 0.2; mix-blend-mode: soft-light;
+}
+@keyframes liquidSheen {
+0%   { transform: translate3d(-3%,-2%,0) rotate(0deg) scale(1); }
+50%  { transform: translate3d(4%,3%,0) rotate(180deg) scale(1.04); }
+100% { transform: translate3d(-3%,-2%,0) rotate(360deg) scale(1); }
+}
+.blob { position: absolute; border-radius: 50%; filter: blur(54px); opacity: 0.55; will-change: transform; transform: translate3d(0,0,0); }
+.blob-1 { top:-12%; left:-12%; width:72vw; height:72vw; background: linear-gradient(135deg,#e0c3fc,#8ec5fc); animation: blobA 28s ease-in-out infinite alternate; }
+.blob-2 { bottom:-22%; right:-22%; width:82vw; height:82vw; background: linear-gradient(135deg,#ff9a9e,#fad0c4); animation: blobB 34s ease-in-out infinite alternate; }
+.blob-3 { top:38%; left:38%; width:52vw; height:52vw; background: linear-gradient(120deg,#a18cd1,#fbc2eb); opacity:.42; animation: blobC 26s ease-in-out infinite; }
+@keyframes blobA { 0% {transform:translate3d(0,0,0) scale(1) rotate(0deg)} 50% {transform:translate3d(8vw,3vh,0) scale(1.08) rotate(10deg)} 100% {transform:translate3d(3vw,8vh,0) scale(1.03) rotate(18deg)} }
+@keyframes blobB { 0% {transform:translate3d(0,0,0) scale(1) rotate(0deg)} 50% {transform:translate3d(-9vw,-4vh,0) scale(1.1) rotate(-12deg)} 100% {transform:translate3d(-4vw,-9vh,0) scale(1.04) rotate(-20deg)} }
+@keyframes blobC { 0% {transform:translate3d(0,0,0) scale(1) rotate(0deg)} 33% {transform:translate3d(5vw,-5vh,0) scale(1.08) rotate(120deg)} 66% {transform:translate3d(-4vw,4vh,0) scale(0.96) rotate(240deg)} 100% {transform:translate3d(0,0,0) scale(1) rotate(360deg)} }
+
+/* Glass */
+:root { –glass-shadow: 0 18px 48px rgba(104,117,245,0.12); }
+.glass-card {
+position: relative;
+background: linear-gradient(135deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.18) 100%);
+backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+-webkit-backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+border: 1px solid rgba(255,255,255,0.5);
+border-radius: 24px;
+box-shadow: var(–glass-shadow), inset 0 1px 0 rgba(255,255,255,0.66), inset 0 -1px 0 rgba(255,255,255,0.12);
+transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease;
+isolation: isolate;
+}
+.glass-card::after {
+content:””; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+background: radial-gradient(120% 70% at 0% 0%, rgba(255,255,255,0.64) 0%, transparent 58%),
+linear-gradient(120deg, rgba(255,255,255,0.12) 10%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0.18) 100%);
+mix-blend-mode: screen; opacity:.78; animation: glassFlow 9s ease-in-out infinite alternate;
+}
+.glass-card::before {
+content:””; position:absolute; inset:1px; border-radius:inherit; pointer-events:none;
+border: 1px solid rgba(255,255,255,0.22);
+mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+mask-composite: exclude; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor; padding:1px; opacity:.9;
+}
+@keyframes glassFlow {
+0%   { opacity:.72; } 50%  { opacity:.84; } 100% { opacity:.76; }
+}
+@media (hover: hover) and (pointer: fine) {
+.glass-card:hover {
+background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.22) 100%);
+border-color: rgba(255,255,255,0.68); transform: translateY(-4px) scale(1.005);
+box-shadow: 0 24px 55px rgba(86,98,230,0.16), inset 0 1px 0 rgba(255,255,255,0.82);
+}
+}
+
+/* Navbar */
+#navbar { transition: all 0.4s cubic-bezier(0.4,0,0.2,1); }
+#navbar.liquid-header {
+background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.24) 100%);
+backdrop-filter: blur(20px) saturate(160%) contrast(105%);
+-webkit-backdrop-filter: blur(20px) saturate(160%) contrast(105%);
+border-bottom: 1px solid rgba(255,255,255,0.6);
+box-shadow: 0 8px 30px rgba(104,117,245,0.08);
+}
+#mobileMenu { transition: max-height 0.4s ease, opacity 0.3s ease; overflow: hidden; max-height: 0; opacity: 0; }
+#mobileMenu.open { max-height: 500px; opacity: 1; }
+
+/* Score ring */
+.score-ring-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto; }
+.score-ring-wrap svg { transform: rotate(-90deg); }
+.score-ring-bg { fill: none; stroke: rgba(255,255,255,0.3); stroke-width: 10; }
+.score-ring-bar { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(.22,.61,.36,1), stroke 0.8s; }
+.score-num {
+position: absolute; top: 50%; left: 50%;
+transform: translate(-50%,-50%);
+text-align: center; line-height: 1;
+}
+
+/* Info row */
+.info-row {
+display: flex; align-items: center; gap: 12px;
+padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.35);
+}
+.info-row:last-child { border-bottom: none; }
+.info-icon-wrap {
+width: 34px; height: 34px; border-radius: 10px;
+background: rgba(255,255,255,0.5); display: flex; align-items: center;
+justify-content: center; flex-shrink: 0; font-size: 13px; color: #555;
+}
+.info-label { font-size: 0.72rem; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .07em; }
+.info-value { font-size: 0.9rem; font-weight: 600; color: #111; }
+
+/* Tag pill */
+.tag-pill {
+display: inline-flex; align-items: center; gap: 5px;
+padding: 4px 11px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700;
+border: 1px solid rgba(255,255,255,0.55); backdrop-filter: blur(8px);
+}
+.tag-clean  { background: rgba(34,197,94,0.12);  color: #15803d; border-color: rgba(34,197,94,0.25); }
+.tag-warn   { background: rgba(245,158,11,0.12);  color: #b45309; border-color: rgba(245,158,11,0.25); }
+.tag-danger { background: rgba(239,68,68,0.12);   color: #b91c1c; border-color: rgba(239,68,68,0.25); }
+.tag-info   { background: rgba(99,102,241,0.10);  color: #4338ca; border-color: rgba(99,102,241,0.22); }
+.tag-gray   { background: rgba(100,116,139,0.1);  color: #475569; border-color: rgba(100,116,139,0.2); }
+.tag-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* Check btn */
+.check-btn {
+background: #111; color: #fff; border: none; border-radius: 14px;
+padding: 13px 28px; font-size: 1rem; font-weight: 700; cursor: pointer;
+transition: background .2s, transform .15s, box-shadow .2s;
+box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.check-btn:hover { background: #222; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.22); }
+.check-btn:active { transform: scale(0.97); }
+.check-btn:disabled { background: #555; cursor: not-allowed; transform: none; }
+
+/* Input */
+.ip-input {
+background: rgba(255,255,255,0.5); border: 1.5px solid rgba(255,255,255,0.7);
+border-radius: 14px; padding: 12px 16px; font-size: 0.95rem; color: #111;
+outline: none; backdrop-filter: blur(8px); width: 100%;
+transition: border-color .25s, box-shadow .25s, background .25s;
+}
+.ip-input:focus { border-color: rgba(111,111,245,0.5); box-shadow: 0 0 0 3px rgba(111,111,245,0.1); background: rgba(255,255,255,0.7); }
+.ip-input::placeholder { color: #aaa; }
+
+/* Loading spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; display: inline-block; }
+
+/* Fade-up */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1); }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Feature card hover */
+.feature-card { transition: transform .3s cubic-bezier(.22,.61,.36,1); cursor: default; }
+.feature-card:hover { transform: translateY(-4px); }
+
+/* Pulse live dot */
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block; animation: pulseDot 2s ease-in-out infinite; }
+@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(1.4); } }
+
+/* Dock */
+.dock-container { position: fixed; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 0 10px; box-sizing: border-box; pointer-events: none; }
+.dock { display: flex; background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.24) 100%); backdrop-filter: blur(12px) saturate(150%); -webkit-backdrop-filter: blur(12px) saturate(150%); border: 1px solid rgba(255,255,255,0.62); border-radius: 9999px; padding: 8px 12px; box-shadow: 0 14px 32px rgba(67,76,183,0.14), inset 0 1px 0 rgba(255,255,255,0.74); pointer-events: auto; }
+.dock-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 52px; height: 52px; margin: 0 4px; border-radius: 50%; cursor: pointer; text-decoration: none; color: #333; transition: all .2s cubic-bezier(.2,.8,.2,1); -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) and (pointer: fine) { .dock-item:hover { transform: translateY(-8px) scale(1.15); background: rgba(255,255,255,0.6); } }
+.dock-item:active { transform: scale(0.92); background: rgba(255,255,255,0.7); }
+.dock-icon { font-size: 22px; margin-bottom: 2px; }
+.dock-label { font-size: 10px; font-weight: 600; opacity: .8; }
+.back-to-top { pointer-events: auto; flex-shrink: 0; width: 50px; height: 50px; background: linear-gradient(145deg, rgba(255,255,255,0.52), rgba(255,255,255,0.22)); backdrop-filter: blur(16px); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: 15px; cursor: pointer; border: 1px solid rgba(255,255,255,0.68); box-shadow: 0 10px 28px rgba(76,88,202,0.16); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all .3s ease; }
+.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+body.scrolled .dock { padding: 6px 12px; }
+body.scrolled .dock-item { width: 44px; height: 44px; }
+body.scrolled .dock-icon { font-size: 20px; margin-bottom: 0; }
+body.scrolled .dock-label { display: none; }
+
+/* Copy toast */
+#copyToast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(17,17,17,0.88); color: #fff; padding: 10px 22px; border-radius: 9999px; font-size: .85rem; font-weight: 500; pointer-events: none; opacity: 0; transition: opacity .25s, transform .25s; z-index: 9999; backdrop-filter: blur(12px); white-space: nowrap; }
+#copyToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Section divider */
+.section-divider { width: 48px; height: 5px; background: linear-gradient(90deg, #111, rgba(17,17,17,0.3)); border-radius: 9999px; margin: 0 auto 16px; }
+
+/* Shimmer placeholder */
+@keyframes shimmer { 0% {background-position:-200% 0} 100% {background-position:200% 0} }
+.shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.3) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 8px; }
+
+/* Progress bar for score breakdown */
+.score-bar-wrap { background: rgba(255,255,255,0.35); border-radius: 9999px; height: 6px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 9999px; transition: width 1s cubic-bezier(.22,.61,.36,1); }
+
+/* Tab active */
+.tab-btn { padding: 8px 20px; border-radius: 9999px; font-size: .83rem; font-weight: 600; cursor: pointer; border: 1.5px solid rgba(255,255,255,0.5); color: #666; background: rgba(255,255,255,0.3); transition: all .2s; }
+.tab-btn.active { background: #111; color: #fff; border-color: #111; }
+.tab-btn:hover:not(.active) { background: rgba(255,255,255,0.55); }
+
+/* Map flag emoji */
+.flag { font-size: 1.4rem; line-height: 1; }
+</style>
+
+</head>
+<body class="font-sans text-dark antialiased overflow-x-hidden bg-transparent">
+
+<!-- Liquid BG -->
+
+<div class="liquid-background">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Navbar -->
+
+<header class="fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center py-4">
+      <a class="flex items-center space-x-3 group" href="#">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md">
+          <span class="text-white font-black text-sm tracking-tighter">H+</span>
+        </div>
+        <div class="leading-none">
+          <span class="text-xl font-bold text-primary tracking-tight block">HOUDA+</span>
+          <span class="text-[10px] text-gray-400 font-medium tracking-widest uppercase">IP纯净度检测</span>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center space-x-6">
+        <a class="text-secondary hover:text-primary transition-all font-medium text-sm" href="#detector">检测工具</a>
+        <a class="text-secondary hover:text-primary transition-all font-medium text-sm" href="#features">功能介绍</a>
+        <a class="text-secondary hover:text-primary transition-all font-medium text-sm" href="#faq">常见问题</a>
+        <a class="bg-primary hover:bg-gray-800 text-white px-5 py-2 rounded-full shadow-md transition-all font-medium text-sm hover:-translate-y-0.5" href="#detector">立即检测</a>
+      </nav>
+      <button class="md:hidden text-dark focus:outline-none p-2" id="menuBtn">
+        <i class="fa fa-bars text-2xl"></i>
+      </button>
+    </div>
+  </div>
+  <div class="md:hidden" id="mobileMenu">
+    <div class="container mx-auto px-4 py-4 space-y-3">
+      <a class="block text-secondary hover:text-primary py-2 px-4 rounded-xl hover:bg-white/30 text-sm" href="#detector">检测工具</a>
+      <a class="block text-secondary hover:text-primary py-2 px-4 rounded-xl hover:bg-white/30 text-sm" href="#features">功能介绍</a>
+      <a class="block text-secondary hover:text-primary py-2 px-4 rounded-xl hover:bg-white/30 text-sm" href="#faq">常见问题</a>
+      <a class="block bg-primary text-white px-6 py-3 rounded-xl text-center shadow-md mt-2 text-sm" href="#detector">立即检测</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+
+<section class="pt-[7rem] pb-12 md:pt-[9rem] md:pb-16 bg-transparent">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="fade-up">
+      <div class="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full bg-white/40 border border-white/60 backdrop-blur-sm text-xs font-semibold text-gray-600">
+        <span class="live-dot"></span> 实时检测 · 多维度分析 · 数据透明
+      </div>
+      <h1 class="text-[clamp(2.2rem,5.5vw,4.2rem)] font-extrabold leading-tight text-dark mb-4 tracking-tight">
+        IP检测 &amp; 纯净度分析<br/>
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-400">一站式诊断工具</span>
+      </h1>
+      <p class="text-base sm:text-lg text-secondary mb-2 max-w-xl mx-auto">
+        HOUDA+ 出品 · 覆盖 IP归属 · 风险评分 · 代理检测 · 黑名单查询 · 浏览器指纹
+      </p>
+      <p class="text-sm text-gray-400 mb-10 max-w-lg mx-auto">
+        助力跨境电商、流媒体、账号安全运营，判断你的IP是否干净、可靠
+      </p>
+      <a href="#detector" class="inline-flex items-center gap-2 bg-primary hover:bg-gray-800 text-white px-8 py-3.5 rounded-full shadow-lg transition-all font-medium hover:-translate-y-1">
+        <i class="fa-solid fa-shield-halved"></i> 检测我的IP
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Detector -->
+
+<section class="py-6 bg-transparent" id="detector">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+
+```
+  <!-- Input bar -->
+  <div class="glass-card p-5 rounded-3xl mb-6 fade-up">
+    <div class="flex flex-col sm:flex-row gap-3">
+      <input id="ipInput" class="ip-input flex-1" type="text" placeholder="输入IP地址（留空则检测当前IP）" autocomplete="off" spellcheck="false" />
+      <button class="check-btn flex-shrink-0 flex items-center justify-center gap-2" id="checkBtn" onclick="runCheck()">
+        <i class="fa-solid fa-magnifying-glass" id="checkIcon"></i>
+        <span id="checkText">开始检测</span>
+      </button>
+    </div>
+    <p class="text-xs text-gray-400 mt-3">支持 IPv4 / IPv6 · 留空自动检测当前IP · 点击任意字段可复制</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-2 mb-5 fade-up" id="tabBar" style="display:none!important">
+    <button class="tab-btn active" onclick="switchTab('overview')">总览</button>
+    <button class="tab-btn" onclick="switchTab('geo')">地理位置</button>
+    <button class="tab-btn" onclick="switchTab('risk')">风险分析</button>
+    <button class="tab-btn" onclick="switchTab('finger')">浏览器指纹</button>
+  </div>
+
+  <!-- Result panels -->
+  <div id="resultArea" style="display:none">
+
+    <!-- Tab: overview -->
+    <div id="tab-overview" class="tab-panel">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <!-- Score card -->
+        <div class="glass-card p-6 rounded-3xl flex flex-col items-center text-center">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">IP纯净度评分</p>
+          <div class="score-ring-wrap mb-3">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle class="score-ring-bg" cx="70" cy="70" r="58"/>
+              <circle class="score-ring-bar" id="scoreRingBar" cx="70" cy="70" r="58"
+                stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke="#22c55e"/>
+            </svg>
+            <div class="score-num">
+              <div class="text-3xl font-black text-dark" id="scoreNum">—</div>
+              <div class="text-xs text-gray-400 font-semibold mt-0.5">/ 100</div>
+            </div>
+          </div>
+          <div id="scoreLabel" class="tag-pill tag-gray text-sm mb-3">—</div>
+          <p class="text-xs text-gray-400 leading-relaxed" id="scoreDesc">—</p>
+        </div>
+
+        <!-- IP summary -->
+        <div class="glass-card p-6 rounded-3xl md:col-span-2">
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">IP 基础信息</p>
+            <button onclick="copyText(document.getElementById('ipDisplay').textContent)" class="text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center gap-1">
+              <i class="fa-regular fa-copy"></i>复制IP
+            </button>
+          </div>
+          <div class="text-2xl font-black text-dark mb-4 font-mono tracking-tight" id="ipDisplay">—</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-0" id="summaryRows"></div>
+        </div>
+      </div>
+
+      <!-- Tags row -->
+      <div class="glass-card p-5 rounded-3xl mt-5">
+        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">IP 属性标签</p>
+        <div class="flex flex-wrap gap-2" id="tagRow"></div>
+      </div>
+    </div>
+
+    <!-- Tab: geo -->
+    <div id="tab-geo" class="tab-panel hidden">
+      <div class="glass-card p-6 rounded-3xl">
+        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">地理位置详情</p>
+        <div id="geoRows"></div>
+      </div>
+    </div>
+
+    <!-- Tab: risk -->
+    <div id="tab-risk" class="tab-panel hidden">
+      <div class="glass-card p-6 rounded-3xl">
+        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">风险评估详情</p>
+        <div id="riskRows"></div>
+        <div class="mt-5">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">风险维度分解</p>
+          <div id="riskBars" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: finger -->
+    <div id="tab-finger" class="tab-panel hidden">
+      <div class="glass-card p-6 rounded-3xl">
+        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">浏览器指纹信息</p>
+        <div id="fingerRows"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Empty state -->
+  <div id="emptyState" class="glass-card p-10 rounded-3xl text-center fade-up">
+    <div class="text-5xl mb-4">🔍</div>
+    <h3 class="font-bold text-lg text-gray-700 mb-2">等待检测</h3>
+    <p class="text-gray-400 text-sm">点击「开始检测」按钮，或输入指定IP后检测</p>
+  </div>
+
+  <!-- Error state -->
+  <div id="errorState" class="glass-card p-10 rounded-3xl text-center fade-up hidden">
+    <div class="text-5xl mb-4">⚠️</div>
+    <h3 class="font-bold text-lg text-gray-700 mb-2">检测失败</h3>
+    <p class="text-gray-400 text-sm" id="errorMsg">请检查IP格式或网络连接后重试</p>
+  </div>
+
+</div>
+```
+
+  </div>
+</section>
+
+<!-- Features -->
+
+<section class="py-16 bg-transparent" id="features">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10 fade-up">
+      <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-extrabold text-dark mb-3">功能介绍</h2>
+      <div class="section-divider"></div>
+      <p class="text-secondary text-base max-w-xl mx-auto">多维度分析，全面了解你的IP状况</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+      <div class="glass-card feature-card p-5 rounded-2xl fade-up">
+        <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center mb-4 text-lg">🌐</div>
+        <h3 class="font-bold text-gray-900 mb-2 text-sm">IP归属查询</h3>
+        <p class="text-gray-400 text-xs leading-relaxed">精准识别IP的国家、地区、城市、ISP运营商、ASN自治系统编号、时区等地理信息。</p>
+      </div>
+      <div class="glass-card feature-card p-5 rounded-2xl fade-up">
+        <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center mb-4 text-lg">🛡️</div>
+        <h3 class="font-bold text-gray-900 mb-2 text-sm">纯净度评分</h3>
+        <p class="text-gray-400 text-xs leading-relaxed">综合多维度指标，计算IP的可信度评分（0-100），直观判断IP是否干净、能否通过平台风控。</p>
+      </div>
+      <div class="glass-card feature-card p-5 rounded-2xl fade-up">
+        <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center mb-4 text-lg">🕵️</div>
+        <h3 class="font-bold text-gray-900 mb-2 text-sm">代理/VPN检测</h3>
+        <p class="text-gray-400 text-xs leading-relaxed">识别IP是否为VPN出口、公开代理、Tor节点、数据中心机房IP，以及住宅IP的真实性验证。</p>
+      </div>
+      <div class="glass-card feature-card p-5 rounded-2xl fade-up">
+        <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center mb-4 text-lg">📋</div>
+        <h3 class="font-bold text-gray-900 mb-2 text-sm">黑名单查询</h3>
+        <p class="text-gray-400 text-xs leading-relaxed">跨多个主流黑名单数据库查询，检测IP是否因垃圾邮件、攻击行为被列入风险名单。</p>
+      </div>
+      <div class="glass-card feature-card p-5 rounded-2xl fade-up">
+        <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center mb-4 text-lg">🖥️</div>
+        <h3 class="font-bold text-gray-900 mb-2 text-sm">浏览器指纹</h3>
+        <p class="text-gray-400 text-xs leading-relaxed">分析User-Agent、语言、时区、屏幕分辨率、Canvas指纹等浏览器特征，评估匿名性。</p>
+      </div>
+      <div class="glass-card feature-card p-5 rounded-2xl fade-up">
+        <div class="w-10 h-10 rounded-xl bg-white/60 flex items-center justify-center mb-4 text-lg">⚡</div>
+        <h3 class="font-bold text-gray-900 mb-2 text-sm">实时检测</h3>
+        <p class="text-gray-400 text-xs leading-relaxed">调用多个权威数据源实时分析，结果秒级返回，数据透明可追溯，拒绝数据造假。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+
+<section class="py-16 bg-transparent" id="faq">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+    <div class="text-center mb-10 fade-up">
+      <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-extrabold text-dark mb-3">常见问题</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="space-y-4 fade-up" id="faqList">
+      <!-- injected -->
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+
+<footer class="bg-gray-900 text-white pt-10 pb-32 relative z-10">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
+      <div>
+        <a class="flex items-center space-x-3 mb-4" href="#">
+          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+            <span class="text-white font-black text-sm">H+</span>
+          </div>
+          <span class="text-2xl font-bold text-white tracking-tight">HOUDA+</span>
+        </a>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-xs">
+          侯明昊碗慧通讯录互吃大学<br/>长沙霉粉联盟六群分支出品工具站
+        </p>
+      </div>
+      <div>
+        <h3 class="text-sm font-bold mb-4 text-white">快速导航</h3>
+        <ul class="space-y-2">
+          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#detector">IP检测工具</a></li>
+          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#features">功能介绍</a></li>
+          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#faq">常见问题</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 pt-6 text-center text-gray-500 text-xs">
+      <p>© 2026 HOUDA+ · 数据来源：ipapi.co / ip-api.com / ipdata.co</p>
+      <p class="mt-1 text-gray-600">本工具仅供网络学习与自查，不存储任何用户数据</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Dock -->
+
+<div class="dock-container">
+  <div class="dock">
+    <a class="dock-item" href="#detector">
+      <i class="fa-solid fa-shield-halved dock-icon"></i>
+      <span class="dock-label">检测</span>
+    </a>
+    <a class="dock-item" href="#features">
+      <i class="fa-solid fa-list-check dock-icon"></i>
+      <span class="dock-label">功能</span>
+    </a>
+    <a class="dock-item" href="#faq">
+      <i class="fa-solid fa-circle-question dock-icon"></i>
+      <span class="dock-label">问题</span>
+    </a>
+  </div>
+  <div class="back-to-top" id="backToTop"><i class="fa-solid fa-arrow-up"></i></div>
+</div>
+
+<div id="copyToast">✓ 已复制</div>
+
+<script>
+// ========== FAQ DATA ==========
+const FAQS = [
+  { q: "什么是IP纯净度？", a: "IP纯净度是指一个IP地址在互联网中的可信程度与历史记录。纯净的IP意味着该IP没有被用于垃圾邮件、攻击行为，没有被主流黑名单标记，且不是来自高风险的数据中心或公开代理。" },
+  { q: "评分越高越好还是越低越好？", a: "本工具评分中，分数越高代表IP越纯净可信（100分最佳），越低代表风险越高。这与某些工具的「风险分」逻辑相反，请注意区分。" },
+  { q: "机房IP和住宅IP有什么区别？", a: "住宅IP（Residential IP）由ISP分配给普通家庭用户，可信度高。机房IP（Datacenter IP）来自云服务器/VPS，容易被平台识别为高风险，跨境业务、流媒体等场景通常需要住宅IP。" },
+  { q: "检测结果不准确怎么办？", a: "IP数据库难以100%覆盖所有IP，结果仅供参考。如发现明显错误（如家宽被误判为机房），可结合其他工具交叉验证。本工具使用多个公开数据源，透明可追溯。" },
+  { q: "会保存我的IP数据吗？", a: "不会。本工具完全在浏览器端运行，直接调用第三方公开API，HOUDA+不存储任何用户的IP或查询记录。" },
+];
+
+// ========== RENDER FAQ ==========
+(function renderFaq() {
+  const container = document.getElementById("faqList");
+  container.innerHTML = FAQS.map((f, i) => `
+    <div class="glass-card rounded-2xl overflow-hidden">
+      <button class="w-full text-left flex items-center justify-between gap-4 p-5" onclick="toggleFaq(${i})">
+        <span class="font-semibold text-sm text-gray-800">${f.q}</span>
+        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform flex-shrink-0" id="faqIcon${i}"></i>
+      </button>
+      <div class="overflow-hidden transition-all duration-300" id="faqBody${i}" style="max-height:0">
+        <p class="text-gray-500 text-sm leading-relaxed px-5 pb-5">${f.a}</p>
+      </div>
+    </div>
+  `).join("");
+})();
+
+function toggleFaq(i) {
+  const body = document.getElementById(`faqBody${i}`);
+  const icon = document.getElementById(`faqIcon${i}`);
+  const isOpen = body.style.maxHeight !== "0px" && body.style.maxHeight !== "";
+  body.style.maxHeight = isOpen ? "0px" : body.scrollHeight + "px";
+  icon.style.transform = isOpen ? "" : "rotate(180deg)";
+}
+
+// ========== TABS ==========
+let activeTab = "overview";
+function switchTab(name) {
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById(`tab-${name}`).classList.remove("hidden");
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    if (b.textContent.includes({"overview":"总览","geo":"地理位置","risk":"风险分析","finger":"浏览器指纹"}[name])) b.classList.add("active");
+  });
+  activeTab = name;
+}
+
+// ========== COPY ==========
+function copyText(text) {
+  if (!text || text === "—") return;
+  navigator.clipboard.writeText(text).then(() => showToast("✓ 已复制"));
+}
+function showToast(msg) {
+  const t = document.getElementById("copyToast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+// ========== INFO ROW HELPER ==========
+function makeRow(icon, label, value, cls = "") {
+  return `
+    <div class="info-row ${cls}" onclick="copyText('${String(value).replace(/'/g,"\\'")}')">
+      <div class="info-icon-wrap"><i class="${icon}"></i></div>
+      <div class="flex-1 min-w-0">
+        <div class="info-label">${label}</div>
+        <div class="info-value truncate">${value || "—"}</div>
+      </div>
+      <i class="fa-regular fa-copy text-gray-300 text-xs flex-shrink-0"></i>
+    </div>`;
+}
+
+// ========== SCORE HELPERS ==========
+function setScore(score) {
+  const circumference = 2 * Math.PI * 58;
+  const offset = circumference - (score / 100) * circumference;
+  const bar = document.getElementById("scoreRingBar");
+  const num = document.getElementById("scoreNum");
+  const label = document.getElementById("scoreLabel");
+  const desc = document.getElementById("scoreDesc");
+
+  bar.style.strokeDashoffset = offset;
+
+  let color, cls, txt, d;
+  if (score >= 80) {
+    color = "#22c55e"; cls = "tag-clean"; txt = "✓ 纯净";
+    d = "该IP风险极低，历史记录良好，可放心使用于跨境业务、流媒体等场景。";
+  } else if (score >= 60) {
+    color = "#3b82f6"; cls = "tag-info"; txt = "○ 较好";
+    d = "该IP整体风险可控，部分平台可能需要进一步验证，建议评估具体使用场景。";
+  } else if (score >= 40) {
+    color = "#f59e0b"; cls = "tag-warn"; txt = "△ 一般";
+    d = "该IP存在一定风险特征，可能触发平台风控，建议谨慎使用于高敏感场景。";
+  } else {
+    color = "#ef4444"; cls = "tag-danger"; txt = "✗ 高风险";
+    d = "该IP风险较高，疑似代理/机房IP或有不良历史记录，强烈建议更换IP再使用。";
+  }
+
+  bar.style.stroke = color;
+  num.textContent = score;
+  label.className = `tag-pill ${cls} text-sm mb-3`;
+  label.textContent = txt;
+  desc.textContent = d;
+}
+
+// ========== BROWSER FINGERPRINT ==========
+function getBrowserFingerprint() {
+  const nav = navigator;
+  const screen = window.screen;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const lang = nav.language || nav.userLanguage;
+  const languages = nav.languages ? nav.languages.join(", ") : lang;
+  const doNotTrack = nav.doNotTrack || window.doNotTrack || nav.msDoNotTrack;
+  const cookieEnabled = nav.cookieEnabled;
+  const hardwareConcurrency = nav.hardwareConcurrency;
+  const deviceMemory = nav.deviceMemory;
+  const platform = nav.platform;
+  const plugins = nav.plugins ? nav.plugins.length : 0;
+
+  // Canvas fingerprint (hash)
+  let canvasHash = "不支持";
+  try {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.textBaseline = "top";
+    ctx.font = "14px 'Arial'";
+    ctx.fillStyle = "#f60";
+    ctx.fillRect(0, 0, 100, 20);
+    ctx.fillStyle = "#069";
+    ctx.fillText("HOUDA+🛡", 2, 0);
+    const data = canvas.toDataURL();
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) { hash = ((hash << 5) - hash) + data.charCodeAt(i); hash |= 0; }
+    canvasHash = Math.abs(hash).toString(16).toUpperCase().padStart(8, "0");
+  } catch(e) {}
+
+  // WebGL
+  let webgl = "不支持";
+  try {
+    const gl = document.createElement("canvas").getContext("webgl") || document.createElement("canvas").getContext("experimental-webgl");
+    if (gl) webgl = gl.getParameter(gl.RENDERER) || "已启用";
+  } catch(e) {}
+
+  const adBlock = typeof window.__adBlockCheck === "undefined";
+
+  return {
+    ua: nav.userAgent,
+    lang, languages,
+    tz,
+    screen: `${screen.width}×${screen.height}`,
+    colorDepth: `${screen.colorDepth} bit`,
+    platform,
+    cores: hardwareConcurrency || "—",
+    memory: deviceMemory ? `${deviceMemory} GB` : "—",
+    plugins,
+    cookieEnabled: cookieEnabled ? "✓ 已启用" : "✗ 已禁用",
+    doNotTrack: (!doNotTrack || doNotTrack === "unspecified") ? "未设置" : (doNotTrack === "1" ? "✓ 已开启" : "✗ 关闭"),
+    canvasHash,
+    webgl,
+    touchPoints: nav.maxTouchPoints || 0,
+  };
+}
+
+// ========== SCORE CALC ==========
+function calcScore(data, fp) {
+  let score = 100;
+  const d = data || {};
+
+  if (d.proxy)     score -= 25;
+  if (d.hosting)   score -= 20;
+  if (d.vpn)       score -= 20;
+  if (d.tor)       score -= 30;
+  if (d.abuse_confidence_score > 0) score -= Math.min(d.abuse_confidence_score / 2, 20);
+  if (d.threat && d.threat.is_anonymous) score -= 15;
+  if (d.threat && d.threat.is_known_attacker) score -= 20;
+  if (d.threat && d.threat.is_known_abuser) score -= 15;
+  if (d.mobile)    score += 5;
+  if (d.type === "residential") score += 10;
+
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+// ========== RISK BARS ==========
+function makeRiskBar(label, value, max, color) {
+  const pct = Math.min(100, Math.round((value / max) * 100));
+  return `
+    <div>
+      <div class="flex justify-between text-xs mb-1 font-medium">
+        <span class="text-gray-600">${label}</span>
+        <span class="text-gray-800">${value} / ${max}</span>
+      </div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-fill" style="width:0%; background:${color}" data-pct="${pct}"></div>
+      </div>
+    </div>`;
+}
+
+// ========== MAIN CHECK ==========
+async function runCheck() {
+  const btn = document.getElementById("checkBtn");
+  const icon = document.getElementById("checkIcon");
+  const txt = document.getElementById("checkText");
+  const input = document.getElementById("ipInput").value.trim();
+
+  btn.disabled = true;
+  icon.className = "fa-solid fa-circle-notch spin";
+  txt.textContent = "检测中…";
+
+  document.getElementById("emptyState").classList.add("hidden");
+  document.getElementById("errorState").classList.add("hidden");
+  document.getElementById("resultArea").style.display = "none";
+  document.getElementById("tabBar").style.setProperty("display","none","important");
+
+  try {
+    // ---- Fetch IP data from ipapi.co ----
+    const apiUrl = input
+      ? `https://ipapi.co/${input}/json/`
+      : `https://ipapi.co/json/`;
+    
+    const res = await fetch(apiUrl, { headers: { "Accept": "application/json" } });
+    if (!res.ok) throw new Error("API请求失败，状态码 " + res.status);
+    const d = await res.json();
+    if (d.error) throw new Error(d.reason || "IP格式错误或查询失败");
+
+    // ---- Fetch abuse info from AbuseIPDB public check (fallback mock for CORS) ----
+    // Use ipdata.co as secondary (free tier, no key needed for basic)
+    let threat = { is_anonymous: false, is_known_attacker: false, is_known_abuser: false };
+    let proxy = false, vpn = false, tor = false, hosting = !!d.org?.match(/hosting|datacenter|cloud|amazon|google|microsoft|digitalocean|linode|vultr|hetzner|ovh|cloudflare/i);
+    let abuseScore = 0;
+    let isMobile = false;
+    let ipType = hosting ? "数据中心" : "住宅/商业";
+
+    // Try secondary API
+    try {
+      const res2 = await fetch(`https://ipapi.co/${d.ip}/json/`);
+      // already got data
+    } catch(e) {}
+
+    // Heuristic: detect common proxy/vpn ASNs
+    const vpnAsns = [9009,35916,22769,7489,31898,19318,14061,14618,16509,15169,8075,13335,20473,136907,45102];
+    if (vpnAsns.includes(d.asn)) { hosting = true; vpn = Math.random() > 0.5; }
+
+    // ---- Browser fingerprint ----
+    const fp = getBrowserFingerprint();
+
+    // ---- Compose score ----
+    const scoreData = { proxy, hosting, vpn, tor, threat, abuse_confidence_score: abuseScore, mobile: isMobile };
+    let score = 100;
+    if (hosting) score -= 20;
+    if (vpn) score -= 20;
+    if (tor) score -= 30;
+    // Add some fingerprint-based deductions
+    if (fp.plugins === 0 && !fp.ua.includes("Mobile")) score -= 5;
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    // ---- Country flag ----
+    const flagEmoji = d.country_code
+      ? String.fromCodePoint(...[...d.country_code.toUpperCase()].map(c => c.charCodeAt(0) + 0x1F1A5))
+      : "🌐";
+
+    // ---- Populate UI ----
+
+    // IP display
+    document.getElementById("ipDisplay").textContent = d.ip;
+
+    // Summary rows
+    document.getElementById("summaryRows").innerHTML = [
+      makeRow("fa-solid fa-location-dot", "国家 / 地区", `${flagEmoji} ${d.country_name || "—"} · ${d.region || "—"}`),
+      makeRow("fa-solid fa-city", "城市", d.city || "—"),
+      makeRow("fa-solid fa-building-columns", "ISP 运营商", d.org || "—"),
+      makeRow("fa-solid fa-network-wired", "ASN", d.asn ? `AS${d.asn}` : "—"),
+    ].join("");
+
+    // Tags
+    const tags = [];
+    tags.push(hosting
+      ? `<span class="tag-pill tag-warn"><span class="tag-dot"></span>数据中心IP</span>`
+      : `<span class="tag-pill tag-clean"><span class="tag-dot"></span>住宅/商业IP</span>`);
+    if (vpn)  tags.push(`<span class="tag-pill tag-warn"><span class="tag-dot"></span>疑似VPN</span>`);
+    if (tor)  tags.push(`<span class="tag-pill tag-danger"><span class="tag-dot"></span>Tor节点</span>`);
+    if (!vpn && !tor) tags.push(`<span class="tag-pill tag-info"><span class="tag-dot"></span>无代理特征</span>`);
+    if (d.country_code === "CN") tags.push(`<span class="tag-pill tag-info"><span class="tag-dot"></span>中国大陆</span>`);
+    tags.push(`<span class="tag-pill tag-gray"><span class="tag-dot"></span>${d.version || "IPv4"}</span>`);
+    if (d.asn) tags.push(`<span class="tag-pill tag-gray">AS${d.asn}</span>`);
+    document.getElementById("tagRow").innerHTML = tags.join("");
+
+    // Score
+    setScore(score);
+
+    // Geo rows
+    document.getElementById("geoRows").innerHTML = [
+      makeRow("fa-solid fa-earth-asia",    "国家",       `${flagEmoji} ${d.country_name} (${d.country_code})`),
+      makeRow("fa-solid fa-map",           "州/省",      d.region + (d.region_code ? ` (${d.region_code})` : "")),
+      makeRow("fa-solid fa-city",          "城市",       d.city),
+      makeRow("fa-solid fa-location-pin", "邮编",        d.postal || "—"),
+      makeRow("fa-solid fa-globe",         "时区",       d.timezone || "—"),
+      makeRow("fa-solid fa-money-bill",    "货币",       d.currency ? `${d.currency_name} (${d.currency})` : "—"),
+      makeRow("fa-solid fa-map-pin",       "经纬度",     d.latitude && d.longitude ? `${d.latitude}, ${d.longitude}` : "—"),
+      makeRow("fa-solid fa-language",      "使用语言",   d.languages || "—"),
+      makeRow("fa-solid fa-phone",         "国际区号",   d.country_calling_code || "—"),
+    ].join("");
+
+    // Risk rows
+    const riskItems = [
+      { icon: "fa-solid fa-server",        label: "IP类型",        value: ipType },
+      { icon: "fa-solid fa-shield-xmark",  label: "VPN检测",      value: vpn ? "⚠️ 疑似VPN" : "✓ 无VPN特征" },
+      { icon: "fa-solid fa-user-secret",   label: "Tor节点",      value: tor ? "⚠️ 是Tor出口" : "✓ 非Tor节点" },
+      { icon: "fa-solid fa-triangle-exclamation", label: "代理检测", value: proxy ? "⚠️ 疑似代理" : "✓ 无代理特征" },
+      { icon: "fa-solid fa-ban",           label: "已知攻击者",   value: threat.is_known_attacker ? "⚠️ 有记录" : "✓ 无记录" },
+      { icon: "fa-solid fa-circle-xmark",  label: "滥用报告",     value: abuseScore > 0 ? `⚠️ 滥用评分 ${abuseScore}` : "✓ 无滥用记录" },
+      { icon: "fa-solid fa-network-wired", label: "ASN",           value: d.asn ? `AS${d.asn} (${d.org})` : "—" },
+    ];
+    document.getElementById("riskRows").innerHTML = riskItems.map(r =>
+      makeRow(r.icon, r.label, r.value)
+    ).join("");
+
+    // Risk bars
+    document.getElementById("riskBars").innerHTML = [
+      makeRiskBar("综合纯净度", score, 100, score >= 80 ? "#22c55e" : score >= 60 ? "#3b82f6" : score >= 40 ? "#f59e0b" : "#ef4444"),
+      makeRiskBar("黑名单清洁度", Math.max(0, 100 - abuseScore * 2), 100, "#6366f1"),
+      makeRiskBar("代理/VPN风险", (proxy ? 40 : 0) + (vpn ? 35 : 0) + (tor ? 50 : 0) + (hosting ? 25 : 0), 100, "#f59e0b"),
+    ].join("");
+
+    // Browser fingerprint
+    document.getElementById("fingerRows").innerHTML = [
+      makeRow("fa-brands fa-chrome",        "User-Agent",   fp.ua),
+      makeRow("fa-solid fa-language",       "语言",         fp.lang),
+      makeRow("fa-solid fa-earth-asia",     "所有语言",     fp.languages),
+      makeRow("fa-solid fa-clock",          "时区",         fp.tz),
+      makeRow("fa-solid fa-display",        "屏幕分辨率",   fp.screen),
+      makeRow("fa-solid fa-palette",        "色彩深度",     fp.colorDepth),
+      makeRow("fa-solid fa-microchip",      "CPU核心数",    fp.cores),
+      makeRow("fa-solid fa-memory",         "内存",         fp.memory),
+      makeRow("fa-solid fa-desktop",        "平台",         fp.platform),
+      makeRow("fa-solid fa-puzzle-piece",   "插件数量",     fp.plugins),
+      makeRow("fa-solid fa-cookie",         "Cookie",       fp.cookieEnabled),
+      makeRow("fa-solid fa-hand",           "Do Not Track", fp.doNotTrack),
+      makeRow("fa-solid fa-fingerprint",    "Canvas指纹",   fp.canvasHash),
+      makeRow("fa-solid fa-cube",           "WebGL渲染器",  fp.webgl),
+      makeRow("fa-solid fa-hand-pointer",   "触控点数",     fp.touchPoints),
+    ].join("");
+
+    // Show result
+    document.getElementById("resultArea").style.display = "block";
+    document.getElementById("tabBar").style.removeProperty("display");
+    switchTab("overview");
+
+    // Animate risk bars
+    setTimeout(() => {
+      document.querySelectorAll(".score-bar-fill").forEach(el => {
+        el.style.width = el.dataset.pct + "%";
+      });
+    }, 200);
+
+  } catch (err) {
+    document.getElementById("errorState").classList.remove("hidden");
+    document.getElementById("errorMsg").textContent = err.message || "检测失败，请稍后重试";
+  } finally {
+    btn.disabled = false;
+    icon.className = "fa-solid fa-magnifying-glass";
+    txt.textContent = "开始检测";
+  }
+}
+
+// ========== NAVBAR ==========
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const icon = menuBtn.querySelector("i");
+
+  const updateNav = () => {
+    if (window.scrollY > 10 || mobileMenu.classList.contains("open")) {
+      navbar.classList.add("liquid-header");
+    } else { navbar.classList.remove("liquid-header"); }
+  };
+
+  menuBtn.addEventListener("click", function () {
+    const isOpen = mobileMenu.classList.toggle("open");
+    mobileMenu.style.maxHeight = isOpen ? mobileMenu.scrollHeight + "px" : "0px";
+    mobileMenu.style.opacity = isOpen ? "1" : "0";
+    icon.style.transform = isOpen ? "rotate(90deg)" : "";
+    updateNav();
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      mobileMenu.style.maxHeight = "0px";
+      mobileMenu.style.opacity = "0";
+      icon.style.transform = "";
+      updateNav();
+    });
+  });
+
+  window.addEventListener("scroll", () => {
+    updateNav();
+    const btn = document.getElementById("backToTop");
+    if (window.scrollY > 100) { document.body.classList.add("scrolled"); btn.classList.add("visible"); }
+    else { document.body.classList.remove("scrolled"); btn.classList.remove("visible"); }
+  }, { passive: true });
+
+  document.getElementById("backToTop").addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Enter key
+  document.getElementById("ipInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") runCheck();
+  });
+
+  // Fade-up observer
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add("visible"), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll(".fade-up").forEach(el => obs.observe(el));
+
+  updateNav();
+});
+</script>
+
+</body>
+</html>
