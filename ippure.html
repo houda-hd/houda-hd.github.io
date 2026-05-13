@@ -230,8 +230,8 @@ body.scrolled .dock-label { display: none; }
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center py-4">
       <a class="flex items-center space-x-3 group" href="#">
-        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md">
-          <span class="text-white font-black text-sm tracking-tighter">H+</span>
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden shadow-md group-hover:shadow-lg transition-custom">
+          <img alt="HOUDA+" class="w-full h-full object-cover group-hover:scale-110 transition-custom" src="assets/HOUDA_squre.jpeg"/>
         </div>
         <div class="leading-none">
           <span class="text-xl font-bold text-primary tracking-tight block">HOUDA+</span>
@@ -471,8 +471,8 @@ body.scrolled .dock-label { display: none; }
     <div class="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
       <div>
         <a class="flex items-center space-x-3 mb-4" href="#">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-            <span class="text-white font-black text-sm">H+</span>
+          <div class="w-10 h-10 rounded-xl overflow-hidden">
+            <img alt="HOUDA+" class="w-full h-full object-cover" src="assets/HOUDA_squre.jpeg"/>
           </div>
           <span class="text-2xl font-bold text-white tracking-tight">HOUDA+</span>
         </a>
@@ -577,16 +577,27 @@ function showToast(msg) {
 
 // ========== INFO ROW HELPER ==========
 function makeRow(icon, label, value, cls = "") {
+  const safe = String(value || "—").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   return `
-    <div class="info-row ${cls}" onclick="copyText('${String(value).replace(/'/g,"\\'")}')">
+    <div class="info-row ${cls} copy-row" data-copy="${safe}">
       <div class="info-icon-wrap"><i class="${icon}"></i></div>
       <div class="flex-1 min-w-0">
         <div class="info-label">${label}</div>
-        <div class="info-value truncate">${value || "—"}</div>
+        <div class="info-value truncate">${safe}</div>
       </div>
       <i class="fa-regular fa-copy text-gray-300 text-xs flex-shrink-0"></i>
     </div>`;
 }
+
+// Delegated click handler for all copy-row elements
+document.addEventListener("click", function(e) {
+  const row = e.target.closest(".copy-row");
+  if (!row) return;
+  const val = row.dataset.copy;
+  if (val && val !== "—") {
+    navigator.clipboard.writeText(val).then(() => showToast("✓ 已复制"));
+  }
+});
 
 // ========== SCORE HELPERS ==========
 function setScore(score) {
