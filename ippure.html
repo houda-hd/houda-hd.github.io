@@ -340,7 +340,7 @@ body.scrolled .dock-label { display: none; }
         <div class="glass-card p-6 rounded-3xl md:col-span-2">
           <div class="flex items-center justify-between mb-4">
             <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">IP 基础信息</p>
-            <button onclick="copyText(document.getElementById('ipDisplay').textContent)" class="text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center gap-1">
+            <button id="copyIpBtn" class="text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center gap-1">
               <i class="fa-regular fa-copy"></i>复制IP
             </button>
           </div>
@@ -596,6 +596,19 @@ document.addEventListener("click", function(e) {
   const val = row.dataset.copy;
   if (val && val !== "—") {
     navigator.clipboard.writeText(val).then(() => showToast("✓ 已复制"));
+  }
+});
+
+// Copy IP button (wired here to avoid inline onclick)
+document.addEventListener("DOMContentLoaded", function() {
+  const copyIpBtn = document.getElementById("copyIpBtn");
+  if (copyIpBtn) {
+    copyIpBtn.addEventListener("click", function() {
+      const val = document.getElementById("ipDisplay").textContent;
+      if (val && val !== "—") {
+        navigator.clipboard.writeText(val).then(() => showToast("✓ 已复制"));
+      }
+    });
   }
 });
 
