@@ -641,42 +641,42 @@ color: #555;
     <div id="resultSection">
       <div class="flex items-center justify-between mb-4">
         <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">生成结果</span>
-        <button class="copy-all-btn" id="copyAllBtn" onclick="copyAll()">
+        <button class="copy-all-btn" id="copyAllBtn">
           <i class="fa-regular fa-copy text-sm"></i>复制全部
         </button>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="resultGrid">
-        <div class="result-field sm:col-span-2" onclick="copyField(this)">
+        <div class="result-field sm:col-span-2" data-copy-field>
           <span class="label">收件人 Recipient</span>
           <span class="value" id="r-name">—</span>
           <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
         </div>
-        <div class="result-field sm:col-span-2" onclick="copyField(this)">
+        <div class="result-field sm:col-span-2" data-copy-field>
           <span class="label">街道地址 Street Address</span>
           <span class="value" id="r-street">—</span>
           <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
         </div>
-        <div class="result-field" onclick="copyField(this)">
+        <div class="result-field" data-copy-field>
           <span class="label">城市 City</span>
           <span class="value" id="r-city">—</span>
           <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
         </div>
-        <div class="result-field" onclick="copyField(this)">
+        <div class="result-field" data-copy-field>
           <span class="label">州 State</span>
           <span class="value" id="r-state">—</span>
           <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
         </div>
-        <div class="result-field" onclick="copyField(this)">
+        <div class="result-field" data-copy-field>
           <span class="label">邮编 ZIP Code</span>
           <span class="value" id="r-zip">—</span>
           <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
         </div>
-        <div class="result-field" onclick="copyField(this)">
+        <div class="result-field" data-copy-field>
           <span class="label">电话 Phone</span>
           <span class="value" id="r-phone">—</span>
           <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
         </div>
-        <div class="result-field sm:col-span-2" onclick="copyField(this)">
+        <div class="result-field sm:col-span-2" data-copy-field>
           <span class="label">完整地址（一行）Full Address</span>
           <span class="value" id="r-full">—</span>
           <span class="copy-hint"><i class="fa-regular fa-copy"></i>点击复制</span>
@@ -949,7 +949,7 @@ function generateAddress(stateKey, type) {
 function renderStateCards(selectedKey) {
   const container = document.getElementById("stateCards");
   container.innerHTML = Object.entries(STATE_DATA).map(([key, s]) => `
-    <div class="glass-card state-card p-4 rounded-2xl text-center ${selectedKey === key ? 'selected' : ''}" onclick="selectState('${key}')">
+    <div class="glass-card state-card p-4 rounded-2xl text-center ${selectedKey === key ? 'selected' : ''}" data-state-key="${key}">
       <div class="text-3xl mb-2">${s.icon}</div>
       <div class="font-bold text-sm text-gray-900">${s.name}</div>
       <div class="text-xs text-gray-400 mb-2">${s.nameEn} · ${s.abbr}</div>
@@ -1001,18 +1001,44 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove("show"), 2000);
 }
 
-function copyField(el) {
-  const val = el.querySelector(".value").textContent;
-  if (val === "—") return;
-  navigator.clipboard.writeText(val).then(() => showToast("✓ 已复制"));
+function copyToClipboard(text) {
+  if (!text || text === "—") return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => showToast("✓ 已复制")).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
 }
 
-function copyAll() {
-  const name = document.getElementById("r-name").textContent;
-  if (name === "—") { showToast("请先生成地址"); return; }
-  const full = document.getElementById("r-full").textContent;
-  navigator.clipboard.writeText(full).then(() => showToast("✓ 完整地址已复制"));
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0";
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand("copy"); showToast("✓ 已复制"); } catch(e) { showToast("复制失败，请手动复制"); }
+  document.body.removeChild(ta);
 }
+
+// 事件委托：点击 result-field 复制内容
+document.addEventListener("click", function(e) {
+  const field = e.target.closest("[data-copy-field]");
+  if (field) {
+    const val = field.querySelector(".value")?.textContent;
+    copyToClipboard(val);
+    return;
+  }
+  if (e.target.closest("#copyAllBtn")) {
+    const name = document.getElementById("r-name").textContent;
+    if (name === "—") { showToast("请先生成地址"); return; }
+    copyToClipboard(document.getElementById("r-full").textContent);
+    return;
+  }
+  const stateCard = e.target.closest("[data-state-key]");
+  if (stateCard) {
+    selectState(stateCard.dataset.stateKey);
+  }
+});
 
 // ===== INIT =====
 document.addEventListener("DOMContentLoaded", function () {
