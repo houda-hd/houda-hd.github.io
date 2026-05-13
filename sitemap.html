@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOUDA+ 网站地图</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#111111',
+            secondary: '#5b6472',
+            dark: '#09090b',
+            light: '#f7f8fc'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="icon" href="assets/HOUDA_squre.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    html, body {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      background: #f7f8fc;
+    }
+
+    :root {
+      --glass-bg: rgba(255,255,255,.34);
+      --glass-bg-strong: rgba(255,255,255,.52);
+      --glass-stroke: rgba(255,255,255,.58);
+      --glass-shadow: 0 18px 48px rgba(104,117,245,.12);
+    }
+
+    .liquid-background {
+      position: fixed;
+      inset: 0;
+      z-index: -20;
+      overflow: hidden;
+      background: radial-gradient(120% 120% at 15% 10%, #f8fbff 0%, #eef3ff 38%, #f3efff 70%, #f7f8fc 100%);
+    }
+
+    .liquid-background::before,
+    .liquid-background::after {
+      content: "";
+      position: absolute;
+      inset: -15%;
+      pointer-events: none;
+    }
+
+    .liquid-background::before {
+      background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.32) 80deg, rgba(176,196,255,0.2) 150deg, rgba(255,255,255,0) 240deg);
+      filter: blur(40px);
+      animation: liquidSheen 22s linear infinite;
+    }
+
+    .liquid-background::after {
+      background-image: radial-gradient(rgba(255,255,255,0.35) 0.7px, transparent 0.7px);
+      background-size: 3px 3px;
+      opacity: 0.2;
+      mix-blend-mode: soft-light;
+    }
+
+    @keyframes liquidSheen {
+      0% { transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1); }
+      50% { transform: translate3d(4%, 3%, 0) rotate(180deg) scale(1.04); }
+      100% { transform: translate3d(-3%, -2%, 0) rotate(360deg) scale(1); }
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(54px);
+      opacity: 0.52;
+      will-change: transform;
+      transform: translate3d(0,0,0);
+    }
+
+    .blob-1 {
+      top: -12%;
+      left: -12%;
+      width: 72vw;
+      height: 72vw;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      animation: blobFloatA 28s ease-in-out infinite alternate;
+    }
+
+    .blob-2 {
+      bottom: -22%;
+      right: -22%;
+      width: 82vw;
+      height: 82vw;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      animation: blobFloatB 34s ease-in-out infinite alternate;
+    }
+
+    .blob-3 {
+      top: 36%;
+      left: 36%;
+      width: 52vw;
+      height: 52vw;
+      background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
+      opacity: 0.42;
+      animation: blobFloatC 26s ease-in-out infinite;
+    }
+
+    @keyframes blobFloatA {
+      0% { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+      50% { transform: translate3d(8vw, 3vh, 0) scale(1.08) rotate(10deg); }
+      100% { transform: translate3d(3vw, 8vh, 0) scale(1.03) rotate(18deg); }
+    }
+
+    @keyframes blobFloatB {
+      0% { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+      50% { transform: translate3d(-9vw, -4vh, 0) scale(1.1) rotate(-12deg); }
+      100% { transform: translate3d(-4vw, -9vh, 0) scale(1.04) rotate(-20deg); }
+    }
+
+    @keyframes blobFloatC {
+      0% { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+      33% { transform: translate3d(5vw, -5vh, 0) scale(1.08) rotate(120deg); }
+      66% { transform: translate3d(-4vw, 4vh, 0) scale(0.96) rotate(240deg); }
+      100% { transform: translate3d(0,0,0) scale(1) rotate(360deg); }
+    }
+
+    .glass-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255,255,255,0.36) 0%, rgba(255,255,255,0.18) 100%);
+      backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+      -webkit-backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: 24px;
+      box-shadow:
+        var(--glass-shadow),
+        inset 0 1px 0 rgba(255,255,255,0.66),
+        inset 0 -1px 0 rgba(255,255,255,0.12);
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .glass-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background:
+        radial-gradient(120% 70% at 0% 0%, rgba(255,255,255,0.66) 0%, transparent 58%),
+        linear-gradient(120deg, rgba(255,255,255,0.12) 10%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0.18) 100%);
+      background-size: 140% 140%, 220% 220%;
+      background-position: 0% 0%, 0% 50%;
+      mix-blend-mode: screen;
+      opacity: 0.75;
+      animation: glassFlow 9s ease-in-out infinite alternate;
+    }
+
+    @keyframes glassFlow {
+      0% { background-position: 0% 0%, 0% 50%; opacity: 0.72; }
+      50% { background-position: 40% 20%, 70% 50%; opacity: 0.84; }
+      100% { background-position: 80% 40%, 100% 50%; opacity: 0.76; }
+    }
+
+    @media (hover:hover) and (pointer:fine) {
+      .hover-lift:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 24px 55px rgba(86, 98, 230, 0.16), inset 0 1px 0 rgba(255,255,255,0.82);
+      }
+    }
+
+    .shine-effect {
+      position: relative;
+      overflow: hidden;
+    }
+    .shine-effect::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+      transform: skewX(-25deg);
+      transition: 0.7s;
+      pointer-events: none;
+      z-index: 10;
+    }
+    @media (hover:hover) and (pointer:fine) {
+      .shine-effect:hover::before { left: 150%; }
+    }
+
+    .site-chip {
+      border: 1px solid rgba(17,17,17,0.08);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+    }
+  </style>
+</head>
+<body class="font-sans text-dark antialiased bg-transparent">
+  <div class="liquid-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header class="sticky top-0 z-40 pt-4 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto glass-card px-4 sm:px-6 py-3 flex items-center justify-between">
+      <a href="https://houda.pages.dev" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-2xl overflow-hidden shadow-md bg-white">
+          <img src="assets/HOUDA_squre.jpeg" alt="HOUDA+ logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+        </div>
+        <div>
+          <div class="text-xl sm:text-2xl font-extrabold tracking-tight text-primary leading-none">HOUDA+</div>
+          <div class="text-xs text-secondary mt-1">网站地图 · Sitemap</div>
+        </div>
+      </a>
+
+      <a href="https://houda.pages.dev" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full site-chip text-sm font-semibold text-primary hover:bg-white/80 transition-colors">
+        <i class="fa-solid fa-house"></i>
+        返回主站
+      </a>
+    </div>
+  </header>
+
+  <main class="px-4 sm:px-6 lg:px-8 pb-16">
+    <section class="max-w-6xl mx-auto pt-10 sm:pt-14">
+      <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+        <div class="lg:col-span-7 glass-card p-7 sm:p-10 shine-effect">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full site-chip text-xs font-bold tracking-[0.25em] uppercase text-secondary mb-6">
+            <span class="w-2 h-2 rounded-full bg-primary"></span>
+            HOUDA 网站汇总
+          </div>
+          <h1 class="text-[clamp(2.2rem,5vw,4.8rem)] leading-[1.05] font-black tracking-tight text-primary">
+            侯大的网站入口，
+            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500">像一张会发光的地图。</span>
+          </h1>
+          <p class="mt-5 text-base sm:text-lg text-secondary max-w-2xl leading-relaxed">
+            这里把主站与常用工具整齐收拢，像把散落的星屑串回同一条银线。点击任意卡片即可前往对应页面。
+          </p>
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a href="https://houda.pages.dev" class="px-5 py-3 rounded-full bg-primary text-white font-semibold shadow-lg hover:opacity-90 transition-opacity">
+              打开主网站
+            </a>
+            <a href="#links" class="px-5 py-3 rounded-full site-chip text-primary font-semibold hover:bg-white/85 transition-colors">
+              查看全部入口
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 glass-card p-6 sm:p-8 flex flex-col justify-between">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-3xl overflow-hidden shadow-lg bg-white shrink-0">
+              <img src="assets/HOUDA_squre.jpeg" alt="HOUDA+ logo" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <div class="text-2xl font-extrabold text-primary">HOUDA+</div>
+              <div class="text-sm text-secondary mt-1">官方站点与工具集合页</div>
+            </div>
+          </div>
+          <div class="mt-8 grid grid-cols-2 gap-3">
+            <div class="rounded-3xl bg-white/55 border border-white/60 p-4">
+              <div class="text-sm text-secondary">站点数量</div>
+              <div class="text-3xl font-black text-primary mt-2">5</div>
+            </div>
+            <div class="rounded-3xl bg-white/55 border border-white/60 p-4">
+              <div class="text-sm text-secondary">风格</div>
+              <div class="text-3xl font-black text-primary mt-2">Glass</div>
+            </div>
+          </div>
+          <div class="mt-4 rounded-3xl bg-white/45 border border-white/60 p-4 text-sm text-secondary leading-relaxed">
+            推荐把这页设为站内导航页或快捷入口页，适合放在首页菜单、二维码落地页或收藏夹顶端。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="links" class="max-w-6xl mx-auto mt-8 sm:mt-10">
+      <div class="flex items-end justify-between gap-4 mb-5">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-primary">网站入口</h2>
+          <p class="text-secondary mt-2">每个卡片都能直接跳转。</p>
+        </div>
+        <a href="https://houda.pages.dev" class="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:text-primary transition-colors">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          主站
+        </a>
+      </div>
+
+      <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+        <a href="https://houda.pages.dev" class="glass-card hover-lift shine-effect p-6 block transition-transform duration-300">
+          <div class="flex items-start justify-between gap-4">
+            <div class="w-14 h-14 rounded-2xl overflow-hidden shadow-md bg-white shrink-0">
+              <img src="assets/HOUDA_squre.jpeg" alt="主站logo" class="w-full h-full object-cover" />
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 text-white">核心</span>
+          </div>
+          <h3 class="mt-5 text-xl font-extrabold text-primary">主网站</h3>
+          <p class="mt-2 text-secondary text-sm leading-relaxed">HOUDA 的主入口，承载整体品牌与内容首页。</p>
+          <div class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            https://houda.pages.dev
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="https://houda.pages.dev/anniversary" class="glass-card hover-lift shine-effect p-6 block transition-transform duration-300">
+          <div class="flex items-start justify-between gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-white/70 border border-white/70 flex items-center justify-center shadow-sm shrink-0">
+              <i class="fa-solid fa-heart text-2xl text-primary"></i>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700">纪念</span>
+          </div>
+          <h3 class="mt-5 text-xl font-extrabold text-primary">纪念日倒计时</h3>
+          <p class="mt-2 text-secondary text-sm leading-relaxed">用于记录重要日期的倒计时页面，适合放在活动与纪念节点。</p>
+          <div class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            /anniversary
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="https://houda.pages.dev/hdti-test" class="glass-card hover-lift shine-effect p-6 block transition-transform duration-300">
+          <div class="flex items-start justify-between gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-white/70 border border-white/70 flex items-center justify-center shadow-sm shrink-0">
+              <i class="fa-solid fa-brain text-2xl text-primary"></i>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">测试</span>
+          </div>
+          <h3 class="mt-5 text-xl font-extrabold text-primary">HDTI 人格测试</h3>
+          <p class="mt-2 text-secondary text-sm leading-relaxed">轻量化互动测试页面，适合做社群玩法和分享传播。</p>
+          <div class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            /hdti-test
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="https://houda.pages.dev/mianshui" class="glass-card hover-lift shine-effect p-6 block transition-transform duration-300">
+          <div class="flex items-start justify-between gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-white/70 border border-white/70 flex items-center justify-center shadow-sm shrink-0">
+              <i class="fa-solid fa-location-dot text-2xl text-primary"></i>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">工具</span>
+          </div>
+          <h3 class="mt-5 text-xl font-extrabold text-primary">免税州地址生成</h3>
+          <p class="mt-2 text-secondary text-sm leading-relaxed">地址生成工具页面，适合做资料整理和快捷访问。</p>
+          <div class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            /mianshui
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="https://houda.pages.dev/ippure" class="glass-card hover-lift shine-effect p-6 block transition-transform duration-300">
+          <div class="flex items-start justify-between gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-white/70 border border-white/70 flex items-center justify-center shadow-sm shrink-0">
+              <i class="fa-solid fa-shield-halved text-2xl text-primary"></i>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">检测</span>
+          </div>
+          <h3 class="mt-5 text-xl font-extrabold text-primary">IP 纯净度检测</h3>
+          <p class="mt-2 text-secondary text-sm leading-relaxed">用于检测 IP 纯净度与网络环境状态的页面入口。</p>
+          <div class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            /ippure
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <div class="glass-card p-6 sm:p-7 xl:col-span-1">
+          <div class="text-lg font-extrabold text-primary">快捷说明</div>
+          <div class="mt-4 space-y-3 text-sm text-secondary leading-relaxed">
+            <p>· 这个页面适合作为总导航，帮助访客快速找到站内功能。</p>
+            <p>· 保留 logo 路径 <span class="font-semibold text-primary">assets/HOUDA_squre.jpeg</span>，可直接复用现有资源。</p>
+            <p>· 你还可以继续加新页面，我能顺手帮你把卡片补齐成更完整的地图。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="px-4 sm:px-6 lg:px-8 pb-8">
+    <div class="max-w-6xl mx-auto glass-card p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl overflow-hidden bg-white shadow-sm">
+          <img src="assets/HOUDA_squre.jpeg" alt="HOUDA+ logo" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <div class="font-bold text-primary">HOUDA+ 网站地图</div>
+          <div class="text-sm text-secondary">干净、快速、可扩展的入口页</div>
+        </div>
+      </div>
+      <a href="https://houda.pages.dev" class="px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold shadow-md hover:opacity-90 transition-opacity">
+        回到主站
+      </a>
+    </div>
+  </footer>
+</body>
+</html>
