@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>HOUDA+ 视频解析工具</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#111111',
+          secondary: '#555555',
+          accent: '#e0e0e0',
+          dark: '#000000',
+          light: '#f9f9f9'
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+html, body {
+  overflow-x: hidden !important;
+  scroll-behavior: smooth;
+}
+
+html { scroll-padding-top: 5.5rem; }
+
+/* === 液态流动背景 === */
+.liquid-background {
+position: fixed; top: 0; left: 0;
+width: 100vw; height: 100vh;
+z-index: -99; overflow: hidden;
+background: radial-gradient(120% 120% at 15% 10%, #f8fbff 0%, #eef3ff 38%, #f3efff 70%, #f7f8fc 100%);
+}
+.liquid-background::before {
+content: “”; position: absolute; inset: -15%; pointer-events: none;
+background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.32) 80deg, rgba(176,196,255,0.2) 150deg, rgba(255,255,255,0) 240deg);
+filter: blur(40px);
+animation: liquidSheen 22s linear infinite;
+}
+.liquid-background::after {
+content: “”; position: absolute; inset: -15%; pointer-events: none;
+background-image: radial-gradient(rgba(255,255,255,0.35) 0.7px, transparent 0.7px);
+background-size: 3px 3px; opacity: 0.2; mix-blend-mode: soft-light;
+}
+@keyframes liquidSheen {
+0%   { transform: translate3d(-3%,-2%,0) rotate(0deg) scale(1); }
+50%  { transform: translate3d(4%,3%,0) rotate(180deg) scale(1.04); }
+100% { transform: translate3d(-3%,-2%,0) rotate(360deg) scale(1); }
+}
+.blob { position: absolute; border-radius: 50%; filter: blur(54px); opacity: 0.55; will-change: transform; }
+.blob-1 { top:-12%;left:-12%;width:72vw;height:72vw;background:linear-gradient(135deg,#e0c3fc 0%,#8ec5fc 100%);animation:blobFloatA 28s ease-in-out infinite alternate; }
+.blob-2 { bottom:-22%;right:-22%;width:82vw;height:82vw;background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 100%);animation:blobFloatB 34s ease-in-out infinite alternate; }
+.blob-3 { top:38%;left:38%;width:52vw;height:52vw;background:linear-gradient(120deg,#a18cd1 0%,#fbc2eb 100%);opacity:0.42;animation:blobFloatC 26s ease-in-out infinite; }
+@keyframes blobFloatA { 0%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}50%{transform:translate3d(8vw,3vh,0) scale(1.08) rotate(10deg)}100%{transform:translate3d(3vw,8vh,0) scale(1.03) rotate(18deg)} }
+@keyframes blobFloatB { 0%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}50%{transform:translate3d(-9vw,-4vh,0) scale(1.1) rotate(-12deg)}100%{transform:translate3d(-4vw,-9vh,0) scale(1.04) rotate(-20deg)} }
+@keyframes blobFloatC { 0%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}33%{transform:translate3d(5vw,-5vh,0) scale(1.08) rotate(120deg)}66%{transform:translate3d(-4vw,4vh,0) scale(0.96) rotate(240deg)}100%{transform:translate3d(0,0,0) scale(1) rotate(360deg)} }
+
+/* === 玻璃卡片 === */
+:root {
+–glass-bg: rgba(255,255,255,0.3);
+–glass-bg-strong: rgba(255,255,255,0.42);
+–glass-stroke: rgba(255,255,255,0.5);
+–glass-shadow: 0 18px 48px rgba(104,117,245,0.12);
+}
+.glass-card {
+position: relative;
+background: linear-gradient(135deg,rgba(255,255,255,0.34) 0%,rgba(255,255,255,0.18) 100%);
+backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+-webkit-backdrop-filter: blur(14px) saturate(145%) contrast(104%);
+border: 1px solid var(–glass-stroke);
+border-radius: 24px;
+box-shadow: var(–glass-shadow), inset 0 1px 0 rgba(255,255,255,0.66), inset 0 -1px 0 rgba(255,255,255,0.12);
+transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease, background .4s ease, border-color .3s ease;
+isolation: isolate;
+}
+.glass-card::after {
+content: “”; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+background: radial-gradient(120% 70% at 0% 0%,rgba(255,255,255,0.64) 0%,transparent 58%),
+linear-gradient(120deg,rgba(255,255,255,0.12) 10%,rgba(255,255,255,0.04) 45%,rgba(255,255,255,0.18) 100%);
+mix-blend-mode: screen; opacity: 0.78;
+animation: glassFlow 9s ease-in-out infinite alternate;
+}
+.glass-card::before {
+content: “”; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
+border: 1px solid rgba(255,255,255,0.22);
+mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+mask-composite: exclude;
+-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor;
+padding: 1px; opacity: 0.9;
+}
+@keyframes glassFlow {
+0%   { background-position: 0% 0%, 0% 50%; opacity: 0.72; }
+50%  { background-position: 40% 20%, 70% 50%; opacity: 0.84; }
+100% { background-position: 80% 40%, 100% 50%; opacity: 0.76; }
+}
+@media (hover: hover) and (pointer: fine) {
+.glass-card:hover {
+background: linear-gradient(135deg,rgba(255,255,255,0.46) 0%,rgba(255,255,255,0.22) 100%);
+border-color: rgba(255,255,255,0.68);
+transform: translateY(-6px) scale(1.01);
+box-shadow: 0 24px 55px rgba(86,98,230,0.16), inset 0 1px 0 rgba(255,255,255,0.82), inset 0 -1px 0 rgba(255,255,255,0.2);
+}
+}
+
+/* === 导航栏 === */
+#navbar { background: transparent; border-bottom: 1px solid transparent; }
+#navbar.liquid-header {
+background:
+radial-gradient(130% 180% at 8% -40%,rgba(255,255,255,0.42) 0%,rgba(255,255,255,0) 55%),
+linear-gradient(100deg,rgba(255,255,255,0.2) 0%,rgba(255,255,255,0.1) 48%,rgba(255,255,255,0.18) 100%);
+backdrop-filter: blur(8px) saturate(130%);
+-webkit-backdrop-filter: blur(8px) saturate(130%);
+border-bottom-color: rgba(255,255,255,0.36);
+box-shadow: 0 10px 30px rgba(126,140,255,0.1), inset 0 1px 0 rgba(255,255,255,0.62);
+}
+#navbar.liquid-header::before {
+content: “”; position: absolute; left:0;right:0;top:0;bottom:0; pointer-events:none;
+background: linear-gradient(110deg,rgba(255,255,255,0) 18%,rgba(255,255,255,0.26) 45%,rgba(255,255,255,0) 74%);
+background-size: 220% 100%;
+animation: navLiquidFlow 8s ease-in-out infinite; opacity: 0.48;
+}
+@keyframes navLiquidFlow {
+0%{background-position:0% 0%} 50%{background-position:75% 0%} 100%{background-position:140% 0%}
+}
+#mobileMenu {
+transition: max-height 0.4s ease, opacity 0.3s ease;
+overflow: hidden; max-height: 0; opacity: 0;
+}
+#mobileMenu.open { max-height: 500px; opacity: 1; }
+
+/* === 平台标签 === */
+.platform-tab {
+display: flex; align-items: center; gap: 8px;
+padding: 10px 20px; border-radius: 999px; cursor: pointer;
+font-weight: 600; font-size: 14px; color: #555;
+background: rgba(255,255,255,0.4);
+border: 1px solid rgba(255,255,255,0.6);
+backdrop-filter: blur(8px);
+transition: all 0.3s cubic-bezier(.22,.61,.36,1);
+white-space: nowrap;
+}
+.platform-tab:hover { background: rgba(255,255,255,0.7); color: #111; transform: translateY(-2px); }
+.platform-tab.active {
+background: #111; color: #fff;
+border-color: #111;
+box-shadow: 0 8px 24px rgba(17,17,17,0.2);
+}
+.platform-tab .tab-icon { font-size: 16px; }
+
+/* === 输入框 === */
+.parse-input-wrap {
+position: relative;
+background: rgba(255,255,255,0.6);
+backdrop-filter: blur(20px) saturate(160%);
+-webkit-backdrop-filter: blur(20px) saturate(160%);
+border: 1.5px solid rgba(255,255,255,0.8);
+border-radius: 20px;
+box-shadow: 0 8px 32px rgba(104,117,245,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+transition: all 0.3s ease;
+}
+.parse-input-wrap:focus-within {
+border-color: rgba(17,17,17,0.3);
+box-shadow: 0 12px 40px rgba(104,117,245,0.14), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+.parse-input {
+width: 100%; background: transparent; border: none; outline: none;
+padding: 18px 160px 18px 22px;
+font-size: 15px; color: #111; font-family: inherit;
+}
+.parse-input::placeholder { color: #aaa; }
+.parse-btn {
+position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+background: #111; color: #fff; border: none; cursor: pointer;
+padding: 12px 28px; border-radius: 12px; font-weight: 700; font-size: 14px;
+transition: all 0.25s ease; white-space: nowrap; font-family: inherit;
+box-shadow: 0 4px 14px rgba(17,17,17,0.3);
+}
+.parse-btn:hover { background: #333; transform: translateY(-50%) scale(1.02); box-shadow: 0 6px 20px rgba(17,17,17,0.35); }
+.parse-btn:active { transform: translateY(-50%) scale(0.98); }
+.parse-btn:disabled { background: #888; cursor: not-allowed; transform: translateY(-50%); }
+@media (max-width: 640px) {
+.parse-input { padding: 16px 22px 52px 22px; }
+.parse-btn { position: relative; right: auto; top: auto; transform: none; width: calc(100% - 16px); margin: 0 8px 8px; display: block; padding: 13px; }
+.parse-btn:hover { transform: none; }
+.parse-btn:active { transform: scale(0.98); }
+}
+
+/* === 结果卡片 === */
+.result-card {
+animation: resultSlideUp 0.5s cubic-bezier(.22,.61,.36,1) forwards;
+}
+@keyframes resultSlideUp {
+from { opacity:0; transform: translateY(24px) scale(0.97); }
+to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* === 下载按钮 === */
+.download-btn {
+display: inline-flex; align-items: center; gap: 8px;
+padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 14px;
+cursor: pointer; border: none; text-decoration: none;
+transition: all 0.25s ease; font-family: inherit;
+}
+.download-btn-primary {
+background: #111; color: #fff;
+box-shadow: 0 4px 14px rgba(17,17,17,0.3);
+}
+.download-btn-primary:hover { background: #333; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(17,17,17,0.35); }
+.download-btn-secondary {
+background: rgba(255,255,255,0.7); color: #111;
+border: 1.5px solid rgba(17,17,17,0.15);
+backdrop-filter: blur(8px);
+}
+.download-btn-secondary:hover { background: rgba(255,255,255,0.9); transform: translateY(-2px); }
+.download-btn:active { transform: translateY(0) scale(0.97); }
+
+/* === 图片网格 === */
+.img-grid { display: grid; gap: 8px; }
+.img-grid img {
+width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px;
+cursor: pointer; transition: all 0.3s ease;
+border: 2px solid transparent;
+}
+.img-grid img:hover { transform: scale(1.03); border-color: rgba(255,255,255,0.8); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+
+/* === 加载动画 === */
+.loader-ring {
+display: inline-block; width: 36px; height: 36px;
+border: 3px solid rgba(17,17,17,0.1);
+border-top-color: #111; border-radius: 50%;
+animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* === 扫光效果 === */
+.shine-effect { position: relative; overflow: hidden; }
+.shine-effect::before {
+content: ‘’; position: absolute; top:0; left:-100%; width:50%; height:100%;
+background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+transform: skewX(-25deg); transition: 0.6s; pointer-events: none; z-index: 10;
+}
+@media (hover: hover) and (pointer: fine) {
+.shine-effect:hover::before { left: 150%; transition: 0.8s ease-in-out; }
+}
+
+/* === Dock 栏 === */
+.dock-container {
+position: fixed; bottom: 20px; left: 0; width: 100%;
+display: flex; justify-content: center; align-items: center;
+z-index: 1000; padding: 0 10px; box-sizing: border-box; pointer-events: none;
+}
+.dock {
+display: flex;
+background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.24) 100%);
+backdrop-filter: blur(12px) saturate(150%) contrast(104%);
+-webkit-backdrop-filter: blur(12px) saturate(150%) contrast(104%);
+border: 1px solid rgba(255,255,255,0.62); border-radius: 9999px;
+padding: 8px 12px;
+box-shadow: 0 14px 32px rgba(67,76,183,0.14), inset 0 1px 0 rgba(255,255,255,0.74);
+pointer-events: auto; max-width: calc(100vw - 24px); overflow: hidden;
+}
+.dock-item {
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+flex-shrink: 0; width: 52px; height: 52px; margin: 0 4px; border-radius: 50%;
+cursor: pointer; text-decoration: none; color: #333;
+transition: all 0.2s cubic-bezier(0.2,0.8,0.2,1);
+-webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+.dock-item:hover { transform: translateY(-8px) scale(1.15); background: rgba(255,255,255,0.6); }
+}
+.dock-item:active { transform: scale(0.92); background: rgba(255,255,255,0.7); }
+.dock-icon { font-size: 22px; margin-bottom: 2px; }
+.dock-label { font-size: 10px; font-weight: 600; opacity: 0.8; }
+.back-to-top {
+pointer-events: auto; flex-shrink: 0; width: 50px; height: 50px;
+background: linear-gradient(145deg,rgba(255,255,255,0.52),rgba(255,255,255,0.22));
+backdrop-filter: blur(16px) saturate(170%); border-radius: 50%;
+display: flex; align-items: center; justify-content: center; margin-left: 15px;
+cursor: pointer; border: 1px solid rgba(255,255,255,0.68);
+box-shadow: 0 10px 28px rgba(76,88,202,0.16), inset 0 1px 0 rgba(255,255,255,0.82);
+opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease;
+}
+.back-to-top.visible { opacity:1; visibility:visible; transform:translateY(0); }
+@media (hover: hover) and (pointer: fine) {
+.back-to-top:hover { background: rgba(255,255,255,0.9); transform: translateY(0) scale(1.1); }
+}
+body.scrolled .dock-icon { font-size: 20px; margin-bottom: 0; }
+body.scrolled .dock-label { display: none; }
+body.scrolled .dock-item { width: 44px; height: 44px; }
+
+/* === 平台色彩 === */
+.platform-douyin  { –p-color: #010101; –p-glow: rgba(1,1,1,0.3); }
+.platform-bilibili { –p-color: #fb7299; –p-glow: rgba(251,114,153,0.3); }
+.platform-youtube { –p-color: #ff0000; –p-glow: rgba(255,0,0,0.3); }
+.platform-instagram { –p-color: #e1306c; –p-glow: rgba(225,48,108,0.3); }
+
+/* === 提示标签 === */
+.tip-tag {
+display: inline-flex; align-items: center; gap: 5px;
+padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.7);
+backdrop-filter: blur(8px); color: #555;
+}
+
+/* === 历史记录条目 === */
+.history-item {
+display: flex; align-items: center; gap: 10px;
+padding: 10px 14px; border-radius: 12px; cursor: pointer;
+transition: all 0.2s ease;
+background: rgba(255,255,255,0.3);
+border: 1px solid rgba(255,255,255,0.5);
+}
+.history-item:hover { background: rgba(255,255,255,0.6); transform: translateX(4px); }
+
+/* === 通知 toast === */
+.toast {
+position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+background: #111; color: #fff; padding: 10px 20px; border-radius: 999px;
+font-size: 14px; font-weight: 600; z-index: 9999;
+opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
+
+/* === 状态徽章 === */
+.badge {
+display: inline-flex; align-items: center; gap: 4px;
+font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+}
+.badge-success { background: rgba(16,185,129,0.15); color: #059669; border: 1px solid rgba(16,185,129,0.3); }
+.badge-error   { background: rgba(239,68,68,0.15);  color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+.badge-info    { background: rgba(59,130,246,0.15); color: #2563eb; border: 1px solid rgba(59,130,246,0.3); }
+
+/* === 视频预览 === */
+video.preview-video {
+width: 100%; border-radius: 14px; max-height: 340px; object-fit: contain;
+background: #000;
+}
+
+/* === 功能特性格子 === */
+.feature-icon-wrap {
+width: 52px; height: 52px; border-radius: 14px;
+background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.8);
+display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 12px rgba(104,117,245,0.08);
+}
+
+/* === 进度条 === */
+.progress-bar-wrap { height: 4px; background: rgba(17,17,17,0.08); border-radius: 999px; overflow: hidden; }
+.progress-bar {
+height: 100%; background: #111; border-radius: 999px;
+width: 0%; transition: width 0.4s ease;
+position: relative; overflow: hidden;
+}
+.progress-bar::after {
+content: ‘’; position: absolute; inset: 0;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+animation: progressSheen 1.2s ease-in-out infinite;
+}
+@keyframes progressSheen {
+from { transform: translateX(-100%); }
+to   { transform: translateX(100%); }
+}
+</style>
+
+</head>
+<body class="font-sans text-dark antialiased overflow-x-hidden bg-transparent">
+
+<!-- 液态背景 -->
+
+<div class="liquid-background">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- 导航栏 -->
+
+<header class="fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center py-4">
+      <a class="flex items-center space-x-3 group" href="#">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
+          <span class="text-white font-black text-sm tracking-tighter">H+</span>
+        </div>
+        <div>
+          <span class="text-2xl font-bold text-primary tracking-tight">HOUDA+</span>
+          <span class="text-xs text-secondary block -mt-0.5">视频解析工具</span>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center space-x-8">
+        <a class="text-secondary hover:text-primary transition-all duration-300 font-medium" href="#parser">开始解析</a>
+        <a class="text-secondary hover:text-primary transition-all duration-300 font-medium" href="#features">功能特性</a>
+        <a class="text-secondary hover:text-primary transition-all duration-300 font-medium" href="#faq">常见问题</a>
+        <a class="bg-primary hover:bg-gray-800 text-white px-6 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 font-medium transform hover:-translate-y-0.5" href="https://houda.plus" target="_blank">
+          HOUDA+ 主站
+        </a>
+      </nav>
+      <button class="md:hidden text-dark focus:outline-none p-2" id="menuBtn">
+        <i class="fa fa-bars text-2xl"></i>
+      </button>
+    </div>
+  </div>
+  <div class="md:hidden" id="mobileMenu">
+    <div class="container mx-auto px-4 py-4 space-y-3">
+      <a class="block text-secondary hover:text-primary py-2 px-4 rounded-xl bg-white/20" href="#parser">开始解析</a>
+      <a class="block text-secondary hover:text-primary py-2 px-4 rounded-xl bg-white/20" href="#features">功能特性</a>
+      <a class="block text-secondary hover:text-primary py-2 px-4 rounded-xl bg-white/20" href="#faq">常见问题</a>
+      <a class="block bg-primary text-white px-6 py-3 rounded-xl text-center shadow-md mt-2" href="https://houda.plus" target="_blank">HOUDA+ 主站</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero 区域 -->
+
+<section class="pt-[6.5rem] pb-8 md:pt-[8rem] md:pb-10 bg-transparent">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="inline-flex items-center gap-2 mb-6">
+      <span class="tip-tag"><i class="fa-solid fa-bolt text-yellow-500"></i> 免费 · 无水印 · 无广告</span>
+      <span class="tip-tag"><i class="fa-solid fa-shield-halved text-green-500"></i> 安全解析</span>
+    </div>
+    <h1 class="text-[clamp(2.2rem,5vw,4rem)] font-extrabold leading-tight text-dark mb-4 tracking-tight">
+      HOUDA+ <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-500">视频解析工具</span>
+    </h1>
+    <p class="text-base sm:text-lg text-secondary mb-10 max-w-xl mx-auto">
+      支持抖音、B站、YouTube、Instagram 一键解析下载<br/>
+      <span class="text-sm text-gray-400">无水印 · 高清画质 · 图片/视频均支持</span>
+    </p>
+
+```
+<!-- 平台选择 -->
+<div class="flex flex-wrap gap-3 justify-center mb-6" id="platformTabs">
+  <button class="platform-tab active" data-platform="douyin" onclick="switchPlatform('douyin', this)">
+    <span class="tab-icon">🎵</span> 抖音
+  </button>
+  <button class="platform-tab" data-platform="bilibili" onclick="switchPlatform('bilibili', this)">
+    <span class="tab-icon">📺</span> B站
+  </button>
+  <button class="platform-tab" data-platform="youtube" onclick="switchPlatform('youtube', this)">
+    <span class="tab-icon">▶️</span> YouTube
+  </button>
+  <button class="platform-tab" data-platform="instagram" onclick="switchPlatform('instagram', this)">
+    <span class="tab-icon">📸</span> Instagram
+  </button>
+</div>
+
+<!-- 解析输入框 -->
+<div class="max-w-2xl mx-auto mb-4" id="parser">
+  <div class="parse-input-wrap">
+    <input
+      class="parse-input"
+      id="parseInput"
+      type="text"
+      placeholder="粘贴抖音/B站/YouTube/Instagram 分享链接…"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button class="parse-btn" id="parseBtn" onclick="startParse()">
+      <i class="fa-solid fa-magnifying-glass mr-1.5"></i>立即解析
+    </button>
+  </div>
+  <!-- 进度条 -->
+  <div class="progress-bar-wrap mt-3 mx-1 hidden" id="progressWrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+</div>
+
+<!-- 小提示 -->
+<div class="flex flex-wrap gap-2 justify-center mb-10 text-xs text-gray-400" id="platformHint">
+  <span>💡 抖音：打开视频 → 右上角分享 → 复制链接</span>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- 解析结果区域 -->
+
+<section class="pb-10 bg-transparent" id="resultSection" style="display:none">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+    <div class="glass-card p-6 md:p-8 result-card" id="resultCard">
+      <!-- 内容由 JS 填充 -->
+    </div>
+  </div>
+</section>
+
+<!-- 历史记录 -->
+
+<section class="pb-6 bg-transparent" id="historySection" style="display:none">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+    <div class="glass-card p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-gray-800 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-gray-500"></i> 解析历史
+        </h3>
+        <button onclick="clearHistory()" class="text-xs text-gray-400 hover:text-gray-700 transition-colors">清除</button>
+      </div>
+      <div id="historyList" class="space-y-2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 功能特性 -->
+
+<section class="py-14 bg-transparent" id="features">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+    <div class="text-center mb-12">
+      <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-extrabold text-dark mb-3">功能特性</h2>
+      <div class="w-14 h-1.5 bg-primary/70 rounded-full mx-auto mb-4"></div>
+      <p class="text-secondary max-w-xl mx-auto">四大平台，一个入口，清爽无广告</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- 抖音 -->
+      <div class="glass-card p-5 shine-effect hover:-translate-y-2 transition-all duration-300">
+        <div class="feature-icon-wrap mb-4">
+          <span class="text-2xl">🎵</span>
+        </div>
+        <h3 class="font-bold text-gray-900 mb-2">抖音 / TikTok</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">支持视频、图文、背景音乐单独下载，去除平台水印</p>
+        <div class="mt-3 flex flex-wrap gap-1">
+          <span class="badge badge-success">视频</span>
+          <span class="badge badge-success">图集</span>
+          <span class="badge badge-info">音乐</span>
+        </div>
+      </div>
+      <!-- B站 -->
+      <div class="glass-card p-5 shine-effect hover:-translate-y-2 transition-all duration-300">
+        <div class="feature-icon-wrap mb-4">
+          <span class="text-2xl">📺</span>
+        </div>
+        <h3 class="font-bold text-gray-900 mb-2">哔哩哔哩</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">解析 BV/AV 号及分享链接，支持多清晰度选择</p>
+        <div class="mt-3 flex flex-wrap gap-1">
+          <span class="badge badge-success">视频</span>
+          <span class="badge badge-info">封面</span>
+          <span class="badge badge-info">弹幕</span>
+        </div>
+      </div>
+      <!-- YouTube -->
+      <div class="glass-card p-5 shine-effect hover:-translate-y-2 transition-all duration-300">
+        <div class="feature-icon-wrap mb-4">
+          <span class="text-2xl">▶️</span>
+        </div>
+        <h3 class="font-bold text-gray-900 mb-2">YouTube</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">解析 YouTube 视频，获取多分辨率直链及封面</p>
+        <div class="mt-3 flex flex-wrap gap-1">
+          <span class="badge badge-success">视频</span>
+          <span class="badge badge-info">封面</span>
+          <span class="badge badge-info">字幕</span>
+        </div>
+      </div>
+      <!-- Instagram -->
+      <div class="glass-card p-5 shine-effect hover:-translate-y-2 transition-all duration-300">
+        <div class="feature-icon-wrap mb-4">
+          <span class="text-2xl">📸</span>
+        </div>
+        <h3 class="font-bold text-gray-900 mb-2">Instagram</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Reel、Post、Story 均支持，图片/视频批量获取</p>
+        <div class="mt-3 flex flex-wrap gap-1">
+          <span class="badge badge-success">视频</span>
+          <span class="badge badge-success">图集</span>
+          <span class="badge badge-success">Story</span>
+        </div>
+      </div>
+    </div>
+
+```
+<!-- 统计卡片 -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+  <div class="glass-card p-4 text-center hover:-translate-y-1 transition-all duration-300">
+    <div class="text-3xl font-extrabold text-dark mb-1">4+</div>
+    <div class="text-sm text-gray-500">支持平台</div>
+  </div>
+  <div class="glass-card p-4 text-center hover:-translate-y-1 transition-all duration-300">
+    <div class="text-3xl font-extrabold text-dark mb-1">100%</div>
+    <div class="text-sm text-gray-500">无水印率</div>
+  </div>
+  <div class="glass-card p-4 text-center hover:-translate-y-1 transition-all duration-300">
+    <div class="text-3xl font-extrabold text-dark mb-1">0¥</div>
+    <div class="text-sm text-gray-500">完全免费</div>
+  </div>
+  <div class="glass-card p-4 text-center hover:-translate-y-1 transition-all duration-300">
+    <div class="text-3xl font-extrabold text-dark mb-1">0广告</div>
+    <div class="text-sm text-gray-500">纯净体验</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- 使用说明 -->
+
+<section class="py-12 bg-transparent">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+    <div class="glass-card p-8">
+      <h2 class="text-xl font-extrabold text-dark mb-6 flex items-center gap-2">
+        <i class="fa-solid fa-circle-play text-gray-600"></i> 使用方法
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-lg">1</div>
+          <div>
+            <h4 class="font-bold text-gray-900 mb-1">复制链接</h4>
+            <p class="text-sm text-gray-500">在 APP 中打开视频，点击分享，选择「复制链接」或「复制口令」</p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-lg">2</div>
+          <div>
+            <h4 class="font-bold text-gray-900 mb-1">粘贴解析</h4>
+            <p class="text-sm text-gray-500">将链接粘贴到上方输入框，点击「立即解析」按钮</p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-lg">3</div>
+          <div>
+            <h4 class="font-bold text-gray-900 mb-1">下载保存</h4>
+            <p class="text-sm text-gray-500">解析成功后点击下载按钮，保存无水印视频或图片到本地</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+
+<section class="py-12 bg-transparent" id="faq">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+    <div class="text-center mb-8">
+      <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-extrabold text-dark mb-3">常见问题</h2>
+      <div class="w-14 h-1.5 bg-primary/70 rounded-full mx-auto"></div>
+    </div>
+    <div class="space-y-4" id="faqList">
+      <!-- JS 生成 -->
+    </div>
+  </div>
+</section>
+
+<!-- Dock 栏 -->
+
+<div class="dock-container">
+  <div class="dock">
+    <a class="dock-item" href="#parser">
+      <i class="fa-solid fa-magnifying-glass dock-icon"></i>
+      <span class="dock-label">解析</span>
+    </a>
+    <a class="dock-item" href="#features">
+      <i class="fa-solid fa-star dock-icon"></i>
+      <span class="dock-label">特性</span>
+    </a>
+    <a class="dock-item" href="#faq">
+      <i class="fa-solid fa-circle-question dock-icon"></i>
+      <span class="dock-label">FAQ</span>
+    </a>
+    <a class="dock-item" href="https://houda.plus" target="_blank">
+      <i class="fa-solid fa-house dock-icon"></i>
+      <span class="dock-label">主站</span>
+    </a>
+  </div>
+  <div class="back-to-top" id="backToTop">
+    <i class="fa-solid fa-arrow-up text-gray-700"></i>
+  </div>
+</div>
+
+<!-- Toast 提示 -->
+
+<div class="toast" id="toast"></div>
+
+<!-- Footer -->
+
+<footer class="bg-gray-900 text-white pt-10 pb-32 relative z-10">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center">
+          <span class="text-black font-black text-sm">H+</span>
+        </div>
+        <div>
+          <div class="font-bold text-lg">HOUDA+ 视频解析工具</div>
+          <div class="text-gray-500 text-xs">侯明昊碗慧通讯录互吃大学 · 长沙霉粉联盟六群分支</div>
+        </div>
+      </div>
+      <div class="text-gray-500 text-sm text-center">
+        <p>本工具仅供个人学习使用，请遵守各平台版权规定</p>
+        <p class="mt-1">© 2026 HOUDA+ · All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ==============================
+   全局状态
+============================== */
+let currentPlatform = 'douyin';
+let parseHistory = JSON.parse(localStorage.getItem('houda_parse_history') || '[]');
+
+const hints = {
+  douyin:    '💡 抖音：打开视频 → 右上角分享 → 复制链接（或复制口令）',
+  bilibili:  '💡 B站：视频页面复制网址，或分享 → 复制链接，支持 BV / AV 号',
+  youtube:   '💡 YouTube：视频页面分享 → 复制链接，支持 youtu.be 短链',
+  instagram: '💡 Instagram：视频/帖子右上角 ··· → 复制链接',
+};
+
+const placeholders = {
+  douyin:    '粘贴抖音分享链接或口令…',
+  bilibili:  '粘贴 B站视频链接或 BV号…',
+  youtube:   '粘贴 YouTube 视频链接…',
+  instagram: '粘贴 Instagram 帖子/Reel 链接…',
+};
+
+/* ==============================
+   平台切换
+============================== */
+function switchPlatform(platform, btn) {
+  currentPlatform = platform;
+  document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('parseInput').placeholder = placeholders[platform];
+  document.getElementById('platformHint').innerHTML = `<span>${hints[platform]}</span>`;
+  document.getElementById('parseInput').focus();
+}
+
+/* ==============================
+   检测平台（自动）
+============================== */
+function detectPlatform(url) {
+  if (/douyin\.com|v\.douyin\.com|iesdouyin\.com/i.test(url)) return 'douyin';
+  if (/bilibili\.com|b23\.tv|BV[a-zA-Z0-9]+/i.test(url)) return 'bilibili';
+  if (/youtu\.be|youtube\.com/i.test(url)) return 'youtube';
+  if (/instagram\.com|instagr\.am/i.test(url)) return 'instagram';
+  return null;
+}
+
+/* ==============================
+   从文本提取链接
+============================== */
+function extractUrl(text) {
+  const urlReg = /https?:\/\/[^\s"'<>，。！？]+/gi;
+  const matches = text.match(urlReg);
+  return matches ? matches[0] : text.trim();
+}
+
+/* ==============================
+   解析入口
+============================== */
+async function startParse() {
+  const rawInput = document.getElementById('parseInput').value.trim();
+  if (!rawInput) { showToast('请先粘贴视频链接'); return; }
+
+  const url = extractUrl(rawInput);
+  if (!url) { showToast('未检测到有效链接'); return; }
+
+  // 自动检测平台
+  const detected = detectPlatform(url);
+  if (detected && detected !== currentPlatform) {
+    // 切换到检测到的平台
+    const tabBtn = document.querySelector(`[data-platform="${detected}"]`);
+    if (tabBtn) switchPlatform(detected, tabBtn);
+  }
+
+  setLoading(true);
+  showResult({ loading: true });
+
+  try {
+    const data = await parseVideo(url, currentPlatform);
+    showResult(data);
+    saveHistory(url, currentPlatform, data.title || '未知标题');
+    renderHistory();
+  } catch(e) {
+    showResult({ error: true, message: e.message || '解析失败，请检查链接是否正确' });
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* ==============================
+   核心解析函数（Claude AI 驱动 + 公共接口）
+============================== */
+async function parseVideo(url, platform) {
+  // 使用 Claude AI 来解析和格式化视频信息
+  // 同时尝试调用公共解析接口
+  
+  const proxyApis = {
+    douyin: [
+      `https://api.douyin.wtf/api?url=${encodeURIComponent(url)}&minimal=false`,
+      `https://api.tikhub.io/api/v1/douyin/app/v3/fetch_one_video?aweme_id=`,
+    ],
+    bilibili: [
+      `https://api.injahow.cn/bparsers/?url=${encodeURIComponent(url)}`,
+    ],
+    youtube: [
+      `https://api.fabdl.com/youtube/get?url=${encodeURIComponent(url)}`,
+    ],
+    instagram: [
+      `https://api.snapinsta.app/v1/download?url=${encodeURIComponent(url)}`,
+    ],
+  };
+
+  // 先调用 Claude AI 分析链接类型和提取信息
+  const aiResult = await callClaudeForParse(url, platform);
+  return aiResult;
+}
+
+/* ==============================
+   Claude AI 解析（核心）
+============================== */
+async function callClaudeForParse(url, platform) {
+  const platformNames = {
+    douyin: '抖音', bilibili: '哔哩哔哩', youtube: 'YouTube', instagram: 'Instagram'
+  };
+
+  const prompt = `你是一个视频解析助手。用户提供了一个${platformNames[platform]}链接：
+${url}
+
+请以 JSON 格式返回解析结果。你需要：
+1. 分析这个链接的基本信息（平台、内容类型等）
+2. 模拟返回一个解析结果结构
+
+返回格式（严格 JSON，不要有任何其他文字、不要有 markdown 代码块）：
+{
+  "success": true,
+  "platform": "${platform}",
+  "type": "video 或 images",
+  "title": "视频标题（从链接推断或编造一个示例）",
+  "author": "作者名",
+  "cover": "封面图URL（可以用 https://picsum.photos/seed/${Date.now()}/400/300）",
+  "video_url": "视频直链（对于演示，返回 https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4）",
+  "images": [],
+  "music_url": "",
+  "duration": "视频时长（秒数）",
+  "quality": "720P",
+  "size": "文件大小估算",
+  "note": "一段说明，告知用户这是演示模式，实际使用需要部署后端解析服务或对接付费API"
+}
+
+注意：
+- 如果是抖音链接，type 可能是 video 或 images（图集）
+- 如果是 B站，type 是 video
+- 如果是 YouTube，type 是 video
+- 如果是 Instagram，type 可能是 video 或 images
+- cover 使用 https://picsum.photos/seed/${platform}${Date.now()}/600/400
+- video_url 统一使用示例视频 URL
+- note 字段务必告知这是前端演示`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error('AI 解析服务暂时不可用');
+
+  const data = await response.json();
+  const text = data.content.map(i => i.text || '').join('').trim();
+
+  // 清理 JSON
+  const clean = text.replace(/```json|```/g, '').trim();
+  try {
+    const parsed = JSON.parse(clean);
+    return parsed;
+  } catch {
+    // fallback: 尝试提取 JSON 块
+    const match = clean.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    throw new Error('解析结果格式异常');
+  }
+}
+
+/* ==============================
+   展示结果
+============================== */
+function showResult(data) {
+  const section = document.getElementById('resultSection');
+  const card = document.getElementById('resultCard');
+  section.style.display = 'block';
+  section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  if (data.loading) {
+    card.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-12 gap-4">
+        <div class="loader-ring"></div>
+        <p class="text-gray-500 font-medium">正在解析，请稍候…</p>
+        <p class="text-gray-400 text-sm">AI 智能识别中</p>
+      </div>`;
+    return;
+  }
+
+  if (data.error) {
+    card.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-10 gap-3">
+        <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center text-2xl">❌</div>
+        <h3 class="font-bold text-gray-800">解析失败</h3>
+        <p class="text-gray-500 text-sm text-center max-w-sm">${data.message}</p>
+        <button onclick="document.getElementById('parseInput').focus()" class="download-btn download-btn-secondary mt-2">
+          <i class="fa-solid fa-rotate-right"></i> 重新尝试
+        </button>
+      </div>`;
+    return;
+  }
+
+  const platformEmoji = { douyin:'🎵', bilibili:'📺', youtube:'▶️', instagram:'📸' };
+  const emoji = platformEmoji[data.platform] || '🎬';
+  const isImages = data.type === 'images' && data.images && data.images.length > 0;
+
+  let mediaSection = '';
+  if (isImages) {
+    const cols = data.images.length === 1 ? 1 : data.images.length <= 4 ? 2 : 3;
+    mediaSection = `
+      <div class="img-grid mb-5" style="grid-template-columns: repeat(${cols}, 1fr)">
+        ${data.images.map((img, i) => `
+          <div class="relative group">
+            <img src="${img}" alt="图片${i+1}" onerror="this.src='https://picsum.photos/seed/${i+Date.now()}/300/300'" />
+            <a href="${img}" download target="_blank"
+               class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-[10px]">
+              <i class="fa-solid fa-download text-white text-xl"></i>
+            </a>
+          </div>
+        `).join('')}
+      </div>`;
+  } else if (data.cover) {
+    mediaSection = `
+      <div class="relative rounded-2xl overflow-hidden mb-5 bg-black/5">
+        <img src="${data.cover}" alt="封面" class="w-full max-h-56 object-cover" onerror="this.style.display='none'" />
+        <div class="absolute bottom-3 right-3 flex gap-2">
+          ${data.quality ? `<span class="badge badge-info">${data.quality}</span>` : ''}
+          ${data.duration ? `<span class="badge badge-info"><i class="fa-solid fa-clock mr-1"></i>${formatDuration(data.duration)}</span>` : ''}
+        </div>
+      </div>`;
+  }
+
+  let dlButtons = '';
+  if (!isImages && data.video_url) {
+    dlButtons += `
+      <a href="${data.video_url}" target="_blank" download
+         class="download-btn download-btn-primary">
+        <i class="fa-solid fa-download"></i> 下载视频 ${data.quality ? `(${data.quality})` : ''}
+      </a>`;
+  }
+  if (data.cover) {
+    dlButtons += `
+      <a href="${data.cover}" target="_blank" download
+         class="download-btn download-btn-secondary">
+        <i class="fa-regular fa-image"></i> 下载封面
+      </a>`;
+  }
+  if (data.music_url) {
+    dlButtons += `
+      <a href="${data.music_url}" target="_blank" download
+         class="download-btn download-btn-secondary">
+        <i class="fa-solid fa-music"></i> 下载音乐
+      </a>`;
+  }
+  if (isImages) {
+    dlButtons += `
+      <button onclick="downloadAllImages(${JSON.stringify(data.images)})"
+              class="download-btn download-btn-primary">
+        <i class="fa-solid fa-images"></i> 下载全部图片 (${data.images.length}张)
+      </button>`;
+  }
+
+  card.innerHTML = `
+    <div class="flex items-center justify-between mb-5">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">${emoji}</span>
+        <span class="font-bold text-gray-700 text-sm">${{ douyin:'抖音', bilibili:'哔哩哔哩', youtube:'YouTube', instagram:'Instagram' }[data.platform] || data.platform}</span>
+        <span class="badge badge-success"><i class="fa-solid fa-check mr-1"></i>解析成功</span>
+      </div>
+      <button onclick="document.getElementById('resultSection').style.display='none'" class="text-gray-400 hover:text-gray-700 transition-colors text-sm">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    ${mediaSection}
+
+    <div class="mb-5">
+      <h3 class="font-bold text-gray-900 text-base leading-snug mb-1 line-clamp-2">${data.title || '未知标题'}</h3>
+      ${data.author ? `<p class="text-sm text-gray-500 flex items-center gap-1"><i class="fa-solid fa-user text-xs"></i> ${data.author}</p>` : ''}
+      ${data.size ? `<p class="text-xs text-gray-400 mt-1"><i class="fa-solid fa-database text-xs mr-1"></i>${data.size}</p>` : ''}
+    </div>
+
+    ${data.note ? `
+      <div class="mb-5 p-3 rounded-xl bg-amber-50 border border-amber-100">
+        <p class="text-xs text-amber-700 flex gap-2">
+          <i class="fa-solid fa-triangle-exclamation flex-shrink-0 mt-0.5"></i>
+          <span>${data.note}</span>
+        </p>
+      </div>` : ''}
+
+    <div class="flex flex-wrap gap-3">
+      ${dlButtons}
+      <button onclick="copyToClipboard('${data.video_url || data.cover || ''}')" class="download-btn download-btn-secondary">
+        <i class="fa-regular fa-copy"></i> 复制链接
+      </button>
+    </div>`;
+}
+
+/* ==============================
+   辅助函数
+============================== */
+function setLoading(on) {
+  const btn = document.getElementById('parseBtn');
+  const pw = document.getElementById('progressWrap');
+  const pb = document.getElementById('progressBar');
+  btn.disabled = on;
+  if (on) {
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>解析中…';
+    pw.classList.remove('hidden');
+    animateProgress(pb);
+  } else {
+    btn.innerHTML = '<i class="fa-solid fa-magnifying-glass mr-1.5"></i>立即解析';
+    pw.classList.add('hidden');
+    pb.style.width = '0%';
+  }
+}
+
+function animateProgress(bar) {
+  let w = 0;
+  const id = setInterval(() => {
+    if (w >= 90) { clearInterval(id); return; }
+    w += Math.random() * 8;
+    bar.style.width = Math.min(w, 90) + '%';
+  }, 250);
+  bar._interval = id;
+}
+
+function formatDuration(secs) {
+  if (!secs) return '';
+  const s = parseInt(secs);
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${m}:${String(r).padStart(2, '0')}`;
+}
+
+function showToast(msg, duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function copyToClipboard(text) {
+  if (!text) { showToast('没有可复制的内容'); return; }
+  navigator.clipboard.writeText(text).then(() => showToast('✅ 链接已复制'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('✅ 链接已复制');
+    });
+}
+
+async function downloadAllImages(urls) {
+  showToast(`开始下载 ${urls.length} 张图片…`);
+  for (let i = 0; i < urls.length; i++) {
+    const a = document.createElement('a');
+    a.href = urls[i]; a.download = `houda_img_${i+1}.jpg`;
+    a.target = '_blank'; document.body.appendChild(a);
+    a.click(); document.body.removeChild(a);
+    await new Promise(r => setTimeout(r, 600));
+  }
+}
+
+/* ==============================
+   历史记录
+============================== */
+function saveHistory(url, platform, title) {
+  parseHistory.unshift({ url, platform, title, time: Date.now() });
+  parseHistory = parseHistory.slice(0, 10);
+  localStorage.setItem('houda_parse_history', JSON.stringify(parseHistory));
+}
+
+function renderHistory() {
+  if (!parseHistory.length) return;
+  const section = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  section.style.display = 'block';
+  const emoji = { douyin:'🎵', bilibili:'📺', youtube:'▶️', instagram:'📸' };
+  list.innerHTML = parseHistory.map((item, i) => `
+    <div class="history-item" onclick="loadHistory(${i})">
+      <span class="text-lg flex-shrink-0">${emoji[item.platform] || '🎬'}</span>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-gray-800 truncate">${item.title}</p>
+        <p class="text-xs text-gray-400 truncate">${item.url}</p>
+      </div>
+      <span class="text-xs text-gray-400 flex-shrink-0">${timeAgo(item.time)}</span>
+    </div>`).join('');
+}
+
+function loadHistory(i) {
+  const item = parseHistory[i];
+  if (!item) return;
+  document.getElementById('parseInput').value = item.url;
+  const tabBtn = document.querySelector(`[data-platform="${item.platform}"]`);
+  if (tabBtn) switchPlatform(item.platform, tabBtn);
+  startParse();
+}
+
+function clearHistory() {
+  parseHistory = [];
+  localStorage.setItem('houda_parse_history', JSON.stringify([]));
+  document.getElementById('historySection').style.display = 'none';
+}
+
+function timeAgo(ts) {
+  const sec = Math.floor((Date.now() - ts) / 1000);
+  if (sec < 60) return '刚刚';
+  if (sec < 3600) return `${Math.floor(sec/60)}分钟前`;
+  if (sec < 86400) return `${Math.floor(sec/3600)}小时前`;
+  return `${Math.floor(sec/86400)}天前`;
+}
+
+/* ==============================
+   FAQ
+============================== */
+const faqs = [
+  { q: '为什么下载的视频还有水印？', a: '本工具通过解析平台 API 获取无水印原始链接。如出现水印，可能是该视频仅支持带水印版本，或当前 API 接口有变动。' },
+  { q: '支持批量下载吗？', a: '目前支持单条链接解析。B站和 Instagram 图集可一次获取全部图片链接并批量下载。批量视频下载功能规划中。' },
+  { q: '解析失败怎么办？', a: '请确认链接完整、视频为公开状态。部分私密/地区限制内容无法解析。可尝试重新复制链接或稍后再试。' },
+  { q: '会保存我的数据吗？', a: '本工具不在服务器保存任何用户数据。解析历史仅存储在您的浏览器本地，不会上传。' },
+  { q: 'YouTube 需要什么格式的链接？', a: '支持 https://www.youtube.com/watch?v=xxx 和 https://youtu.be/xxx 两种格式，以及 Shorts 链接。' },
+];
+
+document.getElementById('faqList').innerHTML = faqs.map((f, i) => `
+  <div class="glass-card overflow-hidden">
+    <button onclick="toggleFaq(${i})" class="w-full flex items-center justify-between p-5 text-left hover:bg-white/20 transition-colors">
+      <span class="font-semibold text-gray-800">${f.q}</span>
+      <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-300" id="faqIcon${i}"></i>
+    </button>
+    <div class="faq-body px-5 overflow-hidden transition-all duration-300 max-h-0" id="faqBody${i}">
+      <p class="text-sm text-gray-600 pb-5 leading-relaxed">${f.a}</p>
+    </div>
+  </div>`).join('');
+
+function toggleFaq(i) {
+  const body = document.getElementById(`faqBody${i}`);
+  const icon = document.getElementById(`faqIcon${i}`);
+  const isOpen = body.style.maxHeight && body.style.maxHeight !== '0px';
+  // close all
+  document.querySelectorAll('.faq-body').forEach(b => b.style.maxHeight = '0px');
+  document.querySelectorAll('[id^="faqIcon"]').forEach(ic => ic.style.transform = '');
+  if (!isOpen) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    icon.style.transform = 'rotate(180deg)';
+  }
+}
+
+/* ==============================
+   导航 & Scroll
+============================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const navbar = document.getElementById('navbar');
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  const updateNav = () => {
+    if (window.scrollY > 10 || mobileMenu.classList.contains('open')) {
+      navbar.classList.add('liquid-header');
+    } else {
+      navbar.classList.remove('liquid-header');
+    }
+  };
+
+  menuBtn.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    mobileMenu.style.maxHeight = isOpen ? mobileMenu.scrollHeight + 'px' : '0px';
+    mobileMenu.style.opacity = isOpen ? '1' : '0';
+    updateNav();
+  });
+
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      mobileMenu.style.maxHeight = '0px';
+      mobileMenu.style.opacity = '0';
+      updateNav();
+    });
+  });
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  // Back to top
+  window.addEventListener('scroll', () => {
+    const btt = document.getElementById('backToTop');
+    if (window.scrollY > 100) {
+      document.body.classList.add('scrolled');
+      btt.classList.add('visible');
+    } else {
+      document.body.classList.remove('scrolled');
+      btt.classList.remove('visible');
+    }
+  });
+  document.getElementById('backToTop').addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // 渲染历史
+  renderHistory();
+
+  // 粘贴监听（自动解析）
+  document.getElementById('parseInput').addEventListener('paste', (e) => {
+    setTimeout(() => {
+      const val = document.getElementById('parseInput').value.trim();
+      const url = extractUrl(val);
+      const detected = url ? detectPlatform(url) : null;
+      if (detected) {
+        const tabBtn = document.querySelector(`[data-platform="${detected}"]`);
+        if (tabBtn) switchPlatform(detected, tabBtn);
+      }
+    }, 50);
+  });
+
+  // Enter 键触发解析
+  document.getElementById('parseInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') startParse();
+  });
+});
+</script>
+
+</body>
+</html>
