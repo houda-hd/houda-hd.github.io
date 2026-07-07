@@ -17,7 +17,7 @@
 同时作为视觉统一与轻量架构的实验平台。
 
 **访问地址：**  
-👉 [https://houda-hd.github.io](https://houda-hd.github.io)
+👉 [click me](https://houda.pages.dev)
 
 ---
 
