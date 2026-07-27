@@ -31,7 +31,7 @@
                 text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
             .transition-custom {
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.25s cubic-bezier(0.23, 1, 0.32, 1);
             }
         }
     
@@ -40,7 +40,7 @@ html, body {
   scroll-behavior: smooth;
 }
 #mobileMenu {
-  transition: max-height 0.4s ease, opacity 0.3s ease;
+  transition: max-height 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.25s cubic-bezier(0.23, 1, 0.32, 1);
   overflow: hidden;
   max-height: 0;
   opacity: 0;
@@ -122,7 +122,7 @@ html, body {
 
 .liquid-background::before {
     background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.32) 80deg, rgba(176,196,255,0.2) 150deg, rgba(255,255,255,0) 240deg);
-    filter: blur(40px);
+    filter: blur(20px);
     animation: liquidSheen 22s linear infinite;
 }
 
@@ -230,7 +230,7 @@ html, body {
         var(--glass-shadow),
         inset 0 1px 0 rgba(255,255,255,0.66),
         inset 0 -1px 0 rgba(255,255,255,0.12);
-    transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease, background .4s ease, border-color .3s ease;
+    transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1), background 0.25s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1);
     isolation: isolate;
 }
 
@@ -269,7 +269,7 @@ html, body {
     .glass-card:hover {
         background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.22) 100%);
         border-color: rgba(255,255,255,0.68);
-        transform: translateY(-8px) scale(1.01);
+        transform: translateY(-4px) scale(1.005);
         box-shadow:
             0 24px 55px rgba(86, 98, 230, 0.16),
             inset 0 1px 0 rgba(255,255,255,0.82),
@@ -291,9 +291,50 @@ html, body {
     height: 100%;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
     transform: skewX(-25deg);
-    transition: 0.6s;
+    transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1);
     pointer-events: none;
     z-index: 10;
+}
+
+/* 滚动触发的淡入动画 */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger for grid items */
+.reveal-stagger {
+    transition-delay: var(--stagger-delay, 0s);
+}
+
+/* prefers-reduced-motion: 保留必要过渡，移除装饰动画 */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .glass-card:hover {
+        transform: none;
+    }
+    .shine-effect::before {
+        transition: none !important;
+    }
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+    .dock-item:hover {
+        transform: none;
+    }
+    .back-to-top:hover {
+        transform: none;
+    }
 }
 @media (hover: hover) and (pointer: fine) {
     .shine-effect:hover::before {
@@ -357,13 +398,13 @@ html, body {
 
 @media (hover: hover) and (pointer: fine) {
     .dock-item:hover {
-        transform: translateY(-8px) scale(1.15);
+        transform: translateY(-6px) scale(1.08);
         background: rgba(255,255,255,0.6);
     }
 }
 
 .dock-item:active {
-    transform: scale(0.92);
+    transform: scale(0.95);
     background: rgba(255,255,255,0.7);
 }
 
@@ -528,9 +569,9 @@ body.scrolled .dock-label {
     grid-area: 1 / 1;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(40px) scale(0.96);
-    filter: blur(8px);
-    transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1); 
+    transform: translateY(32px) scale(0.97);
+    filter: blur(4px);
+    transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1), transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
 }
 
 .timeline-h-content.active {
@@ -636,6 +677,15 @@ body.scrolled .dock-label {
     0% { background-position: 0% 0%; }
     50% { background-position: 75% 0%; }
     100% { background-position: 140% 0%; }
+}
+
+@keyframes floatA {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.03); }
+}
+@keyframes floatB {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(8px) scale(0.97); }
 }
 
 /* 首次访问提示气泡（液态玻璃） */
@@ -797,8 +847,8 @@ body.scrolled .dock-label {
             </div>
             <div class="md:w-1/2 w-full">
                 <div class="relative max-w-md mx-auto md:max-w-none">
-                    <div class="absolute -top-8 -left-8 w-32 h-32 bg-white/40 backdrop-blur-2xl rounded-full border border-white/60 animate-pulse shadow-xl"></div>
-                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/10 backdrop-blur-2xl rounded-full border border-white/60 animate-pulse shadow-xl" style="animation-delay: 1s;"></div>
+                    <div class="absolute -top-8 -left-8 w-32 h-32 bg-white/40 backdrop-blur-2xl rounded-full border border-white/60 animate-[floatA_6s_ease-in-out_infinite] shadow-xl"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/10 backdrop-blur-2xl rounded-full border border-white/60 animate-[floatB_7s_ease-in-out_infinite] shadow-xl" style="animation-delay: 1s;"></div>
                     <img alt="侯大logo" class="relative z-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] w-full object-cover h-[350px] sm:h-[450px] border-4 border-white/50" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
                 </div>
             </div>
@@ -1222,7 +1272,7 @@ body.scrolled .dock-label {
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                <div class="glass-card p-8 rounded-3xl text-center transform transition-all duration-300 hover:-translate-y-2 border border-white/55">
+                <div class="glass-card p-8 rounded-3xl text-center transform transition-transform duration-250 hover:-translate-y-2 border border-white/55">
                     <div class="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i class="fab fa-weixin text-green-500 text-4xl"></i>
                     </div>
@@ -1233,7 +1283,7 @@ body.scrolled .dock-label {
                     </div>
                 </div>
                 
-                <div class="glass-card p-8 rounded-3xl text-center transform transition-all duration-300 hover:-translate-y-2 border border-white/55">
+                <div class="glass-card p-8 rounded-3xl text-center transform transition-transform duration-250 hover:-translate-y-2 border border-white/55">
                     <div class="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i class="fa fa-mobile-screen-button text-blue-500 text-3xl"></i>
                     </div>
@@ -1493,6 +1543,41 @@ document.addEventListener('DOMContentLoaded', function () {
     clearInterval(timer);
     close();
   });
+});
+</script>
+
+<script>
+// 🌟 Scroll Reveal + Stagger — IntersectionObserver
+document.addEventListener('DOMContentLoaded', function () {
+  // Mark all section title blocks and card grids for reveal
+  const revealTargets = document.querySelectorAll(
+    'section h2.text-\\[clamp\\], section > .container > .grid, .timeline-h-content, #contact .glass-card, #about .grid.grid-cols-1'
+  );
+
+  revealTargets.forEach((el, i) => {
+    el.classList.add('reveal', 'reveal-stagger');
+    // Stagger cards within grids
+    if (el.classList.contains('grid')) {
+      const cards = el.querySelectorAll('.glass-card, .timeline-h-content');
+      cards.forEach((card, ci) => {
+        card.style.setProperty('--stagger-delay', `${ci * 0.08}s`);
+      });
+    }
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 });
 </script>
 </body>
