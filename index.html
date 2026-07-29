@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -16,7 +17,7 @@
                         light: '#f9f9f9'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
                     },
                 }
             }
@@ -30,23 +31,39 @@
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            .transition-custom {
-                transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.25s cubic-bezier(0.23, 1, 0.32, 1);
-            }
         }
     
 html, body {
   overflow-x: hidden !important;
   scroll-behavior: smooth;
 }
+
+/* ─── CSS Custom Properties ─── */
+:root {
+  /* Apple-style easing tokens — strong custom curves, never built-in */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-back: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Duration tokens */
+  --duration-press: 160ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 400ms;
+  --duration-drawer: 500ms;
+}
+
+/* ─── Mobile Menu ─── */
 #mobileMenu {
-  transition: max-height 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.25s cubic-bezier(0.23, 1, 0.32, 1);
   overflow: hidden;
   max-height: 0;
   opacity: 0;
   background: inherit;
   border-top: 0;
   position: relative;
+  /* Use transform+opacity for GPU-friendly transition — avoid max-height animation for production */
+  transition: max-height var(--duration-slow) var(--ease-out),
+              opacity var(--duration-fast) var(--ease-out);
 }
 #mobileMenu.open {
   max-height: 500px;
@@ -65,9 +82,18 @@ html, body {
 #mobileMenu .menu-link {
   background: transparent;
   border: none;
+  /* Instant feedback on press — respond on pointer-down, not release (Apple Design §1) */
+  transition: background var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
-#mobileMenu .menu-link:hover {
-  background: rgba(255,255,255,0.1);
+#mobileMenu .menu-link:active {
+  transform: scale(0.97);
+  background: rgba(255,255,255,0.18);
+}
+@media (hover: hover) and (pointer: fine) {
+  #mobileMenu .menu-link:hover {
+    background: rgba(255,255,255,0.1);
+  }
 }
 
 #navbar.liquid-header #mobileMenu::before {
@@ -84,11 +110,29 @@ html, body {
   opacity: 0.42;
 }
 #menuBtn i {
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 #menuBtn.open i {
   transform: rotate(90deg);
 }
+
+/* ─── Typography — Apple Design §15 ─── */
+:root {
+  font: 100%/1.5 system-ui, -apple-system, sans-serif;
+}
+
+h1, h2, h3, .display {
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-optical-sizing: auto;
+}
+
+/* Smaller text gets slightly positive tracking for legibility */
+.text-caption, .dock-label {
+  letter-spacing: 0.01em;
+}
+
+/* Respect user's text-size setting — all layout spacing in rem/em */
   </style>
 <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
 <meta content="HOUDA+官网 - 长沙霉粉联盟六群分支，侯明昊碗慧通讯录互吃大学官方站点。" name="description"/>
@@ -100,7 +144,7 @@ html, body {
   scroll-padding-top: 5.5rem;
 }
 
-/* --- 液态流动背景 --- */
+/* ─── 液态流动背景 ─── */
 .liquid-background {
     position: fixed;
     top: 0;
@@ -122,7 +166,7 @@ html, body {
 
 .liquid-background::before {
     background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.32) 80deg, rgba(176,196,255,0.2) 150deg, rgba(255,255,255,0) 240deg);
-    filter: blur(20px);
+    filter: blur(40px);
     animation: liquidSheen 22s linear infinite;
 }
 
@@ -210,7 +254,7 @@ html, body {
     100% { transform: translate3d(0, 0, 0) scale(1) rotate(360deg); }
 }
 
-/* --- 🌟 更通透的液态玻璃卡片样式 🌟 --- */
+/* ─── 液态玻璃卡片（Apple Design §12 — Materials & Depth） ─── */
 :root {
     --glass-bg: rgba(255, 255, 255, 0.3);
     --glass-bg-strong: rgba(255, 255, 255, 0.42);
@@ -230,7 +274,12 @@ html, body {
         var(--glass-shadow),
         inset 0 1px 0 rgba(255,255,255,0.66),
         inset 0 -1px 0 rgba(255,255,255,0.12);
-    transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1), background 0.25s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    /* Materialize: animate blur+scale on hover (Apple Design §12 — materialize, don't just fade) */
+    /* Explicit properties only — never 'transition: all' */
+    transition: transform var(--duration-slow) var(--ease-back),
+                box-shadow var(--duration-slow) var(--ease-out),
+                background var(--duration-slow) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
     isolation: isolate;
 }
 
@@ -265,11 +314,12 @@ html, body {
     opacity: 0.9;
 }
 
+/* Hover: materialize with scale+shadow — gated behind pointer media query (Apple Design §14) */
 @media (hover: hover) and (pointer: fine) {
     .glass-card:hover {
         background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.22) 100%);
         border-color: rgba(255,255,255,0.68);
-        transform: translateY(-4px) scale(1.005);
+        transform: translateY(-6px) scale(1.008);
         box-shadow:
             0 24px 55px rgba(86, 98, 230, 0.16),
             inset 0 1px 0 rgba(255,255,255,0.82),
@@ -277,7 +327,13 @@ html, body {
     }
 }
 
-/* 扫光特效 */
+/* ─── Press feedback — Apple Design §1: respond on pointer-down ─── */
+.glass-card:active {
+    transform: scale(0.98);
+    transition: transform var(--duration-press) var(--ease-out);
+}
+
+/* ─── 扫光特效 ─── */
 .shine-effect {
     position: relative;
     overflow: hidden;
@@ -291,59 +347,17 @@ html, body {
     height: 100%;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
     transform: skewX(-25deg);
-    transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1);
     pointer-events: none;
     z-index: 10;
-}
-
-/* 滚动触发的淡入动画 */
-.reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Stagger for grid items */
-.reveal-stagger {
-    transition-delay: var(--stagger-delay, 0s);
-}
-
-/* prefers-reduced-motion: 保留必要过渡，移除装饰动画 */
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    .glass-card:hover {
-        transform: none;
-    }
-    .shine-effect::before {
-        transition: none !important;
-    }
-    .reveal {
-        opacity: 1;
-        transform: none;
-    }
-    .dock-item:hover {
-        transform: none;
-    }
-    .back-to-top:hover {
-        transform: none;
-    }
 }
 @media (hover: hover) and (pointer: fine) {
     .shine-effect:hover::before {
         left: 150%;
-        transition: 0.8s ease-in-out;
+        transition: left 0.8s var(--ease-in-out);
     }
 }
 
-/* --- Dock 栏样式 --- */
+/* ─── Dock 栏 ─── */
 .dock-container {
     position: fixed;
     bottom: 20px;
@@ -392,20 +406,23 @@ html, body {
     cursor: pointer;
     text-decoration: none;
     color: #333;
-    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* Instant press feedback, smooth hover (Apple Design §1 + Emil §Component Building) */
+    transition: transform var(--duration-fast) var(--ease-out),
+                background var(--duration-fast) var(--ease-out);
     -webkit-tap-highlight-color: transparent; 
 }
 
 @media (hover: hover) and (pointer: fine) {
     .dock-item:hover {
-        transform: translateY(-6px) scale(1.08);
+        transform: translateY(-8px) scale(1.15);
         background: rgba(255,255,255,0.6);
     }
 }
 
 .dock-item:active {
-    transform: scale(0.95);
+    transform: scale(0.92);
     background: rgba(255,255,255,0.7);
+    transition: transform var(--duration-press) var(--ease-out);
 }
 
 .dock-icon {
@@ -419,6 +436,7 @@ html, body {
     opacity: 0.8;
 }
 
+/* ─── Back to Top — Apple Design spatial consistency ─── */
 .back-to-top {
     pointer-events: auto;
     flex-shrink: 0;
@@ -439,7 +457,10 @@ html, body {
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
-    transition: all 0.3s ease;
+    /* Enter/exit via same property, ease-out for responsive feel */
+    transition: opacity var(--duration-normal) var(--ease-out),
+                visibility var(--duration-normal) var(--ease-out),
+                transform var(--duration-normal) var(--ease-out);
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -451,6 +472,7 @@ html, body {
 }
 .back-to-top:active {
     transform: scale(0.92);
+    transition: transform var(--duration-press) var(--ease-out);
 }
 
 .back-to-top.visible {
@@ -484,7 +506,7 @@ body.scrolled .dock-label {
     display: none;
 }
 
-/* --- 横向时间线（深度优化版） --- */
+/* ─── 横向时间线 ─── */
 .hide-scrollbar::-webkit-scrollbar { 
     display: none; 
 }
@@ -496,19 +518,24 @@ body.scrolled .dock-label {
 .timeline-mask-wrapper {
     position: relative;
     width: 100%;
+    /* Scroll edge effect — not hard divider (Apple Design §12) */
     mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
 .timeline-h-item {
-    transition: all 0.4s ease;
+    /* Explicit property transitions only — avoid 'all' */
+    transition: transform var(--duration-normal) var(--ease-out);
     -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
 }
 
 .timeline-h-item .year-text {
     font-size: 1.5rem; 
     color: #a0aec0;
-    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), color 0.5s ease;
+    /* Stagger-friendly: transform+color, no 'all' */
+    transition: transform 0.5s var(--ease-in-out),
+                color 0.5s var(--ease-out);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -529,7 +556,7 @@ body.scrolled .dock-label {
 
 .timeline-ruler-track {
     border-bottom: 2px solid #e2e8f0; 
-    transition: border-color 0.5s ease;
+    transition: border-color 0.5s var(--ease-out);
 }
 .timeline-h-item.active .timeline-ruler-track {
     border-bottom-color: #111111; 
@@ -539,14 +566,14 @@ body.scrolled .dock-label {
     width: 2px; 
     height: 24px; 
     background-color: #94a3b8; 
-    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.5s var(--ease-in-out);
     transform-origin: bottom center;
 }
 .tick-minor {
     width: 1px; 
     height: 12px; 
     background-color: #cbd5e1; 
-    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.5s var(--ease-in-out);
     transform-origin: bottom center;
 }
 
@@ -565,13 +592,19 @@ body.scrolled .dock-label {
     perspective: 1000px;
 }
 
+/* Content transition: fade + slight scale + blur to bridge states (Emil §Use blur to mask) */
 .timeline-h-content {
     grid-area: 1 / 1;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(32px) scale(0.97);
-    filter: blur(4px);
-    transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1), transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+    /* Start from scale(0.96) — never scale(0) (Emil §Never animate from scale(0)) */
+    transform: translateY(24px) scale(0.96);
+    filter: blur(6px);
+    /* GPU-friendly: transform+opacity+filter on compositor */
+    transition: opacity var(--duration-slow) var(--ease-out),
+                visibility var(--duration-slow) var(--ease-out),
+                transform 0.55s var(--ease-out),
+                filter 0.45s var(--ease-out); 
 }
 
 .timeline-h-content.active {
@@ -582,7 +615,7 @@ body.scrolled .dock-label {
     z-index: 10;
 }
 
-/* 时间线卡片：跟手滑动反馈 + 边缘回弹 */
+/* ─── 时间线卡片：跟手滑动反馈 ─── */
 .timeline-h-content .glass-card {
     will-change: transform;
 }
@@ -591,6 +624,7 @@ body.scrolled .dock-label {
     transition: none !important;
 }
 
+/* Edge bounce: keyframes OK here since it's a one-shot, not rapidly triggered */
 @keyframes edgeBounceLeft {
     0% { transform: translateX(0); }
     35% { transform: translateX(14px); }
@@ -604,16 +638,14 @@ body.scrolled .dock-label {
 }
 
 .timeline-h-content.active .glass-card.edge-bounce-left {
-    animation: edgeBounceLeft 0.34s cubic-bezier(.22,.61,.36,1);
+    animation: edgeBounceLeft 0.34s var(--ease-back);
 }
 
 .timeline-h-content.active .glass-card.edge-bounce-right {
-    animation: edgeBounceRight 0.34s cubic-bezier(.22,.61,.36,1);
+    animation: edgeBounceRight 0.34s var(--ease-back);
 }
 
-
-
-/* 发展历程：图标融入卡片背景（去黑色块） */
+/* ─── 发展历程：图标融入卡片背景 ─── */
 .timeline-icon-ghost {
     background: radial-gradient(140% 140% at 25% 20%, rgba(255,255,255,0.68) 0%, rgba(255,255,255,0.18) 52%, rgba(255,255,255,0.06) 100%);
     border: 1px solid rgba(255,255,255,0.55);
@@ -622,6 +654,7 @@ body.scrolled .dock-label {
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.82),
         0 10px 24px rgba(126, 142, 255, 0.12);
+    /* Float — idle animation, gentle drift (Animation Vocabulary) */
     animation: iconDrift 6s ease-in-out infinite;
 }
 
@@ -641,7 +674,7 @@ body.scrolled .dock-label {
     }
 }
 
-/* Header：液态风（非雾玻璃） */
+/* ─── Header：液态风（Apple Design §12 — translucent chrome） ─── */
 #navbar {
     background: transparent;
     border-bottom: 1px solid transparent;
@@ -679,16 +712,7 @@ body.scrolled .dock-label {
     100% { background-position: 140% 0%; }
 }
 
-@keyframes floatA {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-10px) scale(1.03); }
-}
-@keyframes floatB {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(8px) scale(0.97); }
-}
-
-/* 首次访问提示气泡（液态玻璃） */
+/* ─── 首次访问提示气泡（液态玻璃） ─── */
 #launchBubble {
     position: fixed;
     top: calc(env(safe-area-inset-top, 0px) + 102px);
@@ -707,25 +731,23 @@ body.scrolled .dock-label {
       0 10px 30px rgba(126, 140, 255, 0.12),
       inset 0 1px 0 rgba(255,255,255,0.62);
     opacity: 0;
-    transform: translateY(-8px) scale(0.98);
+    /* Scale from 0.95, not 0 (Emil §Never animate from scale(0)) */
+    transform: translateY(-8px) scale(0.95);
+    /* Use transitions for interruptible enter/exit (Emil §Use CSS transitions over keyframes) */
+    transition: opacity var(--duration-normal) var(--ease-out),
+                transform var(--duration-normal) var(--ease-back);
 }
 
 #launchBubble.show {
-    animation: bubbleIn .35s cubic-bezier(.22,.61,.36,1) forwards;
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 #launchBubble.hide {
-    animation: bubbleOut .3s ease forwards;
-}
-
-@keyframes bubbleIn {
-    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes bubbleOut {
-    from { opacity: 1; transform: translateY(0) scale(1); }
-    to { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    opacity: 0;
+    transform: translateY(-6px) scale(0.95);
+    transition: opacity 280ms var(--ease-out),
+                transform 280ms var(--ease-out);
 }
 
 #launchBubble::before {
@@ -756,8 +778,158 @@ body.scrolled .dock-label {
     color: #5260a8;
     font-size: 16px;
     cursor: pointer;
+    /* Press feedback on close button */
+    transition: transform var(--duration-press) var(--ease-out),
+                background var(--duration-fast) var(--ease-out);
 }
-#closeLaunchBubble:hover { background: rgba(255,255,255,0.34); }
+#closeLaunchBubble:active {
+    transform: scale(0.92);
+}
+@media (hover: hover) and (pointer: fine) {
+    #closeLaunchBubble:hover { background: rgba(255,255,255,0.34); }
+}
+
+/* ─── Activity Cards — image hover (GPU-friendly, no 'all') ─── */
+.activity-card-img {
+    transition: transform 0.7s var(--ease-out);
+}
+.group:hover .activity-card-img {
+    transform: scale(1.08);
+}
+
+/* ─── Reduced Motion (Apple Design §14) ─── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .liquid-background::before,
+    .blob,
+    .glass-card::after,
+    #navbar.liquid-header::before,
+    #launchBubble::before,
+    .timeline-icon-ghost {
+        animation: none !important;
+    }
+    .glass-card {
+        transition: opacity var(--duration-fast) var(--ease-out) !important;
+    }
+    .glass-card:hover {
+        transform: none !important;
+    }
+    .dock-item:hover {
+        transform: none !important;
+    }
+    /* Keep opacity/color transitions for comprehension */
+    .back-to-top,
+    #launchBubble,
+    #mobileMenu,
+    .timeline-h-content {
+        transition: opacity var(--duration-fast) var(--ease-out),
+                    visibility var(--duration-fast) var(--ease-out) !important;
+    }
+    .timeline-h-content {
+        filter: none !important;
+    }
+}
+
+/* ─── Reduced Transparency (Apple Design §14) ─── */
+@media (prefers-reduced-transparency: reduce) {
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    #navbar.liquid-header {
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    .dock {
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    #launchBubble {
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+/* ─── High Contrast (Apple Design §14) ─── */
+@media (prefers-contrast: more) {
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 2px solid rgba(0, 0, 0, 0.15) !important;
+    }
+}
+
+/* ─── Touch device: gate hover behind media query ─── */
+@media (hover: none) and (pointer: coarse) {
+    .glass-card:hover {
+        transform: none;
+    }
+    .dock-item:hover {
+        transform: none;
+    }
+}
+
+/* ─── Button styles — instant press feedback ─── */
+.btn-primary {
+    transition: transform var(--duration-press) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out),
+                background var(--duration-fast) var(--ease-out);
+}
+.btn-primary:active {
+    transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.btn-glass {
+    transition: transform var(--duration-press) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out),
+                background var(--duration-fast) var(--ease-out);
+}
+.btn-glass:active {
+    transform: scale(0.97);
+}
+
+/* ─── Nav links — instant color, subtle hover ─── */
+.nav-link {
+    transition: color var(--duration-fast) var(--ease-out),
+                transform var(--duration-press) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+    .nav-link:hover {
+        transform: translateY(-1px);
+    }
+}
+
+/* ─── Activity card content transitions ─── */
+.activity-overlay {
+    transition: opacity 0.5s var(--ease-out);
+}
+.group:hover .activity-overlay {
+    opacity: 1;
+}
+
+/* ─── Feature cards in About section — stagger on scroll ─── */
+.feature-card {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity var(--duration-slow) var(--ease-out),
+                transform var(--duration-slow) var(--ease-out);
+}
+.feature-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 </style>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 </head>
@@ -774,25 +946,25 @@ body.scrolled .dock-label {
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4">
             <a class="flex items-center space-x-3 group" href="#">
-                <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden shadow-md group-hover:shadow-lg transition-custom">
-                    <img alt="侯大标志" class="w-full h-full object-cover group-hover:scale-110 transition-custom" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
+                <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden shadow-md group-hover:shadow-lg transition-shadow duration-300">
+                    <img alt="侯大标志" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
                 </div>
                 <span class="text-2xl font-bold text-primary tracking-tight">HOUDA+</span>
             </a>
             <nav class="hidden md:flex items-center space-x-8">
-                <a class="text-secondary hover:text-primary transition-custom font-medium" href="#about">
+                <a class="nav-link text-secondary hover:text-primary font-medium" href="#about">
                     关于我们 <br/><span class="text-gray-500 text-xs block mt-0.5">About Us</span>
                 </a>
-                <a class="text-secondary hover:text-primary transition-custom font-medium" href="#history">
+                <a class="nav-link text-secondary hover:text-primary font-medium" href="#history">
                     发展历程 <br/><span class="text-gray-500 text-xs block mt-0.5">Our Story</span>
                 </a>
-                <a class="text-secondary hover:text-primary transition-custom font-medium" href="#activities">
+                <a class="nav-link text-secondary hover:text-primary font-medium" href="#activities">
                     活动回顾 <br/><span class="text-gray-500 text-xs block mt-0.5">Highlights</span>
                 </a>
-                <a class="text-secondary hover:text-primary transition-custom font-medium" href="#landmarks">
+                <a class="nav-link text-secondary hover:text-primary font-medium" href="#landmarks">
                     特色地标 <br/><span class="text-gray-500 text-xs block mt-0.5">Landmarks</span>
                 </a>
-                <a class="bg-primary hover:bg-gray-800 text-white px-6 py-2.5 rounded-full shadow-md hover:shadow-lg transition-custom font-medium transform hover:-translate-y-0.5" href="#contact">
+                <a class="btn-primary bg-primary hover:bg-gray-800 text-white px-6 py-2.5 rounded-full shadow-md hover:shadow-lg font-medium" href="#contact">
                     关注我们 <br/><span class="text-gray-400 text-xs block mt-0.5">Stay Connected</span>
                 </a>
             </nav>
@@ -803,16 +975,16 @@ body.scrolled .dock-label {
     </div>
     <div class="md:hidden" id="mobileMenu">
         <div class="container mx-auto px-4 py-4 space-y-4">
-            <a class="menu-link block text-secondary hover:text-primary transition-custom py-2 px-4 rounded-xl" href="#about">
+            <a class="menu-link block text-secondary hover:text-primary py-2 px-4 rounded-xl" href="#about">
                 关于我们 <span class="text-gray-400 text-xs ml-2">About Us</span>
             </a>
-            <a class="menu-link block text-secondary hover:text-primary transition-custom py-2 px-4 rounded-xl" href="#history">
+            <a class="menu-link block text-secondary hover:text-primary py-2 px-4 rounded-xl" href="#history">
                 发展历程 <span class="text-gray-400 text-xs ml-2">Our Story</span>
             </a>
-            <a class="menu-link block text-secondary hover:text-primary transition-custom py-2 px-4 rounded-xl" href="#activities">
+            <a class="menu-link block text-secondary hover:text-primary py-2 px-4 rounded-xl" href="#activities">
                 活动回顾 <span class="text-gray-400 text-xs ml-2">Highlights</span>
             </a>
-            <a class="menu-link block text-secondary hover:text-primary transition-custom py-2 px-4 rounded-xl" href="#landmarks">
+            <a class="menu-link block text-secondary hover:text-primary py-2 px-4 rounded-xl" href="#landmarks">
                 特色地标 <span class="text-gray-400 text-xs ml-2">Landmarks</span>
             </a>
             <a class="block bg-primary text-white px-6 py-3 rounded-xl text-center shadow-md mt-4" href="#contact">
@@ -822,6 +994,7 @@ body.scrolled .dock-label {
     </div>
 </header>
 
+<!-- Hero Section -->
 <section class="py-16 md:py-24 pt-[6.5rem] md:pt-[8rem] bg-transparent">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
@@ -837,18 +1010,18 @@ body.scrolled .dock-label {
                     长沙霉粉联盟六群分支，极具活力与特色的粉丝社群。
                 </p>
                 <div class="flex flex-col sm:flex-row gap-5 justify-center md:justify-start">
-                    <a class="bg-primary hover:bg-gray-800 text-white px-8 py-3.5 rounded-full text-center shadow-lg hover:shadow-xl transition-custom font-medium transform hover:-translate-y-1" href="#about">
+                    <a class="btn-primary bg-primary hover:bg-gray-800 text-white px-8 py-3.5 rounded-full text-center shadow-lg hover:shadow-xl font-medium" href="#about">
                         了解更多
                     </a>
-                    <a class="glass-card text-primary hover:bg-white/80 px-8 py-3.5 rounded-full text-center transition-custom font-medium flex items-center justify-center gap-2" href="#contact">
+                    <a class="btn-glass glass-card text-primary hover:bg-white/80 px-8 py-3.5 rounded-full text-center font-medium flex items-center justify-center gap-2" href="#contact">
                         关注我们 <i class="fa-solid fa-arrow-right text-sm"></i>
                     </a>
                 </div>
             </div>
             <div class="md:w-1/2 w-full">
                 <div class="relative max-w-md mx-auto md:max-w-none">
-                    <div class="absolute -top-8 -left-8 w-32 h-32 bg-white/40 backdrop-blur-2xl rounded-full border border-white/60 animate-[floatA_6s_ease-in-out_infinite] shadow-xl"></div>
-                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/10 backdrop-blur-2xl rounded-full border border-white/60 animate-[floatB_7s_ease-in-out_infinite] shadow-xl" style="animation-delay: 1s;"></div>
+                    <div class="absolute -top-8 -left-8 w-32 h-32 bg-white/40 backdrop-blur-2xl rounded-full border border-white/60 animate-pulse shadow-xl"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/10 backdrop-blur-2xl rounded-full border border-white/60 animate-pulse shadow-xl" style="animation-delay: 1s;"></div>
                     <img alt="侯大logo" class="relative z-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] w-full object-cover h-[350px] sm:h-[450px] border-4 border-white/50" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
                 </div>
             </div>
@@ -856,6 +1029,7 @@ body.scrolled .dock-label {
     </div>
 </section>
 
+<!-- About Section -->
 <section class="py-16 md:py-24 bg-transparent" id="about">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -888,8 +1062,8 @@ body.scrolled .dock-label {
                 <p class="text-gray-600 mb-8 leading-relaxed text-lg">
                     该群体以大学生为主，其中性少数占大多数，成员通过共同参与线下活动等方式维系情感联结，例如"侯家塘"地铁站打卡、老百姓大药房打卡和参加联盟活动等。
                 </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-                    <div class="glass-card p-4 rounded-2xl flex items-start hover:-translate-y-1 transition-transform">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10" id="featureGrid">
+                    <div class="glass-card p-4 rounded-2xl flex items-start feature-card">
                         <div class="bg-white p-3 rounded-xl mr-4 shadow-sm">
                             <i class="fa fa-heart text-primary text-xl"></i>
                         </div>
@@ -898,7 +1072,7 @@ body.scrolled .dock-label {
                             <p class="text-gray-500 text-sm">因明星侯明昊碗慧而聚集</p>
                         </div>
                     </div>
-                    <div class="glass-card p-4 rounded-2xl flex items-start hover:-translate-y-1 transition-transform">
+                    <div class="glass-card p-4 rounded-2xl flex items-start feature-card">
                         <div class="bg-white p-3 rounded-xl mr-4 shadow-sm">
                             <i class="fa fa-map-marker text-primary text-xl"></i>
                         </div>
@@ -907,7 +1081,7 @@ body.scrolled .dock-label {
                             <p class="text-gray-500 text-sm">以星城长沙为活动中心</p>
                         </div>
                     </div>
-                    <div class="glass-card p-4 rounded-2xl flex items-start hover:-translate-y-1 transition-transform">
+                    <div class="glass-card p-4 rounded-2xl flex items-start feature-card">
                         <div class="bg-white p-3 rounded-xl mr-4 shadow-sm">
                             <i class="fa fa-graduation-cap text-primary text-xl"></i>
                         </div>
@@ -916,7 +1090,7 @@ body.scrolled .dock-label {
                             <p class="text-gray-500 text-sm">年轻群体，大学生为主</p>
                         </div>
                     </div>
-                    <div class="glass-card p-4 rounded-2xl flex items-start hover:-translate-y-1 transition-transform">
+                    <div class="glass-card p-4 rounded-2xl flex items-start feature-card">
                         <div class="bg-white p-3 rounded-xl mr-4 shadow-sm">
                             <i class="fa-solid fa-calendar-check text-primary text-xl"></i>
                         </div>
@@ -928,13 +1102,14 @@ body.scrolled .dock-label {
                 </div>
                 <a class="inline-flex items-center text-primary font-bold hover:text-gray-600 transition-colors text-lg group" href="#history">
                     探索我们的发展历程
-                    <i class="fa fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    <i class="fa fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-200"></i>
                 </a>
             </div>
         </div>
     </div>
 </section>
 
+<!-- History Timeline Section -->
 <section class="py-16 md:py-24 bg-transparent" id="history">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div class="text-center mb-12">
@@ -1047,7 +1222,7 @@ body.scrolled .dock-label {
                     </div>
                     <h3 class="text-2xl md:text-3xl font-extrabold mb-4 text-dark">焕新启航</h3>
                     <p class="text-gray-600 text-lg md:text-xl leading-relaxed">
-                        2025年10月，侯大正式启用新视觉以及新名称“HOUDA+”，以更加开放、更有活力的姿态迈入新篇章。
+                        2025年10月，侯大正式启用新视觉以及新名称"HOUDA+"，以更加开放、更有活力的姿态迈入新篇章。
                     </p>
                 </div>
             </div>
@@ -1055,6 +1230,7 @@ body.scrolled .dock-label {
     </div>
 </section>
 
+<!-- Activities Section -->
 <section class="py-16 md:py-24 bg-transparent" id="activities">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -1067,8 +1243,8 @@ body.scrolled .dock-label {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="glass-card shine-effect overflow-hidden group flex flex-col">
                 <div class="relative overflow-hidden h-56 sm:h-64">
-                    <img alt="518活动照片" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" loading="lazy" src="assets/activites/none.png"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <img alt="518活动照片" class="activity-card-img w-full h-full object-cover object-center" loading="lazy" src="assets/activites/none.png"/>
+                    <div class="activity-overlay absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0"></div>
                 </div>
                 <div class="p-6 sm:p-8 flex-1 flex flex-col">
                     <span class="rounded-full text-xs font-bold tracking-wide text-primary bg-primary/10 py-1.5 px-4 mb-4 inline-block w-max">特色活动</span>
@@ -1084,7 +1260,8 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group flex flex-col">
                 <div class="relative overflow-hidden h-56 sm:h-64">
-                    <img alt="夏日歌会活动照片" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" loading="lazy" src="assets/activites/1.jpeg"/>
+                    <img alt="夏日歌会活动照片" class="activity-card-img w-full h-full object-cover object-center" loading="lazy" src="assets/activites/1.jpeg"/>
+                    <div class="activity-overlay absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0"></div>
                 </div>
                 <div class="p-6 sm:p-8 flex-1 flex flex-col">
                     <span class="rounded-full text-xs font-bold tracking-wide text-gray-700 bg-gray-200/50 py-1.5 px-4 mb-4 inline-block w-max">联盟活动</span>
@@ -1100,7 +1277,8 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group flex flex-col">
                 <div class="relative overflow-hidden h-56 sm:h-64">
-                    <img alt="跨年观影活动照片" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" loading="lazy" src="assets/activites/2.jpeg"/>
+                    <img alt="跨年观影活动照片" class="activity-card-img w-full h-full object-cover object-center" loading="lazy" src="assets/activites/2.jpeg"/>
+                    <div class="activity-overlay absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0"></div>
                 </div>
                 <div class="p-6 sm:p-8 flex-1 flex flex-col">
                     <span class="rounded-full text-xs font-bold tracking-wide text-gray-700 bg-gray-200/50 py-1.5 px-4 mb-4 inline-block w-max">联盟活动</span>
@@ -1116,7 +1294,8 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group flex flex-col">
                 <div class="relative overflow-hidden h-56 sm:h-64">
-                    <img alt="侯家塘地铁站打卡" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" loading="lazy" src="assets/activites/h.jpeg"/>
+                    <img alt="侯家塘地铁站打卡" class="activity-card-img w-full h-full object-cover object-center" loading="lazy" src="assets/activites/h.jpeg"/>
+                    <div class="activity-overlay absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0"></div>
                 </div>
                 <div class="p-6 sm:p-8 flex-1 flex flex-col">
                     <span class="rounded-full text-xs font-bold tracking-wide text-green-700 bg-green-100 py-1.5 px-4 mb-4 inline-block w-max">常驻活动</span>
@@ -1132,7 +1311,8 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group flex flex-col">
                 <div class="relative overflow-hidden h-56 sm:h-64">
-                    <img alt="老百姓大药房打卡" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" loading="lazy" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png"/>
+                    <img alt="老百姓大药房打卡" class="activity-card-img w-full h-full object-cover object-center" loading="lazy" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png"/>
+                    <div class="activity-overlay absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0"></div>
                 </div>
                 <div class="p-6 sm:p-8 flex-1 flex flex-col">
                     <span class="rounded-full text-xs font-bold tracking-wide text-green-700 bg-green-100 py-1.5 px-4 mb-4 inline-block w-max">常驻活动</span>
@@ -1148,7 +1328,8 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group flex flex-col">
                 <div class="relative overflow-hidden h-56 sm:h-64">
-                    <img alt="联盟其他活动" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" loading="lazy" src="assets/activites/cscsu.jpeg"/>
+                    <img alt="联盟其他活动" class="activity-card-img w-full h-full object-cover object-center" loading="lazy" src="assets/activites/cscsu.jpeg"/>
+                    <div class="activity-overlay absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0"></div>
                 </div>
                 <div class="p-6 sm:p-8 flex-1 flex flex-col">
                     <span class="rounded-full text-xs font-bold tracking-wide text-gray-700 bg-gray-200/50 py-1.5 px-4 mb-4 inline-block w-max">联盟活动</span>
@@ -1165,6 +1346,7 @@ body.scrolled .dock-label {
     </div>
 </section>
 
+<!-- Landmarks Section -->
 <section class="py-16 md:py-24 bg-transparent" id="landmarks">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -1178,7 +1360,7 @@ body.scrolled .dock-label {
             
             <div class="glass-card shine-effect overflow-hidden group">
                 <div class="relative overflow-hidden h-64">
-                    <img alt="侯家塘地铁站" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" src="assets/activites/h.jpeg"/>
+                    <img alt="侯家塘地铁站" class="activity-card-img w-full h-full object-cover" loading="lazy" src="assets/activites/h.jpeg"/>
                 </div>
                 <div class="p-8">
                     <div class="flex items-center mb-5">
@@ -1198,7 +1380,7 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group">
                 <div class="relative overflow-hidden h-64">
-                    <img alt="老百姓大药房（彭家巷分店）" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png"/>
+                    <img alt="老百姓大药房（彭家巷分店）" class="activity-card-img w-full h-full object-cover" loading="lazy" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png"/>
                 </div>
                 <div class="p-8">
                     <div class="flex items-center mb-5">
@@ -1218,7 +1400,7 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group">
                 <div class="relative overflow-hidden h-64">
-                    <img alt="盛香亭转转热卤" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" src="assets/activites/sxt.jpeg"/>
+                    <img alt="盛香亭转转热卤" class="activity-card-img w-full h-full object-cover" loading="lazy" src="assets/activites/sxt.jpeg"/>
                 </div>
                 <div class="p-8">
                     <div class="flex items-center mb-5">
@@ -1238,7 +1420,7 @@ body.scrolled .dock-label {
 
             <div class="glass-card shine-effect overflow-hidden group">
                 <div class="relative overflow-hidden h-64">
-                    <img alt="湖南金厚（北京）律师事务所" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" src="assets/activites/tl.jpeg"/>
+                    <img alt="湖南金厚（北京）律师事务所" class="activity-card-img w-full h-full object-cover" loading="lazy" src="assets/activites/tl.jpeg"/>
                 </div>
                 <div class="p-8">
                     <div class="flex items-center mb-5">
@@ -1260,6 +1442,7 @@ body.scrolled .dock-label {
     </div>
 </section>
 
+<!-- Contact Section -->
 <section class="py-16 md:py-24 bg-transparent" id="contact">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-5xl mx-auto glass-card md:p-14 p-8 rounded-[2.5rem] border border-white/80">
@@ -1272,7 +1455,7 @@ body.scrolled .dock-label {
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                <div class="glass-card p-8 rounded-3xl text-center transform transition-transform duration-250 hover:-translate-y-2 border border-white/55">
+                <div class="glass-card p-8 rounded-3xl text-center border border-white/55">
                     <div class="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i class="fab fa-weixin text-green-500 text-4xl"></i>
                     </div>
@@ -1283,7 +1466,7 @@ body.scrolled .dock-label {
                     </div>
                 </div>
                 
-                <div class="glass-card p-8 rounded-3xl text-center transform transition-transform duration-250 hover:-translate-y-2 border border-white/55">
+                <div class="glass-card p-8 rounded-3xl text-center border border-white/55">
                     <div class="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i class="fa fa-mobile-screen-button text-blue-500 text-3xl"></i>
                     </div>
@@ -1298,6 +1481,7 @@ body.scrolled .dock-label {
     </div>
 </section>
 
+<!-- Dock Navigation -->
 <div class="dock-container">
     <div class="dock">
         <a class="dock-item" href="#about">
@@ -1326,6 +1510,7 @@ body.scrolled .dock-label {
     </div>
 </div>
 
+<!-- Footer -->
 <footer class="bg-gray-900 text-white pt-12 pb-32 md:pt-16 md:pb-36 relative z-10">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
@@ -1344,11 +1529,11 @@ body.scrolled .dock-label {
             <div class="md:text-right">
                 <h3 class="text-lg font-bold mb-5 text-white">快速导航</h3>
                 <ul class="space-y-3 md:space-y-3 md:inline-block md:text-right">
-                    <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#about">关于我们</a></li>
-                    <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#history">发展历程</a></li>
-                    <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#activities">活动回顾</a></li>
-                    <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#landmarks">特色地标</a></li>
-                    <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="#contact">关注我们</a></li>
+                    <li><a class="text-gray-400 hover:text-white transition-colors duration-200 text-sm" href="#about">关于我们</a></li>
+                    <li><a class="text-gray-400 hover:text-white transition-colors duration-200 text-sm" href="#history">发展历程</a></li>
+                    <li><a class="text-gray-400 hover:text-white transition-colors duration-200 text-sm" href="#activities">活动回顾</a></li>
+                    <li><a class="text-gray-400 hover:text-white transition-colors duration-200 text-sm" href="#landmarks">特色地标</a></li>
+                    <li><a class="text-gray-400 hover:text-white transition-colors duration-200 text-sm" href="#contact">关注我们</a></li>
                 </ul>
             </div>
         </div>
@@ -1384,7 +1569,6 @@ body.scrolled .dock-label {
   mobileMenu.style.maxHeight = "0px";
   mobileMenu.style.opacity = "0";
   mobileMenu.style.overflow = "hidden";
-  mobileMenu.style.transition = "max-height 0.4s ease, opacity 0.3s ease";
 
   menuBtn.addEventListener("click", function () {
     const isOpen = mobileMenu.classList.toggle("open");
@@ -1433,7 +1617,7 @@ document.getElementById('backToTop').addEventListener('click', function() {
 </script>
 
 <script>
-// 🌟 横向时间线交互逻辑 🌟
+// 横向时间线交互逻辑 — 使用 rAF 避免 layout thrashing
 document.addEventListener("DOMContentLoaded", function () {
     const scrollContainer = document.getElementById('timeline-scroll-container');
     const items = document.querySelectorAll('.timeline-h-item');
@@ -1504,16 +1688,16 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 // 公告气泡（首次进入触发一次）
 document.addEventListener('DOMContentLoaded', function () {
-  const SEEN_KEY = 'houda_home_v2_bubble_seen';
+  const SEEN_KEY = 'houda_home_v3_bubble_seen';
   if (localStorage.getItem(SEEN_KEY) === '1') return;
 
   const bubble = document.createElement('div');
   bubble.id = 'launchBubble';
   bubble.innerHTML = `
     <div id="launchBubbleText">新版HOUDA首页已上线</div>
-    <div id="launchBubbleSub">新增 Liquid Glass 视觉与更顺滑交互体验，欢迎体验。</div>
+    <div id="launchBubbleSub">全新 Apple 风格交互体验，欢迎探索。</div>
     <div id="launchBubbleCountdown">5 秒后自动关闭</div>
-    <button id="closeLaunchBubble" aria-label="关闭">×</button>
+    <button id="closeLaunchBubble" aria-label="关闭">&times;</button>
   `;
   document.body.appendChild(bubble);
   requestAnimationFrame(() => bubble.classList.add('show'));
@@ -1526,7 +1710,7 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem(SEEN_KEY, '1');
     bubble.classList.remove('show');
     bubble.classList.add('hide');
-    setTimeout(() => bubble.remove(), 280);
+    setTimeout(() => bubble.remove(), 300);
   };
 
   const timer = setInterval(() => {
@@ -1547,37 +1731,24 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-// 🌟 Scroll Reveal + Stagger — IntersectionObserver
+// Stagger feature cards on scroll reveal (about section)
 document.addEventListener('DOMContentLoaded', function () {
-  // Mark all section title blocks and card grids for reveal
-  const revealTargets = document.querySelectorAll(
-    'section h2.text-\\[clamp\\], section > .container > .grid, .timeline-h-content, #contact .glass-card, #about .grid.grid-cols-1'
-  );
+    const featureCards = document.querySelectorAll('.feature-card');
+    if (!featureCards.length) return;
 
-  revealTargets.forEach((el, i) => {
-    el.classList.add('reveal', 'reveal-stagger');
-    // Stagger cards within grids
-    if (el.classList.contains('grid')) {
-      const cards = el.querySelectorAll('.glass-card, .timeline-h-content');
-      cards.forEach((card, ci) => {
-        card.style.setProperty('--stagger-delay', `${ci * 0.08}s`);
-      });
-    }
-  });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Stagger: 50ms delay between each card
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, index * 50);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.12,
-    rootMargin: '0px 0px -40px 0px'
-  });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    featureCards.forEach(card => observer.observe(card));
 });
 </script>
 </body>
