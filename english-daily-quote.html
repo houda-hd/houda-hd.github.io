@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Daily Literature · 英文每日一言</title>
+<style>
+  /* ===== 字体栈：用户指定 Times New Roman + 宋体 =====
+     英文/拉丁字符优先 Times New Roman，中文回退宋体（SimSun / Songti），
+     最终兜底衬线 serif。 */
+  :root {
+    --font-serif: "Times New Roman", "宋体", SimSun, "Songti SC", serif;
+
+    --parchment: #f4ecd8;
+    --parchment-deep: #ebe0c7;
+    --ink: #2a2017;
+    --ink-light: #5c4f3e;
+    --ink-faint: #9a8b75;
+    --gold: #a8894a;
+    --burgundy: #7a2e2e;
+    --olive: #6b6332;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* ===== 羊皮纸纹理层 ===== */
+  .paper-texture {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse at 20% 15%, rgba(168,137,74,0.06) 0%, transparent 40%),
+      radial-gradient(ellipse at 80% 85%, rgba(122,46,46,0.04) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(90,75,50,0.07) 100%);
+  }
+  .paper-fibers {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.035;
+    background-image:
+      repeating-linear-gradient(91deg, var(--ink) 0px, var(--ink) 0.5px, transparent 0.5px, transparent 3px),
+      repeating-linear-gradient(1deg, var(--ink) 0px, var(--ink) 0.5px, transparent 0.5px, transparent 4px);
+  }
+
+  /* ===== 页面容器 ===== */
+  .page-shell {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 440px;
+    min-height: 100vh;
+    padding: 56px 28px calc(56px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* ===== 扉页标题 ===== */
+  .frontispiece {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 48px;
+    padding-top: 12px;
+  }
+  .ornament-top {
+    font-size: 15px;
+    color: var(--gold);
+    letter-spacing: 14px;
+    margin-bottom: 22px;
+    opacity: 0.85;
+  }
+  .title-main {
+    font-size: 38px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .title-rule {
+    width: 46px;
+    height: 2px;
+    background: var(--burgundy);
+    margin: 18px 0;
+    position: relative;
+  }
+  .title-rule::before, .title-rule::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 5px; height: 5px;
+    background: var(--gold);
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+  .title-rule::before { left: -14px; }
+  .title-rule::after { right: -14px; }
+  .title-sub {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--ink-light);
+    letter-spacing: 3px;
+  }
+
+  /* ===== 手稿卡片 ===== */
+  .manuscript {
+    position: relative;
+    padding: 44px 32px 34px;
+    background: linear-gradient(165deg, #f7f0dc 0%, #f0e6cb 100%);
+    border-radius: 6px 8px 7px 5px;
+    border: 1px solid rgba(168,137,74,0.15);
+    box-shadow:
+      0 4px 20px rgba(90,70,40,0.12),
+      0 30px 60px rgba(90,70,40,0.08),
+      inset 0 1px 0 rgba(255,245,220,0.6);
+    margin-bottom: 46px;
+  }
+
+  .ms-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 30px;
+  }
+  .weekday {
+    font-size: 13px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .date-line {
+    font-size: 17px;
+    color: var(--ink-light);
+    letter-spacing: 1px;
+  }
+
+  .gold-rule {
+    height: 1px;
+    margin: 0 16px;
+    background: linear-gradient(90deg, transparent 0%, rgba(168,137,74,0.4) 30%, rgba(168,137,74,0.6) 50%, rgba(168,137,74,0.4) 70%, transparent 100%);
+    position: relative;
+  }
+  .gold-rule::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 7px; height: 7px;
+    background: rgba(168,137,74,0.5);
+    transform: translate(-50%,-50%) rotate(45deg);
+  }
+  .gold-rule.top { margin-bottom: 38px; }
+  .gold-rule.bottom { margin-top: 36px; }
+
+  /* 主体引文 */
+  .verse { position: relative; padding: 0 8px; min-height: 200px; }
+
+  .drop-quote {
+    font-family: var(--font-serif);
+    font-size: 72px;
+    line-height: 1;
+    color: rgba(168,137,74,0.35);
+    display: block;
+  }
+  .drop-quote.open { margin-bottom: -14px; margin-left: -12px; }
+  .drop-quote.close { text-align: right; margin-top: -8px; margin-right: -12px; }
+
+  .verse-text {
+    display: block;
+    font-size: 21px;
+    line-height: 1.8;
+    color: var(--ink);
+    letter-spacing: 0.4px;
+    text-align: justify;
+    text-justify: inter-character;
+    cursor: pointer;
+  }
+  .verse-text.clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    overflow: hidden;
+  }
+  .tap-hint {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-style: italic;
+    letter-spacing: 2px;
+    opacity: 0.7;
+  }
+
+  /* 署名出处 */
+  .attribution { display: flex; justify-content: flex-end; margin-top: 34px; }
+  .em-dash {
+    width: 44px; height: 1.5px;
+    background: var(--ink-light);
+    margin-right: 16px; margin-top: 16px;
+    flex-shrink: 0;
+  }
+  .source-block { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .author { font-size: 19px; font-weight: 600; color: var(--burgundy); letter-spacing: 0.5px; }
+  .work { font-size: 15px; font-style: italic; color: var(--ink-light); }
+  .meta { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .year, .era { font-size: 13px; color: var(--ink-faint); letter-spacing: 1px; }
+  .dot { color: var(--ink-faint); font-size: 13px; }
+
+  /* 操作区 */
+  .actions { display: flex; align-items: center; justify-content: center; margin-top: 28px; }
+  .action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-radius: 8px;
+  }
+  .action-btn:hover { background: rgba(168,137,74,0.06); }
+  .action-btn:active { background: rgba(168,137,74,0.12); }
+  .action-icon { font-size: 19px; color: var(--gold); }
+  .action-label { font-size: 12px; color: var(--ink-faint); letter-spacing: 2px; text-transform: uppercase; }
+  .action-divider { width: 1px; height: 50px; background: rgba(168,137,74,0.25); }
+
+  /* ===== 底部语录区 ===== */
+  .colophon {
+    margin-top: auto;
+    padding-top: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+  .time-signal { padding: 7px 18px; border: 1px solid rgba(168,137,74,0.3); border-radius: 4px; }
+  .time-label { font-size: 13px; font-style: italic; color: var(--ink-faint); letter-spacing: 2px; }
+  .collection-info { display: flex; align-items: baseline; gap: 8px; }
+  .count-num { font-size: 20px; font-weight: 600; color: var(--gold); }
+  .count-label { font-size: 13px; color: var(--ink-faint); letter-spacing: 1px; }
+  .motto {
+    font-size: 14px; font-style: italic; color: var(--ink-light);
+    text-align: center; margin-top: 8px; padding: 0 24px; line-height: 1.6;
+  }
+  .motto-attr { font-size: 11px; color: var(--ink-faint); letter-spacing: 2px; }
+
+  /* 入场动效 */
+  .fade-up { animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 轻量 toast */
+  .toast {
+    position: fixed;
+    left: 50%; bottom: 80px;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: var(--font-serif);
+    font-size: 14px;
+    padding: 10px 22px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+  <div class="paper-texture"></div>
+  <div class="paper-fibers"></div>
+
+  <div class="page-shell">
+    <header class="frontispiece fade-up">
+      <div class="ornament-top">&#10086; &#10022; &#10086;</div>
+      <h1 class="title-main">Daily Literature</h1>
+      <div class="title-rule"></div>
+      <p class="title-sub">A Quote for the Day · 英文每日一言</p>
+    </header>
+
+    <main class="manuscript fade-up" id="manuscript" style="animation-delay:0.15s">
+      <div class="ms-header">
+        <div class="weekday" id="weekday">—</div>
+        <div class="date-line" id="dateline">—</div>
+      </div>
+
+      <div class="gold-rule top"></div>
+
+      <div class="verse">
+        <span class="drop-quote open">&ldquo;</span>
+        <span class="verse-text clamped" id="verseText"></span>
+        <span class="drop-quote close" id="dropClose" style="display:none;">&rdquo;</span>
+        <div class="tap-hint" id="tapHint">tap to unfold</div>
+      </div>
+
+      <div class="attribution">
+        <div class="em-dash"></div>
+        <div class="source-block">
+          <span class="author" id="author"></span>
+          <span class="work" id="work"></span>
+          <div class="meta">
+            <span class="year" id="year"></span>
+            <span class="dot">&middot;</span>
+            <span class="era" id="era"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="gold-rule bottom"></div>
+
+      <div class="actions">
+        <button class="action-btn" id="copyBtn">
+          <span class="action-icon">&#10086;</span>
+          <span class="action-label">Copy</span>
+        </button>
+        <div class="action-divider"></div>
+        <button class="action-btn" id="shareBtn">
+          <span class="action-icon">&#10022;</span>
+          <span class="action-label">Share</span>
+        </button>
+      </div>
+    </main>
+
+    <footer class="colophon fade-up" style="animation-delay:0.3s">
+      <div class="time-signal">
+        <span class="time-label" id="timeLabel"></span>
+      </div>
+      <div class="collection-info">
+        <span class="count-num" id="countNum">0</span>
+        <span class="count-label">verses in the collection</span>
+      </div>
+      <p class="motto">&ldquo;A reader lives a thousand lives before he dies.&rdquo;</p>
+      <p class="motto-attr">&mdash; George R.R. Martin</p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* ===== 英文文学名言库（52 条，公共领域经典） ===== */
+const QUOTES = [
+  {text:"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",source:"A Tale of Two Cities",author:"Charles Dickens",year:1859,era:"Victorian"},
+  {text:"Whatever our souls are made of, his and mine are the same.",source:"Wuthering Heights",author:"Emily Brontë",year:1847,era:"Victorian"},
+  {text:"I am no bird; and no net ensnares me: I am a free human being with an independent will.",source:"Jane Eyre",author:"Charlotte Brontë",year:1847,era:"Victorian"},
+  {text:"It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",source:"Pride and Prejudice",author:"Jane Austen",year:1813,era:"Romantic"},
+  {text:"There is no charm equal to tenderness of heart.",source:"Emma",author:"Jane Austen",year:1815,era:"Romantic"},
+  {text:"I have nothing to declare but my genius.",source:"Upon arriving in America",author:"Oscar Wilde",year:1882,era:"Victorian"},
+  {text:"We are all in the gutter, but some of us are looking at the stars.",source:"Lady Windermere's Fan",author:"Oscar Wilde",year:1892,era:"Victorian"},
+  {text:"The only way to get rid of a temptation is to yield to it.",source:"The Picture of Dorian Gray",author:"Oscar Wilde",year:1890,era:"Victorian"},
+  {text:"To be, or not to be: that is the question.",source:"Hamlet, Act III, Scene I",author:"William Shakespeare",year:1603,era:"Renaissance"},
+  {text:"All the world's a stage, and all the men and women merely players: they have their exits and their entrances; and one man in his time plays many parts.",source:"As You Like It, Act II, Scene VII",author:"William Shakespeare",year:1599,era:"Renaissance"},
+  {text:"The course of true love never did run smooth.",source:"A Midsummer Night's Dream",author:"William Shakespeare",year:1600,era:"Renaissance"},
+  {text:"All that we see or seem is but a dream within a dream.",source:"A Dream Within a Dream",author:"Edgar Allan Poe",year:1849,era:"Romantic"},
+  {text:"Quoth the Raven, 'Nevermore.'",source:"The Raven",author:"Edgar Allan Poe",year:1845,era:"Romantic"},
+  {text:"I took the one less traveled by, and that has made all the difference.",source:"The Road Not Taken",author:"Robert Frost",year:1916,era:"Modernist"},
+  {text:"Do not go gentle into that good night. Rage, rage against the dying of the light.",source:"Do Not Go Gentle into That Good Night",author:"Dylan Thomas",year:1951,era:"Modernist"},
+  {text:"So we beat on, boats against the current, borne back ceaselessly into the past.",source:"The Great Gatsby",author:"F. Scott Fitzgerald",year:1925,era:"Modernist"},
+  {text:"I hope she'll be a beautiful little fool.",source:"The Great Gatsby",author:"F. Scott Fitzgerald",year:1925,era:"Modernist"},
+  {text:"All happy families are alike; each unhappy family is unhappy in its own way.",source:"Anna Karenina",author:"Leo Tolstoy",year:1877,era:"Victorian"},
+  {text:"If you look for perfection, you'll never be content.",source:"Anna Karenina",author:"Leo Tolstoy",year:1877,era:"Victorian"},
+  {text:"The man who does not read has no advantage over the man who cannot read.",source:"Attributed",author:"Mark Twain",year:1895,era:"Victorian"},
+  {text:"Whenever you find yourself on the side of the majority, it is time to pause and reflect.",source:"Notebook",author:"Mark Twain",year:1904,era:"Victorian"},
+  {text:"The two most important days in your life are the day you are born and the day you find out why.",source:"Attributed",author:"Mark Twain",year:1897,era:"Victorian"},
+  {text:"Not all those who wander are lost.",source:"The Fellowship of the Ring",author:"J.R.R. Tolkien",year:1954,era:"Modernist"},
+  {text:"All we have to decide is what to do with the time that is given us.",source:"The Fellowship of the Ring",author:"J.R.R. Tolkien",year:1954,era:"Modernist"},
+  {text:"There is some good in this world, and it's worth fighting for.",source:"The Two Towers",author:"J.R.R. Tolkien",year:1954,era:"Modernist"},
+  {text:"Hold fast to dreams, for if dreams die, life is a broken-winged bird that cannot fly.",source:"Dreams",author:"Langston Hughes",year:1926,era:"Modernist"},
+  {text:"I know why the caged bird sings.",source:"Sympathy",author:"Paul Laurence Dunbar",year:1899,era:"Victorian"},
+  {text:"Hope is the thing with feathers that perches in the soul, and sings the tune without the words, and never stops at all.",source:"Poem #254",author:"Emily Dickinson",year:1861,era:"Victorian"},
+  {text:"Because I could not stop for Death, He kindly stopped for me.",source:"Poem #479",author:"Emily Dickinson",year:1890,era:"Victorian"},
+  {text:"Tell all the truth but tell it slant — Success in Circuit lies.",source:"Poem #1129",author:"Emily Dickinson",year:1868,era:"Victorian"},
+  {text:"I celebrate myself, and sing myself, and what I assume you shall assume.",source:"Song of Myself, 1",author:"Walt Whitman",year:1855,era:"Victorian"},
+  {text:"I am large, I contain multitudes.",source:"Song of Myself, 51",author:"Walt Whitman",year:1855,era:"Victorian"},
+  {text:"The road to hell is paved with adverbs.",source:"On Writing",author:"Stephen King",year:2000,era:"Contemporary"},
+  {text:"If you don't have time to read, you don't have the time (or the tools) to write. Simple as that.",source:"On Writing",author:"Stephen King",year:2000,era:"Contemporary"},
+  {text:"A reader lives a thousand lives before he dies. The man who never reads lives only one.",source:"A Dance with Dragons",author:"George R.R. Martin",year:2011,era:"Contemporary"},
+  {text:"There is no greater agony than bearing an untold story inside you.",source:"I Know Why the Caged Bird Sings",author:"Maya Angelou",year:1969,era:"Contemporary"},
+  {text:"People will forget what you said, people will forget what you did, but people will never forget how you made them feel.",source:"Attributed",author:"Maya Angelou",year:1985,era:"Contemporary"},
+  {text:"Still round the corner there may wait, a new road or a secret gate.",source:"The Return of the King",author:"J.R.R. Tolkien",year:1955,era:"Modernist"},
+  {text:"The world is indeed full of peril, and in it there are many dark places; but still there is much that is fair, and though in all lands love is now mingled with grief, it grows perhaps the greater.",source:"The Fellowship of the Ring",author:"J.R.R. Tolkien",year:1954,era:"Modernist"},
+  {text:"I must endure the presence of a few caterpillars if I wish to become acquainted with the butterflies.",source:"The Little Prince",author:"Antoine de Saint-Exupéry",year:1943,era:"Modernist"},
+  {text:"And now here is my secret, a very simple secret: It is only with the heart that one can see rightly; what is essential is invisible to the eye.",source:"The Little Prince",author:"Antoine de Saint-Exupéry",year:1943,era:"Modernist"},
+  {text:"Beware; for I am fearless, and therefore powerful.",source:"Frankenstein",author:"Mary Shelley",year:1818,era:"Romantic"},
+  {text:"Nothing is so painful to the human mind as a great and sudden change.",source:"Frankenstein",author:"Mary Shelley",year:1818,era:"Romantic"},
+  {text:"A bird doesn't sing because it has an answer, it sings because it has a song.",source:"Attributed",author:"Joan Walsh Anglund",year:1967,era:"Contemporary"},
+  {text:"The mysteries remain, I keep the same cycle, seed to fruit to seed.",source:"The Mystery",author:"Denise Levertov",year:1964,era:"Contemporary"},
+  {text:"If you want to know what a man's like, take a good look at how he treats his inferiors, not his equals.",source:"Harry Potter and the Goblet of Fire",author:"J.K. Rowling",year:2000,era:"Contemporary"},
+  {text:"Words are, in my not-so-humble opinion, our most inexhaustible source of magic.",source:"Harry Potter and the Deathly Hallows",author:"J.K. Rowling",year:2007,era:"Contemporary"},
+  {text:"It does not do to dwell on dreams and forget to live.",source:"Harry Potter and the Sorcerer's Stone",author:"J.K. Rowling",year:1997,era:"Contemporary"},
+  {text:"Happiness can be found, even in the darkest of times, if one only remembers to turn on the light.",source:"Harry Potter and the Prisoner of Azkaban",author:"J.K. Rowling",year:1999,era:"Contemporary"},
+  {text:"It is better to be hated for what you are than to be loved for what you are not.",source:"Letter to his brother",author:"André Gide",year:1897,era:"Modernist"},
+  {text:"The only way to get rid of a temptation is to yield to it.",source:"The Picture of Dorian Gray",author:"Oscar Wilde",year:1890,era:"Victorian"},
+  {text:"Two roads diverged in a wood, and I— I took the one less traveled by, and that has made all the difference.",source:"The Road Not Taken",author:"Robert Frost",year:1916,era:"Modernist"},
+  {text:"Whatever our souls are made of, his and mine are the same.",source:"Wuthering Heights",author:"Emily Brontë",year:1847,era:"Victorian"},
+  {text:"I took the one less traveled by, and that has made all the difference.",source:"The Road Not Taken",author:"Robert Frost",year:1916,era:"Modernist"},
+  {text:"All we have to decide is what to do with the time that is given us.",source:"The Fellowship of the Ring",author:"J.R.R. Tolkien",year:1954,era:"Modernist"},
+  {text:"Hope is the thing with feathers that perches in the soul.",source:"Poem #254",author:"Emily Dickinson",year:1861,era:"Victorian"},
+  {text:"We are all in the gutter, but some of us are looking at the stars.",source:"Lady Windermere's Fan",author:"Oscar Wilde",year:1892,era:"Victorian"}
+];
+
+/* ===== 日期工具 ===== */
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function getQuoteIndexForDate(d, total) {
+  if (!total || total <= 0) return 0;
+  const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  return seed % total;
+}
+function formatLongDate(d) {
+  return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+function ordinalSuffix(n) {
+  const s = ['th','st','nd','rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+function getRelativeDay(d) {
+  const h = d.getHours();
+  if (h < 6) return 'The dawn is near';
+  if (h < 12) return 'Morning has broken';
+  if (h < 18) return 'The afternoon wanes';
+  return 'Evening descends';
+}
+
+/* ===== 渲染 ===== */
+function render() {
+  const now = new Date();
+  const q = QUOTES[getQuoteIndexForDate(now, QUOTES.length)];
+
+  document.getElementById('weekday').textContent = DAYS[now.getDay()];
+  document.getElementById('dateline').textContent = formatLongDate(now);
+  document.getElementById('verseText').textContent = q.text;
+  document.getElementById('author').textContent = q.author;
+  document.getElementById('work').textContent = '『 ' + q.source + ' 』';
+  document.getElementById('year').textContent = q.year;
+  document.getElementById('era').textContent = q.era;
+  document.getElementById('timeLabel').textContent = getRelativeDay(now);
+  document.getElementById('countNum').textContent = QUOTES.length;
+
+  // 重置展开状态
+  const vt = document.getElementById('verseText');
+  vt.classList.add('clamped');
+  document.getElementById('dropClose').style.display = 'none';
+  document.getElementById('tapHint').style.display = 'block';
+
+  window.__currentQuote = q;
+}
+
+/* ===== 交互：展开/折叠 ===== */
+document.getElementById('verseText').addEventListener('click', function () {
+  const vt = this;
+  const expanded = vt.classList.toggle('clamped') === false;
+  document.getElementById('dropClose').style.display = expanded ? 'block' : 'none';
+  document.getElementById('tapHint').style.display = expanded ? 'none' : 'block';
+});
+
+/* ===== Toast ===== */
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ===== 复制 ===== */
+document.getElementById('copyBtn').addEventListener('click', function () {
+  const q = window.__currentQuote;
+  if (!q) return;
+  const text = `"${q.text}"\n— ${q.author}, ${q.source} (${q.year})`;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => showToast('Inscribed to clipboard'))
+      .catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+});
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showToast('Inscribed to clipboard'); }
+  catch (e) { showToast('Copy failed'); }
+  document.body.removeChild(ta);
+}
+
+/* ===== 分享 ===== */
+document.getElementById('shareBtn').addEventListener('click', function () {
+  const q = window.__currentQuote;
+  if (!q) return;
+  const shareText = `"${q.text}" — ${q.author}`;
+  if (navigator.share) {
+    navigator.share({ title: 'Daily Literature', text: shareText, url: location.href })
+      .catch(() => {});
+  } else {
+    showToast('No share on this device — use Copy');
+  }
+});
+
+/* 初始化 */
+render();
+</script>
+</body>
+</html>
