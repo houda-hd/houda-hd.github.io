@@ -360,7 +360,7 @@ body {
 .gen-card { padding: 1.75rem; }
 .field-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -376,6 +376,7 @@ body {
 }
 .field input, .field select {
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   background: var(--bg-elevated);
   border: 1px solid var(--border-hairline);

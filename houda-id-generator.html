@@ -219,13 +219,19 @@
   }
   .form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.875rem;
   }
   .form-grid .col-span-2 { grid-column: 1 / -1; }
 
+  /* 窄屏单列：所有输入框满宽、等宽，便于点按 */
+  @media (max-width: 560px) {
+    .form-grid { grid-template-columns: 1fr; }
+  }
+
   .field-input {
     width: 100%;
+    min-width: 0;
     background: var(--bg);
     border: 1px solid var(--border-hairline);
     border-radius: var(--radius-input);
@@ -237,6 +243,12 @@
                 box-shadow var(--dur-fast) var(--ease-fluid),
                 background var(--dur-fast) var(--ease-fluid);
     outline: none;
+  }
+  /* 日期选择器在移动端浏览器有内置最小固有宽度，会撑长轨道；
+     去掉原生外观后 width:100% 才能真正生效，点按仍唤起系统选择器 */
+  input[type="date"].field-input {
+    -webkit-appearance: none;
+    appearance: none;
   }
   .field-input::placeholder { color: var(--text-tertiary); }
   .field-input:focus {
