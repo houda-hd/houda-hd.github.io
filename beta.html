@@ -14,6 +14,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
+<!-- take control of scroll restoration so a refresh lands deterministically (not at a CLS-shifted spot) -->
+<script>
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+</script>
 <style>
 /* ═══════════════════════════════════════════════════════════
    HOUDA+ — 三 skill 融合重构 (bug 修复优化版)
@@ -1747,6 +1751,25 @@ body.menu-open { overflow: hidden; }
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── BUGFIX: deterministic scroll on refresh ──
+     Native 'auto' restoration lands at a CLS-shifted spot (fonts/images load late),
+     so every refresh stops somewhere different. We took over restoration in <head>
+     (scrollRestoration='manual'), so the page now starts at top. If a #hash is present
+     we jump to it on `load` (after layout settles) so the target is stable. */
+  const restoreScroll = () => {
+    const html = document.documentElement;
+    const prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto'; // force instant, no animated drift
+    if (location.hash && document.querySelector(location.hash)) {
+      document.querySelector(location.hash).scrollIntoView();
+    } else {
+      window.scrollTo(0, 0);
+    }
+    html.style.scrollBehavior = prev;
+  };
+  if (document.readyState === 'complete') restoreScroll();
+  else window.addEventListener('load', restoreScroll);
 
   /* ── BUGFIX: Consolidated single scroll listener (was 3 separate rAF loops) ── */
   const nav = document.getElementById('nav');
