@@ -671,6 +671,8 @@ body.menu-open { overflow: hidden; }
   /* BUGFIX: prevent text selection during drag */
   -webkit-user-select: none;
   touch-action: pan-x;
+  /* guard: never let the scroller exceed the viewport width */
+  max-width: 100%;
 }
 .timeline-scroll::-webkit-scrollbar { display: none; }
 .timeline-scroll.dragging { cursor: grabbing; }
@@ -687,8 +689,6 @@ body.menu-open { overflow: hidden; }
   flex-shrink: 0;
   width: 160px;
   scroll-snap-align: center;
-  /* BUGFIX: one swipe advances exactly one year — prevents flinging past the ends (the "unlimited" feel) */
-  scroll-snap-stop: always;
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1216,6 +1216,8 @@ body.menu-open { overflow: hidden; }
   .activities-grid { grid-template-columns: 1fr; }
   .landmarks-grid { grid-template-columns: 1fr; }
   .activities-grid, .landmarks-grid { gap: 1rem; }
+  /* 共同热爱 / 地域特色 等 4 张 feature 卡：手机端单列（一行一个），对齐 index.html 的 grid-cols-1 */
+  .feature-grid { grid-template-columns: 1fr; }
 
   /* slimmer, well-fitted floating nav bar */
   .nav-wrap { padding: 0.875rem 1rem; }
