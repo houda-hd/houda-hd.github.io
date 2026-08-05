@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HOUDA+</title>
+<meta content="HOUDA+官网 - 长沙霉粉联盟六群分支，侯明昊碗慧通讯录互吃大学官方站点。" name="description"/>
+<meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群" name="keywords"/>
+<link href="assets/HOUDA_squre.jpeg" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   HOUDA+ — 三 skill 融合重构
+   taste-skill:  Anti-slop 纪律 · VARIANCE 8 / MOTION 6 / DENSITY 3
+                 禁用: AI purple、em-dash、Inter、3 等宽卡片、center bias
+   impeccable:   Persuade mode · craft floor · commit 到视觉世界
+   soft-skill:   Double-Bezel 嵌套 · Awwwards 动效 · 高触感
+   视觉世界: Soft Structuralism — 银灰/纯白 + 浮空组件 + 漫射阴影
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Design Read ───
+   THESIS: 粉丝社群不是企业，它的官网应该像一个"有温度的物件"，
+           而不是一张营销 landing page。
+   OWN-WORLD: 银灰底 + Double-Bezel 浮空卡 + Plus Jakarta Sans + 漫射光
+   FIRST VIEWPORT: 左对齐大标题 + 右侧 logo 浮空卡，不对称分割
+   ──────────────────────────────────────────── */
+
+:root {
+  /* Soft Structuralism 配色 (soft-skill §3.A.3)
+     银灰 + 纯白 + 单一蓝色 accent，禁用 AI purple/cream/brass */
+  --bg: #f4f4f6;
+  --bg-card: #ffffff;
+  --bg-elevated: #fafafa;
+  --text-primary: #1a1a1f;
+  --text-secondary: #5c5c66;
+  --text-tertiary: #9a9aa3;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-light: rgba(37,99,235,0.06);
+  --green: #16a34a;
+  --green-light: rgba(22,163,74,0.08);
+  --border-hairline: rgba(0,0,0,0.06);
+  --border-soft: rgba(0,0,0,0.04);
+
+  /* 漫射阴影 (soft-skill §2: 禁用 harsh drop shadow) */
+  --shadow-ambient:
+    0 1px 2px rgba(0,0,0,0.03),
+    0 8px 24px rgba(0,0,0,0.04),
+    0 24px 56px rgba(0,0,0,0.03);
+  --shadow-float:
+    0 2px 4px rgba(0,0,0,0.03),
+    0 12px 32px rgba(0,0,0,0.06),
+    0 32px 72px rgba(0,0,0,0.04);
+
+  /* Easing — 强自定义曲线 (taste-skill §4, soft-skill §5) */
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Duration (taste-skill §4) */
+  --dur-press: 120ms;
+  --dur-fast: 200ms;
+  --dur-normal: 400ms;
+  --dur-slow: 700ms;
+
+  /* Typography (taste-skill §4.1: 禁用 Inter，选 Plus Jakarta Sans) */
+  --font-display: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 100%/1.6 var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg);
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* ─── Typography (taste-skill §4.1) ─── */
+.display-2xl {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+.display-xl {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.display-lg {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.text-lg { font-size: 1.125rem; line-height: 1.65; }
+.text-md { font-size: 0.9375rem; line-height: 1.6; }
+.text-sm { font-size: 0.8125rem; line-height: 1.5; }
+
+/* ─── Navigation — 浮空玻璃 pill (soft-skill §5.A) ─── */
+.nav-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem 1.5rem;
+  pointer-events: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.625rem 0.625rem 0.625rem 1.25rem;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 999px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.03),
+    0 8px 24px rgba(0,0,0,0.06);
+  pointer-events: auto;
+  /* Explicit properties only (taste-skill §4) */
+  transition: background var(--dur-fast) var(--ease-fluid),
+              box-shadow var(--dur-fast) var(--ease-fluid);
+}
+
+.nav.scrolled {
+  background: rgba(255,255,255,0.88);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 12px 32px rgba(0,0,0,0.08);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: 1.0625rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  transition: opacity var(--dur-press) var(--ease-out);
+}
+.nav-logo:active { opacity: 0.6; }
+.nav-logo-img {
+  width: 1.75rem; height: 1.75rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+}
+@media (min-width: 768px) { .nav-links { display: flex; } }
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover { color: var(--text-primary); }
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--text-primary);
+  color: white;
+  text-decoration: none;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0.5rem 1.125rem;
+  border-radius: 999px;
+  letter-spacing: -0.01em;
+  transition: transform var(--dur-press) var(--ease-out),
+              background var(--dur-fast) var(--ease-fluid);
+}
+.nav-cta:active { transform: scale(0.95); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-cta:hover { background: var(--accent); }
+}
+
+.nav-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem; height: 2.25rem;
+  border: none;
+  background: var(--bg);
+  color: var(--text-primary);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur-fast) var(--ease-fluid);
+}
+.nav-menu-btn:active { background: var(--border-soft); }
+@media (min-width: 768px) { .nav-menu-btn { display: none; } }
+
+/* Mobile menu — 全屏玻璃覆盖 (soft-skill §5.A) */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(244,244,246,0.92);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-normal) var(--ease-fluid),
+              visibility var(--dur-normal) var(--ease-fluid);
+}
+.mobile-menu.open { opacity: 1; visibility: visible; }
+
+.mobile-menu a {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--text-primary);
+  padding: 0.75rem 0;
+  /* Staggered mask reveal (soft-skill §5.A) */
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform var(--dur-slow) var(--ease-out),
+              opacity var(--dur-slow) var(--ease-out),
+              color var(--dur-fast) var(--ease-out);
+}
+.mobile-menu.open a {
+  transform: translateY(0);
+  opacity: 1;
+}
+.mobile-menu.open a:nth-child(1) { transition-delay: 100ms; }
+.mobile-menu.open a:nth-child(2) { transition-delay: 150ms; }
+.mobile-menu.open a:nth-child(3) { transition-delay: 200ms; }
+.mobile-menu.open a:nth-child(4) { transition-delay: 250ms; }
+.mobile-menu.open a:nth-child(5) { transition-delay: 300ms; }
+.mobile-menu a:active { color: var(--accent); }
+
+.mobile-menu-close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  width: 2.5rem; height: 2.5rem;
+  border: none;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 999px;
+  font-size: 1.125rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-ambient);
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.mobile-menu-close:active { transform: scale(0.92); }
+
+/* ─── Hero — 不对称分割 (taste-skill §4.3: anti-center bias) ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .hero-grid { grid-template-columns: 1.2fr 1fr; gap: 4rem; }
+}
+
+.hero-left {
+  /* 左对齐，不对称 (taste-skill §4.3) */
+}
+
+.hero-title {
+  margin-bottom: 1.5rem;
+  /* Scroll reveal (soft-skill §5.C) */
+  opacity: 0;
+  transform: translateY(24px);
+  animation: heroReveal 0.8s 0.1s var(--ease-out) forwards;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 480px;
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: heroReveal 0.8s 0.2s var(--ease-out) forwards;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: heroReveal 0.8s 0.3s var(--ease-out) forwards;
+}
+
+@keyframes heroReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Buttons — Button-in-Button (soft-skill §4.B) ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out),
+              background var(--dur-fast) var(--ease-fluid),
+              box-shadow var(--dur-fast) var(--ease-fluid);
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--text-primary);
+  color: white;
+  box-shadow: var(--shadow-ambient);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { background: var(--accent); }
+}
+
+/* Button-in-Button trailing icon (soft-skill §4.B) */
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem; height: 1.75rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+  font-size: 0.75rem;
+  transition: transform var(--dur-fast) var(--ease-fluid);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .btn-icon {
+    transform: translate(2px, -1px) scale(1.05);
+  }
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  padding: 0.75rem 1.5rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-soft);
+  }
+}
+
+/* ─── Hero logo — Double-Bezel 浮空卡 (soft-skill §4.A) ─── */
+.hero-logo-shell {
+  position: relative;
+  padding: 0.625rem;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 2rem;
+  box-shadow: var(--shadow-float);
+  max-width: 360px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  animation: heroLogoReveal 1s 0.15s var(--ease-spring) forwards;
+}
+
+@keyframes heroLogoReveal {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.hero-logo-inner {
+  border-radius: calc(2rem - 0.625rem);
+  overflow: hidden;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.15);
+}
+
+.hero-logo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+/* ─── Section layout (taste-skill §4.7) ─── */
+.section {
+  padding: 6rem 2rem;
+}
+.section-alt { background: var(--bg-elevated); }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Section header — 纵向堆叠 (taste-skill §4.7: split-header ban) */
+.section-header {
+  max-width: 640px;
+  margin: 0 auto 4rem;
+  text-align: center;
+}
+.section-header.left {
+  text-align: left;
+  margin-left: 0;
+}
+
+/* Eyebrow restraint (taste-skill §4.7: max 1 per 3 sections) */
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.625rem;
+  letter-spacing: 0.02em;
+}
+
+/* ─── About — 不对称网格 (taste-skill §4.3) ─── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .about-grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; }
+}
+
+/* Double-Bezel image (soft-skill §4.A) */
+.about-image-shell {
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 1.75rem;
+  box-shadow: var(--shadow-ambient);
+}
+
+.about-image-inner {
+  border-radius: calc(1.75rem - 0.5rem);
+  overflow: hidden;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.15);
+}
+
+.about-image {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+}
+@media (min-width: 768px) { .about-image { height: 460px; } }
+
+.about-text p {
+  color: var(--text-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+/* Feature grid — 2x2 bento, 不等宽 (taste-skill §4.7: no 3 equal cards) */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1.75rem 0;
+}
+
+.feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.125rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: transform var(--dur-normal) var(--ease-fluid),
+              box-shadow var(--dur-normal) var(--ease-fluid);
+}
+@media (hover: hover) and (pointer: fine) {
+  .feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-ambient);
+  }
+}
+
+.feature-icon {
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 0.75rem;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.feature-title { font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.1875rem; }
+.feature-desc { font-size: 0.8125rem; color: var(--text-tertiary); }
+
+/* Link arrow */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  text-decoration: none;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: gap var(--dur-fast) var(--ease-fluid);
+}
+@media (hover: hover) and (pointer: fine) {
+  .link-arrow:hover { gap: 0.625rem; }
+}
+
+/* ─── Timeline — 横向 scroll-snap ─── */
+.timeline-scroll {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 2rem 0 1.5rem;
+  cursor: grab;
+  user-select: none;
+  scrollbar-width: none;
+}
+.timeline-scroll::-webkit-scrollbar { display: none; }
+.timeline-scroll:active { cursor: grabbing; }
+
+.timeline-spacer {
+  flex-shrink: 0;
+  width: calc(50vw - 80px);
+  scroll-snap-align: center;
+}
+
+.timeline-year {
+  flex-shrink: 0;
+  width: 160px;
+  scroll-snap-align: center;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  padding-bottom: 1.5rem;
+  transition: transform var(--dur-normal) var(--ease-fluid);
+}
+.timeline-year:active { transform: scale(0.95); }
+
+.timeline-year-label {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-tertiary);
+  transition: color var(--dur-slow) var(--ease-fluid),
+              transform var(--dur-slow) var(--ease-fluid);
+  transform-origin: bottom center;
+}
+
+.timeline-year.active .timeline-year-label {
+  color: var(--accent);
+  font-weight: 800;
+  transform: scale(1.35);
+}
+
+.timeline-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  margin: 0.75rem auto 0;
+  transition: background var(--dur-slow) var(--ease-fluid),
+              transform var(--dur-slow) var(--ease-spring);
+}
+
+.timeline-year.active .timeline-dot {
+  background: var(--accent);
+  transform: scale(1.75);
+  box-shadow: 0 0 0 5px var(--accent-light);
+}
+
+.timeline-line {
+  position: relative;
+  height: 1px;
+  background: var(--border-hairline);
+  margin-top: -1.5rem;
+}
+
+/* Timeline content — Double-Bezel */
+.timeline-content-wrap {
+  position: relative;
+  display: grid;
+  min-height: 240px;
+  margin-top: 2rem;
+}
+
+.timeline-content {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  /* Never scale(0) (Emil) */
+  transform: translateY(16px) scale(0.96);
+  filter: blur(4px);
+  transition: opacity var(--dur-slow) var(--ease-out),
+              visibility var(--dur-slow) var(--ease-out),
+              transform 0.5s var(--ease-out),
+              filter 0.4s var(--ease-out);
+}
+
+.timeline-content.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  z-index: 2;
+}
+
+.timeline-card-shell {
+  padding: 0.625rem;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 1.75rem;
+  box-shadow: var(--shadow-ambient);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.timeline-card-inner {
+  background: var(--bg-card);
+  border-radius: calc(1.75rem - 0.625rem);
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.15);
+}
+
+.timeline-card-icon {
+  width: 3rem; height: 3rem;
+  border-radius: 0.875rem;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-size: 1.375rem;
+  color: var(--accent);
+}
+
+/* ─── Activities — Bento grid, 非等宽 (taste-skill §4.7) ─── */
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .activities-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .activities-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+}
+
+/* Double-Bezel card (soft-skill §4.A) */
+.card-shell {
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-ambient);
+  transition: transform var(--dur-normal) var(--ease-fluid),
+              box-shadow var(--dur-normal) var(--ease-fluid);
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-shell:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-float);
+  }
+}
+.card-shell:active {
+  transform: scale(0.98);
+  transition: transform var(--dur-press) var(--ease-out);
+}
+
+.card-inner {
+  background: var(--bg-card);
+  border-radius: calc(1.5rem - 0.5rem);
+  overflow: hidden;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.15);
+}
+
+.card-img-wrap {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease-fluid);
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-shell:hover .card-img { transform: scale(1.04); }
+}
+
+.card-body { padding: 1.125rem 1.25rem 1.25rem; }
+
+.card-tag {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.1875rem 0.5625rem;
+  border-radius: 6px;
+  margin-bottom: 0.5625rem;
+}
+.card-tag.blue { background: var(--accent-light); color: var(--accent); }
+.card-tag.green { background: var(--green-light); color: var(--green); }
+.card-tag.gray { background: rgba(0,0,0,0.04); color: var(--text-tertiary); }
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-desc {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-bottom: 0.5625rem;
+}
+
+.card-meta {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding-top: 0.5625rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+/* ─── Landmarks — 2 col bento ─── */
+.landmarks-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 640px) {
+  .landmarks-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.landmark-body { padding: 1.25rem; }
+
+.landmark-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.5625rem;
+}
+
+.landmark-icon {
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 0.75rem;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  color: var(--accent);
+}
+
+.landmark-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+}
+
+.landmark-desc {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  margin-bottom: 0.625rem;
+}
+
+.landmark-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--bg);
+  padding: 0.3125rem 0.625rem;
+  border-radius: 6px;
+}
+
+/* ─── Contact ─── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  .contact-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.contact-card-inner { padding: 2rem; text-align: center; }
+
+.contact-card-icon {
+  width: 3.5rem; height: 3.5rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.75rem;
+}
+.contact-card-icon.wechat { background: var(--green-light); color: var(--green); }
+.contact-card-icon.miniapp { background: var(--accent-light); color: var(--accent); }
+
+.contact-card-title { font-weight: 700; font-size: 1.0625rem; margin-bottom: 0.375rem; }
+.contact-card-desc { font-size: 0.8125rem; color: var(--text-tertiary); margin-bottom: 1.125rem; }
+
+.contact-qr {
+  width: 144px; height: 144px;
+  border-radius: 1rem;
+  object-fit: cover;
+  box-shadow: var(--shadow-ambient);
+}
+
+/* ─── Footer ─── */
+.footer {
+  background: var(--text-primary);
+  color: rgba(255,255,255,0.7);
+  padding: 4rem 2rem 2rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: white;
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+.footer-brand-img {
+  width: 1.75rem; height: 1.75rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+.footer-desc {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.footer-nav-title { font-weight: 700; font-size: 0.8125rem; color: white; margin-bottom: 0.75rem; }
+.footer-nav { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.footer-nav a {
+  text-decoration: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8125rem;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer-nav a:hover { color: white; }
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2.5rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ─── Back to top ─── */
+.back-to-top {
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  z-index: 900;
+  width: 48px; height: 48px;
+  border-radius: 999px;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.125rem;
+  box-shadow: var(--shadow-float);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.9);
+  transition: opacity var(--dur-normal) var(--ease-out),
+              visibility var(--dur-normal) var(--ease-out),
+              transform var(--dur-normal) var(--ease-spring),
+              background var(--dur-fast) var(--ease-fluid);
+  -webkit-tap-highlight-color: transparent;
+}
+.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+.back-to-top:active { transform: scale(0.9); background: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .back-to-top:hover { background: var(--accent); }
+}
+
+/* ─── Scroll reveal (soft-skill §5.C: IntersectionObserver) ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(4px);
+  transition: opacity var(--dur-slow) var(--ease-out),
+              transform var(--dur-slow) var(--ease-out),
+              filter var(--dur-slow) var(--ease-out);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* ─── Accessibility (taste-skill §6, impeccable craft floor) ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-title, .hero-subtitle, .hero-actions, .hero-logo-shell {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .nav { background: rgba(255,255,255,0.98) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .mobile-menu { background: rgba(244,244,246,0.98) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card-shell:hover, .feature-card:hover { transform: none; box-shadow: var(--shadow-ambient); }
+  .card-shell:hover .card-img { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Navigation — 浮空 pill ═══ -->
+<div class="nav-wrap">
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="#">
+      <img class="nav-logo-img" src="assets/HOUDA_squre.jpeg" alt="HOUDA+" loading="lazy"/>
+      HOUDA+
+    </a>
+    <ul class="nav-links">
+      <li><a class="nav-link" href="#about">关于</a></li>
+      <li><a class="nav-link" href="#history">历程</a></li>
+      <li><a class="nav-link" href="#activities">活动</a></li>
+      <li><a class="nav-link" href="#landmarks">地标</a></li>
+    </ul>
+    <a class="nav-cta" href="#contact">关注</a>
+    <button class="nav-menu-btn" id="menuBtn" aria-label="菜单">
+      <i class="ph ph-list"></i>
+    </button>
+  </nav>
+</div>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose" aria-label="关闭">
+    <i class="ph ph-x"></i>
+  </button>
+  <a href="#about">关于我们</a>
+  <a href="#history">发展历程</a>
+  <a href="#activities">活动回顾</a>
+  <a href="#landmarks">特色地标</a>
+  <a href="#contact">关注我们</a>
+</div>
+
+<!-- ═══ Hero — 不对称分割 ═══ -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <h1 class="display-2xl hero-title">
+        欢迎来到<br>HOUDA+
+      </h1>
+      <p class="hero-subtitle">
+        侯明昊碗慧通讯录互吃大学. 长沙霉粉联盟六群分支, 极具活力与特色的粉丝社群.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#about">
+          了解更多
+          <span class="btn-icon"><i class="ph ph-arrow-right-bold"></i></span>
+        </a>
+        <a class="btn btn-secondary" href="#contact">关注我们</a>
+      </div>
+    </div>
+    <div>
+      <div class="hero-logo-shell">
+        <div class="hero-logo-inner">
+          <img class="hero-logo" src="assets/HOUDA_squre.jpeg" alt="HOUDA+ 标志" loading="lazy"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ About ═══ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="section-label">关于</p>
+      <h2 class="display-xl">了解 HOUDA+</h2>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="about-image-shell">
+          <div class="about-image-inner">
+            <img class="about-image" src="https://p3-search.byteimg.com/obj/labis/89b4f074691e9b643ffcf3e71f02779d" alt="侯大组织成员合影" loading="lazy"/>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="text-lg">
+          "HOUDA+" 全称"侯明昊碗慧通讯录互吃大学", 是由长沙霉粉联盟六群分支出的一个特色粉丝社群, 其名称源于成员共同喜爱的明星"侯明昊碗慧".
+        </p>
+        <p>
+          该群体以大学生为主, 其中性少数占大多数, 成员通过共同参与线下活动等方式维系情感联结, 例如"侯家塘"地铁站打卡, 老百姓大药房打卡和参加联盟活动等.
+        </p>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="ph ph-heart-bold"></i></div>
+            <div>
+              <div class="feature-title">共同热爱</div>
+              <div class="feature-desc">因明星侯明昊碗慧而聚集</div>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="ph ph-map-pin-bold"></i></div>
+            <div>
+              <div class="feature-title">地域特色</div>
+              <div class="feature-desc">以星城长沙为活动中心</div>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="ph ph-graduation-cap-bold"></i></div>
+            <div>
+              <div class="feature-title">成员构成</div>
+              <div class="feature-desc">年轻群体, 大学生为主</div>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="ph ph-calendar-check-bold"></i></div>
+            <div>
+              <div class="feature-title">活动丰富</div>
+              <div class="feature-desc">精彩纷呈的线下打卡与聚会</div>
+            </div>
+          </div>
+        </div>
+        <a class="link-arrow" href="#history">
+          探索发展历程 <i class="ph ph-arrow-right-bold"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ History Timeline ═══ -->
+<section class="section section-alt" id="history">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="display-xl">我们的故事</h2>
+    </div>
+
+    <div class="reveal" style="position:relative;">
+      <div class="timeline-scroll" id="timelineScroll">
+        <div class="timeline-spacer"></div>
+        <div class="timeline-year active" data-target="event-1">
+          <div class="timeline-year-label">2024.春</div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-year" data-target="event-2">
+          <div class="timeline-year-label">2024.04</div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-year" data-target="event-3">
+          <div class="timeline-year-label">2024.04.22</div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-year" data-target="event-4">
+          <div class="timeline-year-label">2024.09</div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-year" data-target="event-5">
+          <div class="timeline-year-label">2025.10</div>
+          <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-spacer"></div>
+      </div>
+      <div class="timeline-line"></div>
+    </div>
+
+    <div class="timeline-content-wrap">
+      <div class="timeline-content active" id="event-1">
+        <div class="timeline-card-shell">
+          <div class="timeline-card-inner">
+            <div class="timeline-card-icon"><i class="ph ph-chat-circle-bold"></i></div>
+            <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">在联盟六群活跃</h3>
+            <p class="text-md" style="color:var(--text-secondary)">
+              2024年春, 侯大的成员开始在联盟六群活跃, 在此期间发生了许多著名事件, 如"杨晟AirPods事件", 为大家的羁绊埋下了伏笔.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-content" id="event-2">
+        <div class="timeline-card-shell">
+          <div class="timeline-card-inner">
+            <div class="timeline-card-icon"><i class="ph ph-disc-bold"></i></div>
+            <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">侯明昊婉慧宣发新专辑</h3>
+            <p class="text-md" style="color:var(--text-secondary)">
+              2024年4月, 长沙新生代歌手侯明昊婉慧开始在六群宣发新专辑《我是侯明昊》, 引起了众多粉丝支持, 热度空前.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-content" id="event-3">
+        <div class="timeline-card-shell">
+          <div class="timeline-card-inner">
+            <div class="timeline-card-icon"><i class="ph ph-flag-bold"></i></div>
+            <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">侯大正式创立</h3>
+            <p class="text-md" style="color:var(--text-secondary)">
+              2024年4月22日, 长沙霉粉联盟工作成员小墨颁布群规"不得讨论与霉霉无关的内容". 于是, 谢祥泽联系了牛继哲与侯婉慧, 果断创立了特色粉丝社群"侯大".
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-content" id="event-4">
+        <div class="timeline-card-shell">
+          <div class="timeline-card-inner">
+            <div class="timeline-card-icon"><i class="ph ph-users-bold"></i></div>
+            <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">社群规模扩大</h3>
+            <p class="text-md" style="color:var(--text-secondary)">
+              2024年9月, 侯大的多名成员被拉入联盟金卡客户群体, 以浣莎澜为首的侯大成员, 从中扩充了多名新成员, 队伍日益壮大.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-content" id="event-5">
+        <div class="timeline-card-shell">
+          <div class="timeline-card-inner">
+            <div class="timeline-card-icon"><i class="ph ph-rocket-launch-bold"></i></div>
+            <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">焕新启航</h3>
+            <p class="text-md" style="color:var(--text-secondary)">
+              2025年10月, 侯大正式启用新视觉以及新名称"HOUDA+", 以更加开放, 更有活力的姿态迈入新篇章.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Activities ═══ -->
+<section class="section" id="activities">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="section-label">活动</p>
+      <h2 class="display-xl">精彩瞬间</h2>
+    </div>
+
+    <div class="activities-grid">
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/none.png" alt="518活动" loading="lazy"/>
+          </div>
+          <div class="card-body">
+            <span class="card-tag blue">特色活动</span>
+            <h3 class="card-title">518创群纪念活动</h3>
+            <p class="card-desc">2024年5月18日举行的"518"活动以庆祝侯大创群一个月, 成员们欢聚一堂.</p>
+            <div class="card-meta"><i class="ph ph-calendar-blank"></i> 2024.5.18</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/1.jpeg" alt="夏日歌会" loading="lazy"/>
+          </div>
+          <div class="card-body">
+            <span class="card-tag gray">联盟活动</span>
+            <h3 class="card-title">夏日歌会活动</h3>
+            <p class="card-desc">2024年长沙霉粉联盟"夏日歌会"活动, 侯大成员积极参与, 共同享受音乐盛宴.</p>
+            <div class="card-meta"><i class="ph ph-calendar-blank"></i> 2024 夏</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/2.jpeg" alt="跨年观影" loading="lazy"/>
+          </div>
+          <div class="card-body">
+            <span class="card-tag gray">联盟活动</span>
+            <h3 class="card-title">时代巡演大电影跨年</h3>
+            <p class="card-desc">侯大成员参与长沙霉粉联盟组织的时代巡演大电影跨年观影活动, 共同迎接新年.</p>
+            <div class="card-meta"><i class="ph ph-calendar-blank"></i> 2024-2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘打卡" loading="lazy"/>
+          </div>
+          <div class="card-body">
+            <span class="card-tag green">常驻活动</span>
+            <h3 class="card-title">侯家塘地铁站打卡</h3>
+            <p class="card-desc">侯大成员在本命地铁站"侯家塘"站进行的常规打卡活动, 社群标志性活动之一.</p>
+            <div class="card-meta"><i class="ph ph-check-circle"></i> 长期开展</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" loading="lazy"/>
+          </div>
+          <div class="card-body">
+            <span class="card-tag green">常驻活动</span>
+            <h3 class="card-title">老百姓大药房打卡</h3>
+            <p class="card-desc">成员们在本命药房"老百姓大药房(彭家巷分店)"的常规打卡活动, 体现社群独特文化.</p>
+            <div class="card-meta"><i class="ph ph-check-circle"></i> 长期开展</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/cscsu.jpeg" alt="联盟活动" loading="lazy"/>
+          </div>
+          <div class="card-body">
+            <span class="card-tag gray">联盟活动</span>
+            <h3 class="card-title">联盟其他精彩活动</h3>
+            <p class="card-desc">HOUDA+作为长沙霉粉联盟的重要组成部分, 参与了联盟组织的多项其他活动.</p>
+            <div class="card-meta"><i class="ph ph-calendar-blank"></i> 不定期</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Landmarks ═══ -->
+<section class="section section-alt" id="landmarks">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="display-xl">打卡圣地</h2>
+    </div>
+
+    <div class="landmarks-grid">
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘地铁站" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+          </div>
+          <div class="landmark-body">
+            <div class="landmark-icon-row">
+              <div class="landmark-icon"><i class="ph ph-train-bold"></i></div>
+              <h3 class="landmark-title">侯家塘地铁站</h3>
+            </div>
+            <p class="landmark-desc">侯大的本命地铁站, 位于长沙地铁1号线, 是成员们最常打卡的地点之一, 也成为了社群身份认同的重要象征.</p>
+            <div class="landmark-badge"><i class="ph ph-map-pin"></i> 长沙地铁1号线</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+          </div>
+          <div class="landmark-body">
+            <div class="landmark-icon-row">
+              <div class="landmark-icon"><i class="ph ph-first-aid-kit-bold"></i></div>
+              <h3 class="landmark-title">老百姓大药房</h3>
+            </div>
+            <p class="landmark-desc">侯大的本命药房, 是社群文化中一个富有特色的打卡点, 成员们经常在这里聚会交流, 形成了独特的社群记忆.</p>
+            <div class="landmark-badge"><i class="ph ph-map-pin"></i> 彭家巷分店</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/sxt.jpeg" alt="盛香亭" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+          </div>
+          <div class="landmark-body">
+            <div class="landmark-icon-row">
+              <div class="landmark-icon"><i class="ph ph-fire-bold"></i></div>
+              <h3 class="landmark-title">盛香亭转转热卤</h3>
+            </div>
+            <p class="landmark-desc">侯大成员钟爱的转转火锅品牌, 热气腾腾的美食与氛围, 是社群聚餐, 畅聊的首选圣地.</p>
+            <div class="landmark-badge"><i class="ph ph-map-pin"></i> 长沙市</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img class="card-img" src="assets/activites/tl.jpeg" alt="湖南金厚律所" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+          </div>
+          <div class="landmark-body">
+            <div class="landmark-icon-row">
+              <div class="landmark-icon"><i class="ph ph-scales-bold"></i></div>
+              <h3 class="landmark-title">湖南金厚(北京)律所</h3>
+            </div>
+            <p class="landmark-desc">因侯大法务唐律在此工作, 该律所被赋予了特殊的意义, 成为了侯大法务的象征地.</p>
+            <div class="landmark-badge"><i class="ph ph-map-pin"></i> 北京市</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Contact ═══ -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="section-label">关注</p>
+      <h2 class="display-xl">保持联系</h2>
+    </div>
+
+    <div class="contact-grid">
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="contact-card-inner">
+            <div class="contact-card-icon wechat"><i class="ph ph-chat-circle-text-bold"></i></div>
+            <h3 class="contact-card-title">微信公众号</h3>
+            <p class="contact-card-desc">关注官方公众号, 深度好文不迷路</p>
+            <img class="contact-qr" src="assets/gzh.jpeg" alt="公众号二维码" loading="lazy"/>
+          </div>
+        </div>
+      </div>
+      <div class="card-shell reveal">
+        <div class="card-inner">
+          <div class="contact-card-inner">
+            <div class="contact-card-icon miniapp"><i class="ph ph-device-mobile-bold"></i></div>
+            <h3 class="contact-card-title">微信小程序</h3>
+            <p class="contact-card-desc">打开小程序, 参与更多线上互动</p>
+            <img class="contact-qr" src="assets/xcx.jpeg" alt="小程序二维码" loading="lazy"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">
+        <img class="footer-brand-img" src="assets/HOUDA_squre.jpeg" alt="HOUDA+" loading="lazy"/>
+        HOUDA+
+      </div>
+      <p class="footer-desc">
+        侯明昊碗慧通讯录互吃大学. 长沙霉粉联盟六群分支, 用热爱连接彼此.
+      </p>
+    </div>
+    <div>
+      <div class="footer-nav-title">快速导航</div>
+      <ul class="footer-nav">
+        <li><a href="#about">关于我们</a></li>
+        <li><a href="#history">发展历程</a></li>
+        <li><a href="#activities">活动回顾</a></li>
+        <li><a href="#landmarks">特色地标</a></li>
+        <li><a href="#contact">关注我们</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 HOUDA+. All rights reserved.
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="回到顶部">
+  <i class="ph ph-arrow-up-bold"></i>
+</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ── Nav scroll state (rAF, passive) ── */
+  const nav = document.getElementById('nav');
+  let navTicking = false;
+  const updateNav = () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+    navTicking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!navTicking) { requestAnimationFrame(updateNav); navTicking = true; }
+  }, { passive: true });
+
+  /* ── Mobile menu ── */
+  const menuBtn = document.getElementById('menuBtn');
+  const menuClose = document.getElementById('menuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  const openMenu = () => mobileMenu.classList.add('open');
+  const closeMenu = () => mobileMenu.classList.remove('open');
+
+  menuBtn?.addEventListener('click', openMenu);
+  menuClose?.addEventListener('click', closeMenu);
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  /* ── Back to top ── */
+  const backToTop = document.getElementById('backToTop');
+  let bttTicking = false;
+  const updateBTT = () => {
+    backToTop?.classList.toggle('visible', window.scrollY > 400);
+    bttTicking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!bttTicking) { requestAnimationFrame(updateBTT); bttTicking = true; }
+  }, { passive: true });
+  backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  /* ── Timeline ── */
+  const timelineScroll = document.getElementById('timelineScroll');
+  const years = document.querySelectorAll('.timeline-year');
+  const contents = document.querySelectorAll('.timeline-content');
+
+  if (timelineScroll) {
+    let tlTicking = false;
+    const updateTimeline = () => {
+      const rect = timelineScroll.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      let closest = null, minDist = Infinity;
+      years.forEach(y => {
+        const r = y.getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - center);
+        if (d < minDist) { minDist = d; closest = y; }
+      });
+      if (closest && !closest.classList.contains('active')) {
+        years.forEach(y => y.classList.remove('active'));
+        closest.classList.add('active');
+        const targetId = closest.dataset.target;
+        contents.forEach(c => c.classList.toggle('active', c.id === targetId));
+      }
+      tlTicking = false;
+    };
+    timelineScroll.addEventListener('scroll', () => {
+      if (!tlTicking) { requestAnimationFrame(updateTimeline); tlTicking = true; }
+    }, { passive: true });
+    setTimeout(updateTimeline, 100);
+    years.forEach(year => {
+      year.addEventListener('click', () => {
+        const cc = timelineScroll.clientWidth / 2;
+        const ic = year.offsetLeft + year.clientWidth / 2;
+        timelineScroll.scrollTo({ left: ic - cc, behavior: 'smooth' });
+      });
+    });
+  }
+
+  /* ── Scroll reveal (soft-skill §5.C: IntersectionObserver) ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), (index % 4) * 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => observer.observe(el));
+  }
+
+});
+</script>
+</body>
+</html>
