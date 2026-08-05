@@ -210,6 +210,8 @@ body.menu-open { overflow: hidden; }
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
+  /* BUGFIX: push the CTA (and the menu button that follows) to the far right */
+  margin-left: auto;
   background: var(--text-primary);
   color: white;
   text-decoration: none;
@@ -656,6 +658,8 @@ body.menu-open { overflow: hidden; }
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  /* BUGFIX: stop the timeline drag from chaining into a page-level horizontal overscroll */
+  overscroll-behavior-x: contain;
   padding: 2rem 0 1.5rem;
   cursor: grab;
   user-select: none;
@@ -876,6 +880,8 @@ body.menu-open { overflow: hidden; }
 
 .card-img {
   width: 100%;
+  /* BUGFIX: must be auto so the HTML height attr doesn't force a tall box; aspect-ratio drives the size */
+  height: auto;
   aspect-ratio: 1;
   object-fit: cover;
   display: block;
@@ -1296,7 +1302,7 @@ body.menu-open { overflow: hidden; }
       <div class="hero-actions">
         <a class="btn btn-primary" href="#about">
           了解更多
-          <span class="btn-icon"><i class="ph ph-arrow-right-bold"></i></span>
+          <span class="btn-icon"><i class="ph ph-bold ph-arrow-right"></i></span>
         </a>
         <a class="btn btn-secondary" href="#contact">关注我们</a>
       </div>
@@ -1310,7 +1316,7 @@ body.menu-open { overflow: hidden; }
     </div>
     <a class="hero-scroll-cue" href="#about" aria-label="向下滚动查看关于我们">
       <span>向下滚动</span>
-      <i class="ph ph-arrow-down-bold"></i>
+      <i class="ph ph-bold ph-arrow-down"></i>
     </a>
   </div>
 </section>
@@ -1339,28 +1345,28 @@ body.menu-open { overflow: hidden; }
         </p>
         <div class="feature-grid">
           <div class="feature-card">
-            <div class="feature-icon"><i class="ph ph-heart-bold"></i></div>
+            <div class="feature-icon"><i class="ph ph-bold ph-heart"></i></div>
             <div>
               <div class="feature-title">共同热爱</div>
               <div class="feature-desc">因明星侯明昊碗慧而聚集</div>
             </div>
           </div>
           <div class="feature-card">
-            <div class="feature-icon"><i class="ph ph-map-pin-bold"></i></div>
+            <div class="feature-icon"><i class="ph ph-bold ph-map-pin"></i></div>
             <div>
               <div class="feature-title">地域特色</div>
               <div class="feature-desc">以星城长沙为活动中心</div>
             </div>
           </div>
           <div class="feature-card">
-            <div class="feature-icon"><i class="ph ph-graduation-cap-bold"></i></div>
+            <div class="feature-icon"><i class="ph ph-bold ph-graduation-cap"></i></div>
             <div>
               <div class="feature-title">成员构成</div>
               <div class="feature-desc">年轻群体, 大学生为主</div>
             </div>
           </div>
           <div class="feature-card">
-            <div class="feature-icon"><i class="ph ph-calendar-check-bold"></i></div>
+            <div class="feature-icon"><i class="ph ph-bold ph-calendar-check"></i></div>
             <div>
               <div class="feature-title">活动丰富</div>
               <div class="feature-desc">精彩纷呈的线下打卡与聚会</div>
@@ -1368,7 +1374,7 @@ body.menu-open { overflow: hidden; }
           </div>
         </div>
         <a class="link-arrow" href="#history">
-          探索发展历程 <i class="ph ph-arrow-right-bold"></i>
+          探索发展历程 <i class="ph ph-bold ph-arrow-right"></i>
         </a>
       </div>
     </div>
@@ -1409,10 +1415,10 @@ body.menu-open { overflow: hidden; }
       </div>
       <div class="timeline-line"></div>
       <button class="timeline-nav timeline-prev" id="tlPrev" type="button" aria-label="上一段历程">
-        <i class="ph ph-caret-left-bold"></i>
+        <i class="ph ph-bold ph-caret-left"></i>
       </button>
       <button class="timeline-nav timeline-next" id="tlNext" type="button" aria-label="下一段历程">
-        <i class="ph ph-caret-right-bold"></i>
+        <i class="ph ph-bold ph-caret-right"></i>
       </button>
     </div>
 
@@ -1420,7 +1426,7 @@ body.menu-open { overflow: hidden; }
       <div class="timeline-content active" id="event-1" role="tabpanel" aria-label="2024年春">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
-            <div class="timeline-card-icon"><i class="ph ph-chat-circle-bold"></i></div>
+            <div class="timeline-card-icon"><i class="ph ph-bold ph-chat-circle"></i></div>
             <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">在联盟六群活跃</h3>
             <p class="text-md" style="color:var(--text-secondary)">
               2024年春, 侯大的成员开始在联盟六群活跃, 在此期间发生了许多著名事件, 如"杨晟AirPods事件", 为大家的羁绊埋下了伏笔.
@@ -1431,7 +1437,7 @@ body.menu-open { overflow: hidden; }
       <div class="timeline-content" id="event-2" role="tabpanel" aria-label="2024年4月">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
-            <div class="timeline-card-icon"><i class="ph ph-disc-bold"></i></div>
+            <div class="timeline-card-icon"><i class="ph ph-bold ph-disc"></i></div>
             <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">侯明昊婉慧宣发新专辑</h3>
             <p class="text-md" style="color:var(--text-secondary)">
               2024年4月, 长沙新生代歌手侯明昊婉慧开始在六群宣发新专辑《我是侯明昊》, 引起了众多粉丝支持, 热度空前.
@@ -1442,7 +1448,7 @@ body.menu-open { overflow: hidden; }
       <div class="timeline-content" id="event-3" role="tabpanel" aria-label="2024年4月22日">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
-            <div class="timeline-card-icon"><i class="ph ph-flag-bold"></i></div>
+            <div class="timeline-card-icon"><i class="ph ph-bold ph-flag"></i></div>
             <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">侯大正式创立</h3>
             <p class="text-md" style="color:var(--text-secondary)">
               2024年4月22日, 长沙霉粉联盟工作成员小墨颁布群规"不得讨论与霉霉无关的内容". 于是, 谢祥泽联系了牛继哲与侯婉慧, 果断创立了特色粉丝社群"侯大".
@@ -1453,7 +1459,7 @@ body.menu-open { overflow: hidden; }
       <div class="timeline-content" id="event-4" role="tabpanel" aria-label="2024年9月">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
-            <div class="timeline-card-icon"><i class="ph ph-users-bold"></i></div>
+            <div class="timeline-card-icon"><i class="ph ph-bold ph-users"></i></div>
             <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">社群规模扩大</h3>
             <p class="text-md" style="color:var(--text-secondary)">
               2024年9月, 侯大的多名成员被拉入联盟金卡客户群体, 以浣莎澜为首的侯大成员, 从中扩充了多名新成员, 队伍日益壮大.
@@ -1464,7 +1470,7 @@ body.menu-open { overflow: hidden; }
       <div class="timeline-content" id="event-5" role="tabpanel" aria-label="2025年10月">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
-            <div class="timeline-card-icon"><i class="ph ph-rocket-launch-bold"></i></div>
+            <div class="timeline-card-icon"><i class="ph ph-bold ph-rocket-launch"></i></div>
             <h3 class="display-lg" style="font-size:1.5rem;margin-bottom:0.75rem">焕新启航</h3>
             <p class="text-md" style="color:var(--text-secondary)">
               2025年10月, 侯大正式启用新视觉以及新名称"HOUDA+", 以更加开放, 更有活力的姿态迈入新篇章.
@@ -1583,11 +1589,11 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘地铁站" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘地铁站" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
-              <div class="landmark-icon"><i class="ph ph-train-bold"></i></div>
+              <div class="landmark-icon"><i class="ph ph-bold ph-train"></i></div>
               <h3 class="landmark-title">侯家塘地铁站</h3>
             </div>
             <p class="landmark-desc">侯大的本命地铁站, 位于长沙地铁1号线, 是成员们最常打卡的地点之一, 也成为了社群身份认同的重要象征.</p>
@@ -1599,11 +1605,11 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
-              <div class="landmark-icon"><i class="ph ph-first-aid-kit-bold"></i></div>
+              <div class="landmark-icon"><i class="ph ph-bold ph-first-aid-kit"></i></div>
               <h3 class="landmark-title">老百姓大药房</h3>
             </div>
             <p class="landmark-desc">侯大的本命药房, 是社群文化中一个富有特色的打卡点, 成员们经常在这里聚会交流, 形成了独特的社群记忆.</p>
@@ -1615,11 +1621,11 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/sxt.jpeg" alt="盛香亭" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="assets/activites/sxt.jpeg" alt="盛香亭" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
-              <div class="landmark-icon"><i class="ph ph-fire-bold"></i></div>
+              <div class="landmark-icon"><i class="ph ph-bold ph-fire"></i></div>
               <h3 class="landmark-title">盛香亭转转热卤</h3>
             </div>
             <p class="landmark-desc">侯大成员钟爱的转转火锅品牌, 热气腾腾的美食与氛围, 是社群聚餐, 畅聊的首选圣地.</p>
@@ -1631,11 +1637,11 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/tl.jpeg" alt="湖南金厚律所" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="assets/activites/tl.jpeg" alt="湖南金厚律所" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
-              <div class="landmark-icon"><i class="ph ph-scales-bold"></i></div>
+              <div class="landmark-icon"><i class="ph ph-bold ph-scales"></i></div>
               <h3 class="landmark-title">湖南金厚(北京)律所</h3>
             </div>
             <p class="landmark-desc">因侯大法务唐律在此工作, 该律所被赋予了特殊的意义, 成为了侯大法务的象征地.</p>
@@ -1659,7 +1665,7 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="contact-card-inner">
-            <div class="contact-card-icon wechat"><i class="ph ph-chat-circle-text-bold"></i></div>
+            <div class="contact-card-icon wechat"><i class="ph ph-bold ph-chat-circle-text"></i></div>
             <h3 class="contact-card-title">微信公众号</h3>
             <p class="contact-card-desc">关注官方公众号, 深度好文不迷路</p>
             <img class="contact-qr" src="assets/gzh.jpeg" alt="公众号二维码" width="144" height="144" loading="lazy"/>
@@ -1669,7 +1675,7 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="contact-card-inner">
-            <div class="contact-card-icon miniapp"><i class="ph ph-device-mobile-bold"></i></div>
+            <div class="contact-card-icon miniapp"><i class="ph ph-bold ph-device-mobile"></i></div>
             <h3 class="contact-card-title">微信小程序</h3>
             <p class="contact-card-desc">打开小程序, 参与更多线上互动</p>
             <img class="contact-qr" src="assets/xcx.jpeg" alt="小程序二维码" width="144" height="144" loading="lazy"/>
@@ -1710,7 +1716,7 @@ body.menu-open { overflow: hidden; }
 </footer>
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部">
-  <i class="ph ph-arrow-up-bold"></i>
+  <i class="ph ph-bold ph-arrow-up"></i>
 </button>
 
 <script>
@@ -1856,7 +1862,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isDown) return;
       const dx = e.clientX - startX;
       if (Math.abs(dx) > DRAG_THRESHOLD) dragged = true;
-      timelineScroll.scrollLeft = startScroll - dx;
+      // BUGFIX: clamp drag so it cannot scroll past either end (no blank overscroll)
+      const max = timelineScroll.scrollWidth - timelineScroll.clientWidth;
+      let next = startScroll - dx;
+      next = Math.max(0, Math.min(next, max));
+      timelineScroll.scrollLeft = next;
     });
 
     const endDrag = () => {
