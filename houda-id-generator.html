@@ -288,7 +288,6 @@
     height: 540px;
     border-radius: 20px;
     position: relative;
-    overflow: hidden;
     transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
     transform-style: preserve-3d;
     box-shadow:
@@ -298,6 +297,22 @@
     cursor: pointer;
   }
   .id-card:hover { transform: rotateY(-3deg) rotateX(2deg) translateY(-4px); }
+
+  /* 双面翻转：两个 face 绝对叠放，各自隐藏背向，避免镜像正面 */
+  .card-face {
+    position: absolute; inset: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+  .card-face-front { z-index: 2; }
+  .card-face-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, var(--era-primary), var(--era-secondary));
+    color: #fff;
+  }
 
   .card-bg-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 
@@ -356,6 +371,34 @@
     font-size: 10px; letter-spacing: 5px; color: rgba(255,255,255,0.35); z-index: 2;
     font-family: 'Courier New', monospace;
   }
+
+  /* ===== 背面：侯大学子守则 ===== */
+  .card-back-content {
+    position: relative; z-index: 2;
+    height: 100%; padding: 24px 22px;
+    display: flex; flex-direction: column; color: #fff;
+  }
+  .card-back-head { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .card-back-rules {
+    list-style: none; counter-reset: rule;
+    margin: 6px 0; padding: 0; flex: 1;
+    display: flex; flex-direction: column; gap: 11px;
+  }
+  .card-back-rules li {
+    position: relative; padding-left: 30px;
+    font-size: 11.5px; line-height: 1.5; color: rgba(255,255,255,0.92);
+    border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 9px;
+  }
+  .card-back-rules li::before {
+    counter-increment: rule; content: counter(rule);
+    position: absolute; left: 0; top: 0;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3);
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-back-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: 6px; }
+  .card-back-serial { font-size: 9px; letter-spacing: 2px; color: rgba(255,255,255,0.6); }
   .era-label { margin-top: 1rem; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-tertiary); }
 
   /* ===== 导出预览遮罩 ===== */
@@ -500,6 +543,8 @@
     <!-- 右：预览卡片 -->
     <div class="id-card-wrapper fade-in" style="animation-delay:0.25s">
       <div class="id-card" id="idCard">
+        <!-- 正面 -->
+        <div class="card-face card-face-front">
         <canvas class="card-bg-canvas" id="bgCanvas" width="680" height="1080"></canvas>
         <div class="card-watermark">HOUDA+</div>
         <div class="card-content">
@@ -558,6 +603,33 @@
         </div>
         <div class="card-number" id="v_sid">HD-2025-1013-001</div>
         <div class="card-sheen"></div>
+        </div><!-- /card-face-front -->
+
+        <!-- 背面 -->
+        <div class="card-face card-face-back">
+          <div class="card-back-content">
+            <div class="card-back-head">
+              <div class="card-emblem">✦</div>
+              <div>
+                <div class="card-school-name">侯大学子守则</div>
+                <div class="card-school-sub">HOUDA+ Code of Conduct</div>
+              </div>
+            </div>
+            <div class="card-divider"></div>
+            <ol class="card-back-rules">
+              <li>互吃大会严禁炫富，除非请全群喝奶茶。</li>
+              <li>霉霉新专发布日，自动获得一天免作业特权。</li>
+              <li>丢掉的 AirPods 终会现身沙发缝，请勿惊慌。</li>
+              <li>侯家塘分校学子须熟记 1 / 3 号线换乘口诀。</li>
+              <li>本卡最终解释权归碗慧通讯录互吃大学所有。</li>
+            </ol>
+            <div class="card-back-foot">
+              <div class="card-stamp"><span class="stamp-star">✦</span><span>侯大<br>认证</span></div>
+              <div class="card-back-serial">HOUDA+ · VERIFIED</div>
+            </div>
+          </div>
+          <div class="card-sheen"></div>
+        </div>
       </div>
       <p class="era-label" id="eraLabel">Midnights Theme</p>
     </div>
@@ -878,6 +950,10 @@ document.getElementById('generateBtn').addEventListener('click', async function(
     await new Promise(r => setTimeout(r, 600));
   }
 
+  // html2canvas 不认 backface-visibility，导出前临时藏起背面，避免镜像叠到正面
+  const backFace = card.querySelector('.card-face-back');
+  if (backFace) backFace.style.display = 'none';
+
   try {
     const canvas = await html2canvas(card, {
       scale: 2,
@@ -894,6 +970,7 @@ document.getElementById('generateBtn').addEventListener('click', async function(
     console.error(err);
     showToast('生成失败，请重试');
   } finally {
+    if (backFace) backFace.style.display = '';
     btn.disabled = false;
     btn.textContent = '保存身份证';
   }
