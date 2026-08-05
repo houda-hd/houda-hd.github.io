@@ -72,7 +72,11 @@ html {
   color: var(--text-primary);
   background: var(--bg);
   scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
+  /* BUGFIX: anchor offset clears the taller fixed header on mobile */
+  scroll-padding-top: 7rem;
+  /* prevent iOS auto font-inflation that breaks the type scale */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1184,6 +1188,60 @@ body.menu-open { overflow: hidden; }
 @media (hover: none) and (pointer: coarse) {
   .card-shell:hover, .feature-card:hover { transform: none; box-shadow: var(--shadow-ambient); }
   .card-shell:hover .card-img { transform: none; }
+}
+
+/* ═══ Mobile optimization (≤767px) — 三 skill 融合 ═══
+   taste:  tighten density, kill center bias in long copy
+   impeccable:  touch-first tap targets + confident active feedback
+   soft:  keep Awwwards micro-motion, shed desktop-only dead weight */
+@media (max-width: 767px) {
+  /* tighter section rhythm + safe horizontal gutters */
+  .section { padding: 4.5rem 1.25rem; }
+  .section-header { margin-bottom: 2.5rem; }
+
+  /* slimmer, well-fitted floating nav bar */
+  .nav-wrap { padding: 0.875rem 1rem; }
+  .nav {
+    gap: 0.625rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    width: 100%;
+  }
+  .nav-cta { min-height: 40px; }
+
+  /* hero: clear the header, use dynamic viewport height, full-width CTAs */
+  .hero {
+    padding: 7rem 1.25rem 5rem;
+    min-height: 100svh;
+  }
+  .hero-actions { width: 100%; }
+  .hero-actions .btn { flex: 1 1 auto; justify-content: center; }
+
+  /* about image: trim vertical weight on small screens */
+  .about-image { height: 320px; }
+
+  /* timeline card: left-align long copy for readability (no center bias) */
+  .timeline-card-inner {
+    padding: 1.75rem 1.5rem;
+    text-align: left;
+  }
+  .timeline-card-icon { margin: 0 0 1rem; }
+
+  /* contact cards: less internal padding */
+  .contact-card-inner { padding: 1.75rem 1.5rem; }
+
+  /* touch-first: drop 300ms delay, remove grey flash — keeps .active scale feedback */
+  a, button, .btn, .timeline-year, .back-to-top {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ═══ Ultra-narrow (≤460px) — stack CTAs, scale hero type ═══ */
+@media (max-width: 460px) {
+  .hero-actions { flex-direction: column; }
+  .hero-actions .btn { width: 100%; }
+  .footer-grid { gap: 1.5rem; }
+  .display-2xl { font-size: clamp(2.25rem, 9vw, 2.75rem); }
 }
 </style>
 </head>
