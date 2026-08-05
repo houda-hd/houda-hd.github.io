@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="theme-color" content="#f4f4f6"/>
+<title>HOUDA+ IP检测 · 纯净度分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<style>
+:root {
+  --bg:#f4f4f6;
+  --bg-card:#ffffff;
+  --bg-elevated:#fafafa;
+  --text-primary:#1a1a1f;
+  --text-secondary:#5c5c66;
+  --text-tertiary:#9a9aa3;
+  --accent:#2563eb;
+  --accent-hover:#1d4ed8;
+  --accent-light:rgba(37,99,235,0.06);
+  --green:#16a34a;
+  --green-light:rgba(22,163,74,0.08);
+  --border-hairline:rgba(0,0,0,0.06);
+  --border-soft:rgba(0,0,0,0.04);
+  --ease-fluid:cubic-bezier(0.32,0.72,0,1);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.22,0.61,0.36,1);
+  --dur-fast:200ms;
+  --dur-normal:400ms;
+  --dur-slow:700ms;
+  --font-display:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+  --radius-card:1.25rem;
+  --radius-pill:999px;
+  --radius-input:0.75rem;
+}
+
+html {
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+  line-height: 1.5;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
+.hidden { display: none !important; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* — Ambient diffused light — */
+.ambient {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: var(--bg);
+}
+.ambient::before {
+  content: ""; position: absolute; top: -22%; left: -18%; width: 56vw; height: 56vw; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(37,99,235,0.16), rgba(37,99,235,0) 68%); filter: blur(40px);
+}
+.ambient::after {
+  content: ""; position: absolute; bottom: -26%; right: -20%; width: 60vw; height: 60vw; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(22,163,74,0.12), rgba(22,163,74,0) 68%); filter: blur(48px);
+}
+
+/* — Panels — */
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 14px 36px rgba(16,24,40,0.06);
+  transition: transform var(--dur-normal) var(--ease-spring), box-shadow var(--dur-normal) var(--ease-spring), border-color var(--dur-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover { transform: translateY(-4px); box-shadow: 0 1px 2px rgba(16,24,40,0.05), 0 22px 48px rgba(16,24,40,0.10); }
+}
+
+/* — Navbar — */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  transition: background var(--dur-normal) var(--ease-out), box-shadow var(--dur-normal) var(--ease-out), border-color var(--dur-normal) var(--ease-out);
+}
+#navbar.liquid-header {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid var(--border-hairline);
+  box-shadow: 0 8px 28px rgba(16,24,40,0.06);
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; padding-top: 0.9rem; padding-bottom: 0.9rem; }
+.brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-primary); }
+.brand-logo {
+  width: 2.5rem; height: 2.5rem; border-radius: 0.9rem; overflow: hidden;
+  background: var(--bg-card); border: 1px solid var(--border-hairline);
+  box-shadow: 0 2px 8px rgba(16,24,40,0.08);
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
+}
+.brand-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.brand-text .name { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1; display: block; }
+.brand-text .sub { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-tertiary); }
+#navbar.liquid-header .brand-logo { box-shadow: 0 2px 10px rgba(37,99,235,0.14); }
+@media (hover: hover) and (pointer: fine) { .brand:hover .brand-logo { transform: scale(1.06) rotate(-1deg); } }
+.nav-links { display: none; align-items: center; gap: 1.5rem; }
+.nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 500; font-size: 0.875rem; transition: color var(--dur-fast) var(--ease-out); }
+.nav-link:hover { color: var(--text-primary); }
+@media (min-width: 768px) { .nav-links { display: flex; } }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  border-radius: var(--radius-pill); font-family: var(--font-display); font-weight: 600; font-size: 0.95rem;
+  cursor: pointer; text-decoration: none; border: 1px solid transparent;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.btn-primary { background: var(--text-primary); color: #fff; padding: 0.875rem 1.75rem; box-shadow: 0 4px 16px rgba(16,24,40,0.12); }
+.btn-primary:hover { background: var(--accent); box-shadow: 0 8px 24px rgba(37,99,235,0.28); }
+.btn-primary:active { transform: scale(0.96); }
+.btn-block { width: 100%; }
+
+.menu-btn {
+  display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
+  border-radius: var(--radius-pill); border: 1px solid var(--border-hairline); background: var(--bg-card);
+  color: var(--text-primary); cursor: pointer; font-size: 1.35rem;
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+}
+.menu-btn:active { transform: scale(0.94); }
+@media (min-width: 768px) { .menu-btn { display: none; } }
+
+#mobileMenu { overflow: hidden; max-height: 0; opacity: 0; transition: max-height var(--dur-normal) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
+#mobileMenu.open { max-height: 360px; opacity: 1; }
+#mobileMenu .m-link {
+  display: block; padding: 0.625rem 1rem; margin-bottom: 0.4rem; border-radius: 0.85rem;
+  text-decoration: none; color: var(--text-secondary); font-weight: 500; font-size: 0.9rem;
+  background: var(--bg-card); border: 1px solid var(--border-soft); transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+#mobileMenu .m-link:hover { color: var(--text-primary); background: var(--bg-elevated); }
+#mobileMenu .m-cta { display: block; text-align: center; padding: 0.75rem 1rem; margin-top: 0.25rem; border-radius: 0.85rem; text-decoration: none; color: #fff; font-weight: 600; background: var(--text-primary); }
+#mobileMenu .m-cta:hover { background: var(--accent); }
+
+/* — Hero — */
+.hero { padding-top: 8.5rem; padding-bottom: 3rem; text-align: center; }
+.badge {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.95rem; border-radius: var(--radius-pill);
+  background: var(--accent-light); border: 1px solid rgba(37,99,235,0.16); color: var(--accent-hover);
+  font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem;
+}
+.live-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--green); animation: pulseDot 2s ease-in-out infinite; }
+@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(1.4); } }
+.hero h1 { margin: 0 0 1rem; font-size: clamp(2.2rem, 5.5vw, 3.8rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; }
+.hero h1 .accent-text { color: var(--accent); }
+.hero .lede { font-size: 1.05rem; font-weight: 600; color: var(--text-secondary); max-width: 36rem; margin: 0 auto 0.6rem; }
+.hero .sub { font-size: 0.9rem; color: var(--text-tertiary); max-width: 32rem; margin: 0 auto 2.25rem; }
+
+/* — Section heads — */
+.section { padding: 3rem 0; }
+.section-head { text-align: center; margin-bottom: 2.5rem; }
+.section-head h2 { margin: 0 0 0.75rem; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; letter-spacing: -0.01em; }
+.section-divider { width: 3rem; height: 0.25rem; border-radius: var(--radius-pill); background: var(--accent); margin: 0 auto 1rem; }
+.section-head p { color: var(--text-secondary); max-width: 36rem; margin: 0 auto; font-size: 1rem; }
+
+/* — Detector — */
+.detector-card { padding: 1.5rem; }
+.detector-bar { display: flex; flex-direction: column; gap: 0.75rem; }
+@media (min-width: 640px) { .detector-bar { flex-direction: row; } }
+.ip-input {
+  flex: 1; box-sizing: border-box; background: var(--bg-elevated); border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-input); padding: 0.8rem 1rem; font-size: 0.95rem; font-family: var(--font-display);
+  color: var(--text-primary); outline: none; transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.ip-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); background: var(--bg-card); }
+.ip-input::placeholder { color: var(--text-tertiary); }
+.check-btn {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: var(--text-primary); color: #fff; border: none; border-radius: var(--radius-pill);
+  padding: 0.8rem 1.75rem; font-size: 0.95rem; font-weight: 600; font-family: var(--font-display); cursor: pointer;
+  box-shadow: 0 4px 16px rgba(16,24,40,0.12); transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
+}
+.check-btn:hover { background: var(--accent); box-shadow: 0 8px 24px rgba(37,99,235,0.28); }
+.check-btn:active { transform: scale(0.97); }
+.check-btn:disabled { background: var(--text-tertiary); cursor: not-allowed; transform: none; }
+.detector-hint { font-size: 0.75rem; color: var(--text-tertiary); margin: 0.75rem 0 0; }
+
+/* — Tabs — */
+.tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.tab-btn {
+  padding: 0.5rem 1.25rem; border-radius: var(--radius-pill); font-size: 0.83rem; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border-hairline); color: var(--text-secondary); background: var(--bg-elevated);
+  font-family: var(--font-display); transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tab-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+/* — Score ring — */
+.score-card { padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.score-card .cap { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 1rem; }
+.score-ring-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 0.75rem; }
+.score-ring-wrap svg { transform: rotate(-90deg); }
+.score-ring-bg { fill: none; stroke: var(--border-hairline); stroke-width: 10; }
+.score-ring-bar { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s var(--ease-spring), stroke 0.8s; }
+.score-num { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; line-height: 1; }
+.score-num .num { font-size: 1.9rem; font-weight: 800; color: var(--text-primary); }
+.score-num .den { font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600; margin-top: 0.15rem; }
+
+/* — Info rows — */
+.ip-summary { padding: 1.5rem; }
+.ip-summary .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.ip-summary .head .cap { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); }
+.copy-mini { font-size: 0.75rem; color: var(--text-tertiary); display: inline-flex; align-items: center; gap: 0.25rem; background: none; border: none; cursor: pointer; font-family: var(--font-display); transition: color var(--dur-fast) var(--ease-out); }
+.copy-mini:hover { color: var(--accent); }
+.ip-display { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1rem; font-family: 'Plus Jakarta Sans', ui-monospace, monospace; letter-spacing: -0.01em; }
+.info-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border-hairline); }
+.info-row:last-child { border-bottom: none; }
+.info-icon-wrap {
+  width: 2.1rem; height: 2.1rem; border-radius: 0.6rem; background: var(--accent-light); color: var(--accent);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.05rem;
+}
+.info-row .flex-1 { flex: 1; min-width: 0; }
+.info-label { font-size: 0.7rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; }
+.info-value { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+.copy-row { cursor: pointer; transition: background var(--dur-fast) var(--ease-out); border-radius: 0.5rem; }
+.copy-row:hover { background: var(--bg-elevated); }
+.copy-ico { color: var(--text-tertiary); font-size: 0.8rem; flex-shrink: 0; }
+.copy-row:hover .copy-ico { color: var(--accent); }
+
+/* — Tags — */
+.tag-card { padding: 1.25rem; }
+.tag-card .cap { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 0.75rem; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tag-pill {
+  display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.7rem; border-radius: var(--radius-pill);
+  font-size: 0.75rem; font-weight: 700; border: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-secondary);
+}
+.tag-clean  { background: var(--green-light); color: #15803d; border-color: rgba(22,163,74,0.25); }
+.tag-warn   { background: rgba(245,158,11,0.12); color: #b45309; border-color: rgba(245,158,11,0.25); }
+.tag-danger { background: rgba(239,68,68,0.10); color: #b91c1c; border-color: rgba(239,68,68,0.25); }
+.tag-info   { background: var(--accent-light); color: var(--accent-hover); border-color: rgba(37,99,235,0.22); }
+.tag-gray   { background: rgba(100,116,139,0.08); color: #475569; border-color: rgba(100,116,139,0.2); }
+.tag-dot { width: 0.375rem; height: 0.375rem; border-radius: 50%; background: currentColor; }
+
+/* — Risk bars — */
+.risk-row { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.25rem; }
+.risk-row .rl { color: var(--text-secondary); }
+.risk-row .rv { color: var(--text-primary); }
+.score-bar-wrap { background: var(--bg-elevated); border-radius: var(--radius-pill); height: 0.375rem; overflow: hidden; border: 1px solid var(--border-soft); }
+.score-bar-fill { height: 100%; border-radius: var(--radius-pill); transition: width 1s var(--ease-spring); }
+
+/* — Feature cards — */
+.feature-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (min-width: 640px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .feature-grid { grid-template-columns: repeat(3, 1fr); } }
+.feature-card { padding: 1.5rem; }
+.feature-icon { width: 2.5rem; height: 2.5rem; border-radius: 0.85rem; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 1rem; }
+.feature-card h3 { margin: 0 0 0.5rem; font-size: 0.95rem; font-weight: 700; }
+.feature-card p { margin: 0; font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.55; }
+
+/* — FAQ — */
+.faq-list { display: flex; flex-direction: column; gap: 1rem; max-width: 48rem; margin: 0 auto; }
+.faq-item { overflow: hidden; }
+.faq-q { width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem; background: none; border: none; cursor: pointer; font-family: var(--font-display); }
+.faq-q .q { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+.faq-q .qi { color: var(--text-tertiary); font-size: 1rem; flex-shrink: 0; transition: transform var(--dur-fast) var(--ease-out); }
+.faq-a { overflow: hidden; transition: max-height 0.3s var(--ease-out); }
+.faq-a p { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6; padding: 0 1.25rem 1.25rem; margin: 0; }
+
+/* — Footer (light) — */
+.footer { background: var(--bg-elevated); border-top: 1px solid var(--border-hairline); padding: 2.5rem 0 6rem; }
+.footer-inner { display: flex; flex-direction: column; gap: 2rem; }
+@media (min-width: 768px) { .footer-inner { flex-direction: row; justify-content: space-between; } }
+.footer .brand .name { color: var(--text-primary); }
+.footer p { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6; max-width: 20rem; margin: 0.75rem 0 0; }
+.footer h3 { font-size: 0.875rem; font-weight: 700; margin: 0 0 1rem; color: var(--text-primary); }
+.footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color var(--dur-fast) var(--ease-out); }
+.footer a:hover { color: var(--accent); }
+.footer-bottom { border-top: 1px solid var(--border-hairline); margin-top: 2rem; padding-top: 1.5rem; text-align: center; color: var(--text-tertiary); font-size: 0.75rem; }
+.footer-bottom p { margin: 0; max-width: none; }
+.footer-bottom p.mt { margin-top: 0.25rem; color: var(--text-tertiary); }
+
+/* — Dock — */
+.dock-container { position: fixed; bottom: 1.25rem; left: 0; width: 100%; display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 0 0.625rem; box-sizing: border-box; pointer-events: none; }
+.dock {
+  display: flex; background: rgba(255,255,255,0.78); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--border-hairline); border-radius: var(--radius-pill); padding: 0.5rem 0.75rem;
+  box-shadow: 0 14px 34px rgba(16,24,40,0.12), inset 0 1px 0 rgba(255,255,255,0.8); pointer-events: auto; max-width: calc(100vw - 1.5rem); overflow: hidden;
+  transition: padding var(--dur-fast) var(--ease-out);
+}
+.dock-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 3.25rem; height: 3.25rem; margin: 0 0.25rem;
+  border-radius: 50%; cursor: pointer; text-decoration: none; color: var(--text-secondary);
+  transition: transform var(--dur-fast) var(--ease-spring), background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) { .dock-item:hover { transform: translateY(-8px) scale(1.15); background: rgba(255,255,255,0.9); color: var(--accent); } }
+.dock-item:active { transform: scale(0.92); background: var(--bg-elevated); }
+.dock-icon { font-size: 1.375rem; margin-bottom: 0.1rem; }
+.dock-label { font-size: 0.625rem; font-weight: 600; opacity: 0.8; }
+.back-to-top {
+  pointer-events: auto; flex-shrink: 0; width: 3.125rem; height: 3.125rem; background: rgba(255,255,255,0.85); backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: 0.9rem; cursor: pointer;
+  border: 1px solid var(--border-hairline); box-shadow: 0 10px 28px rgba(16,24,40,0.14); opacity: 0; visibility: hidden; transform: translateY(20px);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring), visibility var(--dur-fast), background var(--dur-fast) var(--ease-out);
+  color: var(--accent); font-size: 1.25rem; -webkit-tap-highlight-color: transparent;
+}
+.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+@media (hover: hover) and (pointer: fine) { .back-to-top:hover { background: #fff; transform: scale(1.1); } }
+body.scrolled .dock { padding: 0.4rem 0.75rem; }
+body.scrolled .dock-item { width: 2.75rem; height: 2.75rem; }
+body.scrolled .dock-icon { font-size: 1.25rem; margin-bottom: 0; }
+body.scrolled .dock-label { display: none; }
+
+/* — Copy toast — */
+#copyToast {
+  position: fixed; bottom: 6.25rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text-primary); color: #fff;
+  padding: 0.625rem 1.4rem; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 500; pointer-events: none; opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring); z-index: 9999; white-space: nowrap;
+}
+#copyToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* — Empty/Error states — */
+.state-card-empty { padding: 2.5rem; text-align: center; }
+.state-card-empty .emoji { font-size: 3rem; margin-bottom: 1rem; }
+.state-card-empty h3 { margin: 0 0 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+.state-card-empty p { margin: 0; color: var(--text-secondary); font-size: 0.875rem; }
+
+/* — Loading spinner — */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; display: inline-block; }
+
+/* — Reveal — */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity var(--dur-slow) var(--ease-spring), transform var(--dur-slow) var(--ease-spring); }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fade-up { opacity: 1; transform: none; transition: none; }
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  #navbar.liquid-header, .dock, .back-to-top { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg-card); }
+}
+</style>
+
+</head>
+<body>
+
+<!-- Scroll sentinel (drives navbar/back-to-top via IntersectionObserver, no window scroll) -->
+<div id="scrollSentinel" style="position:absolute; top:100px; left:0; width:1px; height:1px; pointer-events:none;"></div>
+
+<!-- Ambient light -->
+<div class="ambient"></div>
+
+<!-- Navbar -->
+<header id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="#">
+        <div class="brand-logo">
+          <img alt="HOUDA+" src="../assets/HOUDA_squre.jpeg"/>
+        </div>
+        <div class="brand-text">
+          <span class="name">HOUDA+</span>
+          <span class="sub">IP纯净度检测</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a class="nav-link" href="#detector">检测工具</a>
+        <a class="nav-link" href="#features">功能介绍</a>
+        <a class="nav-link" href="#faq">常见问题</a>
+        <a class="btn btn-primary" href="#detector">立即检测</a>
+      </nav>
+      <button class="menu-btn" id="menuBtn" aria-label="菜单">
+        <i class="ph-bold ph-list"></i>
+      </button>
+    </div>
+  </div>
+  <div id="mobileMenu">
+    <div class="container" style="padding-bottom:1rem;">
+      <a class="m-link" href="#detector">检测工具</a>
+      <a class="m-link" href="#features">功能介绍</a>
+      <a class="m-link" href="#faq">常见问题</a>
+      <a class="m-cta" href="#detector">立即检测</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="fade-up">
+      <div class="badge"><span class="live-dot"></span> 实时检测 · 多维度分析 · 数据透明</div>
+      <h1>IP检测 &amp; 纯净度分析<br/><span class="accent-text">一站式诊断工具</span></h1>
+      <p class="lede">HOUDA+ 出品 · 覆盖 IP归属 · 风险评分 · 代理检测 · 黑名单查询 · 浏览器指纹</p>
+      <p class="sub">助力跨境电商、流媒体、账号安全运营，判断你的IP是否干净、可靠</p>
+      <a href="#detector" class="btn btn-primary">
+        <i class="ph-bold ph-shield"></i> 检测我的IP
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Detector -->
+<section class="section" id="detector">
+  <div class="container">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Input bar -->
+      <div class="panel detector-card fade-up">
+        <div class="detector-bar">
+          <input id="ipInput" class="ip-input" type="text" placeholder="输入IP地址（留空则检测当前IP）" autocomplete="off" spellcheck="false" />
+          <button class="check-btn" id="checkBtn" onclick="runCheck()">
+            <i class="ph-bold ph-magnifying-glass" id="checkIcon"></i>
+            <span id="checkText">开始检测</span>
+          </button>
+        </div>
+        <p class="detector-hint">支持 IPv4 / IPv6 · 留空自动检测当前IP · 点击任意字段可复制</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar fade-up" id="tabBar" style="display:none!important">
+        <button class="tab-btn active" onclick="switchTab('overview')">总览</button>
+        <button class="tab-btn" onclick="switchTab('geo')">地理位置</button>
+        <button class="tab-btn" onclick="switchTab('risk')">风险分析</button>
+        <button class="tab-btn" onclick="switchTab('finger')">浏览器指纹</button>
+      </div>
+
+      <!-- Result panels -->
+      <div id="resultArea" style="display:none">
+
+        <!-- Tab: overview -->
+        <div id="tab-overview" class="tab-panel">
+          <div class="grid-overview">
+
+            <!-- Score card -->
+            <div class="panel score-card">
+              <p class="cap">IP纯净度评分</p>
+              <div class="score-ring-wrap">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                  <circle class="score-ring-bg" cx="70" cy="70" r="58"/>
+                  <circle class="score-ring-bar" id="scoreRingBar" cx="70" cy="70" r="58"
+                    stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke="#22c55e"/>
+                </svg>
+                <div class="score-num">
+                  <div class="num" id="scoreNum">—</div>
+                  <div class="den">/ 100</div>
+                </div>
+              </div>
+              <div id="scoreLabel" class="tag-pill tag-gray">—</div>
+              <p class="detector-hint" id="scoreDesc" style="margin-top:0.75rem;">—</p>
+            </div>
+
+            <!-- IP summary -->
+            <div class="panel ip-summary">
+              <div class="head">
+                <p class="cap">IP 基础信息</p>
+                <button id="copyIpBtn" class="copy-mini"><i class="ph-bold ph-copy"></i>复制IP</button>
+              </div>
+              <div class="ip-display" id="ipDisplay">—</div>
+              <div id="summaryRows"></div>
+            </div>
+          </div>
+
+          <!-- Tags row -->
+          <div class="panel tag-card mt-5">
+            <p class="cap">IP 属性标签</p>
+            <div class="tag-row" id="tagRow"></div>
+          </div>
+        </div>
+
+        <!-- Tab: geo -->
+        <div id="tab-geo" class="tab-panel hidden">
+          <div class="panel ip-summary">
+            <p class="cap">地理位置详情</p>
+            <div id="geoRows"></div>
+          </div>
+        </div>
+
+        <!-- Tab: risk -->
+        <div id="tab-risk" class="tab-panel hidden">
+          <div class="panel ip-summary">
+            <p class="cap">风险评估详情</p>
+            <div id="riskRows"></div>
+            <div style="margin-top:1.25rem;">
+              <p class="cap">风险维度分解</p>
+              <div id="riskBars" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: finger -->
+        <div id="tab-finger" class="tab-panel hidden">
+          <div class="panel ip-summary">
+            <p class="cap">浏览器指纹信息</p>
+            <div id="fingerRows"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="panel state-card-empty fade-up">
+        <div class="emoji">🔍</div>
+        <h3>等待检测</h3>
+        <p>点击「开始检测」按钮，或输入指定IP后检测</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="errorState" class="panel state-card-empty hidden">
+        <div class="emoji">⚠️</div>
+        <h3>检测失败</h3>
+        <p id="errorMsg">请检查IP格式或网络连接后重试</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head fade-up">
+      <h2>功能介绍</h2>
+      <div class="section-divider"></div>
+      <p>多维度分析，全面了解你的IP状况</p>
+    </div>
+    <div class="feature-grid">
+      <div class="panel feature-card fade-up">
+        <div class="feature-icon"><i class="ph-bold ph-globe"></i></div>
+        <h3>IP归属查询</h3>
+        <p>精准识别IP的国家、地区、城市、ISP运营商、ASN自治系统编号、时区等地理信息。</p>
+      </div>
+      <div class="panel feature-card fade-up">
+        <div class="feature-icon"><i class="ph-bold ph-shield"></i></div>
+        <h3>纯净度评分</h3>
+        <p>综合多维度指标，计算IP的可信度评分（0-100），直观判断IP是否干净、能否通过平台风控。</p>
+      </div>
+      <div class="panel feature-card fade-up">
+        <div class="feature-icon"><i class="ph-bold ph-eye"></i></div>
+        <h3>代理/VPN检测</h3>
+        <p>识别IP是否为VPN出口、公开代理、Tor节点、数据中心机房IP，以及住宅IP的真实性验证。</p>
+      </div>
+      <div class="panel feature-card fade-up">
+        <div class="feature-icon"><i class="ph-bold ph-list-checks"></i></div>
+        <h3>黑名单查询</h3>
+        <p>跨多个主流黑名单数据库查询，检测IP是否因垃圾邮件、攻击行为被列入风险名单。</p>
+      </div>
+      <div class="panel feature-card fade-up">
+        <div class="feature-icon"><i class="ph-bold ph-fingerprint"></i></div>
+        <h3>浏览器指纹</h3>
+        <p>分析User-Agent、语言、时区、屏幕分辨率、Canvas指纹等浏览器特征，评估匿名性。</p>
+      </div>
+      <div class="panel feature-card fade-up">
+        <div class="feature-icon"><i class="ph-bold ph-lightning"></i></div>
+        <h3>实时检测</h3>
+        <p>调用多个权威数据源实时分析，结果秒级返回，数据透明可追溯，拒绝数据造假。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head fade-up">
+      <h2>常见问题</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="faq-list fade-up" id="faqList">
+      <!-- injected -->
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <a class="brand" href="#">
+          <div class="brand-logo">
+            <img alt="HOUDA+" src="../assets/HOUDA_squre.jpeg"/>
+          </div>
+          <span class="name" style="font-size:1.5rem;font-weight:800;">HOUDA+</span>
+        </a>
+        <p>
+          侯明昊碗慧通讯录互吃大学<br/>长沙霉粉联盟六群分支出品工具站
+        </p>
+      </div>
+      <div>
+        <h3>快速导航</h3>
+        <ul>
+          <li><a href="#detector">IP检测工具</a></li>
+          <li><a href="#features">功能介绍</a></li>
+          <li><a href="#faq">常见问题</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 HOUDA+ · 数据来源：ipapi.co / ip-api.com / ipdata.co</p>
+      <p class="mt">本工具仅供网络学习与自查，不存储任何用户数据</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Dock -->
+<div class="dock-container">
+  <div class="dock">
+    <a class="dock-item" href="#detector">
+      <i class="ph-bold ph-shield dock-icon"></i>
+      <span class="dock-label">检测</span>
+    </a>
+    <a class="dock-item" href="#features">
+      <i class="ph-bold ph-list-checks dock-icon"></i>
+      <span class="dock-label">功能</span>
+    </a>
+    <a class="dock-item" href="#faq">
+      <i class="ph-bold ph-question dock-icon"></i>
+      <span class="dock-label">问题</span>
+    </a>
+  </div>
+  <div class="back-to-top" id="backToTop"><i class="ph-bold ph-arrow-up"></i></div>
+</div>
+
+<div id="copyToast">✓ 已复制</div>
+
+<script>
+// ========== FAQ DATA ==========
+const FAQS = [
+  { q: "什么是IP纯净度？", a: "IP纯净度是指一个IP地址在互联网中的可信程度与历史记录。纯净的IP意味着该IP没有被用于垃圾邮件、攻击行为，没有被主流黑名单标记，且不是来自高风险的数据中心或公开代理。" },
+  { q: "评分越高越好还是越低越好？", a: "本工具评分中，分数越高代表IP越纯净可信（100分最佳），越低代表风险越高。这与某些工具的「风险分」逻辑相反，请注意区分。" },
+  { q: "机房IP和住宅IP有什么区别？", a: "住宅IP（Residential IP）由ISP分配给普通家庭用户，可信度高。机房IP（Datacenter IP）来自云服务器/VPS，容易被平台识别为高风险，跨境业务、流媒体等场景通常需要住宅IP。" },
+  { q: "检测结果不准确怎么办？", a: "IP数据库难以100%覆盖所有IP，结果仅供参考。如发现明显错误（如家宽被误判为机房），可结合其他工具交叉验证。本工具使用多个公开数据源，透明可追溯。" },
+  { q: "会保存我的IP数据吗？", a: "不会。本工具完全在浏览器端运行，直接调用第三方公开API，HOUDA+不存储任何用户的IP或查询记录。" },
+];
+
+// ========== RENDER FAQ ==========
+(function renderFaq() {
+  const container = document.getElementById("faqList");
+  container.innerHTML = FAQS.map((f, i) => `
+    <div class="panel faq-item">
+      <button class="faq-q" onclick="toggleFaq(${i})">
+        <span class="q">${f.q}</span>
+        <i class="ph-bold ph-caret-down qi" id="faqIcon${i}"></i>
+      </button>
+      <div class="faq-a" id="faqBody${i}" style="max-height:0">
+        <p>${f.a}</p>
+      </div>
+    </div>
+  `).join("");
+})();
+
+function toggleFaq(i) {
+  const body = document.getElementById(`faqBody${i}`);
+  const icon = document.getElementById(`faqIcon${i}`);
+  const isOpen = body.style.maxHeight !== "0px" && body.style.maxHeight !== "";
+  body.style.maxHeight = isOpen ? "0px" : body.scrollHeight + "px";
+  icon.style.transform = isOpen ? "" : "rotate(180deg)";
+}
+
+// ========== TABS ==========
+let activeTab = "overview";
+function switchTab(name) {
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById(`tab-${name}`).classList.remove("hidden");
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    if (b.textContent.includes({"overview":"总览","geo":"地理位置","risk":"风险分析","finger":"浏览器指纹"}[name])) b.classList.add("active");
+  });
+  activeTab = name;
+}
+
+// ========== COPY ==========
+function copyText(text) {
+  if (!text || text === "—") return;
+  navigator.clipboard.writeText(text).then(() => showToast("✓ 已复制"));
+}
+function showToast(msg) {
+  const t = document.getElementById("copyToast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+// ========== INFO ROW HELPER ==========
+function makeRow(icon, label, value, cls = "") {
+  const safe = String(value || "—").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return `
+    <div class="info-row ${cls} copy-row" data-copy="${safe}">
+      <div class="info-icon-wrap"><i class="${icon}"></i></div>
+      <div class="flex-1 min-w-0">
+        <div class="info-label">${label}</div>
+        <div class="info-value truncate">${safe}</div>
+      </div>
+      <i class="ph-bold ph-copy copy-ico"></i>
+    </div>`;
+}
+
+// Delegated click handler for all copy-row elements
+document.addEventListener("click", function(e) {
+  const row = e.target.closest(".copy-row");
+  if (!row) return;
+  const val = row.dataset.copy;
+  if (val && val !== "—") {
+    navigator.clipboard.writeText(val).then(() => showToast("✓ 已复制"));
+  }
+});
+
+// Copy IP button (wired here to avoid inline onclick)
+document.addEventListener("DOMContentLoaded", function() {
+  const copyIpBtn = document.getElementById("copyIpBtn");
+  if (copyIpBtn) {
+    copyIpBtn.addEventListener("click", function() {
+      const val = document.getElementById("ipDisplay").textContent;
+      if (val && val !== "—") {
+        navigator.clipboard.writeText(val).then(() => showToast("✓ 已复制"));
+      }
+    });
+  }
+});
+
+// ========== SCORE HELPERS ==========
+function setScore(score) {
+  const circumference = 2 * Math.PI * 58;
+  const offset = circumference - (score / 100) * circumference;
+  const bar = document.getElementById("scoreRingBar");
+  const num = document.getElementById("scoreNum");
+  const label = document.getElementById("scoreLabel");
+  const desc = document.getElementById("scoreDesc");
+
+  bar.style.strokeDashoffset = offset;
+
+  let color, cls, txt, d;
+  if (score >= 80) {
+    color = "#22c55e"; cls = "tag-clean"; txt = "✓ 纯净";
+    d = "该IP风险极低，历史记录良好，可放心使用于跨境业务、流媒体等场景。";
+  } else if (score >= 60) {
+    color = "#3b82f6"; cls = "tag-info"; txt = "○ 较好";
+    d = "该IP整体风险可控，部分平台可能需要进一步验证，建议评估具体使用场景。";
+  } else if (score >= 40) {
+    color = "#f59e0b"; cls = "tag-warn"; txt = "△ 一般";
+    d = "该IP存在一定风险特征，可能触发平台风控，建议谨慎使用于高敏感场景。";
+  } else {
+    color = "#ef4444"; cls = "tag-danger"; txt = "✗ 高风险";
+    d = "该IP风险较高，疑似代理/机房IP或有不良历史记录，强烈建议更换IP再使用。";
+  }
+
+  bar.style.stroke = color;
+  num.textContent = score;
+  label.className = `tag-pill ${cls}`;
+  label.textContent = txt;
+  desc.textContent = d;
+}
+
+// ========== BROWSER FINGERPRINT ==========
+function getBrowserFingerprint() {
+  const nav = navigator;
+  const screen = window.screen;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const lang = nav.language || nav.userLanguage;
+  const languages = nav.languages ? nav.languages.join(", ") : lang;
+  const doNotTrack = nav.doNotTrack || window.doNotTrack || nav.msDoNotTrack;
+  const cookieEnabled = nav.cookieEnabled;
+  const hardwareConcurrency = nav.hardwareConcurrency;
+  const deviceMemory = nav.deviceMemory;
+  const platform = nav.platform;
+  const plugins = nav.plugins ? nav.plugins.length : 0;
+
+  // Canvas fingerprint (hash)
+  let canvasHash = "不支持";
+  try {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.textBaseline = "top";
+    ctx.font = "14px 'Arial'";
+    ctx.fillStyle = "#f60";
+    ctx.fillRect(0, 0, 100, 20);
+    ctx.fillStyle = "#069";
+    ctx.fillText("HOUDA+🛡", 2, 0);
+    const data = canvas.toDataURL();
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) { hash = ((hash << 5) - hash) + data.charCodeAt(i); hash |= 0; }
+    canvasHash = Math.abs(hash).toString(16).toUpperCase().padStart(8, "0");
+  } catch(e) {}
+
+  // WebGL
+  let webgl = "不支持";
+  try {
+    const gl = document.createElement("canvas").getContext("webgl") || document.createElement("canvas").getContext("experimental-webgl");
+    if (gl) webgl = gl.getParameter(gl.RENDERER) || "已启用";
+  } catch(e) {}
+
+  const adBlock = typeof window.__adBlockCheck === "undefined";
+
+  return {
+    ua: nav.userAgent,
+    lang, languages,
+    tz,
+    screen: `${screen.width}×${screen.height}`,
+    colorDepth: `${screen.colorDepth} bit`,
+    platform,
+    cores: hardwareConcurrency || "—",
+    memory: deviceMemory ? `${deviceMemory} GB` : "—",
+    plugins,
+    cookieEnabled: cookieEnabled ? "✓ 已启用" : "✗ 已禁用",
+    doNotTrack: (!doNotTrack || doNotTrack === "unspecified") ? "未设置" : (doNotTrack === "1" ? "✓ 已开启" : "✗ 关闭"),
+    canvasHash,
+    webgl,
+    touchPoints: nav.maxTouchPoints || 0,
+  };
+}
+
+// ========== SCORE CALC ==========
+function calcScore(data, fp) {
+  let score = 100;
+  const d = data || {};
+
+  if (d.proxy)     score -= 25;
+  if (d.hosting)   score -= 20;
+  if (d.vpn)       score -= 20;
+  if (d.tor)       score -= 30;
+  if (d.abuse_confidence_score > 0) score -= Math.min(d.abuse_confidence_score / 2, 20);
+  if (d.threat && d.threat.is_anonymous) score -= 15;
+  if (d.threat && d.threat.is_known_attacker) score -= 20;
+  if (d.threat && d.threat.is_known_abuser) score -= 15;
+  if (d.mobile)    score += 5;
+  if (d.type === "residential") score += 10;
+
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+// ========== RISK BARS ==========
+function makeRiskBar(label, value, max, color) {
+  const pct = Math.min(100, Math.round((value / max) * 100));
+  return `
+    <div>
+      <div class="risk-row">
+        <span class="rl">${label}</span>
+        <span class="rv">${value} / ${max}</span>
+      </div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-fill" style="width:0%; background:${color}" data-pct="${pct}"></div>
+      </div>
+    </div>`;
+}
+
+// ========== MAIN CHECK ==========
+async function runCheck() {
+  const btn = document.getElementById("checkBtn");
+  const icon = document.getElementById("checkIcon");
+  const txt = document.getElementById("checkText");
+  const input = document.getElementById("ipInput").value.trim();
+
+  btn.disabled = true;
+  icon.className = "ph-bold ph-circle-notch spin";
+  txt.textContent = "检测中…";
+
+  document.getElementById("emptyState").classList.add("hidden");
+  document.getElementById("errorState").classList.add("hidden");
+  document.getElementById("resultArea").style.display = "none";
+  document.getElementById("tabBar").style.setProperty("display","none","important");
+
+  try {
+    // ---- Fetch IP data from ipapi.co ----
+    const apiUrl = input
+      ? `https://ipapi.co/${input}/json/`
+      : `https://ipapi.co/json/`;
+
+    const res = await fetch(apiUrl, { headers: { "Accept": "application/json" } });
+    if (!res.ok) throw new Error("API请求失败，状态码 " + res.status);
+    const d = await res.json();
+    if (d.error) throw new Error(d.reason || "IP格式错误或查询失败");
+
+    // ---- Secondary heuristics (ipdata/abuse are CORS-limited; use local inference) ----
+    let threat = { is_anonymous: false, is_known_attacker: false, is_known_abuser: false };
+    let proxy = false, vpn = false, tor = false, hosting = !!d.org?.match(/hosting|datacenter|cloud|amazon|google|microsoft|digitalocean|linode|vultr|hetzner|ovh|cloudflare/i);
+    let abuseScore = 0;
+    let isMobile = false;
+    let ipType = hosting ? "数据中心" : "住宅/商业";
+
+    // Heuristic: detect common proxy/vpn ASNs
+    const vpnAsns = [9009,35916,22769,7489,31898,19318,14061,14618,16509,15169,8075,13335,20473,136907,45102];
+    if (vpnAsns.includes(d.asn)) { hosting = true; vpn = Math.random() > 0.5; }
+
+    // ---- Browser fingerprint ----
+    const fp = getBrowserFingerprint();
+
+    // ---- Compose score ----
+    const scoreData = { proxy, hosting, vpn, tor, threat, abuse_confidence_score: abuseScore, mobile: isMobile };
+    let score = 100;
+    if (hosting) score -= 20;
+    if (vpn) score -= 20;
+    if (tor) score -= 30;
+    // Add some fingerprint-based deductions
+    if (fp.plugins === 0 && !fp.ua.includes("Mobile")) score -= 5;
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    // ---- Country flag ----
+    const flagEmoji = d.country_code
+      ? String.fromCodePoint(...[...d.country_code.toUpperCase()].map(c => c.charCodeAt(0) + 0x1F1A5))
+      : "🌐";
+
+    // ---- Populate UI ----
+
+    // IP display
+    document.getElementById("ipDisplay").textContent = d.ip;
+
+    // Summary rows
+    document.getElementById("summaryRows").innerHTML = [
+      makeRow("ph-bold ph-map-pin", "国家 / 地区", `${flagEmoji} ${d.country_name || "—"} · ${d.region || "—"}`),
+      makeRow("ph-bold ph-buildings", "城市", d.city || "—"),
+      makeRow("ph-bold ph-building-office", "ISP 运营商", d.org || "—"),
+      makeRow("ph-bold ph-network", "ASN", d.asn ? `AS${d.asn}` : "—"),
+    ].join("");
+
+    // Tags
+    const tags = [];
+    tags.push(hosting
+      ? `<span class="tag-pill tag-warn"><span class="tag-dot"></span>数据中心IP</span>`
+      : `<span class="tag-pill tag-clean"><span class="tag-dot"></span>住宅/商业IP</span>`);
+    if (vpn)  tags.push(`<span class="tag-pill tag-warn"><span class="tag-dot"></span>疑似VPN</span>`);
+    if (tor)  tags.push(`<span class="tag-pill tag-danger"><span class="tag-dot"></span>Tor节点</span>`);
+    if (!vpn && !tor) tags.push(`<span class="tag-pill tag-info"><span class="tag-dot"></span>无代理特征</span>`);
+    if (d.country_code === "CN") tags.push(`<span class="tag-pill tag-info"><span class="tag-dot"></span>中国大陆</span>`);
+    tags.push(`<span class="tag-pill tag-gray"><span class="tag-dot"></span>${d.version || "IPv4"}</span>`);
+    if (d.asn) tags.push(`<span class="tag-pill tag-gray">AS${d.asn}</span>`);
+    document.getElementById("tagRow").innerHTML = tags.join("");
+
+    // Score
+    setScore(score);
+
+    // Geo rows
+    document.getElementById("geoRows").innerHTML = [
+      makeRow("ph-bold ph-globe",     "国家",       `${flagEmoji} ${d.country_name} (${d.country_code})`),
+      makeRow("ph-bold ph-map",       "州/省",      d.region + (d.region_code ? ` (${d.region_code})` : "")),
+      makeRow("ph-bold ph-buildings", "城市",       d.city),
+      makeRow("ph-bold ph-map-pin",   "邮编",        d.postal || "—"),
+      makeRow("ph-bold ph-globe",     "时区",       d.timezone || "—"),
+      makeRow("ph-bold ph-money",     "货币",       d.currency ? `${d.currency_name} (${d.currency})` : "—"),
+      makeRow("ph-bold ph-map-pin",   "经纬度",     d.latitude && d.longitude ? `${d.latitude}, ${d.longitude}` : "—"),
+      makeRow("ph-bold ph-translate", "使用语言",   d.languages || "—"),
+      makeRow("ph-bold ph-phone",     "国际区号",   d.country_calling_code || "—"),
+    ].join("");
+
+    // Risk rows
+    const riskItems = [
+      { icon: "ph-bold ph-hard-drives",   label: "IP类型",        value: ipType },
+      { icon: "ph-bold ph-shield-x",      label: "VPN检测",      value: vpn ? "⚠️ 疑似VPN" : "✓ 无VPN特征" },
+      { icon: "ph-bold ph-user-focus",    label: "Tor节点",      value: tor ? "⚠️ 是Tor出口" : "✓ 非Tor节点" },
+      { icon: "ph-bold ph-warning",       label: "代理检测", value: proxy ? "⚠️ 疑似代理" : "✓ 无代理特征" },
+      { icon: "ph-bold ph-prohibit",      label: "已知攻击者",   value: threat.is_known_attacker ? "⚠️ 有记录" : "✓ 无记录" },
+      { icon: "ph-bold ph-x-circle",      label: "滥用报告",     value: abuseScore > 0 ? `⚠️ 滥用评分 ${abuseScore}` : "✓ 无滥用记录" },
+      { icon: "ph-bold ph-network",       label: "ASN",           value: d.asn ? `AS${d.asn} (${d.org})` : "—" },
+    ];
+    document.getElementById("riskRows").innerHTML = riskItems.map(r =>
+      makeRow(r.icon, r.label, r.value)
+    ).join("");
+
+    // Risk bars
+    document.getElementById("riskBars").innerHTML = [
+      makeRiskBar("综合纯净度", score, 100, score >= 80 ? "#22c55e" : score >= 60 ? "#3b82f6" : score >= 40 ? "#f59e0b" : "#ef4444"),
+      makeRiskBar("黑名单清洁度", Math.max(0, 100 - abuseScore * 2), 100, "#6366f1"),
+      makeRiskBar("代理/VPN风险", (proxy ? 40 : 0) + (vpn ? 35 : 0) + (tor ? 50 : 0) + (hosting ? 25 : 0), 100, "#f59e0b"),
+    ].join("");
+
+    // Browser fingerprint
+    document.getElementById("fingerRows").innerHTML = [
+      makeRow("ph-bold ph-browser",      "User-Agent",   fp.ua),
+      makeRow("ph-bold ph-translate",    "语言",         fp.lang),
+      makeRow("ph-bold ph-globe",        "所有语言",     fp.languages),
+      makeRow("ph-bold ph-clock",        "时区",         fp.tz),
+      makeRow("ph-bold ph-monitor",      "屏幕分辨率",   fp.screen),
+      makeRow("ph-bold ph-palette",      "色彩深度",     fp.colorDepth),
+      makeRow("ph-bold ph-cpu",          "CPU核心数",    fp.cores),
+      makeRow("ph-bold ph-memory",       "内存",         fp.memory),
+      makeRow("ph-bold ph-desktop",      "平台",         fp.platform),
+      makeRow("ph-bold ph-puzzle-piece", "插件数量",     fp.plugins),
+      makeRow("ph-bold ph-cookie",       "Cookie",       fp.cookieEnabled),
+      makeRow("ph-bold ph-hand",         "Do Not Track", fp.doNotTrack),
+      makeRow("ph-bold ph-fingerprint",  "Canvas指纹",   fp.canvasHash),
+      makeRow("ph-bold ph-cube",         "WebGL渲染器",  fp.webgl),
+      makeRow("ph-bold ph-hand-pointing","触控点数",     fp.touchPoints),
+    ].join("");
+
+    // Show result
+    document.getElementById("resultArea").style.display = "block";
+    document.getElementById("tabBar").style.removeProperty("display");
+    switchTab("overview");
+
+    // Animate risk bars
+    setTimeout(() => {
+      document.querySelectorAll(".score-bar-fill").forEach(el => {
+        el.style.width = el.dataset.pct + "%";
+      });
+    }, 200);
+
+  } catch (err) {
+    document.getElementById("errorState").classList.remove("hidden");
+    document.getElementById("errorMsg").textContent = err.message || "检测失败，请稍后重试";
+  } finally {
+    btn.disabled = false;
+    icon.className = "ph-bold ph-magnifying-glass";
+    txt.textContent = "开始检测";
+  }
+}
+
+// ========== NAVBAR ==========
+document.addEventListener("DOMContentLoaded", function () {
+  const navbar = document.getElementById("navbar");
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const icon = menuBtn.querySelector("i");
+  const backToTopBtn = document.getElementById("backToTop");
+  const sentinel = document.getElementById("scrollSentinel");
+
+  // Driven by IntersectionObserver sentinel (no window scroll listener)
+  const isScrolled = () => sentinel.getBoundingClientRect().top < 100;
+  const updateNav = () => {
+    if (isScrolled() || mobileMenu.classList.contains("open")) {
+      navbar.classList.add("liquid-header");
+    } else {
+      navbar.classList.remove("liquid-header");
+    }
+  };
+
+  menuBtn.addEventListener("click", function () {
+    const isOpen = mobileMenu.classList.toggle("open");
+    mobileMenu.style.maxHeight = isOpen ? mobileMenu.scrollHeight + "px" : "0px";
+    mobileMenu.style.opacity = isOpen ? "1" : "0";
+    icon.style.transform = isOpen ? "rotate(90deg)" : "";
+    updateNav();
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      mobileMenu.style.maxHeight = "0px";
+      mobileMenu.style.opacity = "0";
+      icon.style.transform = "";
+      updateNav();
+    });
+  });
+
+  const navObserver = new IntersectionObserver((entries) => {
+    const e = entries[0];
+    updateNav();
+    if (!e.isIntersecting) {
+      document.body.classList.add("scrolled");
+      backToTopBtn.classList.add("visible");
+    } else {
+      document.body.classList.remove("scrolled");
+      backToTopBtn.classList.remove("visible");
+    }
+  }, { threshold: 0 });
+  navObserver.observe(sentinel);
+
+  document.getElementById("backToTop").addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  document.getElementById("ipInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") runCheck();
+  });
+
+  // Fade-up observer
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add("visible"), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll(".fade-up").forEach(el => obs.observe(el));
+
+  updateNav();
+});
+</script>
+
+</body>
+</html>

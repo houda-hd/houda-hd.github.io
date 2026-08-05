@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HDTI 测试 | 侯大人格实验室</title>
+  <meta name="theme-color" content="#f4f4f6" />
+  <link crossorigin href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet" />
+  <style>
+    /* ==========================================================
+       HOUDA+ HDTI - Soft Structuralism 视觉体系
+       银灰底 / 浮空白卡 / 单一蓝色强调 / 克制的弹性动效
+       ========================================================== */
+
+    :root {
+      --bg: #f4f4f6;
+      --bg-card: #ffffff;
+      --bg-elevated: #fafafa;
+      --text-primary: #1a1a1f;
+      --text-secondary: #5c5c66;
+      --text-tertiary: #9a9aa3;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-light: rgba(37,99,235,0.06);
+      --green: #16a34a;
+      --green-light: rgba(22,163,74,0.08);
+      --border-hairline: rgba(0,0,0,0.06);
+      --border-soft: rgba(0,0,0,0.04);
+
+      --shadow-ambient:
+        0 1px 2px rgba(0,0,0,0.03),
+        0 8px 24px rgba(0,0,0,0.04),
+        0 24px 56px rgba(0,0,0,0.03);
+      --shadow-float:
+        0 2px 4px rgba(0,0,0,0.03),
+        0 12px 32px rgba(0,0,0,0.06),
+        0 32px 72px rgba(0,0,0,0.04);
+
+      --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+      --dur-press: 120ms;
+      --dur-fast: 200ms;
+      --dur-normal: 400ms;
+      --dur-slow: 700ms;
+
+      --font-display: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+
+      --radius-card: 1.25rem;
+      --radius-input: 0.75rem;
+      --radius-pill: 999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      overflow-x: clip;
+      overscroll-behavior-x: none;
+      width: 100%;
+      scroll-behavior: smooth;
+      font: 100%/1.6 var(--font-display);
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    body {
+      overflow-x: clip;
+      overscroll-behavior-x: none;
+      min-height: 100svh;
+      background: var(--bg);
+      padding: 4rem 1.5rem 5rem;
+    }
+
+    /* --- 漫射环境光 --- */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(54% 46% at 84% 4%, rgba(37,99,235,0.08), transparent 70%),
+        radial-gradient(46% 42% at 4% 88%, rgba(22,163,74,0.05), transparent 70%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* --- 页头 --- */
+    .page-head {
+      max-width: 680px;
+      margin-bottom: 2.5rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      border-radius: var(--radius-pill);
+      padding: 0.375rem 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    .sub {
+      color: var(--text-secondary);
+      font-size: 1.0625rem;
+      line-height: 1.7;
+      max-width: 46ch;
+    }
+
+    /* --- 主卡片 --- */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-card);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-ambient);
+    }
+
+    /* --- 题目 --- */
+    #questions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.875rem;
+      margin-bottom: 1.75rem;
+    }
+    @media (min-width: 768px) {
+      #questions { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    }
+
+    .q {
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-card);
+      padding: 1.125rem 1.125rem 1.25rem;
+      background: var(--bg-elevated);
+      transition: border-color var(--dur-fast) var(--ease-fluid),
+                  box-shadow var(--dur-normal) var(--ease-fluid),
+                  transform var(--dur-normal) var(--ease-fluid);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .q:hover {
+        border-color: var(--border-soft);
+        box-shadow: var(--shadow-ambient);
+        transform: translateY(-2px);
+      }
+    }
+
+    .q h3 {
+      margin: 0 0 0.75rem;
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.45;
+      color: var(--text-primary);
+    }
+
+    .opts { display: grid; gap: 0.5rem; }
+
+    label {
+      display: flex;
+      gap: 0.625rem;
+      align-items: flex-start;
+      padding: 0.6875rem 0.875rem;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      border-radius: var(--radius-input);
+      cursor: pointer;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      -webkit-tap-highlight-color: transparent;
+      transition: background var(--dur-fast) var(--ease-fluid),
+                  border-color var(--dur-fast) var(--ease-fluid),
+                  color var(--dur-fast) var(--ease-fluid),
+                  transform var(--dur-press) var(--ease-out);
+    }
+    label:active { transform: scale(0.985); }
+    @media (hover: hover) and (pointer: fine) {
+      label:hover {
+        background: var(--accent-light);
+        border-color: rgba(37,99,235,0.22);
+        color: var(--text-primary);
+      }
+    }
+    label:has(input:checked) {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    label:has(input:focus-visible) {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    input[type="radio"] {
+      accent-color: var(--accent);
+      width: 1.0625rem;
+      height: 1.0625rem;
+      margin-top: 0.1875rem;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* --- 进度 --- */
+    .progress-block {
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .muted {
+      color: var(--text-tertiary);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-block .muted { margin-bottom: 0.625rem; }
+
+    .bar {
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .fill {
+      height: 100%;
+      width: 0;
+      border-radius: var(--radius-pill);
+      background: var(--accent);
+      transition: width var(--dur-slow) var(--ease-fluid);
+    }
+
+    /* --- 按钮 --- */
+    .actions {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.625rem;
+    }
+
+    button {
+      font-family: var(--font-display);
+      border: 0;
+      border-radius: var(--radius-pill);
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform var(--dur-press) var(--ease-out),
+                  background var(--dur-fast) var(--ease-fluid),
+                  border-color var(--dur-fast) var(--ease-fluid),
+                  box-shadow var(--dur-fast) var(--ease-fluid);
+    }
+    button:active { transform: scale(0.97); }
+    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .primary {
+      background: var(--text-primary);
+      color: #ffffff;
+      box-shadow: var(--shadow-ambient);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .primary:hover { background: var(--accent); }
+    }
+
+    .ghost {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-hairline);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .ghost:hover { background: var(--bg-elevated); }
+    }
+
+    /* --- 结果 --- */
+    .result {
+      margin-top: 1.5rem;
+      display: none;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      animation: resultIn var(--dur-slow) var(--ease-out) both;
+    }
+
+    @keyframes resultIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .type {
+      font-family: var(--font-display);
+      font-size: clamp(2.25rem, 8vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin: 0.375rem 0 0.5rem;
+      color: var(--accent);
+    }
+
+    .person {
+      margin-top: 1rem;
+      padding: 1rem 1.125rem;
+      border-radius: var(--radius-input);
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      line-height: 1.7;
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+    }
+
+    /* --- 滚动揭示 --- */
+    .reveal-init {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(3px);
+      transition: opacity var(--dur-slow) var(--ease-out),
+                  transform var(--dur-slow) var(--ease-out),
+                  filter var(--dur-slow) var(--ease-out);
+    }
+    .reveal-init.visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    /* --- 移动端 --- */
+    @media (max-width: 767px) {
+      body { padding: 2.5rem 1rem 3.5rem; }
+      .card { padding: 1.25rem; }
+      .page-head { margin-bottom: 1.75rem; }
+      .actions { width: 100%; }
+      .actions button { flex: 1 1 auto; }
+    }
+
+    /* --- 无障碍 --- */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal-init { opacity: 1 !important; transform: none !important; filter: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <header class="page-head">
+      <span class="pill">HOUDA+ Personality Lab</span>
+      <h1>HDTI 测试</h1>
+      <div class="sub">一个侯大版人格小测。共 12 题，选最像你的选项，立即得到你的 HDTI 类型与关联人物。</div>
+    </header>
+
+    <div class="card">
+      <div id="questions"></div>
+
+      <div class="progress-block">
+        <div class="muted" id="progressText">完成 0 / 12</div>
+        <div class="bar"><div class="fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="submitBtn">查看我的 HDTI</button>
+        <button class="ghost" id="resetBtn">重置</button>
+      </div>
+
+      <div class="result" id="result"></div>
+    </div>
+  </main>
+
+  <script>
+    const qs = [
+      { dim: 'EI', t: '聚会中你通常？', a: { l: '主动开启话题、认识新朋友', v: 'E' }, b: { l: '先观察，和熟人深聊', v: 'I' } },
+      { dim: 'EI', t: '压力大时你更倾向？', a: { l: '找人聊聊，越聊越有能量', v: 'E' }, b: { l: '先独处整理，再输出', v: 'I' } },
+      { dim: 'SN', t: '做决定时你更看重？', a: { l: '现实细节、可执行性', v: 'S' }, b: { l: '可能性、未来图景', v: 'N' } },
+      { dim: 'SN', t: '你更像哪一种学习方式？', a: { l: '先学现成方法', v: 'S' }, b: { l: '先理解底层逻辑', v: 'N' } },
+      { dim: 'TF', t: '朋友求建议时你更常？', a: { l: '直接分析利弊给方案', v: 'T' }, b: { l: '先共情，再一起找方向', v: 'F' } },
+      { dim: 'TF', t: '团队争议时你会？', a: { l: '坚持标准和效率', v: 'T' }, b: { l: '优先照顾关系感受', v: 'F' } },
+      { dim: 'JP', t: '你的日程习惯？', a: { l: '提前规划，照表执行', v: 'J' }, b: { l: '留足弹性，临场调整', v: 'P' } },
+      { dim: 'JP', t: '旅行方式更接近？', a: { l: '行程攻略做满', v: 'J' }, b: { l: '随走随玩，灵感优先', v: 'P' } },
+      { dim: 'EI', t: '你在群里的状态？', a: { l: '活跃发言组织局', v: 'E' }, b: { l: '潜水观察偶尔精准发言', v: 'I' } },
+      { dim: 'SN', t: '你更容易被什么打动？', a: { l: '实打实的成果', v: 'S' }, b: { l: '新鲜的创意和愿景', v: 'N' } },
+      { dim: 'TF', t: '面对批评你会？', a: { l: '先判断是否合理', v: 'T' }, b: { l: '先感受语气与关系', v: 'F' } },
+      { dim: 'JP', t: '临近截止日，你通常？', a: { l: '早就收尾，稳稳提交', v: 'J' }, b: { l: '冲刺爆发，最后精彩', v: 'P' } },
+    ];
+
+    const relation = {
+      INTJ: [
+        'old侯婉慧：侯大的灵魂人物，侯大最权威的歌手，整个侯大因她而存在。'
+      ],
+      ENTP: [
+        'new王逸鑫：侯大最I之人。Key sentence：「青枫，等你回娄底，我请你吃饭吧！」'
+      ],
+      INFJ: [
+        '陆陵俊（609）：侯大最会找漂亮饭，身材最好之人。',
+        '林京鑫：娇妻。'
+      ],
+      INFP: [
+        '邹梓铭：完全小蝴蝶，年下1️⃣。',
+        '李佳岚：飞鼠妈。',
+        '程贻邦：「额」。'
+      ],
+      ENFP: [
+        '浣莎澜：完全灵魂人物，最会约人出来玩之人，现实生活中是药店的药师（我还要自我介绍的话，那我这么多年白干了）。',
+        '李嘉雨：「世界就是围着小狗转的！」',
+        '昌穹：侯大歌声最美妙之人。'
+      ],
+      ESFP: [
+        '赵锐：侯大灵感实现者'
+      ],
+      ESTJ: [
+        '霉霉：The greatest singer in the world'
+      ],
+      ESFJ: [
+        '何玲：完全大美女来的！'
+      ],
+      ISTP: [
+        '谢强：侯大最闷骚的人。',
+        '陈贤：「咋变成这个了啊」。',
+        '侯潇语：喵。'
+      ],
+      INTP: [
+        '侯婉慧：「ahsjdlleke」。'
+      ],
+      ISFP: [
+        '谢祥泽（小香猪）：很爱空耳（听错东西），有时候很笨。',
+        '杨卉：很社恐的小女孩😱。',
+        '牛继哲：侯大最美创始人！由于对通讯录群体凝聚的贡献，所以有可能是以后诺贝尔和平奖预备得主！',
+        '杜陈：侯大校草来的！'
+      ]
+    };
+
+    const questionsEl = document.getElementById('questions');
+    const resultEl = document.getElementById('result');
+    const progressText = document.getElementById('progressText');
+    const progressFill = document.getElementById('progressFill');
+
+    function renderQuestions() {
+      questionsEl.innerHTML = qs.map((q, i) => `
+        <div class="q">
+          <h3>${i + 1}. ${q.t}</h3>
+          <div class="opts">
+            <label><input type="radio" name="q${i}" value="${q.a.v}"> ${q.a.l}</label>
+            <label><input type="radio" name="q${i}" value="${q.b.v}"> ${q.b.l}</label>
+          </div>
+        </div>
+      `).join('');
+
+      questionsEl.querySelectorAll('input[type="radio"]').forEach(el => {
+        el.addEventListener('change', updateProgress);
+      });
+    }
+
+    function updateProgress() {
+      const answered = qs.filter((_, i) => document.querySelector(`input[name=q${i}]:checked`)).length;
+      progressText.textContent = `完成 ${answered} / ${qs.length}`;
+      progressFill.style.width = `${(answered / qs.length) * 100}%`;
+    }
+
+    function calcType() {
+      const score = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+      for (let i = 0; i < qs.length; i++) {
+        const checked = document.querySelector(`input[name=q${i}]:checked`);
+        if (!checked) return null;
+        score[checked.value] += 1;
+      }
+      const type = `${score.E >= score.I ? 'E':'I'}${score.S >= score.N ? 'S':'N'}${score.T >= score.F ? 'T':'F'}${score.J >= score.P ? 'J':'P'}`;
+      return { type, score };
+    }
+
+    function showResult() {
+      const r = calcType();
+      if (!r) {
+        alert('还有题目没选完哦～');
+        return;
+      }
+      const list = relation[r.type] || ['该类型的侯大关联人物暂未录入，等待你来补充！'];
+      const picked = list[Math.floor(Math.random() * list.length)];
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <div class="muted">你的 HDTI 类型</div>
+        <div class="type">${r.type}</div>
+        <div class="muted">维度得分：E${r.score.E}/I${r.score.I} · S${r.score.S}/N${r.score.N} · T${r.score.T}/F${r.score.F} · J${r.score.J}/P${r.score.P}</div>
+        <div class="person">${picked}</div>
+      `;
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetAll() {
+      document.querySelectorAll('input[type=radio]').forEach(i => i.checked = false);
+      resultEl.style.display = 'none';
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', showResult);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+    renderQuestions();
+    updateProgress();
+  </script>
+
+  <script>
+    /* 滚动揭示：IntersectionObserver 驱动，不监听 scroll 事件 */
+    (function () {
+      const targets = document.querySelectorAll('.page-head, .q, .progress-block');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      targets.forEach(el => el.classList.add('reveal-init'));
+
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry, i) {
+          if (!entry.isIntersecting) return;
+          const delay = Math.min(i, 5) * 60;
+          window.setTimeout(function () { entry.target.classList.add('visible'); }, delay);
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      targets.forEach(el => io.observe(el));
+    })();
+  </script>
+</body>
+</html>

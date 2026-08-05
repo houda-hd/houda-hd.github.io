@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="theme-color" content="#f4f4f6"/>
+<title>HOUDA+ 美国免税州地址生成器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<style>
+:root {
+  --bg:#f4f4f6;
+  --bg-card:#ffffff;
+  --bg-elevated:#fafafa;
+  --text-primary:#1a1a1f;
+  --text-secondary:#5c5c66;
+  --text-tertiary:#9a9aa3;
+  --accent:#2563eb;
+  --accent-hover:#1d4ed8;
+  --accent-light:rgba(37,99,235,0.06);
+  --green:#16a34a;
+  --green-light:rgba(22,163,74,0.08);
+  --border-hairline:rgba(0,0,0,0.06);
+  --border-soft:rgba(0,0,0,0.04);
+  --ease-fluid:cubic-bezier(0.32,0.72,0,1);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.22,0.61,0.36,1);
+  --dur-fast:200ms;
+  --dur-normal:400ms;
+  --dur-slow:700ms;
+  --font-display:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+  --radius-card:1.25rem;
+  --radius-pill:999px;
+  --radius-input:0.75rem;
+}
+
+html {
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* — Ambient diffused light — */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--bg);
+}
+.ambient::before {
+  content: "";
+  position: absolute;
+  top: -22%;
+  left: -18%;
+  width: 56vw;
+  height: 56vw;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(37,99,235,0.16), rgba(37,99,235,0) 68%);
+  filter: blur(40px);
+}
+.ambient::after {
+  content: "";
+  position: absolute;
+  bottom: -26%;
+  right: -20%;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(22,163,74,0.12), rgba(22,163,74,0) 68%);
+  filter: blur(48px);
+}
+
+/* — Panels — */
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 14px 36px rgba(16,24,40,0.06);
+  transition: transform var(--dur-normal) var(--ease-spring), box-shadow var(--dur-normal) var(--ease-spring), border-color var(--dur-fast) var(--ease-out);
+}
+.panel-shell {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: calc(var(--radius-card) + 0.5rem);
+  padding: 0.6rem;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.03);
+}
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1px 2px rgba(16,24,40,0.05), 0 22px 48px rgba(16,24,40,0.10);
+  }
+}
+
+/* — Navbar — */
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  transition: background var(--dur-normal) var(--ease-out), box-shadow var(--dur-normal) var(--ease-out), border-color var(--dur-normal) var(--ease-out);
+}
+#navbar.liquid-header {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid var(--border-hairline);
+  box-shadow: 0 8px 28px rgba(16,24,40,0.06);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.brand-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.9rem;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 2px 8px rgba(16,24,40,0.08);
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
+}
+.brand-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.brand-text .name { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1; display: block; }
+.brand-text .sub { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-tertiary); }
+#navbar.liquid-header .brand-logo { box-shadow: 0 2px 10px rgba(37,99,235,0.14); }
+@media (hover: hover) and (pointer: fine) {
+  .brand:hover .brand-logo { transform: scale(1.06) rotate(-1deg); }
+}
+.nav-links { display: none; align-items: center; gap: 1.5rem; }
+.nav-link {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.nav-link:hover { color: var(--text-primary); }
+@media (min-width: 768px) { .nav-links { display: flex; } }
+
+/* — Buttons — */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.btn-primary {
+  background: var(--text-primary);
+  color: #fff;
+  padding: 0.875rem 1.75rem;
+  box-shadow: 0 4px 16px rgba(16,24,40,0.12);
+}
+.btn-primary:hover { background: var(--accent); box-shadow: 0 8px 24px rgba(37,99,235,0.28); }
+.btn-primary:active { transform: scale(0.96); }
+.btn-ghost {
+  background: var(--bg-elevated);
+  border-color: var(--border-hairline);
+  color: var(--text-primary);
+  padding: 0.625rem 1.1rem;
+  font-size: 0.85rem;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+.btn-ghost:active { transform: scale(0.97); }
+.btn-block { width: 100%; }
+
+.menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 1.35rem;
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+}
+.menu-btn:active { transform: scale(0.94); }
+@media (min-width: 768px) { .menu-btn { display: none; } }
+
+#mobileMenu {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height var(--dur-normal) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+#mobileMenu.open { max-height: 360px; opacity: 1; }
+#mobileMenu .m-link {
+  display: block;
+  padding: 0.625rem 1rem;
+  margin-bottom: 0.4rem;
+  border-radius: 0.85rem;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+#mobileMenu .m-link:hover { color: var(--text-primary); background: var(--bg-elevated); }
+#mobileMenu .m-cta {
+  display: block;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  margin-top: 0.25rem;
+  border-radius: 0.85rem;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  background: var(--text-primary);
+}
+#mobileMenu .m-cta:hover { background: var(--accent); }
+
+/* — Hero — */
+.hero {
+  padding-top: 8rem;
+  padding-bottom: 3.5rem;
+  text-align: center;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent-light);
+  border: 1px solid rgba(37,99,235,0.16);
+  color: var(--accent-hover);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+.badge .dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--green);
+}
+.hero h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+.hero h1 .accent-text { color: var(--accent); }
+.hero .lede {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  max-width: 36rem;
+  margin: 0 auto 0.75rem;
+}
+.hero .sub {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  max-width: 32rem;
+  margin: 0 auto 2.25rem;
+}
+
+/* — Section heads — */
+.section { padding: 3rem 0; }
+.section-head { text-align: center; margin-bottom: 2.5rem; }
+.section-head h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.divider {
+  width: 3rem;
+  height: 0.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  margin: 0 auto 1rem;
+}
+.section-head p { color: var(--text-secondary); max-width: 36rem; margin: 0 auto; font-size: 1rem; }
+
+/* — States grid — */
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 1023px) { .state-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 639px) { .state-grid { grid-template-columns: repeat(2, 1fr); } }
+.state-card {
+  cursor: pointer;
+  text-align: center;
+  padding: 1.25rem 1rem;
+  border-radius: var(--radius-card);
+}
+.state-card .emoji { font-size: 1.9rem; margin-bottom: 0.5rem; }
+.state-card .cn { font-weight: 700; font-size: 0.9rem; }
+.state-card .en { font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+.state-card .tax {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.state-card .desc { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem; line-height: 1.45; }
+.state-card.selected {
+  border-color: var(--accent) !important;
+  background: var(--accent-light) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(37,99,235,0.16) !important;
+}
+
+/* — Generator — */
+.gen-card { padding: 1.75rem; }
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 639px) { .field-row { grid-template-columns: 1fr; } }
+.field label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+.field input, .field select {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-input);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  appearance: none;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+  background: var(--bg-card);
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235c5c66'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1.1rem;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+.field select option { background: #fff; color: var(--text-primary); }
+.hidden { display: none; }
+
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.result-head .label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+@media (max-width: 639px) { .result-grid { grid-template-columns: 1fr; } }
+.result-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.875rem 1rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-input);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+}
+.result-field.col-span-2 { grid-column: 1 / -1; }
+.result-field .label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.result-field .value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+.copy-hint {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.result-field:hover { background: var(--bg-card); border-color: var(--accent); transform: translateY(-1px); }
+.result-field:hover .copy-hint { opacity: 1; }
+
+/* — Tips — */
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+@media (max-width: 639px) { .tips-grid { grid-template-columns: 1fr; } }
+.tip {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.25rem;
+  border-radius: var(--radius-card);
+}
+.tip-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 0.85rem;
+  background: var(--accent-light);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+.tip h3 { margin: 0 0 0.35rem; font-size: 0.9rem; font-weight: 700; }
+.tip p { margin: 0; font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.55; }
+
+/* — Footer (light) — */
+.footer {
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border-hairline);
+  padding: 2.5rem 0 6rem;
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+@media (min-width: 768px) { .footer-inner { flex-direction: row; justify-content: space-between; } }
+.footer .brand .name { color: var(--text-primary); }
+.footer p { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6; max-width: 20rem; margin: 0.75rem 0 0; }
+.footer h3 { font-size: 0.875rem; font-weight: 700; margin: 0 0 1rem; color: var(--text-primary); }
+.footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color var(--dur-fast) var(--ease-out); }
+.footer a:hover { color: var(--accent); }
+.footer-bottom {
+  border-top: 1px solid var(--border-hairline);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+/* — Dock — */
+.dock-container {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 0 0.625rem;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.dock {
+  display: flex;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 14px 34px rgba(16,24,40,0.12), inset 0 1px 0 rgba(255,255,255,0.8);
+  pointer-events: auto;
+  max-width: calc(100vw - 1.5rem);
+  overflow: hidden;
+  transition: padding var(--dur-fast) var(--ease-out);
+}
+.dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 0.25rem;
+  border-radius: 50%;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: transform var(--dur-fast) var(--ease-spring), background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  .dock-item:hover { transform: translateY(-8px) scale(1.15); background: rgba(255,255,255,0.9); color: var(--accent); }
+}
+.dock-item:active { transform: scale(0.92); background: var(--bg-elevated); }
+.dock-icon { font-size: 1.375rem; margin-bottom: 0.1rem; }
+.dock-label { font-size: 0.625rem; font-weight: 600; opacity: 0.8; }
+
+.back-to-top {
+  pointer-events: auto;
+  flex-shrink: 0;
+  width: 3.125rem;
+  height: 3.125rem;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.9rem;
+  cursor: pointer;
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 10px 28px rgba(16,24,40,0.14);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring), visibility var(--dur-fast), background var(--dur-fast) var(--ease-out);
+  color: var(--accent);
+  font-size: 1.25rem;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+@media (hover: hover) and (pointer: fine) {
+  .back-to-top:hover { background: #fff; transform: scale(1.1); }
+}
+body.scrolled .dock { padding: 0.4rem 0.75rem; }
+body.scrolled .dock-item { width: 2.75rem; height: 2.75rem; }
+body.scrolled .dock-icon { font-size: 1.25rem; margin-bottom: 0; }
+body.scrolled .dock-label { display: none; }
+
+/* — Copy toast — */
+#copyToast {
+  position: fixed;
+  bottom: 6.25rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text-primary);
+  color: #fff;
+  padding: 0.625rem 1.4rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+  z-index: 9999;
+  white-space: nowrap;
+}
+#copyToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* — Reveal — */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--dur-slow) var(--ease-spring), transform var(--dur-slow) var(--ease-spring);
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fade-up { opacity: 1; transform: none; transition: none; }
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  #navbar.liquid-header, .dock, .back-to-top { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg-card); }
+}
+</style>
+
+</head>
+<body>
+
+<!-- Scroll sentinel (drives navbar/back-to-top via IntersectionObserver, no window scroll) -->
+<div id="scrollSentinel" style="position:absolute; top:100px; left:0; width:1px; height:1px; pointer-events:none;"></div>
+
+<!-- Ambient light -->
+<div class="ambient"></div>
+
+<!-- Navbar -->
+<header id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="#">
+        <div class="brand-logo">
+          <img alt="HOUDA+" src="../assets/HOUDA_squre.jpeg"/>
+        </div>
+        <div class="brand-text">
+          <span class="name">HOUDA+</span>
+          <span class="sub">免税州地址生成器</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a class="nav-link" href="#generator">生成器</a>
+        <a class="nav-link" href="#states">免税州</a>
+        <a class="nav-link" href="#tips">使用须知</a>
+        <a class="btn btn-primary" href="#generator">立即生成</a>
+      </nav>
+      <button class="menu-btn" id="menuBtn" aria-label="菜单">
+        <i class="ph-bold ph-list"></i>
+      </button>
+    </div>
+  </div>
+  <div id="mobileMenu">
+    <div class="container" style="padding-bottom:1rem;">
+      <a class="m-link" href="#generator">生成器</a>
+      <a class="m-link" href="#states">免税州</a>
+      <a class="m-link" href="#tips">使用须知</a>
+      <a class="m-cta" href="#generator">立即生成</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="fade-up">
+      <div class="badge"><span class="dot"></span>5个免税州 · 数据持续更新</div>
+      <h1>美国免税州<br/><span class="accent-text">地址生成器</span></h1>
+      <p class="lede">HOUDA+ 出品 · 一键生成真实格式的美国免税州收货地址</p>
+      <p class="sub">覆盖俄勒冈 · 蒙大拿 · 新罕布什尔 · 特拉华 · 阿拉斯加，助力海淘省税</p>
+      <a href="#generator" class="btn btn-primary">
+        <i class="ph-bold ph-sparkle"></i> 开始生成地址
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- States Overview -->
+<section class="section" id="states">
+  <div class="container">
+    <div class="section-head fade-up">
+      <h2>美国五大免税州</h2>
+      <div class="divider"></div>
+      <p>点击卡片可在生成器中快速选择该州</p>
+    </div>
+    <div class="state-grid fade-up" id="stateCards">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Generator -->
+<section class="section" id="generator">
+  <div class="container">
+    <div class="section-head fade-up">
+      <h2>地址生成器</h2>
+      <div class="divider"></div>
+      <p>选择州份与类型，一键生成可用于购物的格式化地址</p>
+    </div>
+    <div class="fade-up">
+      <div class="panel-shell">
+        <div class="panel gen-card">
+          <!-- Controls -->
+          <div class="field-row">
+            <div class="field">
+              <label>选择免税州</label>
+              <select id="stateSelect">
+                <option value="">随机州份</option>
+                <option value="OR">俄勒冈 Oregon (OR)</option>
+                <option value="MT">蒙大拿 Montana (MT)</option>
+                <option value="NH">新罕布什尔 New Hampshire (NH)</option>
+                <option value="DE">特拉华 Delaware (DE)</option>
+                <option value="AK">阿拉斯加 Alaska (AK)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>地址类型</label>
+              <select id="typeSelect">
+                <option value="residential">住宅地址</option>
+                <option value="apartment">公寓地址</option>
+                <option value="po">转运仓地址</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>姓名语言</label>
+              <select id="nameSelect">
+                <option value="en">英文姓名</option>
+                <option value="cn">中文拼音</option>
+                <option value="custom">自定义</option>
+              </select>
+            </div>
+          </div>
+          <div id="customNameRow" class="field hidden" style="margin-bottom:1.5rem;">
+            <label>自定义姓名</label>
+            <input type="text" id="customName" placeholder="例：Zhang San / 张三（将自动转拼音）" />
+          </div>
+          <button class="btn btn-primary btn-block" id="generateBtn">
+            <i class="ph-bold ph-sparkle"></i>生成地址
+          </button>
+
+          <!-- Result -->
+          <div id="resultSection" style="margin-top:1.75rem;">
+            <div class="result-head">
+              <span class="label">生成结果</span>
+              <button class="btn btn-ghost" id="copyAllBtn">
+                <i class="ph-bold ph-copy"></i>复制全部
+              </button>
+            </div>
+            <div class="result-grid" id="resultGrid">
+              <div class="result-field col-span-2" data-copy-field>
+                <span class="label">收件人 Recipient</span>
+                <span class="value" id="r-name">—</span>
+                <span class="copy-hint"><i class="ph-bold ph-copy"></i>点击复制</span>
+              </div>
+              <div class="result-field col-span-2" data-copy-field>
+                <span class="label">街道地址 Street Address</span>
+                <span class="value" id="r-street">—</span>
+                <span class="copy-hint"><i class="ph-bold ph-copy"></i>点击复制</span>
+              </div>
+              <div class="result-field" data-copy-field>
+                <span class="label">城市 City</span>
+                <span class="value" id="r-city">—</span>
+                <span class="copy-hint"><i class="ph-bold ph-copy"></i>点击复制</span>
+              </div>
+              <div class="result-field" data-copy-field>
+                <span class="label">州 State</span>
+                <span class="value" id="r-state">—</span>
+                <span class="copy-hint"><i class="ph-bold ph-copy"></i>点击复制</span>
+              </div>
+              <div class="result-field" data-copy-field>
+                <span class="label">邮编 ZIP Code</span>
+                <span class="value" id="r-zip">—</span>
+                <span class="copy-hint"><i class="ph-bold ph-copy"></i>点击复制</span>
+              </div>
+              <div class="result-field" data-copy-field>
+                <span class="label">电话 Phone</span>
+                <span class="value" id="r-phone">—</span>
+                <span class="copy-hint"><i class="ph-bold ph-copy"></i>点击复制</span>
+              </div>
+              <div class="result-field col-span-2" data-copy-field>
+                <span class="label">完整地址（一行）Full Address</span>
+                <span class="value" id="r-full">—</span>
+                <span class="copy-hint"><i class="ph-bold ph-copy"></i>点击复制</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tips -->
+<section class="section" id="tips">
+  <div class="container">
+    <div class="section-head fade-up">
+      <h2>使用须知</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="tips-grid fade-up">
+      <div class="panel tip">
+        <div class="tip-icon"><i class="ph-bold ph-shield"></i></div>
+        <div>
+          <h3>免税原理</h3>
+          <p>以上5个州在州级层面无销售税，在这些州收货可节省3%~10%税费，适合海淘转运。</p>
+        </div>
+      </div>
+      <div class="panel tip">
+        <div class="tip-icon"><i class="ph-bold ph-truck"></i></div>
+        <div>
+          <h3>配合转运使用</h3>
+          <p>建议配合转运公司在免税州的仓库地址使用。生成的地址仅供参考格式，实际请填写转运仓真实地址。</p>
+        </div>
+      </div>
+      <div class="panel tip">
+        <div class="tip-icon"><i class="ph-bold ph-info"></i></div>
+        <div>
+          <h3>地址格式说明</h3>
+          <p>生成地址遵循美式地址规范：门牌号 + 街道名 + 城市 + 州缩写 + 邮编。可直接复制填写到购物网站。</p>
+        </div>
+      </div>
+      <div class="panel tip">
+        <div class="tip-icon"><i class="ph-bold ph-warning"></i></div>
+        <div>
+          <h3>免责声明</h3>
+          <p>本工具生成地址仅供测试与了解地址格式参考，请勿用于欺诈或违规目的。税务规则以当地法规为准。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <a class="brand" href="#">
+          <div class="brand-logo">
+            <img alt="HOUDA+" src="../assets/HOUDA_squre.jpeg"/>
+          </div>
+          <span class="name" style="font-size:1.5rem;font-weight:800;">HOUDA+</span>
+        </a>
+        <p>
+          侯明昊碗慧通讯录互吃大学<br/>长沙霉粉联盟六群分支出品工具站
+        </p>
+      </div>
+      <div>
+        <h3>快速导航</h3>
+        <ul>
+          <li><a href="#generator">地址生成器</a></li>
+          <li><a href="#states">免税州介绍</a></li>
+          <li><a href="#tips">使用须知</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 HOUDA+ · All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Dock -->
+<div class="dock-container">
+  <div class="dock">
+    <a class="dock-item" href="#generator">
+      <i class="ph-bold ph-sparkle dock-icon"></i>
+      <span class="dock-label">生成</span>
+    </a>
+    <a class="dock-item" href="#states">
+      <i class="ph-bold ph-map-pin dock-icon"></i>
+      <span class="dock-label">免税州</span>
+    </a>
+    <a class="dock-item" href="#tips">
+      <i class="ph-bold ph-info dock-icon"></i>
+      <span class="dock-label">须知</span>
+    </a>
+  </div>
+  <div class="back-to-top" id="backToTop">
+    <i class="ph-bold ph-arrow-up"></i>
+  </div>
+</div>
+
+<!-- Copy toast -->
+<div id="copyToast">✓ 已复制到剪贴板</div>
+
+<script>
+// ===== DATA =====
+const STATE_DATA = {
+  OR: {
+    name: "俄勒冈", nameEn: "Oregon", abbr: "OR",
+    tax: "0%", icon: "🌲", color: "#16a34a",
+    desc: "美国西海岸最大免税州，购物天堂",
+    cities: [
+      { city: "Portland", zips: ["97201","97202","97203","97204","97205","97206","97209","97210","97211","97212","97213","97214","97215","97216","97217","97218","97219","97220","97221","97222","97225","97227","97229","97230","97232","97233","97236","97239"] },
+      { city: "Eugene", zips: ["97401","97402","97403","97404","97405"] },
+      { city: "Salem", zips: ["97301","97302","97303","97304","97305","97306","97317"] },
+      { city: "Beaverton", zips: ["97003","97005","97006","97007","97008"] },
+      { city: "Bend", zips: ["97701","97702","97703","97707"] },
+      { city: "Hillsboro", zips: ["97123","97124"] },
+      { city: "Medford", zips: ["97501","97502","97504"] },
+      { city: "Corvallis", zips: ["97330","97331","97333"] },
+      { city: "Springfield", zips: ["97477","97478"] },
+      { city: "Gresham", zips: ["97030","97080"] }
+    ],
+    areaCodes: ["503","541","971"]
+  },
+  MT: {
+    name: "蒙大拿", nameEn: "Montana", abbr: "MT",
+    tax: "0%", icon: "🏔️", color: "#2563eb",
+    desc: "美国西北部大州，自然风光与免税并存",
+    cities: [
+      { city: "Billings", zips: ["59101","59102","59105","59106"] },
+      { city: "Missoula", zips: ["59801","59802","59803","59804","59808"] },
+      { city: "Great Falls", zips: ["59401","59404","59405"] },
+      { city: "Bozeman", zips: ["59715","59717","59718"] },
+      { city: "Butte", zips: ["59701","59703"] },
+      { city: "Helena", zips: ["59601","59602","59604"] },
+      { city: "Kalispell", zips: ["59901","59903"] },
+      { city: "Havre", zips: ["59501"] },
+      { city: "Anaconda", zips: ["59711"] },
+      { city: "Miles City", zips: ["59301"] }
+    ],
+    areaCodes: ["406"]
+  },
+  NH: {
+    name: "新罕布什尔", nameEn: "New Hampshire", abbr: "NH",
+    tax: "0%", icon: "🍂", color: "#0891b2",
+    desc: "东北部老牌免税州，近波士顿交通便利",
+    cities: [
+      { city: "Manchester", zips: ["03101","03102","03103","03104","03105"] },
+      { city: "Nashua", zips: ["03060","03061","03062","03063","03064"] },
+      { city: "Concord", zips: ["03301","03302","03303"] },
+      { city: "Dover", zips: ["03820","03821","03824"] },
+      { city: "Rochester", zips: ["03867","03868"] },
+      { city: "Salem", zips: ["03079"] },
+      { city: "Portsmouth", zips: ["03801","03802"] },
+      { city: "Merrimack", zips: ["03054"] },
+      { city: "Derry", zips: ["03038"] },
+      { city: "Keene", zips: ["03431","03435"] }
+    ],
+    areaCodes: ["603"]
+  },
+  DE: {
+    name: "特拉华", nameEn: "Delaware", abbr: "DE",
+    tax: "0%", icon: "🏙️", color: "#1d4ed8",
+    desc: "东海岸小而精的免税州，商业注册圣地",
+    cities: [
+      { city: "Wilmington", zips: ["19801","19802","19803","19805","19806","19807","19808","19809"] },
+      { city: "Dover", zips: ["19901","19902","19903","19904"] },
+      { city: "Newark", zips: ["19702","19711","19713","19716"] },
+      { city: "Middletown", zips: ["19709"] },
+      { city: "Smyrna", zips: ["19977"] },
+      { city: "Milford", zips: ["19963"] },
+      { city: "Seaford", zips: ["19973"] },
+      { city: "Georgetown", zips: ["19947"] },
+      { city: "Elsmere", zips: ["19805"] },
+      { city: "Brookside", zips: ["19713"] }
+    ],
+    areaCodes: ["302"]
+  },
+  AK: {
+    name: "阿拉斯加", nameEn: "Alaska", abbr: "AK",
+    tax: "0%", icon: "🐻‍❄️", color: "#0ea5e9",
+    desc: "美国最北端大州，无州级销售税",
+    cities: [
+      { city: "Anchorage", zips: ["99501","99502","99503","99504","99505","99506","99507","99508","99510","99515","99516","99517","99518","99519","99520","99524"] },
+      { city: "Fairbanks", zips: ["99701","99702","99703","99704","99705","99706","99707","99708","99709","99710","99712"] },
+      { city: "Juneau", zips: ["99801","99802","99803"] },
+      { city: "Sitka", zips: ["99835"] },
+      { city: "Ketchikan", zips: ["99901","99950"] },
+      { city: "Wasilla", zips: ["99654","99687"] },
+      { city: "Kenai", zips: ["99611"] },
+      { city: "Kodiak", zips: ["99615"] },
+      { city: "Bethel", zips: ["99559"] },
+      { city: "Palmer", zips: ["99645"] }
+    ],
+    areaCodes: ["907"]
+  }
+};
+
+const STREET_TYPES = ["St","Ave","Blvd","Dr","Ln","Rd","Way","Ct","Pl","Cir","Pkwy","Ter"];
+const STREET_NAMES = ["Oak","Maple","Cedar","Pine","Elm","Main","Park","Lake","River","Hill","Sunset","Spring","Valley","Forest","Meadow","Willow","Green","Highland","Ridge","Washington","Lincoln","Jefferson","Madison","Adams","Harrison","Monroe","Franklin","Grant","Sherman","Pioneer","Heritage","Colonial","Liberty","Freedom","Eagle","Mountain","Pacific","Atlantic","Prairie","Garden"];
+const APT_PREFIXES = ["Apt","Suite","Unit","#"];
+const EN_FIRST = ["James","John","Robert","Michael","William","David","Richard","Joseph","Thomas","Charles","Christopher","Daniel","Matthew","Anthony","Mark","Donald","Steven","Paul","Andrew","Kenneth","Joshua","Kevin","Brian","George","Edward","Ronald","Timothy","Jason","Jeffrey","Ryan","Sarah","Jennifer","Amanda","Jessica","Melissa","Emily","Rachel","Lauren","Ashley","Nicole","Elizabeth","Stephanie","Megan","Christina","Amy","Katherine","Michelle","Kimberly","Angela","Patricia"];
+const EN_LAST = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin","Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson","Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores","Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts"];
+const CN_LAST = ["张","王","李","赵","陈","刘","杨","黄","周","吴","郑","林","孙","徐","马","高","胡","郭","唐","何"];
+const CN_LAST_PINYIN = ["Zhang","Wang","Li","Zhao","Chen","Liu","Yang","Huang","Zhou","Wu","Zheng","Lin","Sun","Xu","Ma","Gao","Hu","Guo","Tang","He"];
+const CN_FIRST_PINYIN = ["Wei","Fang","Jun","Lei","Xin","Hao","Jing","Ming","Tao","Yun","Qian","Rui","Yang","Yu","Xiao","Ke","Chen","Hui","Zhe","Bo","Shan","Nan","Jin","Lan","Yi"];
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateName(type, customVal) {
+  if (type === "custom" && customVal.trim()) return customVal.trim();
+  if (type === "cn") {
+    const lastIdx = randInt(0, CN_LAST.length - 1);
+    return CN_LAST_PINYIN[lastIdx] + " " + rand(CN_FIRST_PINYIN);
+  }
+  return rand(EN_FIRST) + " " + rand(EN_LAST);
+}
+
+function generatePhone(areaCodes) {
+  const area = rand(areaCodes);
+  const mid = randInt(200, 999);
+  const end = randInt(1000, 9999);
+  return `(${area}) ${mid}-${end}`;
+}
+
+function generateAddress(stateKey, type) {
+  const state = STATE_DATA[stateKey];
+  const cityData = rand(state.cities);
+  const zip = rand(cityData.zips);
+  const streetNum = randInt(100, 9999);
+  const streetName = rand(STREET_NAMES);
+  const streetType = rand(STREET_TYPES);
+  let street = `${streetNum} ${streetName} ${streetType}`;
+  if (type === "apartment") {
+    const aptPrefix = rand(APT_PREFIXES);
+    const aptNum = randInt(1, 500);
+    street += ` ${aptPrefix} ${aptNum}`;
+  } else if (type === "po") {
+    street = `${randInt(1000,9999)} ${streetName} ${streetType}, Ste ${randInt(100,999)}`;
+  }
+  return { city: cityData.city, zip, street, state: state.abbr, stateFull: state.nameEn };
+}
+
+// ===== RENDER STATE CARDS =====
+function renderStateCards(selectedKey) {
+  const container = document.getElementById("stateCards");
+  container.innerHTML = Object.entries(STATE_DATA).map(([key, s]) => `
+    <div class="panel state-card ${selectedKey === key ? 'selected' : ''}" data-state-key="${key}">
+      <div class="emoji">${s.icon}</div>
+      <div class="cn">${s.name}</div>
+      <div class="en">${s.nameEn} · ${s.abbr}</div>
+      <div class="tax" style="background:${s.color}22; color:${s.color};">
+        销售税 ${s.tax}
+      </div>
+      <p class="desc">${s.desc}</p>
+    </div>
+  `).join("");
+}
+
+function selectState(key) {
+  document.getElementById("stateSelect").value = key;
+  renderStateCards(key);
+  document.getElementById("generator").scrollIntoView({ behavior: "smooth" });
+  generate();
+}
+
+// ===== GENERATE =====
+function generate() {
+  const stateKey = document.getElementById("stateSelect").value || rand(Object.keys(STATE_DATA));
+  const type = document.getElementById("typeSelect").value;
+  const nameType = document.getElementById("nameSelect").value;
+  const customVal = document.getElementById("customName").value;
+
+  const state = STATE_DATA[stateKey];
+  const addr = generateAddress(stateKey, type);
+  const name = generateName(nameType, customVal);
+  const phone = generatePhone(state.areaCodes);
+  const full = `${name}, ${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}, USA`;
+
+  document.getElementById("r-name").textContent = name;
+  document.getElementById("r-street").textContent = addr.street;
+  document.getElementById("r-city").textContent = addr.city;
+  document.getElementById("r-state").textContent = `${addr.state} (${addr.stateFull})`;
+  document.getElementById("r-zip").textContent = addr.zip;
+  document.getElementById("r-phone").textContent = phone;
+  document.getElementById("r-full").textContent = full;
+
+  renderStateCards(stateKey);
+  document.getElementById("stateSelect").value = stateKey;
+}
+
+// ===== COPY =====
+function showToast(msg) {
+  const toast = document.getElementById("copyToast");
+  toast.textContent = msg || "✓ 已复制到剪贴板";
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2000);
+}
+
+function copyToClipboard(text) {
+  if (!text || text === "—") return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => showToast("✓ 已复制")).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0";
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand("copy"); showToast("✓ 已复制"); } catch(e) { showToast("复制失败，请手动复制"); }
+  document.body.removeChild(ta);
+}
+
+// 事件委托：点击 result-field 复制内容
+document.addEventListener("click", function(e) {
+  const field = e.target.closest("[data-copy-field]");
+  if (field) {
+    const val = field.querySelector(".value")?.textContent;
+    copyToClipboard(val);
+    return;
+  }
+  if (e.target.closest("#copyAllBtn")) {
+    const name = document.getElementById("r-name").textContent;
+    if (name === "—") { showToast("请先生成地址"); return; }
+    copyToClipboard(document.getElementById("r-full").textContent);
+    return;
+  }
+  const stateCard = e.target.closest("[data-state-key]");
+  if (stateCard) {
+    selectState(stateCard.dataset.stateKey);
+  }
+});
+
+// ===== INIT =====
+document.addEventListener("DOMContentLoaded", function () {
+  renderStateCards("");
+
+  document.getElementById("generateBtn").addEventListener("click", generate);
+
+  document.getElementById("nameSelect").addEventListener("change", function () {
+    const row = document.getElementById("customNameRow");
+    row.classList.toggle("hidden", this.value !== "custom");
+  });
+
+  // Navbar + back-to-top driven by IntersectionObserver sentinel (no window scroll listener)
+  const navbar = document.getElementById("navbar");
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const icon = menuBtn.querySelector("i");
+  const backToTopBtn = document.getElementById("backToTop");
+  const sentinel = document.getElementById("scrollSentinel");
+
+  const isScrolled = () => sentinel.getBoundingClientRect().top < 100;
+
+  const updateNav = () => {
+    if (isScrolled() || mobileMenu.classList.contains("open")) {
+      navbar.classList.add("liquid-header");
+    } else {
+      navbar.classList.remove("liquid-header");
+    }
+  };
+
+  menuBtn.addEventListener("click", function () {
+    const isOpen = mobileMenu.classList.toggle("open");
+    if (isOpen) {
+      mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+      mobileMenu.style.opacity = "1";
+      icon.style.transform = "rotate(90deg)";
+    } else {
+      mobileMenu.style.maxHeight = "0px";
+      mobileMenu.style.opacity = "0";
+      icon.style.transform = "rotate(0deg)";
+    }
+    updateNav();
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      mobileMenu.style.maxHeight = "0px";
+      mobileMenu.style.opacity = "0";
+      icon.style.transform = "rotate(0deg)";
+      updateNav();
+    });
+  });
+
+  const navObserver = new IntersectionObserver((entries) => {
+    const e = entries[0];
+    const scrolled = !e.isIntersecting;
+    updateNav();
+    if (scrolled) {
+      document.body.classList.add("scrolled");
+      backToTopBtn.classList.add("visible");
+    } else {
+      document.body.classList.remove("scrolled");
+      backToTopBtn.classList.remove("visible");
+    }
+  }, { threshold: 0 });
+  navObserver.observe(sentinel);
+
+  document.getElementById("backToTop").addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Fade-up observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add("visible"), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".fade-up").forEach(el => observer.observe(el));
+
+  updateNav();
+});
+</script>
+
+</body>
+</html>

@@ -4,160 +4,286 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>侯大身份证生成器 · HOUDA+ ID Generator</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet">
 <style>
-  /* ===== 字体 ===== */
+  /* ═══════════════════════════════════════════════════════════
+     HOUDA+ 身份证生成器 · Soft Structuralism 重构
+     设计令牌与 index.html 对齐；卡片本体为「生成产物」保持原样，
+     Era 主题背景由 JS 驱动（核心功能），页面 chrome 走浅色体系。
+     ═══════════════════════════════════════════════════════════ */
   :root {
+    --bg: #f4f4f6;
+    --bg-card: #ffffff;
+    --bg-elevated: #fafafa;
+    --text-primary: #1a1a1f;
+    --text-secondary: #5c5c66;
+    --text-tertiary: #9a9aa3;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-light: rgba(37,99,235,0.06);
+    --border-hairline: rgba(0,0,0,0.06);
+    --border-soft: rgba(0,0,0,0.04);
+
+    --shadow-ambient:
+      0 1px 2px rgba(0,0,0,0.03),
+      0 8px 24px rgba(0,0,0,0.04),
+      0 24px 56px rgba(0,0,0,0.03);
+    --shadow-float:
+      0 2px 4px rgba(0,0,0,0.03),
+      0 12px 32px rgba(0,0,0,0.06),
+      0 32px 72px rgba(0,0,0,0.04);
+
+    --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    --dur-press: 120ms;
+    --dur-fast: 200ms;
+    --dur-normal: 400ms;
+    --dur-slow: 700ms;
+
+    --font-display: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+
+    --radius-card: 1.25rem;
+    --radius-input: 0.75rem;
+    --radius-pill: 999px;
+
+    /* Era 主题变量（由 JS 运行时覆盖） */
     --era-primary: #7a5af8;
     --era-secondary: #5b3da8;
     --era-accent: #e0d7ff;
     --era-glow: rgba(122, 90, 248, 0.4);
-    --era-name: "Midnights";
   }
 
-  * { -webkit-tap-highlight-color: transparent; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html, body {
-    overflow-x: hidden;
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font: 100%/1.6 var(--font-body);
+    color: var(--text-primary);
+    background: var(--bg);
     scroll-behavior: smooth;
+    scroll-padding-top: 7rem;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+    width: 100%;
+    position: relative;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
   }
 
   body {
-    font-family: 'PingFang SC', -apple-system, 'Helvetica Neue', sans-serif;
-    background: #0a0a1a;
-    min-height: 100vh;
-    transition: background 0.6s ease;
+    font-family: var(--font-body);
+    background: var(--bg);
+    min-height: 100svh;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+    position: relative;
   }
+  * { -webkit-tap-highlight-color: transparent; }
 
-  /* ===== 背景氛围层 ===== */
+  /* ===== 背景氛围层（浅色柔光，Era 渐变由 JS 叠加在 body 上）===== */
   .bg-aura {
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    transition: opacity 0.6s ease;
-  }
-  .bg-aura::before {
-    content: '';
-    position: absolute;
-    top: -20%; left: -10%;
-    width: 60%; height: 60%;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--era-glow) 0%, transparent 70%);
-    filter: blur(80px);
-    animation: float1 12s ease-in-out infinite;
-  }
-  .bg-aura::after {
-    content: '';
-    position: absolute;
-    bottom: -20%; right: -10%;
-    width: 55%; height: 55%;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--era-glow) 0%, transparent 70%);
-    filter: blur(80px);
-    animation: float2 14s ease-in-out infinite;
-    opacity: 0.6;
-  }
-  @keyframes float1 {
-    0%,100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(40px,30px) scale(1.1); }
-  }
-  @keyframes float2 {
-    0%,100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(-30px,-20px) scale(1.15); }
+    background:
+      radial-gradient(58% 50% at 82% 12%, rgba(122,90,248,0.10), transparent 70%),
+      radial-gradient(46% 44% at 8% 92%, rgba(37,99,235,0.06), transparent 70%);
+    transition: opacity var(--dur-slow) var(--ease-fluid);
   }
 
-  /* ===== 玻璃卡片基础 ===== */
-  .glass {
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(20px) saturate(1.5);
-    -webkit-backdrop-filter: blur(20px) saturate(1.5);
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5.5rem 1rem 4rem;
+    gap: 2.5rem;
   }
 
-  /* ===== 表单输入 ===== */
-  .field-label {
-    font-size: 12px;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 2px;
+  /* ===== 顶部标题 ===== */
+  .gen-header { text-align: center; }
+  .gen-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
+    margin-bottom: 0.75rem;
   }
-  .field-input {
-    width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 11px 14px;
-    color: #fff;
-    font-size: 14px;
-    font-family: inherit;
-    transition: all 0.3s ease;
-    outline: none;
+  .gen-eyebrow::before {
+    content: "";
+    width: 1.5rem; height: 2px; border-radius: 2px;
+    background: var(--accent);
   }
-  .field-input::placeholder { color: rgba(255,255,255,0.25); }
-  .field-input:focus {
-    border-color: var(--era-primary);
-    background: rgba(255,255,255,0.08);
-    box-shadow: 0 0 0 3px var(--era-glow);
+  .gen-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
   }
-  textarea.field-input { resize: none; line-height: 1.5; }
+  .gen-sub {
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
 
   /* ===== Era 主题选择器 ===== */
+  .era-wrap { width: 100%; max-width: 32rem; }
+  .field-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.625rem;
+  }
+  .era-row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  .era-row::-webkit-scrollbar { display: none; }
+
   .era-chip {
-    padding: 7px 14px;
-    border-radius: 999px;
-    font-size: 12px;
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.8125rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1.5px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.04);
-    color: rgba(255,255,255,0.6);
+    transition: transform var(--dur-fast) var(--ease-out),
+                background var(--dur-fast) var(--ease-fluid),
+                color var(--dur-fast) var(--ease-fluid),
+                border-color var(--dur-fast) var(--ease-fluid);
+    border: 1.5px solid var(--border-hairline);
+    background: var(--bg-card);
+    color: var(--text-secondary);
     white-space: nowrap;
-    letter-spacing: 0.5px;
   }
+  .era-chip:hover:not(.active) { border-color: var(--text-tertiary); color: var(--text-primary); }
   .era-chip.active {
     color: #fff;
     border-color: var(--era-primary);
-    background: var(--era-glow);
-    box-shadow: 0 0 16px var(--era-glow);
-    transform: scale(1.05);
-  }
-  .era-chip:hover:not(.active) {
-    border-color: rgba(255,255,255,0.3);
-    color: rgba(255,255,255,0.85);
+    background: var(--era-primary);
+    box-shadow: 0 0 0 4px var(--era-glow);
+    transform: scale(1.04);
   }
 
-  /* ===== 生成按钮 ===== */
+  /* ===== 主体：左表单 + 右预览 ===== */
+  .gen-main {
+    width: 100%;
+    max-width: 56rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  @media (min-width: 1024px) {
+    .gen-main { flex-direction: row; align-items: flex-start; }
+  }
+
+  .glass {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  .form-card {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1.5rem;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.875rem;
+  }
+  .form-grid .col-span-2 { grid-column: 1 / -1; }
+
+  .field-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-input);
+    padding: 0.6875rem 0.875rem;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: border-color var(--dur-fast) var(--ease-fluid),
+                box-shadow var(--dur-fast) var(--ease-fluid),
+                background var(--dur-fast) var(--ease-fluid);
+    outline: none;
+  }
+  .field-input::placeholder { color: var(--text-tertiary); }
+  .field-input:focus {
+    border-color: var(--accent);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  textarea.field-input { resize: none; line-height: 1.5; }
+
   .btn-generate {
+    width: 100%;
+    margin-top: 1.25rem;
     background: linear-gradient(135deg, var(--era-primary), var(--era-secondary));
     color: #fff;
     border: none;
-    border-radius: 14px;
-    padding: 16px;
-    font-size: 16px;
+    border-radius: var(--radius-input);
+    padding: 0.9rem;
+    font-size: 0.9375rem;
     font-weight: 700;
-    letter-spacing: 3px;
+    letter-spacing: 0.04em;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 24px var(--era-glow);
-    width: 100%;
     font-family: inherit;
+    box-shadow: 0 8px 24px var(--era-glow);
+    transition: transform var(--dur-press) var(--ease-out),
+                box-shadow var(--dur-fast) var(--ease-fluid);
   }
-  .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 10px 32px var(--era-glow); }
-  .btn-generate:active { transform: translateY(0); }
+  .btn-generate:hover { box-shadow: 0 12px 32px var(--era-glow); }
+  .btn-generate:active { transform: scale(0.98); }
   .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .form-hint {
+    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+  }
 
   /* ===== 身份证卡片容器 ===== */
   .id-card-wrapper {
     perspective: 1200px;
-    padding: 8px 0;
+    padding: 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-
   .id-card {
     width: 340px;
     height: 540px;
@@ -172,275 +298,149 @@
       inset 0 1px 0 rgba(255,255,255,0.15);
     cursor: pointer;
   }
-  .id-card:hover {
-    transform: rotateY(-3deg) rotateX(2deg) translateY(-4px);
-  }
+  .id-card:hover { transform: rotateY(-3deg) rotateX(2deg) translateY(-4px); }
 
-  /* 卡片背景层（canvas 绘制纹理） */
-  .card-bg-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-  }
+  .card-bg-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 
-  /* 卡片光泽层 */
   .card-sheen {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
     background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.08) 55%, transparent 70%);
     opacity: 0.7;
   }
-
-  /* 卡片内容层 */
   .card-content {
-    position: relative;
-    z-index: 2;
-    height: 100%;
-    padding: 24px 22px;
-    display: flex;
-    flex-direction: column;
-    color: #fff;
+    position: relative; z-index: 2; height: 100%;
+    padding: 24px 22px; display: flex; flex-direction: column; color: #fff;
   }
-
-  /* === 卡片顶部：校名 + 国徽位 === */
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 6px;
-  }
+  .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
   .card-emblem {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.1);
-    border: 1.5px solid rgba(255,255,255,0.25);
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.25);
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
+    font-size: 18px; flex-shrink: 0;
   }
-  .card-school-name {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    line-height: 1.4;
-  }
-  .card-school-sub {
-    font-size: 8px;
-    letter-spacing: 4px;
-    opacity: 0.6;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
+  .card-school-name { font-size: 13px; font-weight: 700; letter-spacing: 3px; line-height: 1.4; }
+  .card-school-sub { font-size: 8px; letter-spacing: 4px; opacity: 0.6; text-transform: uppercase; margin-top: 2px; }
   .card-title-tag {
-    margin-left: auto;
-    font-size: 9px;
-    letter-spacing: 2px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    opacity: 0.8;
+    margin-left: auto; font-size: 9px; letter-spacing: 2px; padding: 3px 8px;
+    border-radius: 4px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); opacity: 0.8;
   }
-
-  /* === 分隔线 === */
-  .card-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-    margin: 10px 0 14px;
-  }
-
-  /* === 身份证标题 === */
-  .card-id-title {
-    text-align: center;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 8px;
-    margin-bottom: 14px;
-    opacity: 0.9;
-  }
-
-  /* === 信息区 === */
-  .card-info-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    flex: 1;
-  }
-  .card-info-row {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-  }
+  .card-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); margin: 10px 0 14px; }
+  .card-id-title { text-align: center; font-size: 15px; font-weight: 800; letter-spacing: 8px; margin-bottom: 14px; opacity: 0.9; }
+  .card-info-grid { display: flex; flex-direction: column; gap: 9px; flex: 1; }
+  .card-info-row { display: flex; align-items: baseline; gap: 8px; }
   .card-info-label {
-    font-size: 10px;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 2px;
-    width: 56px;
-    flex-shrink: 0;
-    text-align: justify;
-    text-align-last: justify;
+    font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 2px; width: 56px;
+    flex-shrink: 0; text-align: justify; text-align-last: justify;
   }
   .card-info-value {
-    font-size: 14px;
-    color: #fff;
-    font-weight: 500;
-    flex: 1;
-    word-break: break-all;
-    line-height: 1.4;
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-    padding-bottom: 2px;
-    min-height: 18px;
+    font-size: 14px; color: #fff; font-weight: 500; flex: 1; word-break: break-all;
+    line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 2px; min-height: 18px;
   }
-  .card-info-value.lyrics {
-    font-style: italic;
-    font-size: 12.5px;
-    opacity: 0.85;
-    border-bottom: none;
-  }
-
-  /* === 底部：条码 + 印章 === */
-  .card-footer {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-top: 10px;
-    gap: 10px;
-  }
-  .card-barcode {
-    display: flex;
-    align-items: flex-end;
-    gap: 1.5px;
-    height: 32px;
-    flex: 1;
-  }
-  .card-barcode span {
-    display: block;
-    background: rgba(255,255,255,0.7);
-    height: 100%;
-  }
+  .card-info-value.lyrics { font-style: italic; font-size: 12.5px; opacity: 0.85; border-bottom: none; }
+  .card-footer { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 10px; gap: 10px; }
+  .card-barcode { display: flex; align-items: flex-end; gap: 1.5px; height: 32px; flex: 1; }
+  .card-barcode span { display: block; background: rgba(255,255,255,0.7); height: 100%; }
   .card-stamp {
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.35);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    font-size: 8px;
-    letter-spacing: 1px;
-    color: rgba(255,255,255,0.5);
-    transform: rotate(-12deg);
-    flex-shrink: 0;
-    line-height: 1.2;
-    text-align: center;
+    width: 52px; height: 52px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 8px; letter-spacing: 1px; color: rgba(255,255,255,0.5); transform: rotate(-12deg);
+    flex-shrink: 0; line-height: 1.2; text-align: center;
   }
   .card-stamp .stamp-star { font-size: 14px; margin-bottom: 1px; }
-
-  /* 水印 */
   .card-watermark {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%) rotate(-30deg);
-    font-size: 60px;
-    font-weight: 900;
-    color: rgba(255,255,255,0.04);
-    z-index: 1;
-    pointer-events: none;
-    letter-spacing: 6px;
-    white-space: nowrap;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-30deg);
+    font-size: 60px; font-weight: 900; color: rgba(255,255,255,0.04); z-index: 1;
+    pointer-events: none; letter-spacing: 6px; white-space: nowrap;
   }
-
-  /* === 学号 === */
   .card-number {
-    position: absolute;
-    bottom: 10px; left: 0; right: 0;
-    text-align: center;
-    font-size: 10px;
-    letter-spacing: 5px;
-    color: rgba(255,255,255,0.35);
-    z-index: 2;
+    position: absolute; bottom: 10px; left: 0; right: 0; text-align: center;
+    font-size: 10px; letter-spacing: 5px; color: rgba(255,255,255,0.35); z-index: 2;
     font-family: 'Courier New', monospace;
   }
+  .era-label { margin-top: 1rem; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-tertiary); }
 
   /* ===== 导出预览遮罩 ===== */
   .export-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(20px);
-    z-index: 100;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 20px;
+    position: fixed; inset: 0; background: rgba(20,20,28,0.85);
+    backdrop-filter: blur(20px); z-index: 100; display: none;
+    align-items: center; justify-content: center; flex-direction: column; padding: 20px;
   }
   .export-overlay.show { display: flex; }
-  .export-overlay img {
-    max-width: 90%;
-    max-height: 70vh;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  .export-overlay img { max-width: 90%; max-height: 70vh; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+  .export-overlay .export-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+  .export-link, .export-close {
+    text-decoration: none; font-size: 0.875rem; font-weight: 600; letter-spacing: 0.02em;
+    padding: 0.6rem 1.25rem; border-radius: var(--radius-pill); cursor: pointer; border: none;
+    font-family: inherit;
   }
+  .export-link { background: #fff; color: #14141c; }
+  .export-close { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
+  .export-hint { color: rgba(255,255,255,0.7); font-size: 0.8125rem; margin-bottom: 1rem; letter-spacing: 0.1em; }
 
   /* ===== Toast ===== */
   .toast {
-    position: fixed;
-    bottom: 40px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: rgba(255,255,255,0.95);
-    color: #0a0a1a;
-    padding: 12px 28px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    z-index: 200;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text-primary); color: #fff; padding: 0.75rem 1.75rem;
+    border-radius: var(--radius-pill); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.02em;
+    opacity: 0; pointer-events: none; transition: all var(--dur-fast) var(--ease-out);
+    z-index: 200; box-shadow: var(--shadow-float);
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* 入场动效 */
-  .fade-in { animation: fadeIn 0.6s ease both; }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(12px);} to {opacity:1; transform:translateY(0);} }
+  /* ===== 入场动效 ===== */
+  .fade-in { opacity: 0; transform: translateY(24px); animation: fadeIn var(--dur-slow) var(--ease-out) forwards; }
+  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
 
-  /* 隐藏滚动条 */
   .scroll-x::-webkit-scrollbar { display: none; }
   .scroll-x { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ===== 底部说明 ===== */
+  .gen-footer { text-align: center; color: var(--text-tertiary); font-size: 0.75rem; letter-spacing: 0.02em; }
+
+  /* ===== 可访问性 ===== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .fade-in { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .id-card:hover { transform: none; }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass { background: rgba(255,255,255,0.98); backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .bg-aura { opacity: 0.4; }
+  }
 </style>
 </head>
 <body>
 
 <div class="bg-aura"></div>
 
-<div class="relative z-10 min-h-screen flex flex-col items-center px-4 py-8">
+<div class="page">
 
   <!-- 顶部标题 -->
-  <header class="text-center mb-6 fade-in">
-    <div class="text-white/40 text-xs tracking-[6px] uppercase mb-2">HOUDA+ University</div>
-    <h1 class="text-white text-2xl font-bold tracking-wider">侯大身份证生成器</h1>
-    <p class="text-white/50 text-sm mt-1">生成你的专属侯大学子身份卡</p>
+  <header class="gen-header fade-in">
+    <div class="gen-eyebrow">HOUDA+ University</div>
+    <h1 class="gen-title">侯大身份证生成器</h1>
+    <p class="gen-sub">生成你的专属侯大学子身份卡</p>
   </header>
 
   <!-- Era 主题选择 -->
-  <div class="w-full max-w-md mb-5 fade-in" style="animation-delay:0.1s">
-    <div class="field-label">选择 Era 主题 · Theme</div>
-    <div class="flex gap-2 overflow-x-auto scroll-x pb-2" id="eraSelector">
+  <div class="era-wrap fade-in" style="animation-delay:0.1s">
+    <label class="field-label">选择 Era 主题 · Theme</label>
+    <div class="era-row scroll-x" id="eraSelector">
       <!-- chips 由 JS 注入 -->
     </div>
   </div>
 
   <!-- 主体：左表单 + 右预览（移动端竖排） -->
-  <div class="w-full max-w-4xl flex flex-col lg:flex-row gap-6 items-start justify-center">
+  <div class="gen-main">
 
     <!-- 左：表单 -->
-    <div class="glass rounded-2xl p-5 w-full max-w-md fade-in" style="animation-delay:0.15s">
-      <div class="grid grid-cols-2 gap-3">
+    <div class="glass form-card fade-in" style="animation-delay:0.15s">
+      <div class="form-grid">
         <div>
           <label class="field-label">真实姓名</label>
           <input class="field-input" id="f_name" placeholder="张三" maxlength="6" value="侯明昊">
@@ -494,94 +494,90 @@
         </div>
       </div>
 
-      <div class="mt-4 flex gap-3">
-        <button class="btn-generate" id="generateBtn">保存身份证</button>
-      </div>
-      <p class="text-white/30 text-xs text-center mt-3 tracking-wide">点击卡片可翻转查看背面</p>
+      <button class="btn-generate" id="generateBtn">保存身份证</button>
+      <p class="form-hint">点击卡片可翻转查看背面</p>
     </div>
 
     <!-- 右：预览卡片 -->
-    <div class="flex flex-col items-center fade-in" style="animation-delay:0.25s">
-      <div class="id-card-wrapper">
-        <div class="id-card" id="idCard">
-          <canvas class="card-bg-canvas" id="bgCanvas" width="680" height="1080"></canvas>
-          <div class="card-watermark">HOUDA+</div>
-          <div class="card-content">
-            <!-- 顶部 -->
-            <div class="card-header">
-              <div class="card-emblem">✦</div>
-              <div>
-                <div class="card-school-name">侯明昊碗慧通讯录互吃大学</div>
-                <div class="card-school-sub">HOUDA+ University</div>
-              </div>
-              <div class="card-title-tag">学子证</div>
+    <div class="id-card-wrapper fade-in" style="animation-delay:0.25s">
+      <div class="id-card" id="idCard">
+        <canvas class="card-bg-canvas" id="bgCanvas" width="680" height="1080"></canvas>
+        <div class="card-watermark">HOUDA+</div>
+        <div class="card-content">
+          <!-- 顶部 -->
+          <div class="card-header">
+            <div class="card-emblem">✦</div>
+            <div>
+              <div class="card-school-name">侯明昊碗慧通讯录互吃大学</div>
+              <div class="card-school-sub">HOUDA+ University</div>
             </div>
-            <div class="card-divider"></div>
-            <div class="card-id-title">身 份 证</div>
+            <div class="card-title-tag">学子证</div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-id-title">身 份 证</div>
 
-            <!-- 信息 -->
-            <div class="card-info-grid">
-              <div class="card-info-row">
-                <span class="card-info-label">姓名</span>
-                <span class="card-info-value" id="v_name">侯明昊</span>
-              </div>
-              <div class="card-info-row">
-                <span class="card-info-label">昵称</span>
-                <span class="card-info-value" id="v_nick">碗慧</span>
-              </div>
-              <div class="card-info-row">
-                <span class="card-info-label">院系</span>
-                <span class="card-info-value" id="v_dept">通讯录学院</span>
-              </div>
-              <div class="card-info-row">
-                <span class="card-info-label">籍贯</span>
-                <span class="card-info-value" id="v_origin">长沙</span>
-              </div>
-              <div class="card-info-row">
-                <span class="card-info-label">本命</span>
-                <span class="card-info-value" id="v_album">Midnights (2022)</span>
-              </div>
-              <div class="card-info-row">
-                <span class="card-info-label">歌词</span>
-                <span class="card-info-value lyrics" id="v_lyrics">Long live all the magic we made.</span>
-              </div>
-              <div class="card-info-row">
-                <span class="card-info-label">入校</span>
-                <span class="card-info-value" id="v_date">2025.10.13</span>
-              </div>
+          <!-- 信息 -->
+          <div class="card-info-grid">
+            <div class="card-info-row">
+              <span class="card-info-label">姓名</span>
+              <span class="card-info-value" id="v_name">侯明昊</span>
             </div>
-
-            <!-- 底部 -->
-            <div class="card-footer">
-              <div class="card-barcode" id="barcode"></div>
-              <div class="card-stamp">
-                <span class="stamp-star">✦</span>
-                <span>侯大<br>认证</span>
-              </div>
+            <div class="card-info-row">
+              <span class="card-info-label">昵称</span>
+              <span class="card-info-value" id="v_nick">碗慧</span>
+            </div>
+            <div class="card-info-row">
+              <span class="card-info-label">院系</span>
+              <span class="card-info-value" id="v_dept">通讯录学院</span>
+            </div>
+            <div class="card-info-row">
+              <span class="card-info-label">籍贯</span>
+              <span class="card-info-value" id="v_origin">长沙</span>
+            </div>
+            <div class="card-info-row">
+              <span class="card-info-label">本命</span>
+              <span class="card-info-value" id="v_album">Midnights (2022)</span>
+            </div>
+            <div class="card-info-row">
+              <span class="card-info-label">歌词</span>
+              <span class="card-info-value lyrics" id="v_lyrics">Long live all the magic we made.</span>
+            </div>
+            <div class="card-info-row">
+              <span class="card-info-label">入校</span>
+              <span class="card-info-value" id="v_date">2025.10.13</span>
             </div>
           </div>
-          <div class="card-number" id="v_sid">HD-2025-1013-001</div>
-          <div class="card-sheen"></div>
+
+          <!-- 底部 -->
+          <div class="card-footer">
+            <div class="card-barcode" id="barcode"></div>
+            <div class="card-stamp">
+              <span class="stamp-star">✦</span>
+              <span>侯大<br>认证</span>
+            </div>
+          </div>
         </div>
+        <div class="card-number" id="v_sid">HD-2025-1013-001</div>
+        <div class="card-sheen"></div>
       </div>
-      <p class="text-white/40 text-xs mt-4 tracking-[3px] uppercase" id="eraLabel">Midnights Theme</p>
+      <p class="era-label" id="eraLabel">Midnights Theme</p>
     </div>
 
   </div>
 
   <!-- 底部说明 -->
-  <footer class="mt-10 text-center fade-in" style="animation-delay:0.4s">
-    <p class="text-white/30 text-xs tracking-wide">HOUDA+ · 侯明昊碗慧通讯录互吃大学 · 仅供娱乐</p>
+  <footer class="gen-footer fade-in" style="animation-delay:0.4s">
+    HOUDA+ · 侯明昊碗慧通讯录互吃大学 · 仅供娱乐
   </footer>
 </div>
 
 <!-- 导出预览遮罩 -->
 <div class="export-overlay" id="exportOverlay">
-  <p class="text-white/80 text-sm mb-4 tracking-widest">长按图片保存 · Long press to save</p>
+  <p class="export-hint">长按图片保存 · Long press to save</p>
   <img id="exportImg" alt="侯大身份证">
-  <div class="flex gap-4 mt-6">
-    <a id="downloadLink" download="houda-id-card.png" class="text-white/90 underline text-sm tracking-wide cursor-pointer">下载图片</a>
-    <button onclick="document.getElementById('exportOverlay').classList.remove('show')" class="text-white/50 text-sm tracking-wide">关闭</button>
+  <div class="export-actions">
+    <a id="downloadLink" download="houda-id-card.png" class="export-link">下载图片</a>
+    <button onclick="document.getElementById('exportOverlay').classList.remove('show')" class="export-close">关闭</button>
   </div>
 </div>
 
@@ -830,19 +826,19 @@ function generateSID() {
 
 /* ===== 实时同步表单到卡片 ===== */
 function syncForm() {
-  const get = id => document.getElementById(id).value.trim() || '—';
+  const get = id => document.getElementById(id).value.trim() || '未提供';
   document.getElementById('v_name').textContent = get('f_name');
   document.getElementById('v_nick').textContent = get('f_nick');
   document.getElementById('v_dept').textContent = get('f_dept');
   document.getElementById('v_origin').textContent = get('f_origin');
   document.getElementById('v_album').textContent = get('f_album');
-  document.getElementById('v_lyrics').textContent = get('f_lyrics') || '—';
+  document.getElementById('v_lyrics').textContent = get('f_lyrics') || '未提供';
 
   const dateVal = get('f_date');
-  if (dateVal && dateVal !== '—') {
+  if (dateVal && dateVal !== '未提供') {
     document.getElementById('v_date').textContent = dateVal.replace(/-/g, '.');
   } else {
-    document.getElementById('v_date').textContent = '—';
+    document.getElementById('v_date').textContent = '未提供';
   }
 }
 

@@ -1,719 +1,917 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>HOUDA+ - 网站地图</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          primary: '#111111',
-          secondary: '#555555',
-          accent: '#e0e0e0',
-          dark: '#000000',
-          light: '#f9f9f9'
-        },
-        fontFamily: {
-          sans: ['Inter', 'system-ui', 'sans-serif'],
-        },
-      }
-    }
-  }
-</script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
 <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
-<meta content="HOUDA+ 网站地图 — 侯大全站页面导览" name="description"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<meta content="HOUDA+ 网站地图 - 侯大全站页面导览" name="description"/>
 <style>
-html {
-  scroll-padding-top: 5.5rem;
-}
-
-/* — 液态流动背景 — */
-.liquid-background {
-position: fixed;
-top: 0; left: 0;
-width: 100vw; height: 100vh;
-z-index: -99;
-overflow: hidden;
-background: radial-gradient(120% 120% at 15% 10%, #f8fbff 0%, #eef3ff 38%, #f3efff 70%, #f7f8fc 100%);
-}
-.liquid-background::before,
-.liquid-background::after {
-content: “”;
-position: absolute;
-inset: -15%;
-pointer-events: none;
-}
-.liquid-background::before {
-background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.32) 80deg, rgba(176,196,255,0.2) 150deg, rgba(255,255,255,0) 240deg);
-filter: blur(40px);
-animation: liquidSheen 22s linear infinite;
-}
-.liquid-background::after {
-background-image: radial-gradient(rgba(255,255,255,0.35) 0.7px, transparent 0.7px);
-background-size: 3px 3px;
-opacity: 0.2;
-mix-blend-mode: soft-light;
-}
-@keyframes liquidSheen {
-0%   { transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1); }
-50%  { transform: translate3d(4%, 3%, 0) rotate(180deg) scale(1.04); }
-100% { transform: translate3d(-3%, -2%, 0) rotate(360deg) scale(1); }
-}
-
-.blob {
-position: absolute;
-border-radius: 50%;
-filter: blur(54px);
-opacity: 0.55;
-will-change: transform;
-transform: translate3d(0,0,0);
-}
-.blob-1 {
-top: -12%; left: -12%;
-width: 72vw; height: 72vw;
-background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-animation: blobFloatA 28s ease-in-out infinite alternate;
-}
-.blob-2 {
-bottom: -22%; right: -22%;
-width: 82vw; height: 82vw;
-background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-animation: blobFloatB 34s ease-in-out infinite alternate;
-}
-.blob-3 {
-top: 38%; left: 38%;
-width: 52vw; height: 52vw;
-background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
-opacity: 0.42;
-animation: blobFloatC 26s ease-in-out infinite;
-}
-@keyframes blobFloatA {
-0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
-50%  { transform: translate3d(8vw, 3vh, 0) scale(1.08) rotate(10deg); }
-100% { transform: translate3d(3vw, 8vh, 0) scale(1.03) rotate(18deg); }
-}
-@keyframes blobFloatB {
-0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
-50%  { transform: translate3d(-9vw, -4vh, 0) scale(1.1) rotate(-12deg); }
-100% { transform: translate3d(-4vw, -9vh, 0) scale(1.04) rotate(-20deg); }
-}
-@keyframes blobFloatC {
-0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
-33%  { transform: translate3d(5vw, -5vh, 0) scale(1.08) rotate(120deg); }
-66%  { transform: translate3d(-4vw, 4vh, 0) scale(0.96) rotate(240deg); }
-100% { transform: translate3d(0, 0, 0) scale(1) rotate(360deg); }
-}
-
-/* — Glass 变量 — */
 :root {
-–glass-bg: rgba(255, 255, 255, 0.3);
-–glass-bg-strong: rgba(255, 255, 255, 0.42);
-–glass-stroke: rgba(255, 255, 255, 0.5);
-–glass-shadow: 0 18px 48px rgba(104, 117, 245, 0.12);
+  --bg:#f4f4f6; --bg-card:#ffffff; --bg-elevated:#fafafa;
+  --text-primary:#1a1a1f; --text-secondary:#5c5c66; --text-tertiary:#9a9aa3;
+  --accent:#2563eb; --accent-hover:#1d4ed8; --accent-light:rgba(37,99,235,0.06);
+  --green:#16a34a; --green-light:rgba(22,163,74,0.08);
+  --border-hairline:rgba(0,0,0,0.06); --border-soft:rgba(0,0,0,0.04);
+  --ease-fluid:cubic-bezier(0.32,0.72,0,1); --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.22,0.61,0.36,1);
+  --dur-fast:200ms; --dur-normal:400ms; --dur-slow:700ms;
+  --font-display:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;
+  --radius-card:1.25rem; --radius-pill:999px;
 }
 
-@keyframes glassFlow {
-0%   { background-position: 0% 0%, 0% 50%; opacity: 0.72; }
-50%  { background-position: 40% 20%, 70% 50%; opacity: 0.84; }
-100% { background-position: 80% 40%, 100% 50%; opacity: 0.76; }
+* { box-sizing: border-box; }
+
+html {
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
-.glass-card {
-position: relative;
-background: linear-gradient(135deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.18) 100%);
-backdrop-filter: blur(14px) saturate(145%) contrast(104%);
--webkit-backdrop-filter: blur(14px) saturate(145%) contrast(104%);
-border: 1px solid var(–glass-stroke);
-border-radius: 24px;
-box-shadow: var(–glass-shadow), inset 0 1px 0 rgba(255,255,255,0.66), inset 0 -1px 0 rgba(255,255,255,0.12);
-transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease, background .4s ease, border-color .3s ease;
-isolation: isolate;
-}
-.glass-card::after {
-content: “”;
-position: absolute;
-inset: 0;
-border-radius: inherit;
-pointer-events: none;
-background:
-radial-gradient(120% 70% at 0% 0%, rgba(255,255,255,0.64) 0%, transparent 58%),
-linear-gradient(120deg, rgba(255,255,255,0.12) 10%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0.18) 100%);
-background-size: 140% 140%, 220% 220%;
-background-position: 0% 0%, 0% 50%;
-mix-blend-mode: screen;
-opacity: 0.78;
-animation: glassFlow 9s ease-in-out infinite alternate;
-}
-.glass-card::before {
-content: “”;
-position: absolute;
-inset: 1px;
-border-radius: inherit;
-pointer-events: none;
-border: 1px solid rgba(255,255,255,0.22);
-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-mask-composite: exclude;
--webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
--webkit-mask-composite: xor;
-padding: 1px;
-opacity: 0.9;
-}
-@media (hover: hover) and (pointer: fine) {
-.glass-card:hover {
-background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.22) 100%);
-border-color: rgba(255,255,255,0.68);
-transform: translateY(-8px) scale(1.01);
-box-shadow:
-0 24px 55px rgba(86, 98, 230, 0.16),
-inset 0 1px 0 rgba(255,255,255,0.82),
-inset 0 -1px 0 rgba(255,255,255,0.2);
-}
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(120% 90% at 12% 0%, var(--accent-light) 0%, rgba(37,99,235,0) 55%),
+    radial-gradient(90% 80% at 100% 8%, rgba(22,163,74,0.05) 0%, rgba(22,163,74,0) 60%),
+    radial-gradient(110% 120% at 50% 120%, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 60%);
+  background-attachment: fixed;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* 扫光 */
-.shine-effect { position: relative; overflow: hidden; }
-.shine-effect::before {
-content: ‘’;
-position: absolute;
-top: 0; left: -100%;
-width: 50%; height: 100%;
-background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
-transform: skewX(-25deg);
-transition: 0.6s;
-pointer-events: none;
-z-index: 10;
-}
-@media (hover: hover) and (pointer: fine) {
-.shine-effect:hover::before { left: 150%; transition: 0.8s ease-in-out; }
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
-/* — Navbar liquid header — */
+a { color: inherit; }
+
+/* — Reveal animation — */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-spring);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* — Navbar — */
 #navbar {
-transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  transition: background var(--dur-normal) var(--ease-out), box-shadow var(--dur-normal) var(--ease-out), backdrop-filter var(--dur-normal) var(--ease-out);
 }
 #navbar.liquid-header {
-background: linear-gradient(110deg, rgba(255,255,255,0.36) 0%, rgba(240,243,255,0.28) 100%);
-backdrop-filter: blur(18px) saturate(160%) contrast(105%);
--webkit-backdrop-filter: blur(18px) saturate(160%) contrast(105%);
-box-shadow: 0 4px 24px rgba(104, 117, 245, 0.10), inset 0 -1px 0 rgba(255,255,255,0.38);
-border-bottom: 1px solid rgba(255,255,255,0.38);
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: 0 4px 24px rgba(16,24,40,0.06), inset 0 -1px 0 var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
 }
-#navbar.liquid-header::before {
-content: “”;
-position: absolute;
-inset: 0;
-pointer-events: none;
-background: linear-gradient(110deg, rgba(255,255,255,0) 18%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0) 74%);
-background-size: 220% 100%;
-animation: navLiquidFlow 8s ease-in-out infinite;
-opacity: 0.42;
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
-@keyframes navLiquidFlow {
-0%   { background-position: -60% 0; }
-50%  { background-position: 160% 0; }
-100% { background-position: -60% 0; }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+.brand-logo {
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background: var(--text-primary);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 18px -6px rgba(16,24,40,0.35);
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
+}
+.brand:hover .brand-logo {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 10px 24px -8px rgba(16,24,40,0.45);
+}
+.brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+}
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.nav-link:hover { color: var(--text-primary); }
+.nav-link small {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+.nav-cta {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--text-primary);
+  color: #fff !important;
+  padding: 0.55rem 1.4rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: 0 8px 20px -8px rgba(16,24,40,0.45);
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.nav-cta:hover {
+  transform: translateY(-2px);
+  background: #000;
+  box-shadow: 0 14px 28px -10px rgba(16,24,40,0.55);
+}
+.nav-cta small {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+}
+.menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 0.85rem;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.menu-btn:hover { box-shadow: 0 8px 18px -8px rgba(16,24,40,0.25); }
+.menu-btn:active { transform: scale(0.93); }
+
+#mobileMenu {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height var(--dur-normal) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-hairline);
+}
+#mobileMenu.open { max-height: 24rem; opacity: 1; }
+.mobile-inner { padding: 1rem 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.mobile-link {
+  display: block;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  border-radius: 0.85rem;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.mobile-link:hover { background: var(--accent-light); color: var(--text-primary); }
+.mobile-cta {
+  display: block;
+  text-align: center;
+  background: var(--text-primary);
+  color: #fff !important;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0.8rem 1rem;
+  border-radius: 0.85rem;
+  margin-top: 0.25rem;
 }
 
-/* — Site card link item — */
-.site-card {
-display: block;
-text-decoration: none;
-color: inherit;
-position: relative;
-cursor: pointer;
+/* — Hero — */
+.hero {
+  padding-top: 8rem;
+  padding-bottom: 3rem;
+  text-align: center;
 }
-.site-card .arrow-icon {
-transition: transform 0.3s ease;
+.hero-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
 }
-@media (hover: hover) and (pointer: fine) {
-.site-card:hover .arrow-icon {
-transform: translateX(4px);
+.hero-logo {
+  position: relative;
+  width: 6rem; height: 6rem;
+  border-radius: 1.75rem;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 18px 40px -16px rgba(16,24,40,0.4);
 }
+.hero-logo img { width: 100%; height: 100%; object-fit: cover; }
+.hero-online {
+  position: absolute;
+  right: -0.25rem; bottom: -0.25rem;
+  width: 1.25rem; height: 1.25rem;
+  background: var(--green);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: block;
 }
-
-/* — Tag badge — */
-.tag-badge {
-display: inline-flex;
-align-items: center;
-gap: 4px;
-padding: 3px 10px;
-border-radius: 9999px;
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 0.02em;
-}
-
-/* — Hero text gradient — */
-.hero-gradient {
-background: linear-gradient(135deg, #111111 0%, #444466 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
-}
-
-/* — Pulsing dot — */
 @keyframes ping-slow {
-0%, 100% { transform: scale(1); opacity: 1; }
-50%       { transform: scale(1.5); opacity: 0.4; }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.4; }
 }
-.ping-slow { animation: ping-slow 2s ease-in-out infinite; }
+.hero-online.ping-slow { animation: ping-slow 2s ease-in-out infinite; }
 
-/* — Section divider — */
-.section-divider {
-width: 48px; height: 4px;
-background: linear-gradient(90deg, #111 0%, #888 100%);
-border-radius: 9999px;
-margin: 0 auto 1.5rem;
+.hero-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+.hero-title {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
+  background: linear-gradient(135deg, var(--text-primary) 0%, #3a3a52 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  max-width: 36rem;
+  margin: 0 auto 2.5rem;
 }
 
-/* — Back to top — */
-.back-to-top {
-pointer-events: auto;
-width: 50px; height: 50px;
-background: linear-gradient(145deg, rgba(255,255,255,0.52), rgba(255,255,255,0.22));
-backdrop-filter: blur(16px) saturate(170%);
-border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-margin-left: 15px;
-cursor: pointer;
-border: 1px solid rgba(255,255,255,0.68);
-box-shadow: 0 10px 28px rgba(76,88,202,0.16), inset 0 1px 0 rgba(255,255,255,0.82);
-opacity: 0; visibility: hidden;
-transform: translateY(20px);
-transition: all 0.3s ease;
--webkit-tap-highlight-color: transparent;
+/* — Stats bar — */
+.stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 16px 40px -18px rgba(16,24,40,0.18);
 }
-.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+.stat { text-align: center; }
+.stat-num { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
+.stat-label { font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.125rem; }
+.stat-dot {
+  width: 0.5rem; height: 0.5rem;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.375rem;
+}
+.stat-divider { width: 1px; height: 2rem; background: var(--border-hairline); }
+
+/* — Section — */
+.section { padding: 3rem 0; }
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.section-icon {
+  width: 2rem; height: 2rem;
+  border-radius: 0.6rem;
+  background: var(--text-primary);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 14px -6px rgba(16,24,40,0.4);
+  flex-shrink: 0;
+}
+.section-icon i { color: #fff; font-size: 0.85rem; }
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.section-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-hairline) 0%, rgba(0,0,0,0) 100%);
+  margin-left: 0.5rem;
+}
+
+/* — Site card — */
+.site-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 14px 34px -16px rgba(16,24,40,0.14);
+  padding: 1.5rem;
+  overflow: hidden;
+  transition: transform var(--dur-normal) var(--ease-spring), box-shadow var(--dur-normal) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
 @media (hover: hover) and (pointer: fine) {
-.back-to-top:hover { background: rgba(255,255,255,0.9); transform: translateY(0) scale(1.1); }
+  .site-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(37,99,235,0.28);
+    box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 26px 52px -18px rgba(37,99,235,0.22);
+  }
+  .site-card:hover .arrow-icon { transform: translateX(4px); }
+}
+.site-card:active { transform: scale(0.99); }
+.arrow-icon { transition: transform var(--dur-fast) var(--ease-out); }
+
+.site-card-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.site-card-main { display: flex; align-items: flex-start; gap: 1rem; flex: 1; min-width: 0; }
+.site-thumb {
+  width: 3.5rem; height: 3.5rem;
+  border-radius: 0.9rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 6px 16px -8px rgba(16,24,40,0.3);
+}
+.site-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.site-thumb-icon {
+  width: 3rem; height: 3rem;
+  border-radius: 0.85rem;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 14px -6px rgba(16,24,40,0.3);
+}
+.site-thumb-icon i { color: #fff; font-size: 1.25rem; }
+.site-name { font-size: 1.25rem; font-weight: 800; margin: 0 0 0.25rem; color: var(--text-primary); }
+.site-desc { color: var(--text-secondary); font-size: 0.875rem; margin: 0 0 0.75rem; line-height: 1.55; }
+.site-url {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-hairline);
+}
+.site-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.625rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: var(--accent-light);
+  color: var(--accent);
+}
+.site-card .top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+.site-card .top-row h3 { font-weight: 800; font-size: 1rem; margin: 0; color: var(--text-primary); }
+.site-card.pad-sm { padding: 1.25rem; }
+
+/* — Table — */
+.table-card {
+  border-radius: var(--radius-card);
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 16px 40px -18px rgba(16,24,40,0.16);
+  overflow: hidden;
+}
+.table-scroll { overflow-x: auto; }
+table.url-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.url-table thead th {
+  text-align: left;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.url-table thead th:first-child { width: 33%; }
+.url-table thead th:last-child { width: 3rem; }
+.url-table tbody td {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.url-table tbody tr:last-child td { border-bottom: none; }
+.url-table tbody tr { transition: background var(--dur-fast) var(--ease-out); }
+.url-table tbody tr:hover { background: var(--accent-light); }
+.url-table .page-name { font-weight: 700; color: var(--text-primary); }
+.url-table .full-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+.url-table .row-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.url-table .row-link:hover { color: var(--accent); }
+
+/* — Footer — */
+.footer {
+  background: var(--text-primary);
+  color: #fff;
+  padding: 3rem 0 9rem;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 10;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+.footer .brand-name { color: #fff; }
+.footer .brand-logo { background: #fff; }
+.footer .brand-logo img { filter: none; }
+.footer-text { color: rgba(255,255,255,0.6); font-size: 0.875rem; line-height: 1.7; max-width: 24rem; margin: 1.5rem 0 0; }
+.footer h3 { font-size: 1.125rem; font-weight: 800; margin: 0 0 1.25rem; }
+.footer-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.875rem; transition: color var(--dur-fast) var(--ease-out); }
+.footer-links a:hover { color: #fff; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.12);
+  margin-top: 2rem;
+  padding-top: 2rem;
+  text-align: center;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.875rem;
+  line-height: 1.7;
 }
 
 /* — Dock — */
 .dock-container {
-position: fixed; bottom: 20px; left: 0; width: 100%;
-display: flex; justify-content: center; align-items: center;
-z-index: 1000; padding: 0 10px; box-sizing: border-box;
-pointer-events: none;
+  position: fixed;
+  bottom: 1.25rem;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 0 0.625rem;
+  pointer-events: none;
 }
 .dock {
-display: flex;
-background: linear-gradient(135deg, rgba(255,255,255,0.46) 0%, rgba(255,255,255,0.24) 100%);
-backdrop-filter: blur(12px) saturate(150%) contrast(104%);
--webkit-backdrop-filter: blur(12px) saturate(150%) contrast(104%);
-border: 1px solid rgba(255,255,255,0.62);
-border-radius: 9999px;
-padding: 8px 12px;
-box-shadow: 0 14px 32px rgba(67,76,183,0.14), inset 0 1px 0 rgba(255,255,255,0.74);
-pointer-events: auto;
-max-width: calc(100vw - 24px);
-overflow: hidden;
+  display: flex;
+  background: rgba(255,255,255,0.86);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 14px 32px -12px rgba(16,24,40,0.28), inset 0 1px 0 rgba(255,255,255,0.7);
+  pointer-events: auto;
+  max-width: calc(100vw - 1.5rem);
+  overflow: hidden;
 }
 .dock-item {
-display: flex; flex-direction: column; align-items: center; justify-content: center;
-flex-shrink: 0; width: 52px; height: 52px; margin: 0 4px;
-border-radius: 50%; cursor: pointer; text-decoration: none; color: #333;
-transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
--webkit-tap-highlight-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3.25rem; height: 3.25rem;
+  margin: 0 0.25rem;
+  border-radius: 50%;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: transform var(--dur-fast) var(--ease-spring), background var(--dur-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
 }
 @media (hover: hover) and (pointer: fine) {
-.dock-item:hover { transform: translateY(-8px) scale(1.15); background: rgba(255,255,255,0.6); }
+  .dock-item:hover { transform: translateY(-8px) scale(1.12); background: var(--accent-light); color: var(--accent); }
 }
-.dock-item:active { transform: scale(0.92); background: rgba(255,255,255,0.7); }
-.dock-icon { font-size: 22px; margin-bottom: 2px; }
-.dock-label { font-size: 10px; font-weight: 600; opacity: 0.8; }
-body.scrolled .dock { padding: 6px 12px; }
-body.scrolled .dock-item { width: 44px; height: 44px; }
-body.scrolled .dock-icon { font-size: 18px; margin-bottom: 0; }
+.dock-item:active { transform: scale(0.92); }
+.dock-icon { font-size: 1.375rem; margin-bottom: 0.125rem; }
+.dock-label { font-size: 0.625rem; font-weight: 700; opacity: 0.8; }
+body.scrolled .dock { padding: 0.375rem 0.75rem; }
+body.scrolled .dock-item { width: 2.75rem; height: 2.75rem; }
+body.scrolled .dock-icon { font-size: 1.125rem; margin-bottom: 0; }
 body.scrolled .dock-label { display: none; }
 
-/* Mobile menu */
-#mobileMenu {
-transition: max-height 0.4s ease, opacity 0.3s ease;
-overflow: hidden; max-height: 0; opacity: 0;
+/* — Back to top — */
+.back-to-top {
+  pointer-events: auto;
+  width: 3.125rem; height: 3.125rem;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border-hairline);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-left: 0.9375rem;
+  cursor: pointer;
+  box-shadow: 0 10px 28px -12px rgba(16,24,40,0.3), inset 0 1px 0 rgba(255,255,255,0.8);
+  opacity: 0; visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
 }
-#mobileMenu.open { max-height: 400px; opacity: 1; }
-#navbar.liquid-header #mobileMenu {
-background: transparent !important;
-backdrop-filter: none; -webkit-backdrop-filter: none;
+.back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+@media (hover: hover) and (pointer: fine) {
+  .back-to-top:hover { background: #fff; transform: translateY(0) scale(1.1); }
 }
-#mobileMenu .menu-link { background: transparent; border: none; }
-#mobileMenu .menu-link:hover { background: rgba(255,255,255,0.1); }
+.back-to-top i { color: var(--text-secondary); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 0.4rem;
+}
+
+@media (min-width: 768px) {
+  .nav-links { display: flex; }
+  .menu-btn { display: none; }
+  .site-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-right { text-align: right; }
+  .footer-right .footer-links { align-items: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition-duration: 0.001ms !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  #navbar.liquid-header,
+  #mobileMenu,
+  .dock,
+  .back-to-top { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(255,255,255,0.97); }
+}
 </style>
-
 </head>
-<body class="font-sans text-dark antialiased overflow-x-hidden bg-transparent">
-
-<!-- 液态背景 -->
-
-<div class="liquid-background">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
+<body>
 
 <!-- Navbar -->
-
-<header class="fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center py-4">
-      <a class="flex items-center space-x-3 group" href="https://houda.pages.dev">
-        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300">
-          <img alt="侯大标志" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-300" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
+<header id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="https://houda.pages.dev">
+        <div class="brand-logo">
+          <img alt="侯大标志" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
         </div>
-        <span class="text-2xl font-bold text-primary tracking-tight">HOUDA+</span>
+        <span class="brand-name">HOUDA+</span>
       </a>
-      <nav class="hidden md:flex items-center space-x-8">
-        <a class="text-secondary hover:text-primary transition-all duration-300 font-medium" href="https://houda.pages.dev">
-          主网站 <br/><span class="text-gray-400 text-xs block mt-0.5">Home</span>
+      <nav class="nav-links">
+        <a class="nav-link" href="https://houda.pages.dev">
+          主网站 <small>Home</small>
         </a>
-        <a class="text-secondary hover:text-primary transition-all duration-300 font-medium" href="#tools">
-          工具集 <br/><span class="text-gray-400 text-xs block mt-0.5">Tools</span>
+        <a class="nav-link" href="#tools">
+          工具集 <small>Tools</small>
         </a>
-        <a class="bg-primary hover:bg-gray-800 text-white px-6 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 font-medium transform hover:-translate-y-0.5" href="#sitemap">
-          导航地图 <br/><span class="text-gray-400 text-xs block mt-0.5">Sitemap</span>
+        <a class="nav-cta" href="#sitemap">
+          导航地图 <small>Sitemap</small>
         </a>
       </nav>
-      <button class="md:hidden text-dark focus:outline-none p-2" id="menuBtn">
-        <i class="fa fa-bars text-2xl"></i>
+      <button class="menu-btn" id="menuBtn" aria-label="打开菜单">
+        <i class="ph-bold ph-list"></i>
       </button>
     </div>
   </div>
-  <div class="md:hidden" id="mobileMenu">
-    <div class="container mx-auto px-4 py-4 space-y-3">
-      <a class="menu-link block text-secondary hover:text-primary transition-all duration-300 py-2 px-4 rounded-xl" href="https://houda.pages.dev">主网站</a>
-      <a class="menu-link block text-secondary hover:text-primary transition-all duration-300 py-2 px-4 rounded-xl" href="#tools">工具集</a>
-      <a class="block bg-primary text-white px-6 py-3 rounded-xl text-center shadow-md mt-2" href="#sitemap">网站地图</a>
+  <div id="mobileMenu">
+    <div class="mobile-inner">
+      <a class="mobile-link" href="https://houda.pages.dev">主网站</a>
+      <a class="mobile-link" href="#tools">工具集</a>
+      <a class="mobile-cta" href="#sitemap">网站地图</a>
     </div>
   </div>
 </header>
 
 <!-- Hero -->
-
-<section class="pt-[7rem] pb-10 md:pt-[9rem] md:pb-16 bg-transparent">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <!-- Logo -->
-    <div class="flex justify-center mb-6">
-      <div class="relative">
-        <div class="w-24 h-24 rounded-3xl overflow-hidden shadow-2xl border-2 border-white/60 mx-auto">
-          <img alt="HOUDA+ Logo" class="w-full h-full object-cover" src="assets/HOUDA_squre.jpeg"/>
-        </div>
-        <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 border-2 border-white rounded-full ping-slow block"></span>
+<section class="hero">
+  <div class="container">
+    <div class="hero-logo-wrap">
+      <div class="hero-logo">
+        <img alt="HOUDA+ Logo" src="assets/HOUDA_squre.jpeg"/>
+        <span class="hero-online ping-slow"></span>
       </div>
     </div>
 
-```
-<p class="text-xs tracking-[0.3em] uppercase text-secondary mb-3 font-semibold">Site Map · 全站导航</p>
-<h1 class="text-[clamp(2.2rem,5vw,4rem)] font-extrabold leading-tight mb-4 hero-gradient">
-  HOUDA+ 网站地图
-</h1>
-<p class="text-secondary text-lg max-w-xl mx-auto mb-10">
-  汇聚侯大旗下所有页面与工具，一站直达你想去的地方。
-</p>
+    <p class="hero-eyebrow">Site Map · 全站导航</p>
+    <h1 class="hero-title">HOUDA+ 网站地图</h1>
+    <p class="hero-sub">汇聚侯大旗下所有页面与工具，一站直达你想去的地方。</p>
 
-<!-- Stats bar -->
-<div class="inline-flex items-center gap-6 sm:gap-10 glass-card px-8 py-4 rounded-2xl mx-auto">
-  <div class="text-center">
-    <div class="text-2xl font-extrabold text-dark">5</div>
-    <div class="text-xs text-secondary mt-0.5">页面总数</div>
-  </div>
-  <div class="w-px h-8 bg-white/50"></div>
-  <div class="text-center">
-    <div class="text-2xl font-extrabold text-dark">3</div>
-    <div class="text-xs text-secondary mt-0.5">实用工具</div>
-  </div>
-  <div class="w-px h-8 bg-white/50"></div>
-  <div class="text-center">
-    <div class="flex items-center justify-center gap-1.5">
-      <span class="w-2 h-2 bg-green-400 rounded-full inline-block"></span>
-      <span class="text-2xl font-extrabold text-dark">在线</span>
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">页面总数</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">实用工具</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="flex" style="display:flex; align-items:center; justify-content:center;">
+          <span class="stat-dot"></span>
+          <span class="stat-num">在线</span>
+        </div>
+        <div class="stat-label">全站运行中</div>
+      </div>
     </div>
-    <div class="text-xs text-secondary mt-0.5">全站运行中</div>
-  </div>
-</div>
-```
-
   </div>
 </section>
 
 <!-- Main sitemap section -->
+<section class="section" id="sitemap">
+  <div class="container">
 
-<section class="py-12 md:py-16 bg-transparent" id="sitemap">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+    <!-- 主页 -->
+    <div class="reveal">
+      <div class="section-head">
+        <div class="section-icon"><i class="ph-bold ph-house"></i></div>
+        <h2 class="section-title">主入口</h2>
+        <div class="section-rule"></div>
+      </div>
 
-```
-<!-- 主页 -->
-<div class="mb-10">
-  <div class="flex items-center gap-3 mb-5">
-    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm">
-      <i class="fa-solid fa-house text-white text-sm"></i>
-    </div>
-    <h2 class="text-lg font-bold text-dark tracking-tight">主入口</h2>
-    <div class="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-2"></div>
-  </div>
-
-  <a class="site-card glass-card shine-effect block p-6 rounded-2xl group" href="https://houda.pages.dev" target="_blank" rel="noopener">
-    <div class="flex items-start justify-between gap-4">
-      <div class="flex items-start gap-4 flex-1 min-w-0">
-        <div class="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border border-white/60">
-          <img alt="HOUDA+" class="w-full h-full object-cover" src="assets/HOUDA_squre.jpeg"/>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1 flex-wrap">
-            <h3 class="text-xl font-bold text-dark">HOUDA+ 官网</h3>
-            <span class="tag-badge bg-black/10 text-gray-700">
-              <i class="fa-solid fa-star text-yellow-500" style="font-size:9px"></i> 主页
-            </span>
+      <a class="site-card shine-effect" href="https://houda.pages.dev" target="_blank" rel="noopener">
+        <div class="site-card-hero">
+          <div class="site-card-main">
+            <div class="site-thumb">
+              <img alt="HOUDA+" src="assets/HOUDA_squre.jpeg"/>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.25rem;">
+                <h3 class="site-name" style="margin:0;">HOUDA+ 官网</h3>
+                <span class="tag-badge"><i class="ph-bold ph-star" style="color:#f5b301; font-size:0.6rem;"></i> 主页</span>
+              </div>
+              <p class="site-desc">侯明昊碗慧通讯录互吃大学 · 长沙霉粉联盟六群分支官方站点，关于我们、发展历程、特色地标一网打尽。</p>
+              <span class="site-url">houda.pages.dev</span>
+            </div>
           </div>
-          <p class="text-secondary text-sm mb-3 leading-relaxed">侯明昊碗慧通讯录互吃大学 · 长沙霉粉联盟六群分支官方站点，关于我们、发展历程、特色地标一网打尽。</p>
-          <span class="text-xs text-gray-400 font-mono bg-white/50 px-3 py-1 rounded-full border border-white/60">houda.pages.dev</span>
+          <div style="flex-shrink:0; margin-top:0.25rem;">
+            <i class="ph-bold ph-arrow-right arrow-icon" style="color:var(--text-secondary); font-size:1.1rem;"></i>
+          </div>
         </div>
+      </a>
+    </div>
+
+    <!-- 工具与功能页 -->
+    <div id="tools" class="reveal" style="margin-top:3rem;">
+      <div class="section-head">
+        <div class="section-icon"><i class="ph-bold ph-squares-four"></i></div>
+        <h2 class="section-title">功能页面</h2>
+        <div class="section-rule"></div>
       </div>
-      <div class="flex-shrink-0 mt-1">
-        <i class="fa-solid fa-arrow-right text-secondary arrow-icon text-lg"></i>
+
+      <div class="site-grid">
+
+        <a class="site-card pad-sm" href="tools/anniversary.html" target="_blank" rel="noopener">
+          <div class="top-row">
+            <h3>纪念日倒计时</h3>
+            <i class="ph-bold ph-arrow-right arrow-icon" style="color:var(--text-secondary); font-size:0.85rem;"></i>
+          </div>
+          <div style="display:flex; align-items:flex-start; gap:1rem;">
+            <div class="site-thumb-icon" style="background:linear-gradient(135deg,#fbc2eb 0%,#a18cd1 100%);">
+              <i class="ph-bold ph-cake"></i>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <p class="site-desc" style="margin-bottom:0.5rem;">侯大纪念日（4月22日）倒计时，Liquid Glass 动态视觉特效。</p>
+              <span class="site-url">/anniversary</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="site-card pad-sm" href="tools/hdti-test.html" target="_blank" rel="noopener">
+          <div class="top-row">
+            <h3>HDTI 人格测试</h3>
+            <i class="ph-bold ph-arrow-right arrow-icon" style="color:var(--text-secondary); font-size:0.85rem;"></i>
+          </div>
+          <div style="display:flex; align-items:flex-start; gap:1rem;">
+            <div class="site-thumb-icon" style="background:linear-gradient(135deg,#8ec5fc 0%,#e0c3fc 100%);">
+              <i class="ph-bold ph-brain"></i>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <p class="site-desc" style="margin-bottom:0.5rem;">侯大版人格类型测试，探索你在 HOUDA+ 宇宙中的独特人格。</p>
+              <span class="site-url">/hdti-test</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="site-card pad-sm" href="tools/mianshui.html" target="_blank" rel="noopener">
+          <div class="top-row">
+            <h3>免税州地址生成</h3>
+            <i class="ph-bold ph-arrow-right arrow-icon" style="color:var(--text-secondary); font-size:0.85rem;"></i>
+          </div>
+          <div style="display:flex; align-items:flex-start; gap:1rem;">
+            <div class="site-thumb-icon" style="background:linear-gradient(135deg,#84fab0 0%,#8fd3f4 100%);">
+              <i class="ph-bold ph-map-pin"></i>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <p class="site-desc" style="margin-bottom:0.5rem;">一键生成美国免税州收货地址，购物省税利器。</p>
+              <span class="site-url">/mianshui</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="site-card pad-sm" href="tools/ippure.html" target="_blank" rel="noopener">
+          <div class="top-row">
+            <h3>IP 纯净度检测</h3>
+            <i class="ph-bold ph-arrow-right arrow-icon" style="color:var(--text-secondary); font-size:0.85rem;"></i>
+          </div>
+          <div style="display:flex; align-items:flex-start; gap:1rem;">
+            <div class="site-thumb-icon" style="background:linear-gradient(135deg,#ffecd2 0%,#fcb69f 100%);">
+              <i class="ph-bold ph-shield-check"></i>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <p class="site-desc" style="margin-bottom:0.5rem;">检测当前 IP 的纯净度与风险评分，保护你的网络安全。</p>
+              <span class="site-url">/ippure</span>
+            </div>
+          </div>
+        </a>
+
       </div>
     </div>
-  </a>
-</div>
 
-<!-- 工具与功能页 -->
-<div id="tools">
-  <div class="flex items-center gap-3 mb-5">
-    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm">
-      <i class="fa-solid fa-grid-2 text-white text-sm"></i>
+    <!-- URL 快查表 -->
+    <div class="reveal" style="margin-top:3rem;">
+      <div class="section-head">
+        <div class="section-icon"><i class="ph-bold ph-link"></i></div>
+        <h2 class="section-title">URL 快查表</h2>
+        <div class="section-rule"></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-scroll">
+          <table class="url-table">
+            <thead>
+              <tr>
+                <th>页面</th>
+                <th>完整 URL</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="page-name">🏠 主网站</td>
+                <td class="full-url">https://houda.pages.dev</td>
+                <td style="text-align:center;">
+                  <a href="https://houda.pages.dev" target="_blank" class="row-link">
+                    <i class="ph-bold ph-arrow-square-out"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="page-name">🎂 纪念日倒计时</td>
+                <td class="full-url">tools/anniversary.html</td>
+                <td style="text-align:center;">
+                  <a href="tools/anniversary.html" target="_blank" class="row-link">
+                    <i class="ph-bold ph-arrow-square-out"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="page-name">🧠 HDTI 人格测试</td>
+                <td class="full-url">tools/hdti-test.html</td>
+                <td style="text-align:center;">
+                  <a href="tools/hdti-test.html" target="_blank" class="row-link">
+                    <i class="ph-bold ph-arrow-square-out"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="page-name">📍 免税州地址生成</td>
+                <td class="full-url">tools/mianshui.html</td>
+                <td style="text-align:center;">
+                  <a href="tools/mianshui.html" target="_blank" class="row-link">
+                    <i class="ph-bold ph-arrow-square-out"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="page-name">🛡️ IP 纯净度检测</td>
+                <td class="full-url">tools/ippure.html</td>
+                <td style="text-align:center;">
+                  <a href="tools/ippure.html" target="_blank" class="row-link">
+                    <i class="ph-bold ph-arrow-square-out"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <h2 class="text-lg font-bold text-dark tracking-tight">功能页面</h2>
-    <div class="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-2"></div>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-    <!-- 纪念日倒计时 -->
-    <a class="site-card glass-card shine-effect block p-5 rounded-2xl group" href="https://houda.pages.dev/anniversary" target="_blank" rel="noopener">
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-sm"
-             style="background: linear-gradient(135deg, #fbc2eb 0%, #a18cd1 100%);">
-          <i class="fa-solid fa-cake-candles text-white text-xl"></i>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between mb-1">
-            <h3 class="font-bold text-dark text-base">纪念日倒计时</h3>
-            <i class="fa-solid fa-arrow-right text-secondary arrow-icon text-sm"></i>
-          </div>
-          <p class="text-secondary text-xs leading-relaxed mb-2">
-            侯大纪念日（4月22日）倒计时，Liquid Glass 动态视觉特效。
-          </p>
-          <span class="text-xs text-gray-400 font-mono bg-white/50 px-2.5 py-0.5 rounded-full border border-white/60">/anniversary</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- HDTI 人格测试 -->
-    <a class="site-card glass-card shine-effect block p-5 rounded-2xl group" href="https://houda.pages.dev/hdti-test" target="_blank" rel="noopener">
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-sm"
-             style="background: linear-gradient(135deg, #8ec5fc 0%, #e0c3fc 100%);">
-          <i class="fa-solid fa-brain text-white text-xl"></i>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between mb-1">
-            <h3 class="font-bold text-dark text-base">HDTI 人格测试</h3>
-            <i class="fa-solid fa-arrow-right text-secondary arrow-icon text-sm"></i>
-          </div>
-          <p class="text-secondary text-xs leading-relaxed mb-2">
-            侯大版人格类型测试，探索你在 HOUDA+ 宇宙中的独特人格。
-          </p>
-          <span class="text-xs text-gray-400 font-mono bg-white/50 px-2.5 py-0.5 rounded-full border border-white/60">/hdti-test</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- 免税州地址生成 -->
-    <a class="site-card glass-card shine-effect block p-5 rounded-2xl group" href="https://houda.pages.dev/mianshui" target="_blank" rel="noopener">
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-sm"
-             style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);">
-          <i class="fa-solid fa-location-dot text-white text-xl"></i>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between mb-1">
-            <h3 class="font-bold text-dark text-base">免税州地址生成</h3>
-            <i class="fa-solid fa-arrow-right text-secondary arrow-icon text-sm"></i>
-          </div>
-          <p class="text-secondary text-xs leading-relaxed mb-2">
-            一键生成美国免税州收货地址，购物省税利器。
-          </p>
-          <span class="text-xs text-gray-400 font-mono bg-white/50 px-2.5 py-0.5 rounded-full border border-white/60">/mianshui</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- IP 纯净度检测 -->
-    <a class="site-card glass-card shine-effect block p-5 rounded-2xl group" href="https://houda.pages.dev/ippure" target="_blank" rel="noopener">
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-sm"
-             style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
-          <i class="fa-solid fa-shield-halved text-white text-xl"></i>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between mb-1">
-            <h3 class="font-bold text-dark text-base">IP 纯净度检测</h3>
-            <i class="fa-solid fa-arrow-right text-secondary arrow-icon text-sm"></i>
-          </div>
-          <p class="text-secondary text-xs leading-relaxed mb-2">
-            检测当前 IP 的纯净度与风险评分，保护你的网络安全。
-          </p>
-          <span class="text-xs text-gray-400 font-mono bg-white/50 px-2.5 py-0.5 rounded-full border border-white/60">/ippure</span>
-        </div>
-      </div>
-    </a>
-
-  </div>
-</div>
-
-<!-- URL 快查表 -->
-<div class="mt-12">
-  <div class="flex items-center gap-3 mb-5">
-    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm">
-      <i class="fa-solid fa-link text-white text-sm"></i>
-    </div>
-    <h2 class="text-lg font-bold text-dark tracking-tight">URL 快查表</h2>
-    <div class="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-2"></div>
-  </div>
-
-  <div class="glass-card rounded-2xl overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b border-white/40">
-            <th class="text-left px-5 py-3 text-xs font-bold text-secondary uppercase tracking-wider w-1/3">页面</th>
-            <th class="text-left px-5 py-3 text-xs font-bold text-secondary uppercase tracking-wider">完整 URL</th>
-            <th class="px-5 py-3 w-12"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="border-b border-white/20 hover:bg-white/30 transition-colors">
-            <td class="px-5 py-3.5 font-semibold text-dark">🏠 主网站</td>
-            <td class="px-5 py-3.5 font-mono text-xs text-secondary">https://houda.pages.dev</td>
-            <td class="px-5 py-3.5 text-center">
-              <a href="https://houda.pages.dev" target="_blank" class="text-secondary hover:text-dark transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-              </a>
-            </td>
-          </tr>
-          <tr class="border-b border-white/20 hover:bg-white/30 transition-colors">
-            <td class="px-5 py-3.5 font-semibold text-dark">🎂 纪念日倒计时</td>
-            <td class="px-5 py-3.5 font-mono text-xs text-secondary">https://houda.pages.dev/anniversary</td>
-            <td class="px-5 py-3.5 text-center">
-              <a href="https://houda.pages.dev/anniversary" target="_blank" class="text-secondary hover:text-dark transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-              </a>
-            </td>
-          </tr>
-          <tr class="border-b border-white/20 hover:bg-white/30 transition-colors">
-            <td class="px-5 py-3.5 font-semibold text-dark">🧠 HDTI 人格测试</td>
-            <td class="px-5 py-3.5 font-mono text-xs text-secondary">https://houda.pages.dev/hdti-test</td>
-            <td class="px-5 py-3.5 text-center">
-              <a href="https://houda.pages.dev/hdti-test" target="_blank" class="text-secondary hover:text-dark transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-              </a>
-            </td>
-          </tr>
-          <tr class="border-b border-white/20 hover:bg-white/30 transition-colors">
-            <td class="px-5 py-3.5 font-semibold text-dark">📍 免税州地址生成</td>
-            <td class="px-5 py-3.5 font-mono text-xs text-secondary">https://houda.pages.dev/mianshui</td>
-            <td class="px-5 py-3.5 text-center">
-              <a href="https://houda.pages.dev/mianshui" target="_blank" class="text-secondary hover:text-dark transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-              </a>
-            </td>
-          </tr>
-          <tr class="hover:bg-white/30 transition-colors">
-            <td class="px-5 py-3.5 font-semibold text-dark">🛡️ IP 纯净度检测</td>
-            <td class="px-5 py-3.5 font-mono text-xs text-secondary">https://houda.pages.dev/ippure</td>
-            <td class="px-5 py-3.5 text-center">
-              <a href="https://houda.pages.dev/ippure" target="_blank" class="text-secondary hover:text-dark transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-```
 
   </div>
 </section>
 
 <!-- Footer -->
-
-<footer class="bg-gray-900 text-white pt-12 pb-32 md:pt-16 md:pb-36 relative z-10 mt-8">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
       <div>
-        <a class="flex items-center space-x-3 mb-6" href="https://houda.pages.dev">
-          <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden">
-            <img alt="侯大标志" class="w-full h-full object-cover" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
+        <a class="brand" href="https://houda.pages.dev">
+          <div class="brand-logo">
+            <img alt="侯大标志" loading="lazy" src="assets/HOUDA_squre.jpeg"/>
           </div>
-          <span class="text-2xl font-bold text-white tracking-tight">HOUDA+</span>
+          <span class="brand-name">HOUDA+</span>
         </a>
-        <p class="text-gray-400 mb-4 text-sm leading-relaxed max-w-sm">
+        <p class="footer-text">
           侯明昊碗慧通讯录互吃大学<br/>长沙霉粉联盟六群分支，用热爱连接彼此。
         </p>
       </div>
-      <div class="md:text-right">
-        <h3 class="text-lg font-bold mb-5 text-white">快速导航</h3>
-        <ul class="space-y-2 md:inline-block md:text-right">
-          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="https://houda.pages.dev">主网站</a></li>
-          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="https://houda.pages.dev/anniversary">纪念日倒计时</a></li>
-          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="https://houda.pages.dev/hdti-test">HDTI 人格测试</a></li>
-          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="https://houda.pages.dev/mianshui">免税州地址生成</a></li>
-          <li><a class="text-gray-400 hover:text-white transition-colors text-sm" href="https://houda.pages.dev/ippure">IP 纯净度检测</a></li>
+      <div class="footer-right">
+        <h3>快速导航</h3>
+        <ul class="footer-links">
+          <li><a href="https://houda.pages.dev">主网站</a></li>
+          <li><a href="tools/anniversary.html">纪念日倒计时</a></li>
+          <li><a href="tools/hdti-test.html">HDTI 人格测试</a></li>
+          <li><a href="tools/mianshui.html">免税州地址生成</a></li>
+          <li><a href="tools/ippure.html">IP 纯净度检测</a></li>
         </ul>
       </div>
     </div>
-    <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm leading-relaxed">
+    <div class="footer-bottom">
       <p>
-        <span class="block">© 2026 HOUDA+</span>
-        <span class="block">All rights reserved.</span>
+        <span>© 2026 HOUDA+</span>
+        <span>All rights reserved.</span>
       </p>
     </div>
   </div>
 </footer>
 
 <!-- Dock -->
-
 <div class="dock-container">
   <div class="dock">
     <a class="dock-item" href="https://houda.pages.dev" target="_blank">
-      <i class="fa-solid fa-house dock-icon"></i>
+      <i class="ph-bold ph-house dock-icon"></i>
       <span class="dock-label">主页</span>
     </a>
-    <a class="dock-item" href="https://houda.pages.dev/anniversary" target="_blank">
-      <i class="fa-solid fa-cake-candles dock-icon"></i>
+    <a class="dock-item" href="tools/anniversary.html" target="_blank">
+      <i class="ph-bold ph-cake dock-icon"></i>
       <span class="dock-label">纪念日</span>
     </a>
-    <a class="dock-item" href="https://houda.pages.dev/hdti-test" target="_blank">
-      <i class="fa-solid fa-brain dock-icon"></i>
+    <a class="dock-item" href="tools/hdti-test.html" target="_blank">
+      <i class="ph-bold ph-brain dock-icon"></i>
       <span class="dock-label">HDTI</span>
     </a>
-    <a class="dock-item" href="https://houda.pages.dev/mianshui" target="_blank">
-      <i class="fa-solid fa-location-dot dock-icon"></i>
+    <a class="dock-item" href="tools/mianshui.html" target="_blank">
+      <i class="ph-bold ph-map-pin dock-icon"></i>
       <span class="dock-label">免税州</span>
     </a>
-    <a class="dock-item" href="https://houda.pages.dev/ippure" target="_blank">
-      <i class="fa-solid fa-shield-halved dock-icon"></i>
+    <a class="dock-item" href="tools/ippure.html" target="_blank">
+      <i class="ph-bold ph-shield-check dock-icon"></i>
       <span class="dock-label">IP检测</span>
     </a>
   </div>
-  <div class="back-to-top" id="backToTop">
-    <i class="fa-solid fa-arrow-up text-gray-700"></i>
+  <div class="back-to-top" id="backToTop" aria-label="返回顶部">
+    <i class="ph-bold ph-arrow-up"></i>
   </div>
 </div>
 
@@ -735,36 +933,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
   menuBtn.addEventListener("click", function () {
     const isOpen = mobileMenu.classList.toggle("open");
-    icon.className = isOpen ? "fa fa-times text-2xl" : "fa fa-bars text-2xl";
+    icon.className = isOpen ? "ph-bold ph-x" : "ph-bold ph-list";
     updateNavbar();
   });
 
   mobileMenu.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
       mobileMenu.classList.remove("open");
-      icon.className = "fa fa-bars text-2xl";
+      icon.className = "ph-bold ph-list";
       updateNavbar();
     });
   });
 
-  window.addEventListener("scroll", updateNavbar, { passive: true });
-  updateNavbar();
-});
+  const backToTop = document.getElementById("backToTop");
+  let ticking = false;
 
-// Back to top
-window.addEventListener("scroll", function () {
-  const btn = document.getElementById("backToTop");
-  if (window.scrollY > 100) {
-    document.body.classList.add("scrolled");
-    btn.classList.add("visible");
-  } else {
-    document.body.classList.remove("scrolled");
-    btn.classList.remove("visible");
+  const onScroll = () => {
+    const y = window.scrollY;
+    updateNavbar();
+    document.body.classList.toggle("scrolled", y > 100);
+    if (backToTop) backToTop.classList.toggle("visible", y > 400);
+    ticking = false;
+  };
+
+  window.addEventListener("scroll", () => {
+    if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive: true });
+  onScroll();
+
+  const goTop = () => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  };
+  if (backToTop) {
+    backToTop.addEventListener("click", goTop);
+    backToTop.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goTop(); }
+    });
   }
 });
-document.getElementById("backToTop").addEventListener("click", function () {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
+
+// Scroll reveals via IntersectionObserver
+(function () {
+  const items = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window) || !items.length) {
+    items.forEach(el => el.classList.add("is-visible"));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+  items.forEach(el => io.observe(el));
+})();
 </script>
 
 </body>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>侯大纪念日 | HOUDA+</title>
+<meta name="theme-color" content="#f4f4f6">
+<link crossorigin href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
+<style>
+/* ===========================================================
+   HOUDA+ 纪念日 - Soft Structuralism 视觉体系
+   银灰底 / 浮空白卡 / 漫射阴影 / 单一蓝色强调
+   =========================================================== */
+
+:root {
+  --bg: #f4f4f6;
+  --bg-card: #ffffff;
+  --bg-elevated: #fafafa;
+  --text-primary: #1a1a1f;
+  --text-secondary: #5c5c66;
+  --text-tertiary: #9a9aa3;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-light: rgba(37,99,235,0.06);
+  --green: #16a34a;
+  --green-light: rgba(22,163,74,0.08);
+  --border-hairline: rgba(0,0,0,0.06);
+  --border-soft: rgba(0,0,0,0.04);
+
+  --shadow-ambient:
+    0 1px 2px rgba(0,0,0,0.03),
+    0 8px 24px rgba(0,0,0,0.04),
+    0 24px 56px rgba(0,0,0,0.03);
+  --shadow-float:
+    0 2px 4px rgba(0,0,0,0.03),
+    0 12px 32px rgba(0,0,0,0.06),
+    0 32px 72px rgba(0,0,0,0.04);
+
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --dur-press: 120ms;
+  --dur-fast: 200ms;
+  --dur-normal: 400ms;
+  --dur-slow: 700ms;
+
+  --font-display: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+  --radius-input: 0.75rem;
+  --radius-pill: 999px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  width: 100%;
+  font: 100%/1.6 var(--font-display);
+  color: var(--text-primary);
+  background: var(--bg);
+}
+
+body {
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  min-height: 100svh;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+}
+
+/* --- 漫射环境光: 中性冷调, 无 AI 紫渐变 --- */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(56% 50% at 82% 10%, rgba(37,99,235,0.08), transparent 70%),
+    radial-gradient(48% 46% at 8% 92%, rgba(22,163,74,0.05), transparent 70%);
+}
+
+/* --- 双层嵌套面板 --- */
+.stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+}
+
+.panel-shell {
+  width: 100%;
+  max-width: 540px;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: calc(var(--radius-card) + 0.5rem);
+  box-shadow: var(--shadow-float);
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  animation: panelReveal 0.9s 0.05s var(--ease-spring) forwards;
+}
+
+@keyframes panelReveal {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.panel {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: 2.5rem 1.75rem 2rem;
+  text-align: center;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.2);
+}
+
+/* --- 标题区 --- */
+.subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 0.625rem;
+}
+.subtitle::before {
+  content: "";
+  width: 1.25rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 7vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.quote-inline {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.6;
+  min-height: 24px;
+  margin-bottom: 1.75rem;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: quoteFadeIn 0.7s 0.35s var(--ease-out) forwards;
+}
+
+@keyframes quoteFadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 纪念日元信息 --- */
+.meta-info {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background: var(--accent-light);
+  border-radius: var(--radius-input);
+}
+
+.anniversary-date {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.anniversary-year {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* --- 年度进度 --- */
+.progress-wrap {
+  text-align: left;
+  margin-bottom: 1.75rem;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  transition: width var(--dur-slow) var(--ease-fluid);
+}
+
+/* --- 倒计时 --- */
+.countdown {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 4px;
+  margin-bottom: 1.75rem;
+}
+
+.time-unit {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 0.25rem 0.75rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-input);
+}
+
+.time-unit span {
+  font-size: clamp(1.5rem, 8.5vw, 2.75rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.time-unit p {
+  margin-top: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  font-size: clamp(1rem, 5vw, 1.5rem);
+  font-weight: 400;
+  color: rgba(0,0,0,0.12);
+  line-height: 1;
+}
+
+/* --- 按钮 --- */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.btn-houda {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.75rem 1.375rem;
+  background: var(--text-primary);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-ambient);
+  transition: transform var(--dur-press) var(--ease-out),
+              background var(--dur-fast) var(--ease-fluid),
+              box-shadow var(--dur-fast) var(--ease-fluid),
+              opacity var(--dur-fast) var(--ease-out);
+}
+.btn-houda:active { transform: scale(0.96); }
+.btn-houda:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.btn-houda:disabled { opacity: 0.55; cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .btn-houda:hover:not(:disabled) { background: var(--accent); }
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  box-shadow: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.15);
+  font-size: 0.6875rem;
+  transition: transform var(--dur-fast) var(--ease-fluid);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-houda:hover .btn-icon { transform: translate(2px, -1px) scale(1.05); }
+}
+
+/* --- 移动端 --- */
+@media (max-width: 767px) {
+  body { padding: 1.5rem 1rem; }
+  .panel { padding: 2rem 1.25rem 1.75rem; }
+  .actions { width: 100%; }
+  .actions .btn-houda { flex: 1 1 auto; }
+}
+
+@media (max-width: 460px) {
+  .actions { flex-direction: column; }
+  .actions .btn-houda { width: 100%; }
+  .countdown { gap: 2px; }
+  .time-unit { padding: 0.75rem 0.125rem 0.625rem; }
+}
+
+/* --- 无障碍: 尊重系统减弱动效 --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .panel-shell, .quote-inline {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .panel-shell { background: rgba(255,255,255,0.95); }
+}
+</style>
+</head>
+<body>
+
+    <div class="ambient" aria-hidden="true"></div>
+
+    <main class="stage">
+      <section class="panel-shell">
+        <div class="panel">
+          <div class="subtitle">ANNIVERSARY</div>
+          <h1>侯大纪念日</h1>
+          <p class="quote-inline" id="quoteText"></p>
+
+          <div class="meta-info">
+            <div class="anniversary-date">2024.04.23</div>
+            <div class="anniversary-year" id="anniversaryYearText"></div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-label" id="progressLabel">今年进度 0%</div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="countdown">
+            <div class="time-unit">
+              <span id="days">00</span>
+              <p>天</p>
+            </div>
+            <div class="divider">:</div>
+            <div class="time-unit">
+              <span id="hours">00</span>
+              <p>时</p>
+            </div>
+            <div class="divider">:</div>
+            <div class="time-unit">
+              <span id="minutes">00</span>
+              <p>分</p>
+            </div>
+            <div class="divider">:</div>
+            <div class="time-unit">
+              <span id="seconds">00</span>
+              <p>秒</p>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn-houda btn-secondary" id="addCalendarBtn" type="button">一键导入系统日历</button>
+            <a href="../index.html" class="btn-houda">
+              HOUDA+ 官网
+              <span class="btn-icon" aria-hidden="true"><i class="ph-bold ph-arrow-right"></i></span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+        const quotes = [
+            "每一份热爱，都值得被精准计时",
+            "与其向往，不如出发",
+            "探索未知的序章",
+            "Stay hungry, Stay foolish",
+            "HOUDA+ 让未来如约而至"
+        ];
+
+        const foundingDate = new Date(2024, 3, 22); // 2024-04-22
+        let currentQuoteIndex = -1;
+
+        function getStorage() {
+            try {
+                return window.localStorage;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function getNextQuoteIndex() {
+            if (quotes.length <= 1) return 0;
+
+            const storage = getStorage();
+            const lastIndex = storage ? Number(storage.getItem('houda_last_quote_index')) : -1;
+            const blockedIndex = Number.isInteger(lastIndex) ? lastIndex : -1;
+
+            let idx;
+            do {
+                idx = Math.floor(Math.random() * quotes.length);
+            } while (idx === blockedIndex);
+
+            if (storage) storage.setItem('houda_last_quote_index', String(idx));
+            return idx;
+        }
+
+        function updateQuote() {
+            currentQuoteIndex = getNextQuoteIndex();
+            document.getElementById('quoteText').innerText = quotes[currentQuoteIndex];
+        }
+
+        function formatUTC(date) {
+            const y = date.getUTCFullYear();
+            const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+            const d = String(date.getUTCDate()).padStart(2, '0');
+            const hh = String(date.getUTCHours()).padStart(2, '0');
+            const mm = String(date.getUTCMinutes()).padStart(2, '0');
+            const ss = String(date.getUTCSeconds()).padStart(2, '0');
+            return `${y}${m}${d}T${hh}${mm}${ss}Z`;
+        }
+
+        function buildCalendarUrl() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const title = '侯大纪念日';
+            const detail = 'HOUDA+ 纪念日提醒';
+            const location = 'HOUDA+';
+
+            const ics = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//HOUDA+//Anniversary//CN',
+                'BEGIN:VEVENT',
+                `UID:houda-anniversary-${year}@houda-plus`,
+                `DTSTAMP:${formatUTC(new Date())}`,
+                `DTSTART;VALUE=DATE:${year}0422`,
+                `DTEND;VALUE=DATE:${year}0423`,
+                `RRULE:FREQ=YEARLY`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${detail}`,
+                `LOCATION:${location}`,
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+        }
+
+        function importToCalendar() {
+            const link = document.createElement('a');
+            link.href = buildCalendarUrl();
+            link.download = 'houda-anniversary.ics';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            const btn = document.getElementById('addCalendarBtn');
+            const originalText = btn.innerText;
+            btn.innerText = '已生成日历文件 ✓';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }, 1800);
+        }
+
+        function updateAnniversaryMeta(now) {
+            let years = now.getFullYear() - foundingDate.getFullYear();
+            const thisYearAnniversary = new Date(now.getFullYear(), foundingDate.getMonth(), foundingDate.getDate());
+            if (now < thisYearAnniversary) years -= 1;
+            const ordinal = Math.max(1, years + 1);
+            document.getElementById('anniversaryYearText').innerText = `今年是我们走向未来的第 ${ordinal} 年`;
+        }
+
+        function updateProgress(now) {
+            const yearStart = new Date(now.getFullYear(), 0, 1);
+            const yearEnd = new Date(now.getFullYear() + 1, 0, 1);
+            const passed = now - yearStart;
+            const total = yearEnd - yearStart;
+            const percent = Math.min(100, Math.max(0, (passed / total) * 100));
+
+            document.getElementById('progressFill').style.width = `${percent.toFixed(2)}%`;
+            document.getElementById('progressLabel').innerText = `今年进度 ${percent.toFixed(1)}%`;
+        }
+
+        function updateCountdown(now) {
+            let target = new Date(now.getFullYear(), 3, 22); // 4月22日
+            if (now > target) target.setFullYear(now.getFullYear() + 1);
+
+            const diff = target - now;
+            const d = Math.floor(diff / 864e5);
+            const h = Math.floor((diff % 864e5) / 36e5);
+            const m = Math.floor((diff % 36e5) / 6e4);
+            const s = Math.floor((diff % 6e4) / 1000);
+
+            document.getElementById('days').innerText = String(d).padStart(2, '0');
+            document.getElementById('hours').innerText = String(h).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+        }
+
+        function render() {
+            const now = new Date();
+            updateCountdown(now);
+            updateAnniversaryMeta(now);
+            updateProgress(now);
+        }
+
+        document.getElementById('addCalendarBtn').addEventListener('click', importToCalendar);
+
+        updateQuote();
+        render();
+        setInterval(render, 1000);
+    </script>
+</body>
+</html>
