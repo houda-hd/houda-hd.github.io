@@ -1212,9 +1212,10 @@ body.menu-open { overflow: hidden; }
   .section { padding: 4.5rem 1.25rem; }
   .section-header { margin-bottom: 2.5rem; }
 
-  /* keep activity + landmark cards in a 2-up grid on phones — no single-column collapse ("一行一个") */
-  .activities-grid { grid-template-columns: repeat(2, 1fr); }
-  .landmarks-grid { grid-template-columns: 1fr 1fr; }
+  /* 特色地标 + 活动回顾：手机端单列（一行一个卡片），按用户要求 */
+  .activities-grid { grid-template-columns: 1fr; }
+  .landmarks-grid { grid-template-columns: 1fr; }
+  .activities-grid, .landmarks-grid { gap: 1rem; }
 
   /* slimmer, well-fitted floating nav bar */
   .nav-wrap { padding: 0.875rem 1rem; }
