@@ -77,8 +77,9 @@ html {
   /* prevent iOS auto font-inflation that breaks the type scale */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* BUGFIX: iOS Safari ignores body-only overflow-x:hidden — stop page-level horizontal scroll at the root */
-  overflow-x: hidden;
+  /* BUGFIX: iOS Safari ignores overflow-x:hidden on the viewport — use `clip` so the document can NEVER pan horizontally (no blank/off-page overscroll). `hidden` leaves the visual viewport pannable on iOS; `clip` does not. */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
   width: 100%;
   position: relative;
 }
@@ -87,7 +88,9 @@ html {
 }
 
 body {
-  overflow-x: hidden;
+  /* BUGFIX: `clip` (not `hidden`) so iOS Safari cannot pan the page horizontally into blank space */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
   min-height: 100vh;
   background: var(--bg);
 }
@@ -1230,8 +1233,17 @@ body.menu-open { overflow: hidden; }
 
   /* hero: clear the header, use dynamic viewport height, full-width CTAs */
   .hero {
-    padding: 7rem 1.25rem 5rem;
+    padding: 7rem 1.25rem 6rem;
     min-height: 100svh;
+  }
+  /* scroll cue: bulletproof horizontal centering (left:0/right:0 + margin auto) and sits clear below the content so it never overlaps the hero logo image */
+  .hero-scroll-cue {
+    left: 0;
+    right: 0;
+    bottom: 1.5rem;
+    transform: none;
+    margin: 0 auto;
+    width: max-content;
   }
   .hero-actions { width: 100%; }
   .hero-actions .btn { flex: 1 1 auto; justify-content: center; }
