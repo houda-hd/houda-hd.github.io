@@ -77,6 +77,10 @@ html {
   /* prevent iOS auto font-inflation that breaks the type scale */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* BUGFIX: iOS Safari ignores body-only overflow-x:hidden — stop page-level horizontal scroll at the root */
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -675,14 +679,16 @@ body.menu-open { overflow: hidden; }
 
 .timeline-spacer {
   flex-shrink: 0;
-  width: calc(50vw - 80px);
-  /* BUGFIX: spacers are centering buffers only, NOT snap targets — prevents the timeline from resting on blank space */
+  /* BUGFIX: keep the centering buffer tiny so the timeline can never slide into a wide blank zone (previously calc(50vw - 80px)) */
+  width: 1.5rem;
 }
 
 .timeline-year {
   flex-shrink: 0;
   width: 160px;
   scroll-snap-align: center;
+  /* BUGFIX: one swipe advances exactly one year — prevents flinging past the ends (the "unlimited" feel) */
+  scroll-snap-stop: always;
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1205,6 +1211,10 @@ body.menu-open { overflow: hidden; }
   /* tighter section rhythm + safe horizontal gutters */
   .section { padding: 4.5rem 1.25rem; }
   .section-header { margin-bottom: 2.5rem; }
+
+  /* keep activity + landmark cards in a 2-up grid on phones — no single-column collapse ("一行一个") */
+  .activities-grid { grid-template-columns: repeat(2, 1fr); }
+  .landmarks-grid { grid-template-columns: 1fr 1fr; }
 
   /* slimmer, well-fitted floating nav bar */
   .nav-wrap { padding: 0.875rem 1rem; }
