@@ -676,7 +676,7 @@ body.menu-open { overflow: hidden; }
 .timeline-spacer {
   flex-shrink: 0;
   width: calc(50vw - 80px);
-  scroll-snap-align: center;
+  /* BUGFIX: spacers are centering buffers only, NOT snap targets — prevents the timeline from resting on blank space */
 }
 
 .timeline-year {
@@ -882,7 +882,8 @@ body.menu-open { overflow: hidden; }
   width: 100%;
   /* BUGFIX: must be auto so the HTML height attr doesn't force a tall box; aspect-ratio drives the size */
   height: auto;
-  aspect-ratio: 1;
+  /* 图文卡牌统一为横向 16:9（高9:宽16），避免细长变形 */
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
   transition: transform 0.6s var(--ease-fluid);
@@ -1259,7 +1260,7 @@ body.menu-open { overflow: hidden; }
 <!-- ═══ Navigation ═══ -->
 <div class="nav-wrap">
   <nav class="nav" id="nav" aria-label="主导航">
-    <a class="nav-logo" href="#" aria-label="HOUDA+ 首页">
+    <a class="nav-logo" href="#main" id="navLogo" aria-label="HOUDA+ 首页">
       <img class="nav-logo-img" src="assets/HOUDA_squre.jpeg" alt="" width="28" height="28" loading="eager"/>
       HOUDA+
     </a>
@@ -1589,7 +1590,7 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘地铁站" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
+            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘地铁站" width="600" height="200" loading="lazy" style="aspect-ratio: 16 / 9;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1605,7 +1606,7 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
+            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" width="600" height="200" loading="lazy" style="aspect-ratio: 16 / 9;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1621,7 +1622,7 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/sxt.jpeg" alt="盛香亭" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
+            <img class="card-img" src="assets/activites/sxt.jpeg" alt="盛香亭" width="600" height="200" loading="lazy" style="aspect-ratio: 16 / 9;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1637,7 +1638,7 @@ body.menu-open { overflow: hidden; }
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/tl.jpeg" alt="湖南金厚律所" width="600" height="200" loading="lazy" style="aspect-ratio: 4 / 3;"/>
+            <img class="card-img" src="assets/activites/tl.jpeg" alt="湖南金厚律所" width="600" height="200" loading="lazy" style="aspect-ratio: 16 / 9;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1806,6 +1807,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   });
 
+  /* ── BUGFIX: logo scrolls to top smoothly WITHOUT changing the URL (no redirect / new-tab feel) ── */
+  const navLogo = document.getElementById('navLogo');
+  navLogo?.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+
   /* ── BUGFIX: Timeline with drag-to-scroll + click discrimination ── */
   const timelineScroll = document.getElementById('timelineScroll');
   const years = document.querySelectorAll('.timeline-year');
@@ -1868,6 +1876,20 @@ document.addEventListener('DOMContentLoaded', () => {
       next = Math.max(0, Math.min(next, max));
       timelineScroll.scrollLeft = next;
     });
+
+    // BUGFIX: hard-clamp on scroll so trackpad / momentum flings can never overshoot past either end
+    let tlClampTicking = false;
+    timelineScroll.addEventListener('scroll', () => {
+      if (tlClampTicking) return;
+      tlClampTicking = true;
+      requestAnimationFrame(() => {
+        const maxScroll = timelineScroll.scrollWidth - timelineScroll.clientWidth;
+        const sl = timelineScroll.scrollLeft;
+        if (sl < 0) timelineScroll.scrollLeft = 0;
+        else if (sl > maxScroll) timelineScroll.scrollLeft = maxScroll;
+        tlClampTicking = false;
+      });
+    }, { passive: true });
 
     const endDrag = () => {
       if (!isDown) return;
