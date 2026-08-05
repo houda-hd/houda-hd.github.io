@@ -709,6 +709,11 @@ body.menu-open { overflow: hidden; }
   appearance: none;
   -webkit-appearance: none;
 }
+/* BUGFIX: first/last milestones must be reachable. With center-snap + tiny spacers the
+   first year can never be centered (needs negative scrollLeft, clamped to 0), so mandatory
+   snap rests on a later year and you can't slide back to #1. Let ends rest at track edges. */
+.timeline-year:first-of-type { scroll-snap-align: start; }
+.timeline-year:last-of-type { scroll-snap-align: end; }
 .timeline-year:active { transform: scale(0.95); }
 .timeline-year:focus-visible {
   outline: 2px solid var(--accent);
@@ -1896,7 +1901,13 @@ document.addEventListener('DOMContentLoaded', () => {
     timelineScroll.addEventListener('scroll', () => {
       if (!tlTicking) { requestAnimationFrame(updateTimeline); tlTicking = true; }
     }, { passive: true });
-    setTimeout(updateTimeline, 100);
+
+    /* BUGFIX: start deterministically at the FIRST milestone. Native mandatory center-snap
+       cannot center year1 (needs negative scrollLeft), so it would rest on a later year and the
+       user couldn't slide back to #1. Force year1 active + scrollLeft 0; live centering still
+       runs on actual scroll via updateTimeline above. */
+    setActive(years[0]);
+    timelineScroll.scrollLeft = 0;
 
     // BUGFIX: pointer drag-to-scroll with click vs drag discrimination
     let isDown = false;
