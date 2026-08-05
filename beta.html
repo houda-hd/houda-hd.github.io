@@ -177,6 +177,7 @@ body.menu-open { overflow: hidden; }
 @media (min-width: 768px) { .nav-links { display: flex; } }
 
 .nav-link {
+  position: relative;
   text-decoration: none;
   color: var(--text-secondary);
   font-size: 0.875rem;
@@ -184,8 +185,21 @@ body.menu-open { overflow: hidden; }
   letter-spacing: -0.01em;
   transition: color var(--dur-fast) var(--ease-out);
 }
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1.5px;
+  width: 100%;
+  background: var(--text-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
 @media (hover: hover) and (pointer: fine) {
   .nav-link:hover { color: var(--text-primary); }
+  .nav-link:hover::after { transform: scaleX(1); }
 }
 
 .nav-cta {
@@ -298,6 +312,19 @@ body.menu-open { overflow: hidden; }
   align-items: center;
   padding: 8rem 2rem 4rem;
   position: relative;
+  overflow: hidden;
+}
+
+/* Soft Structuralism — 漫射中性光晕, 制造空间纵深 (无 AI 紫渐变) */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(56% 50% at 82% 12%, rgba(37,99,235,0.07), transparent 70%),
+    radial-gradient(46% 44% at 6% 90%, rgba(22,163,74,0.045), transparent 70%);
 }
 
 .hero-grid {
@@ -308,9 +335,40 @@ body.menu-open { overflow: hidden; }
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 @media (min-width: 768px) {
   .hero-grid { grid-template-columns: 1.2fr 1fr; gap: 4rem; }
+}
+
+/* 向下滚动提示 — animate: 有目的、克制的引导动效 */
+.hero-scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  text-decoration: none;
+  color: var(--text-tertiary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  animation: heroReveal 0.8s 0.6s var(--ease-out) forwards;
+}
+.hero-scroll-cue i {
+  font-size: 1.125rem;
+  animation: cueBob 1.8s var(--ease-fluid) infinite;
+}
+.hero-scroll-cue:active { color: var(--accent); }
+@keyframes cueBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
 }
 
 .hero-title {
@@ -356,6 +414,8 @@ body.menu-open { overflow: hidden; }
   border-radius: 999px;
   cursor: pointer;
   border: none;
+  position: relative;
+  overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   transition: transform var(--dur-press) var(--ease-out),
               background var(--dur-fast) var(--ease-fluid),
@@ -372,8 +432,21 @@ body.menu-open { overflow: hidden; }
   color: white;
   box-shadow: var(--shadow-ambient);
 }
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.28), transparent);
+  transform: skewX(-18deg);
+  transition: left var(--dur-normal) var(--ease-fluid);
+  pointer-events: none;
+}
 @media (hover: hover) and (pointer: fine) {
   .btn-primary:hover { background: var(--accent); }
+  .btn-primary:hover::after { left: 130%; }
 }
 
 .btn-icon {
@@ -459,11 +532,22 @@ body.menu-open { overflow: hidden; }
 }
 
 .section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent);
   margin-bottom: 0.625rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.section-label::before {
+  content: "";
+  width: 1.5rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
 }
 
 /* ─── About ─── */
@@ -648,6 +732,39 @@ body.menu-open { overflow: hidden; }
   height: 1px;
   background: var(--border-hairline);
   margin-top: -1.5rem;
+}
+
+/* 时间轴左右切换按钮 — 桌面/键盘可达 */
+.timeline-nav {
+  position: absolute;
+  top: -0.25rem;
+  z-index: 5;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1.0625rem;
+  box-shadow: var(--shadow-ambient);
+  transition: background var(--dur-fast) var(--ease-fluid),
+              transform var(--dur-press) var(--ease-out);
+}
+.timeline-nav:active { transform: scale(0.9); }
+.timeline-nav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.timeline-nav[disabled] { opacity: 0.35; cursor: default; pointer-events: none; }
+.timeline-prev { left: 0; }
+.timeline-next { right: 0; }
+@media (min-width: 768px) { .timeline-nav { display: flex; } }
+@media (hover: hover) and (pointer: fine) {
+  .timeline-nav:hover { background: var(--bg-elevated); }
 }
 
 .timeline-content-wrap {
@@ -1133,6 +1250,10 @@ body.menu-open { overflow: hidden; }
         </div>
       </div>
     </div>
+    <a class="hero-scroll-cue" href="#about" aria-label="向下滚动查看关于我们">
+      <span>向下滚动</span>
+      <i class="ph ph-arrow-down-bold"></i>
+    </a>
   </div>
 </section>
 
@@ -1229,6 +1350,12 @@ body.menu-open { overflow: hidden; }
         <div class="timeline-spacer"></div>
       </div>
       <div class="timeline-line"></div>
+      <button class="timeline-nav timeline-prev" id="tlPrev" type="button" aria-label="上一段历程">
+        <i class="ph ph-caret-left-bold"></i>
+      </button>
+      <button class="timeline-nav timeline-next" id="tlNext" type="button" aria-label="下一段历程">
+        <i class="ph ph-caret-right-bold"></i>
+      </button>
     </div>
 
     <div class="timeline-content-wrap" aria-live="polite">
@@ -1697,6 +1824,38 @@ document.addEventListener('DOMContentLoaded', () => {
         timelineScroll.scrollTo({ left: ic - cc, behavior: reduceMotion ? 'auto' : 'smooth' });
       });
     });
+
+    // 左右箭头 / 键盘导航 — 平滑滚动到相邻年份并居中
+    const tlPrev = document.getElementById('tlPrev');
+    const tlNext = document.getElementById('tlNext');
+    const centerYear = (yearEl) => {
+      if (!yearEl) return;
+      setActive(yearEl);
+      const cc = timelineScroll.clientWidth / 2;
+      const ic = yearEl.offsetLeft + yearEl.clientWidth / 2;
+      timelineScroll.scrollTo({ left: ic - cc, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+    const stepYear = (dir) => {
+      const idx = [...years].findIndex(y => y.classList.contains('active'));
+      const next = years[idx + dir];
+      if (next) centerYear(next);
+    };
+    tlPrev?.addEventListener('click', () => stepYear(-1));
+    tlNext?.addEventListener('click', () => stepYear(1));
+    timelineScroll.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); stepYear(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); stepYear(1); }
+    });
+
+    // 首/尾禁用对应箭头
+    const syncNavState = () => {
+      const idx = [...years].findIndex(y => y.classList.contains('active'));
+      if (tlPrev) tlPrev.disabled = idx <= 0;
+      if (tlNext) tlNext.disabled = idx >= years.length - 1;
+    };
+    years.forEach(y => y.addEventListener('click', syncNavState));
+    timelineScroll.addEventListener('scroll', syncNavState, { passive: true });
+    syncNavState();
   }
 
   /* ── BUGFIX: Scroll reveal with per-element stagger (index bug fixed) ── */
