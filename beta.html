@@ -6,13 +6,17 @@
 <title>HOUDA+</title>
 <meta content="HOUDA+官网 - 长沙霉粉联盟六群分支，侯明昊碗慧通讯录互吃大学官方站点。" name="description"/>
 <meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群" name="keywords"/>
+<meta content="#f4f4f6" name="theme-color"/>
 <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
+<!-- preconnect for font performance -->
+<link crossorigin href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
 <style>
 /* ═══════════════════════════════════════════════════════════
-   HOUDA+ — 三 skill 融合重构
+   HOUDA+ — 三 skill 融合重构 (bug 修复优化版)
    taste-skill:  Anti-slop 纪律 · VARIANCE 8 / MOTION 6 / DENSITY 3
                  禁用: AI purple、em-dash、Inter、3 等宽卡片、center bias
    impeccable:   Persuade mode · craft floor · commit 到视觉世界
@@ -20,16 +24,7 @@
    视觉世界: Soft Structuralism — 银灰/纯白 + 浮空组件 + 漫射阴影
    ═══════════════════════════════════════════════════════════ */
 
-/* ─── Design Read ───
-   THESIS: 粉丝社群不是企业，它的官网应该像一个"有温度的物件"，
-           而不是一张营销 landing page。
-   OWN-WORLD: 银灰底 + Double-Bezel 浮空卡 + Plus Jakarta Sans + 漫射光
-   FIRST VIEWPORT: 左对齐大标题 + 右侧 logo 浮空卡，不对称分割
-   ──────────────────────────────────────────── */
-
 :root {
-  /* Soft Structuralism 配色 (soft-skill §3.A.3)
-     银灰 + 纯白 + 单一蓝色 accent，禁用 AI purple/cream/brass */
   --bg: #f4f4f6;
   --bg-card: #ffffff;
   --bg-elevated: #fafafa;
@@ -44,7 +39,6 @@
   --border-hairline: rgba(0,0,0,0.06);
   --border-soft: rgba(0,0,0,0.04);
 
-  /* 漫射阴影 (soft-skill §2: 禁用 harsh drop shadow) */
   --shadow-ambient:
     0 1px 2px rgba(0,0,0,0.03),
     0 8px 24px rgba(0,0,0,0.04),
@@ -54,20 +48,19 @@
     0 12px 32px rgba(0,0,0,0.06),
     0 32px 72px rgba(0,0,0,0.04);
 
-  /* Easing — 强自定义曲线 (taste-skill §4, soft-skill §5) */
   --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
 
-  /* Duration (taste-skill §4) */
   --dur-press: 120ms;
   --dur-fast: 200ms;
   --dur-normal: 400ms;
   --dur-slow: 700ms;
 
-  /* Typography (taste-skill §4.1: 禁用 Inter，选 Plus Jakarta Sans) */
   --font-display: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+
+  --nav-h: 4rem;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,6 +74,9 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 6rem;
 }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
 
 body {
   overflow-x: hidden;
@@ -88,7 +84,10 @@ body {
   background: var(--bg);
 }
 
-/* ─── Typography (taste-skill §4.1) ─── */
+/* BUGFIX: body scroll lock when mobile menu open */
+body.menu-open { overflow: hidden; }
+
+/* ─── Typography ─── */
 .display-2xl {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 6vw, 4.5rem);
@@ -114,7 +113,7 @@ body {
 .text-md { font-size: 0.9375rem; line-height: 1.6; }
 .text-sm { font-size: 0.8125rem; line-height: 1.5; }
 
-/* ─── Navigation — 浮空玻璃 pill (soft-skill §5.A) ─── */
+/* ─── Navigation ─── */
 .nav-wrap {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -139,7 +138,6 @@ body {
     0 1px 2px rgba(0,0,0,0.03),
     0 8px 24px rgba(0,0,0,0.06);
   pointer-events: auto;
-  /* Explicit properties only (taste-skill §4) */
   transition: background var(--dur-fast) var(--ease-fluid),
               box-shadow var(--dur-fast) var(--ease-fluid);
 }
@@ -227,7 +225,7 @@ body {
 .nav-menu-btn:active { background: var(--border-soft); }
 @media (min-width: 768px) { .nav-menu-btn { display: none; } }
 
-/* Mobile menu — 全屏玻璃覆盖 (soft-skill §5.A) */
+/* Mobile menu */
 .mobile-menu {
   position: fixed;
   inset: 0;
@@ -256,7 +254,6 @@ body {
   text-decoration: none;
   color: var(--text-primary);
   padding: 0.75rem 0;
-  /* Staggered mask reveal (soft-skill §5.A) */
   transform: translateY(20px);
   opacity: 0;
   transition: transform var(--dur-slow) var(--ease-out),
@@ -267,12 +264,17 @@ body {
   transform: translateY(0);
   opacity: 1;
 }
-.mobile-menu.open a:nth-child(1) { transition-delay: 100ms; }
-.mobile-menu.open a:nth-child(2) { transition-delay: 150ms; }
-.mobile-menu.open a:nth-child(3) { transition-delay: 200ms; }
-.mobile-menu.open a:nth-child(4) { transition-delay: 250ms; }
-.mobile-menu.open a:nth-child(5) { transition-delay: 300ms; }
+.mobile-menu.open a:nth-child(2) { transition-delay: 100ms; }
+.mobile-menu.open a:nth-child(3) { transition-delay: 150ms; }
+.mobile-menu.open a:nth-child(4) { transition-delay: 200ms; }
+.mobile-menu.open a:nth-child(5) { transition-delay: 250ms; }
+.mobile-menu.open a:nth-child(6) { transition-delay: 300ms; }
 .mobile-menu a:active { color: var(--accent); }
+.mobile-menu a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
 
 .mobile-menu-close {
   position: absolute;
@@ -289,7 +291,7 @@ body {
 }
 .mobile-menu-close:active { transform: scale(0.92); }
 
-/* ─── Hero — 不对称分割 (taste-skill §4.3: anti-center bias) ─── */
+/* ─── Hero ─── */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -311,13 +313,8 @@ body {
   .hero-grid { grid-template-columns: 1.2fr 1fr; gap: 4rem; }
 }
 
-.hero-left {
-  /* 左对齐，不对称 (taste-skill §4.3) */
-}
-
 .hero-title {
   margin-bottom: 1.5rem;
-  /* Scroll reveal (soft-skill §5.C) */
   opacity: 0;
   transform: translateY(24px);
   animation: heroReveal 0.8s 0.1s var(--ease-out) forwards;
@@ -347,7 +344,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Buttons — Button-in-Button (soft-skill §4.B) ─── */
+/* ─── Buttons ─── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -365,6 +362,10 @@ body {
               box-shadow var(--dur-fast) var(--ease-fluid);
 }
 .btn:active { transform: scale(0.97); }
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
 
 .btn-primary {
   background: var(--text-primary);
@@ -375,7 +376,6 @@ body {
   .btn-primary:hover { background: var(--accent); }
 }
 
-/* Button-in-Button trailing icon (soft-skill §4.B) */
 .btn-icon {
   display: flex;
   align-items: center;
@@ -405,7 +405,7 @@ body {
   }
 }
 
-/* ─── Hero logo — Double-Bezel 浮空卡 (soft-skill §4.A) ─── */
+/* ─── Hero logo ─── */
 .hero-logo-shell {
   position: relative;
   padding: 0.625rem;
@@ -437,7 +437,7 @@ body {
   display: block;
 }
 
-/* ─── Section layout (taste-skill §4.7) ─── */
+/* ─── Section layout ─── */
 .section {
   padding: 6rem 2rem;
 }
@@ -448,7 +448,6 @@ body {
   margin: 0 auto;
 }
 
-/* Section header — 纵向堆叠 (taste-skill §4.7: split-header ban) */
 .section-header {
   max-width: 640px;
   margin: 0 auto 4rem;
@@ -459,7 +458,6 @@ body {
   margin-left: 0;
 }
 
-/* Eyebrow restraint (taste-skill §4.7: max 1 per 3 sections) */
 .section-label {
   font-size: 0.75rem;
   font-weight: 700;
@@ -468,7 +466,7 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* ─── About — 不对称网格 (taste-skill §4.3) ─── */
+/* ─── About ─── */
 .about-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -479,7 +477,6 @@ body {
   .about-grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; }
 }
 
-/* Double-Bezel image (soft-skill §4.A) */
 .about-image-shell {
   padding: 0.5rem;
   background: rgba(255,255,255,0.6);
@@ -509,7 +506,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Feature grid — 2x2 bento, 不等宽 (taste-skill §4.7: no 3 equal cards) */
 .feature-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -551,7 +547,6 @@ body {
 .feature-title { font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.1875rem; }
 .feature-desc { font-size: 0.8125rem; color: var(--text-tertiary); }
 
-/* Link arrow */
 .link-arrow {
   display: inline-flex;
   align-items: center;
@@ -566,7 +561,7 @@ body {
   .link-arrow:hover { gap: 0.625rem; }
 }
 
-/* ─── Timeline — 横向 scroll-snap ─── */
+/* ─── Timeline ─── */
 .timeline-scroll {
   display: flex;
   gap: 0;
@@ -577,9 +572,14 @@ body {
   cursor: grab;
   user-select: none;
   scrollbar-width: none;
+  /* BUGFIX: prevent text selection during drag */
+  -webkit-user-select: none;
+  touch-action: pan-x;
 }
 .timeline-scroll::-webkit-scrollbar { display: none; }
-.timeline-scroll:active { cursor: grabbing; }
+.timeline-scroll.dragging { cursor: grabbing; }
+/* hide drag selection highlight */
+.timeline-scroll.dragging * { user-select: none; -webkit-user-select: none; pointer-events: none; }
 
 .timeline-spacer {
   flex-shrink: 0;
@@ -594,10 +594,22 @@ body {
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  padding-bottom: 1.5rem;
+  padding: 0 0 1.5rem;
   transition: transform var(--dur-normal) var(--ease-fluid);
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .timeline-year:active { transform: scale(0.95); }
+.timeline-year:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
 
 .timeline-year-label {
   font-family: var(--font-display);
@@ -638,7 +650,6 @@ body {
   margin-top: -1.5rem;
 }
 
-/* Timeline content — Double-Bezel */
 .timeline-content-wrap {
   position: relative;
   display: grid;
@@ -650,7 +661,6 @@ body {
   grid-area: 1 / 1;
   opacity: 0;
   visibility: hidden;
-  /* Never scale(0) (Emil) */
   transform: translateY(16px) scale(0.96);
   filter: blur(4px);
   transition: opacity var(--dur-slow) var(--ease-out),
@@ -697,7 +707,7 @@ body {
   color: var(--accent);
 }
 
-/* ─── Activities — Bento grid, 非等宽 (taste-skill §4.7) ─── */
+/* ─── Activities ─── */
 .activities-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -710,7 +720,6 @@ body {
   .activities-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 }
 
-/* Double-Bezel card (soft-skill §4.A) */
 .card-shell {
   padding: 0.5rem;
   background: rgba(255,255,255,0.5);
@@ -753,6 +762,20 @@ body {
 }
 @media (hover: hover) and (pointer: fine) {
   .card-shell:hover .card-img { transform: scale(1.04); }
+}
+
+/* BUGFIX: graceful broken-image placeholder */
+.card-img-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(0,0,0,0.03) 0%, transparent 70%),
+    var(--bg-elevated);
+  z-index: -1;
+}
+.card-img:not([src]), .card-img[src=""], .card-img.broken {
+  opacity: 0;
 }
 
 .card-body { padding: 1.125rem 1.25rem 1.25rem; }
@@ -803,7 +826,7 @@ body {
   border-top: 1px solid var(--border-hairline);
 }
 
-/* ─── Landmarks — 2 col bento ─── */
+/* ─── Landmarks ─── */
 .landmarks-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -988,7 +1011,7 @@ body {
   .back-to-top:hover { background: var(--accent); }
 }
 
-/* ─── Scroll reveal (soft-skill §5.C: IntersectionObserver) ─── */
+/* ─── Scroll reveal ─── */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -1003,12 +1026,30 @@ body {
   filter: blur(0);
 }
 
-/* ─── Accessibility (taste-skill §6, impeccable craft floor) ─── */
+/* ─── Skip link (a11y) ─── */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 2000;
+  background: var(--text-primary);
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: top var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus { top: 1rem; }
+
+/* ─── Accessibility ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
   .hero-title, .hero-subtitle, .hero-actions, .hero-logo-shell {
     opacity: 1 !important;
@@ -1031,11 +1072,14 @@ body {
 </head>
 <body>
 
-<!-- ═══ Navigation — 浮空 pill ═══ -->
+<!-- BUGFIX: skip link for keyboard users -->
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<!-- ═══ Navigation ═══ -->
 <div class="nav-wrap">
-  <nav class="nav" id="nav">
-    <a class="nav-logo" href="#">
-      <img class="nav-logo-img" src="assets/HOUDA_squre.jpeg" alt="HOUDA+" loading="lazy"/>
+  <nav class="nav" id="nav" aria-label="主导航">
+    <a class="nav-logo" href="#" aria-label="HOUDA+ 首页">
+      <img class="nav-logo-img" src="assets/HOUDA_squre.jpeg" alt="" width="28" height="28" loading="eager"/>
       HOUDA+
     </a>
     <ul class="nav-links">
@@ -1045,15 +1089,15 @@ body {
       <li><a class="nav-link" href="#landmarks">地标</a></li>
     </ul>
     <a class="nav-cta" href="#contact">关注</a>
-    <button class="nav-menu-btn" id="menuBtn" aria-label="菜单">
-      <i class="ph ph-list"></i>
+    <button class="nav-menu-btn" id="menuBtn" type="button" aria-label="打开菜单" aria-controls="mobileMenu" aria-expanded="false">
+      <i class="ph ph-list" id="menuIcon"></i>
     </button>
   </nav>
 </div>
 
 <!-- Mobile menu -->
-<div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-menu-close" id="menuClose" aria-label="关闭">
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="移动端菜单" aria-hidden="true">
+  <button class="mobile-menu-close" id="menuClose" type="button" aria-label="关闭菜单">
     <i class="ph ph-x"></i>
   </button>
   <a href="#about">关于我们</a>
@@ -1063,7 +1107,8 @@ body {
   <a href="#contact">关注我们</a>
 </div>
 
-<!-- ═══ Hero — 不对称分割 ═══ -->
+<main id="main">
+<!-- ═══ Hero ═══ -->
 <section class="hero">
   <div class="hero-grid">
     <div class="hero-left">
@@ -1084,7 +1129,7 @@ body {
     <div>
       <div class="hero-logo-shell">
         <div class="hero-logo-inner">
-          <img class="hero-logo" src="assets/HOUDA_squre.jpeg" alt="HOUDA+ 标志" loading="lazy"/>
+          <img class="hero-logo" src="assets/HOUDA_squre.jpeg" alt="HOUDA+ 标志" width="360" height="360" loading="eager"/>
         </div>
       </div>
     </div>
@@ -1092,17 +1137,17 @@ body {
 </section>
 
 <!-- ═══ About ═══ -->
-<section class="section" id="about">
+<section class="section" id="about" aria-labelledby="about-title">
   <div class="container">
     <div class="section-header reveal">
       <p class="section-label">关于</p>
-      <h2 class="display-xl">了解 HOUDA+</h2>
+      <h2 class="display-xl" id="about-title">了解 HOUDA+</h2>
     </div>
     <div class="about-grid">
       <div class="reveal">
         <div class="about-image-shell">
           <div class="about-image-inner">
-            <img class="about-image" src="https://p3-search.byteimg.com/obj/labis/89b4f074691e9b643ffcf3e71f02779d" alt="侯大组织成员合影" loading="lazy"/>
+            <img class="about-image" src="https://p3-search.byteimg.com/obj/labis/89b4f074691e9b643ffcf3e71f02779d" alt="侯大组织成员合影" width="600" height="460" loading="lazy"/>
           </div>
         </div>
       </div>
@@ -1152,42 +1197,42 @@ body {
 </section>
 
 <!-- ═══ History Timeline ═══ -->
-<section class="section section-alt" id="history">
+<section class="section section-alt" id="history" aria-labelledby="history-title">
   <div class="container">
     <div class="section-header reveal">
-      <h2 class="display-xl">我们的故事</h2>
+      <h2 class="display-xl" id="history-title">我们的故事</h2>
     </div>
 
     <div class="reveal" style="position:relative;">
-      <div class="timeline-scroll" id="timelineScroll">
+      <div class="timeline-scroll" id="timelineScroll" aria-label="发展历程时间轴">
         <div class="timeline-spacer"></div>
-        <div class="timeline-year active" data-target="event-1">
+        <button class="timeline-year active" type="button" data-target="event-1" aria-label="2024年春" aria-selected="true">
           <div class="timeline-year-label">2024.春</div>
           <div class="timeline-dot"></div>
-        </div>
-        <div class="timeline-year" data-target="event-2">
+        </button>
+        <button class="timeline-year" type="button" data-target="event-2" aria-label="2024年4月" aria-selected="false">
           <div class="timeline-year-label">2024.04</div>
           <div class="timeline-dot"></div>
-        </div>
-        <div class="timeline-year" data-target="event-3">
+        </button>
+        <button class="timeline-year" type="button" data-target="event-3" aria-label="2024年4月22日" aria-selected="false">
           <div class="timeline-year-label">2024.04.22</div>
           <div class="timeline-dot"></div>
-        </div>
-        <div class="timeline-year" data-target="event-4">
+        </button>
+        <button class="timeline-year" type="button" data-target="event-4" aria-label="2024年9月" aria-selected="false">
           <div class="timeline-year-label">2024.09</div>
           <div class="timeline-dot"></div>
-        </div>
-        <div class="timeline-year" data-target="event-5">
+        </button>
+        <button class="timeline-year" type="button" data-target="event-5" aria-label="2025年10月" aria-selected="false">
           <div class="timeline-year-label">2025.10</div>
           <div class="timeline-dot"></div>
-        </div>
+        </button>
         <div class="timeline-spacer"></div>
       </div>
       <div class="timeline-line"></div>
     </div>
 
-    <div class="timeline-content-wrap">
-      <div class="timeline-content active" id="event-1">
+    <div class="timeline-content-wrap" aria-live="polite">
+      <div class="timeline-content active" id="event-1" role="tabpanel" aria-label="2024年春">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
             <div class="timeline-card-icon"><i class="ph ph-chat-circle-bold"></i></div>
@@ -1198,7 +1243,7 @@ body {
           </div>
         </div>
       </div>
-      <div class="timeline-content" id="event-2">
+      <div class="timeline-content" id="event-2" role="tabpanel" aria-label="2024年4月">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
             <div class="timeline-card-icon"><i class="ph ph-disc-bold"></i></div>
@@ -1209,7 +1254,7 @@ body {
           </div>
         </div>
       </div>
-      <div class="timeline-content" id="event-3">
+      <div class="timeline-content" id="event-3" role="tabpanel" aria-label="2024年4月22日">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
             <div class="timeline-card-icon"><i class="ph ph-flag-bold"></i></div>
@@ -1220,7 +1265,7 @@ body {
           </div>
         </div>
       </div>
-      <div class="timeline-content" id="event-4">
+      <div class="timeline-content" id="event-4" role="tabpanel" aria-label="2024年9月">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
             <div class="timeline-card-icon"><i class="ph ph-users-bold"></i></div>
@@ -1231,7 +1276,7 @@ body {
           </div>
         </div>
       </div>
-      <div class="timeline-content" id="event-5">
+      <div class="timeline-content" id="event-5" role="tabpanel" aria-label="2025年10月">
         <div class="timeline-card-shell">
           <div class="timeline-card-inner">
             <div class="timeline-card-icon"><i class="ph ph-rocket-launch-bold"></i></div>
@@ -1247,18 +1292,18 @@ body {
 </section>
 
 <!-- ═══ Activities ═══ -->
-<section class="section" id="activities">
+<section class="section" id="activities" aria-labelledby="activities-title">
   <div class="container">
     <div class="section-header reveal">
       <p class="section-label">活动</p>
-      <h2 class="display-xl">精彩瞬间</h2>
+      <h2 class="display-xl" id="activities-title">精彩瞬间</h2>
     </div>
 
     <div class="activities-grid">
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/none.png" alt="518活动" loading="lazy"/>
+            <img class="card-img" src="assets/activites/none.png" alt="518活动" width="400" height="400" loading="lazy"/>
           </div>
           <div class="card-body">
             <span class="card-tag blue">特色活动</span>
@@ -1272,7 +1317,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/1.jpeg" alt="夏日歌会" loading="lazy"/>
+            <img class="card-img" src="assets/activites/1.jpeg" alt="夏日歌会" width="400" height="400" loading="lazy"/>
           </div>
           <div class="card-body">
             <span class="card-tag gray">联盟活动</span>
@@ -1286,7 +1331,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/2.jpeg" alt="跨年观影" loading="lazy"/>
+            <img class="card-img" src="assets/activites/2.jpeg" alt="跨年观影" width="400" height="400" loading="lazy"/>
           </div>
           <div class="card-body">
             <span class="card-tag gray">联盟活动</span>
@@ -1300,7 +1345,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘打卡" loading="lazy"/>
+            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘打卡" width="400" height="400" loading="lazy"/>
           </div>
           <div class="card-body">
             <span class="card-tag green">常驻活动</span>
@@ -1314,7 +1359,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" loading="lazy"/>
+            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" width="400" height="400" loading="lazy"/>
           </div>
           <div class="card-body">
             <span class="card-tag green">常驻活动</span>
@@ -1328,7 +1373,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/cscsu.jpeg" alt="联盟活动" loading="lazy"/>
+            <img class="card-img" src="assets/activites/cscsu.jpeg" alt="联盟活动" width="400" height="400" loading="lazy"/>
           </div>
           <div class="card-body">
             <span class="card-tag gray">联盟活动</span>
@@ -1343,17 +1388,17 @@ body {
 </section>
 
 <!-- ═══ Landmarks ═══ -->
-<section class="section section-alt" id="landmarks">
+<section class="section section-alt" id="landmarks" aria-labelledby="landmarks-title">
   <div class="container">
     <div class="section-header reveal">
-      <h2 class="display-xl">打卡圣地</h2>
+      <h2 class="display-xl" id="landmarks-title">打卡圣地</h2>
     </div>
 
     <div class="landmarks-grid">
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘地铁站" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="assets/activites/h.jpeg" alt="侯家塘地铁站" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1369,7 +1414,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="https://omo-oss-image.thefastimg.com/portal-saas/pg2024101217574431839/cms/image/bacaf28a-bac1-4f40-bc57-e03af88cb12a.png" alt="老百姓大药房" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1385,7 +1430,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/sxt.jpeg" alt="盛香亭" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="assets/activites/sxt.jpeg" alt="盛香亭" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1401,7 +1446,7 @@ body {
       <div class="card-shell reveal">
         <div class="card-inner">
           <div class="card-img-wrap">
-            <img class="card-img" src="assets/activites/tl.jpeg" alt="湖南金厚律所" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
+            <img class="card-img" src="assets/activites/tl.jpeg" alt="湖南金厚律所" width="600" height="200" loading="lazy" style="aspect-ratio:auto;height:200px;"/>
           </div>
           <div class="landmark-body">
             <div class="landmark-icon-row">
@@ -1418,11 +1463,11 @@ body {
 </section>
 
 <!-- ═══ Contact ═══ -->
-<section class="section" id="contact">
+<section class="section" id="contact" aria-labelledby="contact-title">
   <div class="container">
     <div class="section-header reveal">
       <p class="section-label">关注</p>
-      <h2 class="display-xl">保持联系</h2>
+      <h2 class="display-xl" id="contact-title">保持联系</h2>
     </div>
 
     <div class="contact-grid">
@@ -1432,7 +1477,7 @@ body {
             <div class="contact-card-icon wechat"><i class="ph ph-chat-circle-text-bold"></i></div>
             <h3 class="contact-card-title">微信公众号</h3>
             <p class="contact-card-desc">关注官方公众号, 深度好文不迷路</p>
-            <img class="contact-qr" src="assets/gzh.jpeg" alt="公众号二维码" loading="lazy"/>
+            <img class="contact-qr" src="assets/gzh.jpeg" alt="公众号二维码" width="144" height="144" loading="lazy"/>
           </div>
         </div>
       </div>
@@ -1442,20 +1487,21 @@ body {
             <div class="contact-card-icon miniapp"><i class="ph ph-device-mobile-bold"></i></div>
             <h3 class="contact-card-title">微信小程序</h3>
             <p class="contact-card-desc">打开小程序, 参与更多线上互动</p>
-            <img class="contact-qr" src="assets/xcx.jpeg" alt="小程序二维码" loading="lazy"/>
+            <img class="contact-qr" src="assets/xcx.jpeg" alt="小程序二维码" width="144" height="144" loading="lazy"/>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+</main>
 
 <!-- ═══ Footer ═══ -->
 <footer class="footer">
   <div class="footer-grid">
     <div>
       <div class="footer-brand">
-        <img class="footer-brand-img" src="assets/HOUDA_squre.jpeg" alt="HOUDA+" loading="lazy"/>
+        <img class="footer-brand-img" src="assets/HOUDA_squre.jpeg" alt="" width="28" height="28" loading="lazy"/>
         HOUDA+
       </div>
       <p class="footer-desc">
@@ -1478,54 +1524,114 @@ body {
   </div>
 </footer>
 
-<button class="back-to-top" id="backToTop" aria-label="回到顶部">
+<button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部">
   <i class="ph ph-arrow-up-bold"></i>
 </button>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── Nav scroll state (rAF, passive) ── */
+  /* ── BUGFIX: Consolidated single scroll listener (was 3 separate rAF loops) ── */
   const nav = document.getElementById('nav');
-  let navTicking = false;
-  const updateNav = () => {
-    nav.classList.toggle('scrolled', window.scrollY > 20);
-    navTicking = false;
+  const backToTop = document.getElementById('backToTop');
+  let scrollTicking = false;
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    if (nav) nav.classList.toggle('scrolled', y > 20);
+    if (backToTop) backToTop.classList.toggle('visible', y > 400);
+    scrollTicking = false;
   };
   window.addEventListener('scroll', () => {
-    if (!navTicking) { requestAnimationFrame(updateNav); navTicking = true; }
+    if (!scrollTicking) { requestAnimationFrame(onScroll); scrollTicking = true; }
   }, { passive: true });
+  onScroll();
 
-  /* ── Mobile menu ── */
+  /* ── BUGFIX: Mobile menu with body scroll lock, Escape, focus management ── */
   const menuBtn = document.getElementById('menuBtn');
   const menuClose = document.getElementById('menuClose');
   const mobileMenu = document.getElementById('mobileMenu');
+  const menuIcon = document.getElementById('menuIcon');
 
-  const openMenu = () => mobileMenu.classList.add('open');
-  const closeMenu = () => mobileMenu.classList.remove('open');
+  const openMenu = () => {
+    if (!mobileMenu) return;
+    mobileMenu.classList.add('open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('menu-open');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+    if (menuBtn) menuBtn.setAttribute('aria-label', '关闭菜单');
+    // swap icon to X
+    if (menuIcon) { menuIcon.className = 'ph ph-x'; }
+    // focus first link after transition
+    const firstLink = mobileMenu.querySelector('a');
+    if (firstLink) setTimeout(() => firstLink.focus(), 100);
+  };
 
-  menuBtn?.addEventListener('click', openMenu);
+  const closeMenu = () => {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('menu-open');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+    if (menuBtn) menuBtn.setAttribute('aria-label', '打开菜单');
+    if (menuIcon) { menuIcon.className = 'ph ph-list'; }
+    // return focus to toggle
+    if (menuBtn) menuBtn.focus();
+  };
+
+  menuBtn?.addEventListener('click', () => {
+    if (mobileMenu?.classList.contains('open')) closeMenu();
+    else openMenu();
+  });
   menuClose?.addEventListener('click', closeMenu);
   mobileMenu?.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeMenu);
   });
 
-  /* ── Back to top ── */
-  const backToTop = document.getElementById('backToTop');
-  let bttTicking = false;
-  const updateBTT = () => {
-    backToTop?.classList.toggle('visible', window.scrollY > 400);
-    bttTicking = false;
-  };
-  window.addEventListener('scroll', () => {
-    if (!bttTicking) { requestAnimationFrame(updateBTT); bttTicking = true; }
-  }, { passive: true });
-  backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  // BUGFIX: Escape closes menu
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu?.classList.contains('open')) {
+      closeMenu();
+    }
+  });
 
-  /* ── Timeline ── */
+  // BUGFIX: simple focus trap inside mobile menu
+  mobileMenu?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusables = mobileMenu.querySelectorAll('a, button');
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  });
+
+  /* ── Back to top ── */
+  backToTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+
+  /* ── BUGFIX: Timeline with drag-to-scroll + click discrimination ── */
   const timelineScroll = document.getElementById('timelineScroll');
   const years = document.querySelectorAll('.timeline-year');
   const contents = document.querySelectorAll('.timeline-content');
+
+  // shared active setter
+  const setActive = (yearEl) => {
+    if (!yearEl || yearEl.classList.contains('active')) return;
+    years.forEach(y => {
+      y.classList.remove('active');
+      y.setAttribute('aria-selected', 'false');
+    });
+    yearEl.classList.add('active');
+    yearEl.setAttribute('aria-selected', 'true');
+    const targetId = yearEl.dataset.target;
+    contents.forEach(c => c.classList.toggle('active', c.id === targetId));
+  };
 
   if (timelineScroll) {
     let tlTicking = false;
@@ -1538,40 +1644,91 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = Math.abs(r.left + r.width / 2 - center);
         if (d < minDist) { minDist = d; closest = y; }
       });
-      if (closest && !closest.classList.contains('active')) {
-        years.forEach(y => y.classList.remove('active'));
-        closest.classList.add('active');
-        const targetId = closest.dataset.target;
-        contents.forEach(c => c.classList.toggle('active', c.id === targetId));
-      }
+      if (closest) setActive(closest);
       tlTicking = false;
     };
     timelineScroll.addEventListener('scroll', () => {
       if (!tlTicking) { requestAnimationFrame(updateTimeline); tlTicking = true; }
     }, { passive: true });
     setTimeout(updateTimeline, 100);
+
+    // BUGFIX: pointer drag-to-scroll with click vs drag discrimination
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+    let dragged = false;
+    const DRAG_THRESHOLD = 6;
+
+    timelineScroll.addEventListener('pointerdown', (e) => {
+      isDown = true;
+      dragged = false;
+      startX = e.clientX;
+      startScroll = timelineScroll.scrollLeft;
+      timelineScroll.classList.add('dragging');
+    });
+
+    timelineScroll.addEventListener('pointermove', (e) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > DRAG_THRESHOLD) dragged = true;
+      timelineScroll.scrollLeft = startScroll - dx;
+    });
+
+    const endDrag = () => {
+      if (!isDown) return;
+      isDown = false;
+      timelineScroll.classList.remove('dragging');
+    };
+    timelineScroll.addEventListener('pointerup', endDrag);
+    timelineScroll.addEventListener('pointercancel', endDrag);
+    timelineScroll.addEventListener('pointerleave', endDrag);
+    // prevent click after drag
+    timelineScroll.addEventListener('click', (e) => {
+      if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; }
+    }, true);
+
+    // click to center — immediate active set for responsiveness
     years.forEach(year => {
       year.addEventListener('click', () => {
+        if (dragged) return; // swallowed by capture listener
+        setActive(year);
         const cc = timelineScroll.clientWidth / 2;
         const ic = year.offsetLeft + year.clientWidth / 2;
-        timelineScroll.scrollTo({ left: ic - cc, behavior: 'smooth' });
+        timelineScroll.scrollTo({ left: ic - cc, behavior: reduceMotion ? 'auto' : 'smooth' });
       });
     });
   }
 
-  /* ── Scroll reveal (soft-skill §5.C: IntersectionObserver) ── */
+  /* ── BUGFIX: Scroll reveal with per-element stagger (index bug fixed) ── */
   const revealEls = document.querySelectorAll('.reveal');
   if (revealEls.length) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), (index % 4) * 60);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    revealEls.forEach(el => observer.observe(el));
+    if (reduceMotion) {
+      revealEls.forEach(el => el.classList.add('visible'));
+    } else {
+      let revealIdx = 0;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // BUGFIX: stagger based on element's own data, not batch index
+            const delay = (revealIdx % 4) * 60;
+            revealIdx++;
+            setTimeout(() => entry.target.classList.add('visible'), delay);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(el => observer.observe(el));
+    }
   }
+
+  /* ── BUGFIX: graceful broken-image fallback ── */
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', function() {
+      this.classList.add('broken');
+      // prevent infinite loop if placeholder also fails
+      this.onerror = null;
+    }, { once: true });
+  });
 
 });
 </script>
