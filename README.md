@@ -2,7 +2,7 @@
 
 ## 🌐 HOUDA+ 官网
 
-[![Website](https://img.shields.io/badge/Visit-houda--hd.github.io-blue?style=flat-square)](https://houda-hd.github.io/)
+[![Website](https://img.shields.io/badge/Visit-houda.pages.dev-blue?style=flat-square)](https://houda.pages.dev/)
 [![GitHub stars](https://img.shields.io/github/stars/houda-hd/houda-hd.github.io?style=flat-square)](https://github.com/houda-hd/houda-hd.github.io/stargazers)
 [![GitHub last commit](https://img.shields.io/github/last-commit/houda-hd/houda-hd.github.io?style=flat-square)](https://github.com/houda-hd/houda-hd.github.io/commits/main)
 
@@ -13,7 +13,7 @@
 
 项目基于 **GitHub Pages** 构建，用于发布官方通知、展示侯大文化与社区活动，同时作为视觉统一与轻量架构的实验平台。
 
-**访问地址：** https://houda-hd.github.io/
+**访问地址：** https://houda.pages.dev/
 
 ---
 
