@@ -709,11 +709,6 @@ body.menu-open { overflow: hidden; }
   appearance: none;
   -webkit-appearance: none;
 }
-/* BUGFIX: first/last milestones must be reachable. With center-snap + tiny spacers the
-   first year can never be centered (needs negative scrollLeft, clamped to 0), so mandatory
-   snap rests on a later year and you can't slide back to #1. Let ends rest at track edges. */
-.timeline-year:first-of-type { scroll-snap-align: start; }
-.timeline-year:last-of-type { scroll-snap-align: end; }
 .timeline-year:active { transform: scale(0.95); }
 .timeline-year:focus-visible {
   outline: 2px solid var(--accent);
@@ -1265,6 +1260,12 @@ body.menu-open { overflow: hidden; }
     text-align: left;
   }
   .timeline-card-icon { margin: 0 0 1rem; }
+
+  /* timeline: on mobile the track overflows & scrolls, so give the first/last milestones a
+     real centering buffer (half the track minus half a year = 80px). Without it they can't be
+     centered, so the carousel rests on a later year and you can't slide back to #1.
+     Desktop keeps the tiny 1.5rem spacer (track fits, no blank zones). */
+  .timeline-spacer { width: calc(50% - 80px); }
 
   /* contact cards: less internal padding */
   .contact-card-inner { padding: 1.75rem 1.5rem; }
