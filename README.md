@@ -20,7 +20,7 @@
 ## 🧩 功能特色
 - **统一设计体系**：主站页面共用 HOUDA+ 设计令牌（浅色主题、Plus Jakarta Sans 字体、Phosphor 图标、统一动效曲线），风格协调一致。
 - **响应式布局**：自适应桌面端与移动端，输入框等组件在窄屏下等宽、易点按。
-- **官方通知**：`notice.html` 汇总版本更新与公告。
+- **官方通知**：`hv/notice.html` 汇总版本更新与公告（位于 history version 目录）。
 - **网站地图**：`sitemap.html` 串联全站导航，工具页以相对路径 `tools/xxx.html` 链接。
 - **趣味小工具**：身份证生成器（含正反面 3D 翻转）、情侣盘点、纪念日、HDTI 人格测试、IP 纯净度检测、美国免税州地址生成器等。
 - **无障碍版本**：`hv/Accessibility.html` 提供长辈版适配。
@@ -44,7 +44,6 @@
 houda-hd.github.io/
 ├── index.html              # 主站首页（HOUDA+ 设计体系基准）
 ├── sitemap.html            # 网站地图 / 导航中枢
-├── notice.html             # 官方通知与更新
 ├── lover-name.html         # 情侣盘点
 ├── houda-id-generator.html # 侯大身份证生成器（含正反面翻转）
 ├── 404.html                # 404 错误页
@@ -59,6 +58,7 @@ houda-hd.github.io/
 │   ├── Apple.html           # 仿 Apple 风格
 │   ├── Spotify.html         # 仿 Spotify 风格
 │   ├── Accessibility.html    # 长辈版（无障碍）
+│   ├── notice.html          # 官方通知与更新
 │   └── english-daily-quote.html # 英文每日一言
 ├── assets/                 # 图片等资源
 ├── README.md
@@ -79,7 +79,6 @@ houda-hd.github.io/
 |:--|:--|
 | `index.html` | 主站首页，HOUDA+ 设计体系基准 |
 | `sitemap.html` | 网站地图 / 导航中枢 |
-| `notice.html` | 官方通知与更新 |
 | `lover-name.html` | 情侣盘点 |
 | `houda-id-generator.html` | 侯大身份证生成器 |
 | `404.html` | 404 错误页 |
@@ -101,6 +100,7 @@ houda-hd.github.io/
 | `Apple.html` | 仿 Apple 风格 |
 | `Spotify.html` | 仿 Spotify 风格 |
 | `Accessibility.html` | 长辈版（无障碍） |
+| `notice.html` | 官方通知与更新 |
 | `english-daily-quote.html` | 英文每日一言 |
 
 ---
