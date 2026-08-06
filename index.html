@@ -35,12 +35,12 @@
 </script>
 <style>
 /* ═══════════════════════════════════════════════════════════
-   HOUDA+ — 三 skill 融合重构 (bug 修复优化版)
+   HOUDA+ - 三 skill 融合重构 (bug 修复优化版)
    taste-skill:  Anti-slop 纪律 · VARIANCE 8 / MOTION 6 / DENSITY 3
                  禁用: AI purple、em-dash、Inter、3 等宽卡片、center bias
    impeccable:   Persuade mode · craft floor · commit 到视觉世界
    soft-skill:   Double-Bezel 嵌套 · Awwwards 动效 · 高触感
-   视觉世界: Soft Structuralism — 银灰/纯白 + 浮空组件 + 漫射阴影
+   视觉世界: Soft Structuralism - 银灰/纯白 + 浮空组件 + 漫射阴影
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -96,7 +96,7 @@ html {
   /* prevent iOS auto font-inflation that breaks the type scale */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* BUGFIX: iOS Safari ignores overflow-x:hidden on the viewport — use `clip` so the document can NEVER pan horizontally (no blank/off-page overscroll). `hidden` leaves the visual viewport pannable on iOS; `clip` does not. */
+  /* BUGFIX: iOS Safari ignores overflow-x:hidden on the viewport - use `clip` so the document can NEVER pan horizontally (no blank/off-page overscroll). `hidden` leaves the visual viewport pannable on iOS; `clip` does not. */
   overflow-x: clip;
   overscroll-behavior-x: none;
   width: 100%;
@@ -312,7 +312,7 @@ body.menu-open { overflow: hidden; }
 .mobile-menu.open a {
   transform: translateY(0) scale(1);
   opacity: 1;
-  /* BUGFIX: index-based cascade covers ALL links — incl. 站内搜索 / 关注我们,
+  /* BUGFIX: index-based cascade covers ALL links - incl. 站内搜索 / 关注我们,
      which the old :nth-child(2..6) rules skipped because the close <button>
      is the menu's first child. */
   transition-delay: calc((var(--i, 0) + 1) * 50ms);
@@ -358,7 +358,7 @@ body.menu-open { overflow: hidden; }
   overflow: hidden;
 }
 
-/* Soft Structuralism — 漫射中性光晕, 制造空间纵深 (无 AI 紫渐变) */
+/* Soft Structuralism - 漫射中性光晕, 制造空间纵深 (无 AI 紫渐变) */
 .hero::before {
   content: "";
   position: absolute;
@@ -385,7 +385,7 @@ body.menu-open { overflow: hidden; }
   .hero-grid { grid-template-columns: 1.2fr 1fr; gap: 4rem; }
 }
 
-/* 向下滚动提示 — animate: 有目的、克制的引导动效 */
+/* 向下滚动提示 - animate: 有目的、克制的引导动效 */
 .hero-scroll-cue {
   position: absolute;
   left: 50%;
@@ -781,7 +781,7 @@ body.menu-open { overflow: hidden; }
   margin-top: -1.5rem;
 }
 
-/* 时间轴左右切换按钮 — 桌面/键盘可达 */
+/* 时间轴左右切换按钮 - 桌面/键盘可达 */
 .timeline-nav {
   position: absolute;
   top: -0.25rem;
@@ -1235,7 +1235,7 @@ body.menu-open { overflow: hidden; }
   .card-shell:hover .card-img { transform: none; }
 }
 
-/* ═══ Mobile optimization (≤767px) — 三 skill 融合 ═══
+/* ═══ Mobile optimization (≤767px) - 三 skill 融合 ═══
    taste:  tighten density, kill center bias in long copy
    impeccable:  touch-first tap targets + confident active feedback
    soft:  keep Awwwards micro-motion, shed desktop-only dead weight */
@@ -1296,14 +1296,14 @@ body.menu-open { overflow: hidden; }
   /* contact cards: less internal padding */
   .contact-card-inner { padding: 1.75rem 1.5rem; }
 
-  /* touch-first: drop 300ms delay, remove grey flash — keeps .active scale feedback */
+  /* touch-first: drop 300ms delay, remove grey flash - keeps .active scale feedback */
   a, button, .btn, .timeline-year, .back-to-top {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 }
 
-/* ═══ Ultra-narrow (≤460px) — stack CTAs, scale hero type ═══ */
+/* ═══ Ultra-narrow (≤460px) - stack CTAs, scale hero type ═══ */
 @media (max-width: 460px) {
   .hero-actions { flex-direction: column; }
   .hero-actions .btn { width: 100%; }
@@ -1833,7 +1833,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuIcon = document.getElementById('menuIcon');
 
   // BUGFIX (三 skill 融合): index each menu link so the stagger cascade covers
-  // EVERY item — incl. 站内搜索 / 关注我们 — regardless of the close <button>
+  // EVERY item - incl. 站内搜索 / 关注我们 - regardless of the close <button>
   // sitting as the menu's first child (the old :nth-child(2..6) rules missed them).
   mobileMenu?.querySelectorAll('a').forEach((link, i) => {
     link.style.setProperty('--i', i);
@@ -2003,7 +2003,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; }
     }, true);
 
-    // click to center — immediate active set for responsiveness
+    // click to center - immediate active set for responsiveness
     years.forEach(year => {
       year.addEventListener('click', () => {
         if (dragged) return; // swallowed by capture listener
@@ -2014,7 +2014,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // 左右箭头 / 键盘导航 — 平滑滚动到相邻年份并居中
+    // 左右箭头 / 键盘导航 - 平滑滚动到相邻年份并居中
     const tlPrev = document.getElementById('tlPrev');
     const tlNext = document.getElementById('tlNext');
     const centerYear = (yearEl) => {

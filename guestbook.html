@@ -340,11 +340,26 @@ body.menu-open { overflow: hidden; }
       if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
     });
 
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY || window.pageYOffset;
-      if (nav) nav.classList.toggle('scrolled', y > 12);
-      if (backToTop) backToTop.classList.toggle('show', y > 600);
-    }, { passive: true });
+    // 用 IntersectionObserver 替代 scroll 监听 (taste-skill: 禁用 window scroll)
+    var makeSentinel = function (top) {
+      var el = document.createElement('div');
+      el.setAttribute('aria-hidden', 'true');
+      el.style.cssText = 'position:absolute;top:' + top + 'px;left:0;width:1px;height:1px;pointer-events:none;';
+      document.body.appendChild(el);
+      return el;
+    };
+    if (nav) {
+      var navSentinel = makeSentinel(12);
+      new IntersectionObserver(function (entries) {
+        nav.classList.toggle('scrolled', !entries[0].isIntersecting);
+      }).observe(navSentinel);
+    }
+    if (backToTop) {
+      var bttSentinel = makeSentinel(600);
+      new IntersectionObserver(function (entries) {
+        backToTop.classList.toggle('show', !entries[0].isIntersecting);
+      }).observe(bttSentinel);
+    }
 
     if (backToTop) backToTop.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
