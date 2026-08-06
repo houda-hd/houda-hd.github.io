@@ -6,6 +6,7 @@
   <title>404 - 页面未找到 | HOUDA+</title>
   <meta name="robots" content="noindex"/>
   <meta content="HOUDA+ 404 页面 - 该地址不存在，将自动返回首页。" name="description"/>
+  <meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群" name="keywords"/>
   <meta content="#f4f4f6" name="theme-color"/>
   <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
   <link crossorigin href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -26,6 +27,10 @@
         document.documentElement.setAttribute('data-theme', 'light');
       }
     })();
+  </script>
+  <!-- take control of scroll restoration so a refresh lands deterministically (not at a CLS-shifted spot) -->
+  <script>
+    if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
   </script>
   <style>
   /* ═══════════════════════════════════════════════════════════
