@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   HOUDA+ — 暗色主题 (Dark Mode)
+   HOUDA+ 暗色主题 (Dark Mode)
    与 index.html 同一视觉语言「Soft Structuralism」
    所有覆盖均用 html[data-theme="dark"] 前缀，确保优先级高于
    各页面内联 <style> 中的浅色规则（无需依赖引入顺序）。

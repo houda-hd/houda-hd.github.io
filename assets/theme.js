@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   HOUDA+ — 主题切换 (Light / Dark)
+   HOUDA+ 主题切换 (Light / Dark)
    · data-theme 已由 <head> 内联脚本在首屏前设置（防闪烁）
    · 本脚本负责：绘制切换按钮、点击切换并持久化、同步 Giscus、更新 theme-color
    · 存储键：localStorage['houda-theme'] = 'light' | 'dark'
