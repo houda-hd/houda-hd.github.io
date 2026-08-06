@@ -294,8 +294,7 @@ body.menu-open { overflow: hidden; }
   /* Optical centering: nudge the link cluster down slightly. The close button
      and the visible header behind the translucent backdrop pull attention up;
      extra top padding restores balance and moves items toward the thumb zone. */
-  padding: 3rem 2rem 2rem 2rem;
-  padding: max(3rem, env(safe-area-inset-top)) 2rem max(2rem, env(safe-area-inset-bottom));
+  padding: calc(var(--nav-h) + 1.5rem) 2rem 2rem 2rem; padding: max(calc(var(--nav-h) + 1.5rem), env(safe-area-inset-top)) 2rem max(2rem, env(safe-area-inset-bottom));
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--dur-normal) var(--ease-fluid),
