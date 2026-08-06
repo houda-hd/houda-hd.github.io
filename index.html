@@ -285,26 +285,37 @@ body.menu-open { overflow: hidden; }
   text-decoration: none;
   color: var(--text-primary);
   padding: 0.75rem 0;
-  transform: translateY(20px);
+  /* BUGFIX (三 skill 融合): every link starts offset so it can animate in */
+  transform: translateY(22px) scale(0.98);
   opacity: 0;
-  transition: transform var(--dur-slow) var(--ease-out),
-              opacity var(--dur-slow) var(--ease-out),
-              color var(--dur-fast) var(--ease-out);
+  transition: transform var(--dur-slow) var(--ease-spring),
+              opacity   var(--dur-slow) var(--ease-fluid),
+              color     var(--dur-fast) var(--ease-out);
+  /* fallback before --i is set; overwritten per item when the menu opens */
+  transition-delay: 0ms;
 }
 .mobile-menu.open a {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   opacity: 1;
+  /* BUGFIX: index-based cascade covers ALL links — incl. 站内搜索 / 关注我们,
+     which the old :nth-child(2..6) rules skipped because the close <button>
+     is the menu's first child. */
+  transition-delay: calc((var(--i, 0) + 1) * 50ms);
 }
-.mobile-menu.open a:nth-child(2) { transition-delay: 100ms; }
-.mobile-menu.open a:nth-child(3) { transition-delay: 150ms; }
-.mobile-menu.open a:nth-child(4) { transition-delay: 200ms; }
-.mobile-menu.open a:nth-child(5) { transition-delay: 250ms; }
-.mobile-menu.open a:nth-child(6) { transition-delay: 300ms; }
 .mobile-menu a:active { color: var(--accent); }
 .mobile-menu a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 4px;
+}
+
+/* BUGFIX (impeccable / a11y): respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu a {
+    transform: none;
+    transition: opacity 160ms linear;
+  }
+  .mobile-menu.open a { transition-delay: 0ms; }
 }
 
 .mobile-menu-close {
@@ -1802,6 +1813,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuClose = document.getElementById('menuClose');
   const mobileMenu = document.getElementById('mobileMenu');
   const menuIcon = document.getElementById('menuIcon');
+
+  // BUGFIX (三 skill 融合): index each menu link so the stagger cascade covers
+  // EVERY item — incl. 站内搜索 / 关注我们 — regardless of the close <button>
+  // sitting as the menu's first child (the old :nth-child(2..6) rules missed them).
+  mobileMenu?.querySelectorAll('a').forEach((link, i) => {
+    link.style.setProperty('--i', i);
+  });
 
   const openMenu = () => {
     if (!mobileMenu) return;
