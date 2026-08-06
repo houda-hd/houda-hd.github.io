@@ -12,6 +12,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
+<!-- 暗色主题：共享覆盖 + 首屏前设置 data-theme（防闪烁） -->
+<link rel="stylesheet" href="assets/theme.css"/>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('houda-theme');
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
 <style>
 :root {
   --bg: #f4f4f6; --bg-card: #ffffff; --bg-elevated: #fafafa;
@@ -125,6 +140,9 @@ body.menu-open { overflow: hidden; }
       <li><a class="nav-link is-active" href="search.html" aria-current="page">搜索</a></li>
     </ul>
     <a class="nav-cta" href="index.html#contact">关注</a>
+    <button class="nav-theme-btn" id="themeToggle" type="button" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换主题">
+      <i class="ph ph-moon" id="themeIcon"></i>
+    </button>
     <button class="nav-menu-btn" id="menuBtn" type="button" aria-label="打开菜单" aria-controls="mobileMenu" aria-expanded="false">
       <i class="ph ph-list" id="menuIcon"></i>
     </button>
@@ -332,5 +350,8 @@ body.menu-open { overflow: hidden; }
     if (backToTop) backToTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' }); });
   })();
 </script>
+
+<!-- 主题切换（Light/Dark）与 Giscus 同步 -->
+<script src="assets/theme.js" defer></script>
 </body>
 </html>

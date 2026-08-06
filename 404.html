@@ -12,6 +12,21 @@
   <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
+  <!-- 暗色主题：共享覆盖 + 首屏前设置 data-theme（防闪烁） -->
+  <link rel="stylesheet" href="assets/theme.css"/>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('houda-theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
   <style>
   /* ═══════════════════════════════════════════════════════════
      HOUDA+ 404 · 与 index.html 同一视觉语言
@@ -325,6 +340,11 @@
     </div>
   </main>
 
+  <!-- 主题切换（404 无导航栏，用浮动按钮） -->
+  <button class="float-theme-btn" id="themeToggle" type="button" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换主题">
+    <i class="ph ph-moon" id="themeIcon"></i>
+  </button>
+
   <!-- 页脚 -->
   <footer class="page-footer fade-in d3">
     © 2025 HOUDA+ | 侯明昊碗慧通讯录互吃大学
@@ -345,5 +365,7 @@
     }, 1000);
   </script>
 
+  <!-- 主题切换（Light/Dark）与 Giscus 同步 -->
+  <script src="assets/theme.js" defer></script>
 </body>
 </html>

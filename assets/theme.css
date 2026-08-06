@@ -1,0 +1,139 @@
+/* ═══════════════════════════════════════════════════════════
+   HOUDA+ — 暗色主题 (Dark Mode)
+   与 index.html 同一视觉语言「Soft Structuralism」
+   所有覆盖均用 html[data-theme="dark"] 前缀，确保优先级高于
+   各页面内联 <style> 中的浅色规则（无需依赖引入顺序）。
+   主色 --accent 在暗色下略提亮，阴影转为深底漫射。
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 暗色 token 覆盖 ── */
+html[data-theme="dark"] {
+  --bg: #0e0e12;
+  --bg-card: #16161c;
+  --bg-elevated: #1d1d25;
+  --text-primary: #f4f4f6;
+  --text-secondary: #b6b6c0;
+  --text-tertiary: #76767f;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-light: rgba(59, 130, 246, 0.12);
+  --green: #22c55e;
+  --green-light: rgba(34, 197, 94, 0.14);
+  --border-hairline: rgba(255, 255, 255, 0.09);
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --shadow-ambient:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 8px 24px rgba(0, 0, 0, 0.55),
+    0 24px 56px rgba(0, 0, 0, 0.5);
+  --shadow-float:
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    0 32px 72px rgba(0, 0, 0, 0.55);
+}
+
+/* ── 硬编白色「玻璃」组件：暗色下改为半透明深色，保留浮空质感 ── */
+html[data-theme="dark"] .nav {
+  background: rgba(20, 20, 26, 0.72);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .nav.scrolled {
+  background: rgba(20, 20, 26, 0.9);
+}
+html[data-theme="dark"] .mobile-menu {
+  background: rgba(14, 14, 18, 0.94);
+}
+html[data-theme="dark"] .about-image-shell,
+html[data-theme="dark"] .hero-logo-shell {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .card-shell {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+html[data-theme="dark"] .card-tag.gray {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-tertiary);
+}
+html[data-theme="dark"] .logo-shell {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+/* ── 以 --text-primary 作背景的元素（暗色下会反白）→ 改用强调蓝 ── */
+html[data-theme="dark"] .nav-cta,
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] .skip-link {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* ── 页脚：浅色用 --text-primary 作底，暗色下改纯深色 ── */
+html[data-theme="dark"] .footer {
+  background: #0a0a0d;
+}
+
+/* ── 主题切换按钮（导航栏内） ── */
+.nav-theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  background: var(--bg);
+  color: var(--text-primary);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur-fast) var(--ease-fluid),
+              transform var(--dur-press) var(--ease-out);
+}
+.nav-theme-btn:active { background: var(--border-soft); transform: scale(0.94); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-theme-btn:hover { background: var(--border-soft); }
+}
+.nav-theme-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── 主题切换按钮（无导航页，如 404，浮动在左下角） ── */
+.float-theme-btn {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: none;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  box-shadow: var(--shadow-float);
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur-fast) var(--ease-fluid),
+              transform var(--dur-press) var(--ease-out);
+}
+.float-theme-btn:active { transform: scale(0.94); background: var(--border-soft); }
+@media (hover: hover) and (pointer: fine) {
+  .float-theme-btn:hover { background: var(--border-soft); }
+}
+.float-theme-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── 暗色下偏好减少透明时：导航/移动菜单改自适应底色（覆盖内联 !important 白底） ── */
+@media (prefers-reduced-transparency: reduce) {
+  html[data-theme="dark"] .nav { background: var(--bg-card) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  html[data-theme="dark"] .mobile-menu { background: var(--bg) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
