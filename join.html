@@ -274,54 +274,25 @@ body.menu-open { overflow: hidden; }
     </div>
   </section>
 
-  <!-- ═══ 招新表单 ═══ -->
+  <!-- ═══ 招新表单（金数据嵌入，无需后端、国内可稳定访问） ═══ -->
   <!--
-    Formspree 配置（无需后端）：
-    1. 打开 https://formspree.io 注册并新建一个表单，拿到你的表单 ID（形如 xxyyzzww）。
-    2. 把下面的 action 地址中的 your-formspree-id 替换成你的真实 ID，即：
-         action="https://formspree.io/f/你的真实ID"
-    3. 提交后申请会进入 Formspree 后台，并可配置邮件通知。
-    其余逻辑（防垃圾蜜罐、成功/失败提示）本页已内置，无需改动。
+    金数据嵌入（已配置）：
+    - 表单 ID：rtalVT，嵌入域名：q26papq1.jsjform.com
+    - 用官方 embedded.js 脚本注入表单；高度/背景等由脚本 query 参数控制。
+    - 兜底：若脚本加载失败（极少数情况），下方「点此直接打开」链接指向表单填写页，照常可用。
   -->
   <section class="section" style="padding-top:0;">
     <div class="container">
       <div class="recruit-form" id="recruitWrap">
-        <form id="recruitForm" action="https://formspree.io/f/your-formspree-id" method="POST">
-          <input type="hidden" name="_subject" value="HOUDA+ 新成员入群申请"/>
-          <!-- 蜜罐：正常用户看不到、不会填；机器人填了 Formspree 会自动丢弃 -->
-          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
-                 style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;"/>
-
-          <div class="field">
-            <label for="f-nick">昵称 <span class="req">*</span></label>
-            <input id="f-nick" name="nickname" type="text" placeholder="群里怎么称呼你？" required/>
-          </div>
-
-          <div class="field">
-            <label for="f-contact">联系方式 <span class="req">*</span></label>
-            <input id="f-contact" name="contact" type="text" placeholder="微信 / QQ / 邮箱，方便拉你入群" required/>
-            <span class="hint">只会用于入群联系，不会公开展示。</span>
-          </div>
-
-          <div class="field">
-            <label for="f-group">想加入的社群</label>
-            <select id="f-group" name="group">
-              <option value="长沙霉粉联盟六群">长沙霉粉联盟六群</option>
-              <option value="其他粉丝群">其他粉丝群</option>
-              <option value="合作 / 投稿">合作 / 投稿</option>
-              <option value="其他">其他</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="f-intro">自我介绍</label>
-            <textarea id="f-intro" name="intro" placeholder="简单介绍下自己，或者想认识谁～（选填）"></textarea>
-          </div>
-
-          <button class="submit-btn" type="submit"><i class="ph ph-paper-plane-tilt"></i> 提交申请 · 加入我们</button>
-          <p class="form-note">提交即表示同意我们仅使用你留下的联系方式与你联系入群事宜。表单由 Formspree 托管，本站不存储任何数据。</p>
-          <div class="form-status" id="formStatus" role="alert" aria-live="polite"></div>
-        </form>
+        <script src="https://q26papq1.jsjform.com/f/rtalVT/embedded.js?background=white&banner=show&inner_redirect=false&height=1070.112548828125"></script>
+        <p class="form-note">
+          提交即表示同意我们仅使用你留下的联系方式与你联系入群事宜。表单由
+          <a href="https://jinshuju.net" target="_blank" rel="noopener">金数据</a>
+          托管，本站不存储任何数据。
+        </p>
+        <p class="form-note" style="margin-top:0.5rem;">
+          表单无法显示？<a href="https://q26papq1.jsjform.com/f/rtalVT" target="_blank" rel="noopener">点此直接打开入群申请表单 ↗</a>
+        </p>
       </div>
     </div>
   </section>
@@ -355,56 +326,7 @@ body.menu-open { overflow: hidden; }
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部"><i class="ph ph-bold ph-arrow-up"></i></button>
 
-<!-- ═══ 招新表单提交逻辑（Formspree AJAX，内联反馈） ═══ -->
-<script>
-(function () {
-  var form = document.getElementById('recruitForm');
-  if (!form) return;
-  var status = document.getElementById('formStatus');
-  var btn = form.querySelector('.submit-btn');
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var action = form.getAttribute('action');
-    if (!action || action.indexOf('your-formspree-id') !== -1) {
-      status.className = 'form-status err';
-      status.textContent = '⚠️ 表单尚未配置：请在 join.html 的 <form> 的 action 中填入你的 Formspree 表单 ID。';
-      return;
-    }
-    btn.disabled = true;
-    btn.innerHTML = '提交中…';
-    status.className = 'form-status';
-    status.textContent = '';
-
-    var data = new FormData(form);
-    fetch(action, {
-      method: 'POST',
-      body: data,
-      headers: { 'Accept': 'application/json' }
-    }).then(function (r) {
-      if (r.ok) {
-        form.reset();
-        status.className = 'form-status ok';
-        status.textContent = '✅ 提交成功！我们会尽快通过你留下的联系方式拉你入群，记得留意消息～';
-      } else {
-        return r.json().then(function (err) {
-          var msg = (err && err.errors)
-            ? err.errors.map(function (x) { return x.message; }).join('，')
-            : '提交失败，请稍后重试。';
-          status.className = 'form-status err';
-          status.textContent = '⚠️ ' + msg;
-        });
-      }
-    }).catch(function () {
-      status.className = 'form-status err';
-      status.textContent = '⚠️ 网络错误，请检查连接后重试。';
-    }).finally(function () {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="ph ph-paper-plane-tilt"></i> 提交申请 · 加入我们';
-    });
-  });
-})();
-</script>
+<!-- ═══ 招新表单：金数据 iframe 嵌入，提交由其原生处理，无需本页 JS ═══ -->
 
 <!-- ═══ 导航 / 移动菜单 / 回到顶部（与全站一致） ═══ -->
 <script>
