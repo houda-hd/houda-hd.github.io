@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>留言墙 · HOUDA+</title>
-<meta content="HOUDA+ 留言墙 / 表白墙 - 用 GitHub Discussions 做后端的零服务器互动区。" name="description"/>
-<meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群" name="keywords"/>
+<title>加入我们 · HOUDA+</title>
+<meta content="想加入 HOUDA+ 长沙霉粉联盟六群？填写招新表单，无需注册，我们会通过你留下的联系方式拉你入群。" name="description"/>
+<meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群, 招新, 入群" name="keywords"/>
 <meta content="#f4f4f6" name="theme-color"/>
 <meta name="robots" content="noindex"/>
 <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
@@ -47,6 +47,8 @@
   --accent-light: rgba(37,99,235,0.06);
   --green: #16a34a;
   --green-light: rgba(22,163,74,0.08);
+  --red: #dc2626;
+  --red-light: rgba(220,38,38,0.06);
   --border-hairline: rgba(0,0,0,0.06);
   --border-soft: rgba(0,0,0,0.04);
   --shadow-ambient:
@@ -117,6 +119,8 @@ body.menu-open { overflow: hidden; }
 .nav-cta { display: inline-flex; align-items: center; gap: 0.375rem; margin-left: auto; background: var(--text-primary); color: white; text-decoration: none; font-size: 0.8125rem; font-weight: 700; padding: 0.5rem 1.125rem; border-radius: 999px; letter-spacing: -0.01em; transition: transform var(--dur-press) var(--ease-out), background var(--dur-fast) var(--ease-fluid); }
 .nav-cta:active { transform: scale(0.95); }
 @media (hover: hover) and (pointer: fine) { .nav-cta:hover { background: var(--accent); } }
+.nav-theme-btn { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: none; background: var(--bg); color: var(--text-primary); border-radius: 999px; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; transition: background var(--dur-fast) var(--ease-fluid); }
+.nav-theme-btn:active { background: var(--border-soft); }
 .nav-menu-btn { display: flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: none; background: var(--bg); color: var(--text-primary); border-radius: 999px; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; transition: background var(--dur-fast) var(--ease-fluid); }
 .nav-menu-btn:active { background: var(--border-soft); }
 @media (min-width: 768px) { .nav-menu-btn { display: none; } }
@@ -129,7 +133,7 @@ body.menu-open { overflow: hidden; }
 }
 
 /* ── Mobile menu ── */
-.mobile-menu { position: fixed; inset: 0; z-index: 999; background: rgba(244,244,246,0.92); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); /* Use dynamic viewport height so the menu fills the *visible* viewport on mobile browsers with collapsing URL bars; otherwise 100vh spans below the fold and flex centering parks the links in the upper band. */ height: 100vh; height: 100dvh; max-height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; /* Optical centering: nudge the link cluster down slightly. The close button and the visible header behind the translucent backdrop pull attention up; extra top padding restores balance and moves items toward the thumb zone. */ padding: calc(var(--nav-h) + 1.5rem) 2rem 2rem 2rem; padding: max(calc(var(--nav-h) + 1.5rem), env(safe-area-inset-top)) 2rem max(2rem, env(safe-area-inset-bottom)); opacity: 0; visibility: hidden; transition: opacity var(--dur-normal) var(--ease-fluid), visibility var(--dur-normal) var(--ease-fluid); }
+.mobile-menu { position: fixed; inset: 0; z-index: 999; background: rgba(244,244,246,0.92); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); height: 100vh; height: 100dvh; max-height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; padding: calc(var(--nav-h) + 1.5rem) 2rem 2rem 2rem; padding: max(calc(var(--nav-h) + 1.5rem), env(safe-area-inset-top)) 2rem max(2rem, env(safe-area-inset-bottom)); opacity: 0; visibility: hidden; transition: opacity var(--dur-normal) var(--ease-fluid), visibility var(--dur-normal) var(--ease-fluid); }
 .mobile-menu.open { opacity: 1; visibility: visible; }
 .mobile-menu a { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--text-primary); padding: 0.75rem 0; transform: translateY(22px) scale(0.98); opacity: 0; transition: transform var(--dur-slow) var(--ease-spring), opacity var(--dur-slow) var(--ease-fluid), color var(--dur-fast) var(--ease-out); transition-delay: 0ms; }
 .mobile-menu.open a { transform: translateY(0) scale(1); opacity: 1; transition-delay: calc((var(--i, 0) + 1) * 50ms); }
@@ -149,9 +153,33 @@ body.menu-open { overflow: hidden; }
 .section-label::before { content: ""; width: 1.5rem; height: 2px; border-radius: 2px; background: var(--accent); }
 .page-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; }
 .page-sub { margin-top: 1rem; color: var(--text-secondary); font-size: 1rem; line-height: 1.7; }
+.container { width: 100%; max-width: 820px; margin: 0 auto; padding: 0 1.5rem; }
 
-/* ── 单线程留言区 ── */
-.giscus-wrap { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.5rem; box-shadow: var(--shadow-ambient); padding: 1.5rem; max-width: 820px; margin: 0 auto; transition: background var(--dur-fast) var(--ease-fluid), box-shadow var(--dur-fast) var(--ease-fluid); }
+/* ── 加入理由卡片 ── */
+.benefits { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 0 auto 2.5rem; }
+@media (min-width: 640px) { .benefits { grid-template-columns: repeat(3, 1fr); } }
+.benefit { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.25rem; box-shadow: var(--shadow-ambient); padding: 1.25rem; text-align: left; }
+.benefit-icon { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 0.75rem; }
+.benefit h3 { font-size: 0.95rem; font-weight: 800; margin: 0 0 0.35rem; color: var(--text-primary); }
+.benefit p { font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.55; margin: 0; }
+
+/* ── 招新表单 ── */
+.recruit-form { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.5rem; box-shadow: var(--shadow-ambient); padding: 1.5rem; max-width: 560px; margin: 0 auto; }
+.field { margin-bottom: 1.25rem; }
+.field label { display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+.field .req { color: var(--accent); }
+.field input, .field select, .field textarea { width: 100%; font: inherit; font-size: 1rem; color: var(--text-primary); background: var(--bg-elevated); border: 1.5px solid var(--border-hairline); border-radius: 0.875rem; padding: 0.75rem 1rem; transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
+.field textarea { resize: vertical; min-height: 120px; }
+.field .hint { display: block; font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.4rem; }
+.submit-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--accent); color: #fff; font: inherit; font-weight: 700; font-size: 1rem; border: none; border-radius: 999px; padding: 0.875rem 1.5rem; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(37,99,235,0.5); transition: transform var(--dur-press) var(--ease-out), background var(--dur-fast) var(--ease-fluid); -webkit-tap-highlight-color: transparent; }
+.submit-btn:hover { background: var(--accent-hover); }
+.submit-btn:active { transform: scale(0.97); }
+.submit-btn:disabled { opacity: 0.6; cursor: default; }
+.form-note { font-size: 0.8125rem; color: var(--text-tertiary); margin: 0.75rem 0 0; line-height: 1.6; }
+.form-status { margin-top: 1rem; padding: 0.875rem 1rem; border-radius: 0.875rem; font-size: 0.875rem; line-height: 1.6; display: none; }
+.form-status.ok { display: block; background: var(--green-light); color: var(--green); border: 1px solid rgba(22,163,74,0.2); }
+.form-status.err { display: block; background: var(--red-light); color: var(--red); border: 1px solid rgba(220,38,38,0.2); }
 
 /* ── Footer（与全站一致） ── */
 .footer { background: var(--text-primary); color: rgba(255,255,255,0.7); padding: 4rem 2rem 2rem; margin-top: 4rem; }
@@ -186,9 +214,9 @@ body.menu-open { overflow: hidden; }
       <li><a class="nav-link" href="index.html#history">历程</a></li>
       <li><a class="nav-link" href="index.html#activities">活动</a></li>
       <li><a class="nav-link" href="index.html#landmarks">地标</a></li>
-      <li><a class="nav-link is-active" href="guestbook.html" aria-current="page">留言</a></li>
+      <li><a class="nav-link" href="guestbook.html">留言</a></li>
       <li><a class="nav-link" href="search.html">搜索</a></li>
-      <li><a class="nav-link" href="join.html">加入</a></li>
+      <li><a class="nav-link is-active" href="join.html" aria-current="page">加入</a></li>
     </ul>
     <a class="nav-cta" href="index.html#contact">关注</a>
     <button class="nav-theme-btn" id="themeToggle" type="button" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换主题">
@@ -217,16 +245,84 @@ body.menu-open { overflow: hidden; }
   <!-- ═══ Page header ═══ -->
   <section class="page-head">
     <div class="page-head-inner">
-      <p class="section-label"><i class="ph ph-chat-circle-dots"></i> 留言墙</p>
-      <h1 class="page-title">和大家说点什么</h1>
-      <p class="page-sub">这里是 HOUDA+ 的树洞与表白墙。评论由 GitHub Discussions 提供支持，用 GitHub 账号登录即可，无需注册本站。</p>
+      <p class="section-label"><i class="ph ph-user-plus"></i> 加入我们</p>
+      <h1 class="page-title">成为 HOUDA+ 的一员</h1>
+      <p class="page-sub">想和同好一起聊侯大、参加活动、认识新朋友？填一下下面的表单，我们会用你留的联系方式拉你入群，无需注册、无需后端。</p>
     </div>
   </section>
 
-  <!-- ═══ 单线程留言区 ═══ -->
+  <!-- ═══ 加入理由 ═══ -->
   <section class="section" style="padding-top:0;">
     <div class="container">
-      <div class="giscus-wrap" id="giscusWrap"><!-- Giscus 单线程评论区 --></div>
+      <div class="benefits">
+        <div class="benefit">
+          <div class="benefit-icon"><i class="ph ph-users-three"></i></div>
+          <h3>同好社群</h3>
+          <p>长沙霉粉联盟六群分支，一群热爱侯大的小伙伴，日常互吃、玩梗不停。</p>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon"><i class="ph ph-party"></i></div>
+          <h3>专属活动</h3>
+          <p>线下聚会、生日应援、专辑打榜……群里第一时间收到活动情报。</p>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon"><i class="ph ph-hand-waving"></i></div>
+          <h3>零门槛</h3>
+          <p>留下联系方式即可，真实身份随意。我们尊重每个人舒服的参与节奏。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 招新表单 ═══ -->
+  <!--
+    Formspree 配置（无需后端）：
+    1. 打开 https://formspree.io 注册并新建一个表单，拿到你的表单 ID（形如 xxyyzzww）。
+    2. 把下面的 action 地址中的 your-formspree-id 替换成你的真实 ID，即：
+         action="https://formspree.io/f/你的真实ID"
+    3. 提交后申请会进入 Formspree 后台，并可配置邮件通知。
+    其余逻辑（防垃圾蜜罐、成功/失败提示）本页已内置，无需改动。
+  -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="recruit-form" id="recruitWrap">
+        <form id="recruitForm" action="https://formspree.io/f/your-formspree-id" method="POST">
+          <input type="hidden" name="_subject" value="HOUDA+ 新成员入群申请"/>
+          <!-- 蜜罐：正常用户看不到、不会填；机器人填了 Formspree 会自动丢弃 -->
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
+                 style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;"/>
+
+          <div class="field">
+            <label for="f-nick">昵称 <span class="req">*</span></label>
+            <input id="f-nick" name="nickname" type="text" placeholder="群里怎么称呼你？" required/>
+          </div>
+
+          <div class="field">
+            <label for="f-contact">联系方式 <span class="req">*</span></label>
+            <input id="f-contact" name="contact" type="text" placeholder="微信 / QQ / 邮箱，方便拉你入群" required/>
+            <span class="hint">只会用于入群联系，不会公开展示。</span>
+          </div>
+
+          <div class="field">
+            <label for="f-group">想加入的社群</label>
+            <select id="f-group" name="group">
+              <option value="长沙霉粉联盟六群">长沙霉粉联盟六群</option>
+              <option value="其他粉丝群">其他粉丝群</option>
+              <option value="合作 / 投稿">合作 / 投稿</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="f-intro">自我介绍</label>
+            <textarea id="f-intro" name="intro" placeholder="简单介绍下自己，或者想认识谁～（选填）"></textarea>
+          </div>
+
+          <button class="submit-btn" type="submit"><i class="ph ph-paper-plane-tilt"></i> 提交申请 · 加入我们</button>
+          <p class="form-note">提交即表示同意我们仅使用你留下的联系方式与你联系入群事宜。表单由 Formspree 托管，本站不存储任何数据。</p>
+          <div class="form-status" id="formStatus" role="alert" aria-live="polite"></div>
+        </form>
+      </div>
     </div>
   </section>
 </main>
@@ -259,47 +355,52 @@ body.menu-open { overflow: hidden; }
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部"><i class="ph ph-bold ph-arrow-up"></i></button>
 
+<!-- ═══ 招新表单提交逻辑（Formspree AJAX，内联反馈） ═══ -->
 <script>
-/* ── 留言墙：单线程 Giscus（data-mapping=pathname，本页全部评论汇入同一帖） ──
-   初始主题取当前亮/暗，切换主题时由 theme.js 通过 postMessage 同步换肤。 */
 (function () {
-  var GISCUS = {
-    repo: 'houda-hd/houda-hd.github.io',
-    repoId: 'R_kgDOQSxw3w',
-    category: 'Announcements',
-    categoryId: 'DIC_kwDOQSxw384Cxo4t'
-  };
+  var form = document.getElementById('recruitForm');
+  if (!form) return;
+  var status = document.getElementById('formStatus');
+  var btn = form.querySelector('.submit-btn');
 
-  function currentTheme() {
-    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var action = form.getAttribute('action');
+    if (!action || action.indexOf('your-formspree-id') !== -1) {
+      status.className = 'form-status err';
+      status.textContent = '⚠️ 表单尚未配置：请在 join.html 的 <form> 的 action 中填入你的 Formspree 表单 ID。';
+      return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '提交中…';
+    status.className = 'form-status';
+    status.textContent = '';
 
-  var wrap = document.getElementById('giscusWrap');
-  if (!wrap) return;
-
-  var s = document.createElement('script');
-  s.src = 'https://giscus.app/client.js';
-  s.setAttribute('data-repo', GISCUS.repo);
-  s.setAttribute('data-repo-id', GISCUS.repoId);
-  s.setAttribute('data-category', GISCUS.category);
-  s.setAttribute('data-category-id', GISCUS.categoryId);
-  s.setAttribute('data-mapping', 'pathname');
-  s.setAttribute('data-strict', '0');
-  s.setAttribute('data-reactions-enabled', '1');
-  s.setAttribute('data-emit-metadata', '0');
-  s.setAttribute('data-input-position', 'bottom');
-  s.setAttribute('data-theme', currentTheme());
-  s.setAttribute('data-lang', 'zh-CN');
-  s.setAttribute('data-loading', 'lazy');
-  s.crossOrigin = 'anonymous';
-  s.async = true;
-  wrap.appendChild(s);
-
-  /* 主题切换时，让已加载的 Giscus iframe 同步换肤（theme.js 也会 broadcast，这里双保险） */
-  document.addEventListener('themechange', function (e) {
-    var g = (e && e.detail === 'dark') ? 'dark' : 'light';
-    document.querySelectorAll('iframe.giscus-frame').forEach(function (f) {
-      try { f.contentWindow.postMessage({ giscus: { setConfig: { theme: g } } }, 'https://giscus.app'); } catch (err) {}
+    var data = new FormData(form);
+    fetch(action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(function (r) {
+      if (r.ok) {
+        form.reset();
+        status.className = 'form-status ok';
+        status.textContent = '✅ 提交成功！我们会尽快通过你留下的联系方式拉你入群，记得留意消息～';
+      } else {
+        return r.json().then(function (err) {
+          var msg = (err && err.errors)
+            ? err.errors.map(function (x) { return x.message; }).join('，')
+            : '提交失败，请稍后重试。';
+          status.className = 'form-status err';
+          status.textContent = '⚠️ ' + msg;
+        });
+      }
+    }).catch(function () {
+      status.className = 'form-status err';
+      status.textContent = '⚠️ 网络错误，请检查连接后重试。';
+    }).finally(function () {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ph ph-paper-plane-tilt"></i> 提交申请 · 加入我们';
     });
   });
 })();
@@ -377,7 +478,7 @@ body.menu-open { overflow: hidden; }
   })();
 </script>
 
-<!-- 主题切换（Light/Dark）与 Giscus 同步 -->
+<!-- 主题切换（Light/Dark） -->
 <script src="assets/theme.js" defer></script>
 </body>
 </html>
