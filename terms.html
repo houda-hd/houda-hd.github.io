@@ -3,11 +3,10 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>加入我们 · HOUDA+</title>
-<meta content="想加入 HOUDA+ 长沙霉粉联盟六群？填写招新表单，无需注册，我们会通过你留下的联系方式拉你入群。" name="description"/>
-<meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群, 招新, 入群" name="keywords"/>
+<title>用户协议 · HOUDA+</title>
+<meta content="HOUDA+ 用户协议：使用本站所应遵守的条款，包括可接受使用、用户内容与知识产权、第三方服务、免责声明与责任限制。参照 Google、Apple、Microsoft 等国际通行实践撰写。" name="description"/>
+<meta content="HOUDA+, 用户协议, 服务条款, 使用规则, 知识产权, 免责声明" name="keywords"/>
 <meta content="#f4f4f6" name="theme-color"/>
-<meta name="robots" content="noindex"/>
 <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
 <link crossorigin href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -117,7 +116,6 @@ body.menu-open { overflow: hidden; }
 .nav-link.is-active::after { transform: scaleX(1); }
 @media (hover: hover) and (pointer: fine) { .nav-link:hover { color: var(--text-primary); } .nav-link:hover::after { transform: scaleX(1); } }
 .nav-cta { display: inline-flex; align-items: center; gap: 0.375rem; margin-left: auto; background: var(--text-primary); color: white; text-decoration: none; font-size: 0.8125rem; font-weight: 700; padding: 0.5rem 1.125rem; border-radius: 999px; letter-spacing: -0.01em; transition: transform var(--dur-press) var(--ease-out), background var(--dur-fast) var(--ease-fluid); }
-
 .nav-cta:active { transform: scale(0.95); }
 @media (hover: hover) and (pointer: fine) { .nav-cta:hover { background: var(--accent); } }
 .nav-theme-btn { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: none; background: var(--bg); color: var(--text-primary); border-radius: 999px; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; transition: background var(--dur-fast) var(--ease-fluid); }
@@ -125,13 +123,6 @@ body.menu-open { overflow: hidden; }
 .nav-menu-btn { display: flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: none; background: var(--bg); color: var(--text-primary); border-radius: 999px; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; transition: background var(--dur-fast) var(--ease-fluid); }
 .nav-menu-btn:active { background: var(--border-soft); }
 @media (min-width: 768px) { .nav-menu-btn { display: none; } }
-
-/* ── Mobile nav optimization（与 index.html 一致）── */
-@media (max-width: 767px) {
-  .nav-wrap { padding: 0.875rem 1rem; }
-  .nav { gap: 0.625rem; padding: 0.5rem 0.5rem 0.5rem 1rem; width: 100%; }
-  .nav-cta { min-height: 40px; }
-}
 
 /* ── Mobile menu ── */
 .mobile-menu { position: fixed; inset: 0; z-index: 999; background: rgba(244,244,246,0.92); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); height: 100vh; height: 100dvh; max-height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; padding: calc(var(--nav-h) + 1.5rem) 2rem 2rem 2rem; padding: max(calc(var(--nav-h) + 1.5rem), env(safe-area-inset-top)) 2rem max(2rem, env(safe-area-inset-bottom)); opacity: 0; visibility: hidden; transition: opacity var(--dur-normal) var(--ease-fluid), visibility var(--dur-normal) var(--ease-fluid); }
@@ -147,6 +138,23 @@ body.menu-open { overflow: hidden; }
 .mobile-menu-close { position: absolute; top: 1.5rem; right: 1.5rem; width: 2.5rem; height: 2.5rem; border: none; background: var(--bg-card); color: var(--text-primary); border-radius: 999px; font-size: 1.125rem; cursor: pointer; box-shadow: var(--shadow-ambient); transition: transform 120ms var(--ease-out); }
 .mobile-menu-close:active { transform: scale(0.92); }
 
+/* ── 导航覆盖（与 index.html 完全一致）── */
+@media (prefers-reduced-transparency: reduce) {
+  .nav { background: var(--bg-card) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .mobile-menu { background: var(--bg) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+
+@media (max-width: 767px) {
+  /* slimmer, well-fitted floating nav bar */
+  .nav-wrap { padding: 0.875rem 1rem; }
+  .nav {
+    gap: 0.625rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    width: 100%;
+  }
+  .nav-cta { min-height: 40px; }
+}
+
 /* ── Inner page header ── */
 .page-head { padding: 9rem 2rem 2.5rem; text-align: center; }
 .page-head-inner { max-width: 720px; margin: 0 auto; }
@@ -156,31 +164,33 @@ body.menu-open { overflow: hidden; }
 .page-sub { margin-top: 1rem; color: var(--text-secondary); font-size: 1rem; line-height: 1.7; }
 .container { width: 100%; max-width: 820px; margin: 0 auto; padding: 0 1.5rem; }
 
-/* ── 加入理由卡片 ── */
-.benefits { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 0 auto 2.5rem; }
-@media (min-width: 640px) { .benefits { grid-template-columns: repeat(3, 1fr); } }
-.benefit { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.25rem; box-shadow: var(--shadow-ambient); padding: 1.25rem; text-align: left; }
-.benefit-icon { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 0.75rem; }
-.benefit h3 { font-size: 0.95rem; font-weight: 800; margin: 0 0 0.35rem; color: var(--text-primary); }
-.benefit p { font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.55; margin: 0; }
+/* ── 用户协议内容 ── */
+.terms-block { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.25rem; box-shadow: var(--shadow-ambient); padding: 1.5rem 1.75rem; margin: 0 auto 1.25rem; max-width: 760px; }
+.terms-block h2 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); }
+.terms-block h2 i { color: var(--accent); font-size: 1.05em; }
+.terms-block p { color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.75; margin: 0 0 0.6rem; }
+.terms-block p:last-child { margin-bottom: 0; }
+.terms-list { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.terms-list li { position: relative; padding-left: 1.5rem; margin-bottom: 0.6rem; color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.7; }
+.terms-list li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.terms-list li:last-child { margin-bottom: 0; }
+.terms-list strong { color: var(--text-primary); }
+.terms-note { font-size: 0.8125rem; color: var(--text-tertiary); line-height: 1.6; margin-top: 0.5rem; }
+.terms-updated { text-align: center; font-size: 0.8125rem; color: var(--text-tertiary); margin: 0.5rem 0 1rem; }
 
-/* ── 招新表单 ── */
-.recruit-form { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.5rem; box-shadow: var(--shadow-ambient); padding: 1.5rem; max-width: 560px; margin: 0 auto; }
-.field { margin-bottom: 1.25rem; }
-.field label { display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--text-primary); }
-.field .req { color: var(--accent); }
-.field input, .field select, .field textarea { width: 100%; font: inherit; font-size: 1rem; color: var(--text-primary); background: var(--bg-elevated); border: 1.5px solid var(--border-hairline); border-radius: 0.875rem; padding: 0.75rem 1rem; transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
-.field textarea { resize: vertical; min-height: 120px; }
-.field .hint { display: block; font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.4rem; }
-.submit-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--accent); color: #fff; font: inherit; font-weight: 700; font-size: 1rem; border: none; border-radius: 999px; padding: 0.875rem 1.5rem; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(37,99,235,0.5); transition: transform var(--dur-press) var(--ease-out), background var(--dur-fast) var(--ease-fluid); -webkit-tap-highlight-color: transparent; }
-.submit-btn:hover { background: var(--accent-hover); }
-.submit-btn:active { transform: scale(0.97); }
-.submit-btn:disabled { opacity: 0.6; cursor: default; }
-.form-note { font-size: 0.8125rem; color: var(--text-tertiary); margin: 0.75rem 0 0; line-height: 1.6; }
-.form-status { margin-top: 1rem; padding: 0.875rem 1rem; border-radius: 0.875rem; font-size: 0.875rem; line-height: 1.6; display: none; }
-.form-status.ok { display: block; background: var(--green-light); color: var(--green); border: 1px solid rgba(22,163,74,0.2); }
-.form-status.err { display: block; background: var(--red-light); color: var(--red); border: 1px solid rgba(220,38,38,0.2); }
+/* ── 目录（TOC） ── */
+.terms-toc { background: var(--bg-elevated); border: 1px solid var(--border-soft); border-radius: 1rem; padding: 1.25rem 1.5rem; margin: 0 auto 1.5rem; max-width: 760px; }
+.toc-title { font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin: 0 0 0.625rem; letter-spacing: -0.01em; }
+.toc-list { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 1.75rem; }
+.toc-list li { break-inside: avoid; margin-bottom: 0.45rem; font-size: 0.8125rem; line-height: 1.5; }
+.toc-list a { color: var(--text-secondary); text-decoration: none; transition: color var(--dur-fast) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .toc-list a:hover { color: var(--accent); } }
+@media (max-width: 560px) { .toc-list { columns: 1; } }
+
+/* ── 章节内子标题 ── */
+.terms-block h3 { font-family: var(--font-display); font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; margin: 1.15rem 0 0.5rem; }
+.terms-block h3:first-of-type { margin-top: 0.85rem; }
+.terms-block strong { color: var(--text-primary); }
 
 /* ── Footer（与全站一致） ── */
 .footer { background: var(--text-primary); color: rgba(255,255,255,0.7); padding: 4rem 2rem 2rem; margin-top: 4rem; }
@@ -210,7 +220,7 @@ body.menu-open { overflow: hidden; }
 <!-- ═══ Nav ═══ -->
 <div class="nav-wrap">
   <nav class="nav" id="nav" aria-label="主导航">
-    <a class="nav-logo" href="index.html" aria-label="HOUDA+ 首页">
+    <a class="nav-logo" href="index.html" id="navLogo" aria-label="HOUDA+ 首页">
       <img class="nav-logo-img" src="assets/HOUDA_squre.jpeg" alt="" width="28" height="28" loading="eager"/>
       HOUDA+
     </a>
@@ -221,7 +231,7 @@ body.menu-open { overflow: hidden; }
       <li><a class="nav-link" href="index.html#landmarks">地标</a></li>
       <li><a class="nav-link" href="guestbook.html">留言</a></li>
       <li><a class="nav-link" href="search.html">搜索</a></li>
-      <li><a class="nav-link is-active" href="join.html" aria-current="page">加入</a></li>
+      <li><a class="nav-link" href="join.html">加入</a></li>
     </ul>
     <a class="nav-cta" href="index.html#contact">关注</a>
     <button class="nav-theme-btn" id="themeToggle" type="button" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换主题">
@@ -246,57 +256,137 @@ body.menu-open { overflow: hidden; }
   <a href="index.html#contact">关注我们</a>
 </div>
 
-<main id="main" data-pagefind-body>
+<main id="main">
   <!-- ═══ Page header ═══ -->
   <section class="page-head">
     <div class="page-head-inner">
-      <p class="section-label"><i class="ph ph-user-plus"></i> 加入我们</p>
-      <h1 class="page-title">成为 HOUDA+ 的一员</h1>
-      <p class="page-sub">想和同好一起聊侯大、参加活动、认识新朋友？填一下下面的表单，我们会用你留的联系方式拉你入群，无需注册。</p>
+      <p class="section-label"><i class="ph ph-file-text"></i> 用户协议</p>
+      <h1 class="page-title">使用本站，即代表你同意</h1>
+      <p class="page-sub">我们尽量把规则写得清楚、不绕弯。下面是你在使用 HOUDA+ 时应了解的权利与责任，参照 Google、Apple、Microsoft 等国际通行实践撰写。</p>
     </div>
   </section>
 
-  <!-- ═══ 加入理由 ═══ -->
+  <!-- ═══ 用户协议正文 ═══ -->
   <section class="section" style="padding-top:0;">
     <div class="container">
-      <div class="benefits">
-        <div class="benefit">
-          <div class="benefit-icon"><i class="ph ph-users-three"></i></div>
-          <h3>同好社群</h3>
-          <p>长沙霉粉联盟六群分支，一群热爱侯大的小伙伴，日常互吃、玩梗不停。</p>
-        </div>
-        <div class="benefit">
-          <div class="benefit-icon"><i class="ph ph-party"></i></div>
-          <h3>专属活动</h3>
-          <p>线下聚会、生日应援、专辑打榜……群里第一时间收到活动情报。</p>
-        </div>
-        <div class="benefit">
-          <div class="benefit-icon"><i class="ph ph-hand-waving"></i></div>
-          <h3>零门槛</h3>
-          <p>留下联系方式即可，真实身份随意。我们尊重每个人舒服的参与节奏。</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══ 招新表单（金数据嵌入，无需后端、国内可稳定访问） ═══ -->
-  <!--
-    金数据嵌入（已配置）：
-    - 表单 ID：rtalVT，嵌入域名：q26papq1.jsjform.com
-    - 用官方 embedded.js 脚本注入表单；高度/背景等由脚本 query 参数控制。
-    - 兜底：若脚本加载失败（极少数情况），下方「点此直接打开」链接指向表单填写页，照常可用。
-  -->
-  <section class="section" style="padding-top:0;">
-    <div class="container">
-      <div class="recruit-form" id="recruitWrap">
-        <script src="https://q26papq1.jsjform.com/f/rtalVT/embedded.js?background=white&banner=show&inner_redirect=false&height=1070.112548828125"></script>
-        <p class="form-note">
-          提交即表示同意我们仅用你留下的联系方式与你联系入群事宜，你的信息仅用于入群联系、不会被公开。
-        </p>
-        <p class="form-note" style="margin-top:0.5rem;">
-          表单无法显示？<a href="https://q26papq1.jsjform.com/f/rtalVT" target="_blank" rel="noopener">点此直接打开入群申请表单 ↗</a>
-        </p>
+      <nav class="terms-toc" aria-label="用户协议目录">
+        <p class="toc-title">目录</p>
+        <ol class="toc-list">
+          <li><a href="#s1">一、协议的接受与概述</a></li>
+          <li><a href="#s2">二、使用资格</a></li>
+          <li><a href="#s3">三、身份、账户与社群申请</a></li>
+          <li><a href="#s4">四、可接受使用</a></li>
+          <li><a href="#s5">五、用户内容与知识产权</a></li>
+          <li><a href="#s6">六、第三方服务与外部链接</a></li>
+          <li><a href="#s7">七、免责声明</a></li>
+          <li><a href="#s8">八、责任限制</a></li>
+          <li><a href="#s9">九、本协议的变更</a></li>
+          <li><a href="#s10">十、联系我们</a></li>
+        </ol>
+      </nav>
+
+      <div class="terms-block" id="s1">
+        <h2><i class="ph ph-file-text"></i> 一、协议的接受与概述</h2>
+        <p>欢迎使用 HOUDA+（以下简称「本站」或「我们」）。本站是一个完全开源的社区项目，源代码托管于 GitHub、经由 Cloudflare Pages 部署。本用户协议（以下简称「本协议」）为您与本站在使用本站各项功能与服务（包括浏览、留言、入群申请及站内工具）过程中所形成之法律关系，确立双方之权利与义务，并参照全球领先科技企业（如 Google、Apple、Microsoft）之通行实践与国际化标准起草，力求清晰、透明、易于理解。</p>
+        <h3>1.1 协议的接受</h3>
+        <p>当您<strong>访问、浏览或使用</strong>本站之任何部分时，即表示您已阅读、理解并<strong>同意受本协议全部条款（含其后续修订版本）之约束</strong>。若您不同意本协议之任何内容，请勿使用本站。</p>
+        <h3>1.2 协议适用范围</h3>
+        <p>本协议适用于通过 HOUDA+ 官方域名及其所承载之全部页面、功能与服务而进行的一切访问与使用行为，涵盖访客浏览、留言发布、入群申请提交、工具调用等情形。本站所接入之第三方服务（包括但不限于金数据、GitHub、Cloudflare）受其各自之服务条款与隐私政策约束，本协议仅就本站自身之提供行为作出约定。</p>
+        <h3>1.3 项目性质说明</h3>
+        <p>本站为<strong>纯静态网站</strong>，部署于 Cloudflare Pages 平台，<strong>不运营任何自建服务器</strong>。本站系由粉丝社群自发组织、以非商业方式运营之爱好者项目，与任何艺人个人、经纪公司或官方机构<strong>不存在隶属或代言关系</strong>。本协议之规定，均在「爱好者非商业项目」之性质与能力范围内作出。</p>
       </div>
+
+      <div class="terms-block" id="s2">
+        <h2><i class="ph ph-user-circle"></i> 二、使用资格</h2>
+        <h3>2.1 年龄与行为能力</h3>
+        <p>本站主要面向具备相应民事行为能力之用户。若您为<strong>未成年人</strong>，请在监护人陪同与同意下使用本站；当您使用本站时，您声明并保证您已获得必要之同意，且具备订立并履行本协议之能力。</p>
+        <h3>2.2 地区与可访问性</h3>
+        <p>本站可经由全球互联网访问，但部分功能所依托之第三方服务（详见第六章）可能因所在国家或地区之网络环境、法律法规或服务方政策而存在可用性差异。您应自行确保您所在地对相关内容之访问与使用符合当地之规定，并自行承担由此产生之一切后果。</p>
+      </div>
+
+      <div class="terms-block" id="s3">
+        <h2><i class="ph ph-users"></i> 三、身份、账户与社群申请</h2>
+        <h3>3.1 本站不设账户体系</h3>
+        <p>为降低信息收集、保护访客隐私，本站<strong>不设立任何用户注册或登录账户体系</strong>。您无需创建账户，即可浏览全部公开页面并调用站内工具。</p>
+        <h3>3.2 入群申请信息</h3>
+        <p>当您通过「加入我们」页面提交入群申请时，您所填写之内容由 <strong>金数据（jinshuju.net）</strong> 负责收集与存储，本站不直接接触、亦不留存上述字段之任何副本。提交该等申请，即表示您同意金数据按其隐私政策处理您所提供之信息，并授权本站基于联络与入群之目的使用相应结果。</p>
+        <h3>3.3 昵称与身份标识</h3>
+        <p>您于留言墙、入群申请等场景中所提供之昵称或身份标识，<strong>不代表本站对您身份之核实或认证</strong>。您应对您所使用之标识及其真实性自行负责，并避免冒用他人身份或误导他人。</p>
+      </div>
+
+      <div class="terms-block" id="s4">
+        <h2><i class="ph ph-hand"></i> 四、可接受使用</h2>
+        <p>我们欢迎您在遵守下述规则之前提下，自由地浏览、分享与参与本站。您同意在使用本站时，不会从事下列任何行为：</p>
+        <ul class="terms-list">
+          <li>以任何方式<strong>干扰、攻击、过载或破坏</strong>本站或其底层基础设施（包括但不限于发起分布式拒绝服务攻击、注入恶意代码、滥用接口）；</li>
+          <li>上传、发布或传播<strong>违法、侵权、骚扰、诽谤、歧视、色情、暴力或欺诈性</strong>内容；</li>
+          <li>试图<strong>未经授权地访问</strong>本站或任何第三方服务之系统、数据或账户；</li>
+          <li>利用本站进行<strong>商业营销、垃圾信息传播（spam）或未经请求之大规模推广</strong>；</li>
+          <li>对站点代码、资源或第三方服务进行<strong>逆向工程、抓取或批量复制</strong>，超出个人合理使用的必要范围；</li>
+          <li>冒充本站运营者、其他用户或任何第三方，或作出足以使人误解之表述。</li>
+        </ul>
+        <p class="terms-note">如我们发现您存在违反本节之行为，我们有权自行判断，采取包括但不限于删除相关内容、限制访问、向相关第三方或主管机关报告等合理措施，且无需事先通知。</p>
+      </div>
+
+      <div class="terms-block" id="s5">
+        <h2><i class="ph ph-copyright"></i> 五、用户内容与知识产权</h2>
+        <h3>5.1 您对内容享有的权利与授权</h3>
+        <p>您于留言墙所发布之内容（「用户内容」），其<strong>知识产权仍归您本人所有</strong>。但因留言墙由 <strong>Giscus</strong> 提供技术支持，内容实际发布于 <strong>GitHub Discussions</strong>，属于<strong>公开可见</strong>之信息；您发布即表示您授予本站及 GitHub 一项全球性、非独占、免费、可转授权之许可，以托管、展示、存储与传播该等内容，用于实现留言墙功能之目的。</p>
+        <h3>5.2 第三方内容</h3>
+        <p>本站可能展示或链接之图片、文字、音视频及艺人之姓名、肖像等，其著作权与相关权利<strong>归原作者或相关权利人所有</strong>。本站对其仅为爱好者非商业用途之引用与呈现，不代表本站取得或转让该等权利。</p>
+        <h3>5.3 商标与非官方声明</h3>
+        <p>「HOUDA+」及本站之名称、标识为本站爱好者社群之自创称谓；本站所涉及之艺人姓名、肖像及相关素材，其商标与肖像权利属于<strong>相应之权利人或其授权方</strong>。本站为<strong>非官方、非营利的粉丝爱好者项目</strong>，与艺人本人及其经纪团队<strong>不存在任何官方关联、授权或代言关系</strong>，亦不以任何方式声称获得该等授权。如有权利人对相关内容之使用存有异议，可通过第十章所述渠道联系我们，我们将在核实后及时处理。</p>
+        <h3>5.4 本站内容之开源许可</h3>
+        <p>本站之代码与文档以开源方式提供（详见仓库 LICENSE 文件），您可在遵守该许可之条件下进行查看、学习与再分发，但不得借此主张对「HOUDA+」名称或标识之商标权利。</p>
+      </div>
+
+      <div class="terms-block" id="s6">
+        <h2><i class="ph ph-link"></i> 六、第三方服务与外部链接</h2>
+        <h3>6.1 第三方服务</h3>
+        <p>为向您提供完整之功能，本站依赖下列独立第三方服务，相关信息将依据既定目的流转至对应服务方：</p>
+        <ul class="terms-list">
+          <li><strong>金数据（jinshuju.net）：</strong>接收并处理入群申请信息（详见第三章）。</li>
+          <li><strong>GitHub / Giscus：</strong>接收并公开展示留言墙内容（详见第五章）。</li>
+          <li><strong>Cloudflare, Inc.：</strong>作为网站托管与安全防护方，处理访问请求所必需之网络日志。</li>
+          <li><strong>Google Fonts / jsDelivr：</strong>提供界面字体与图标资源之加载。</li>
+        </ul>
+        <p>您使用上述第三方服务，除受本协议约束外，亦受该等服务方各自之服务条款与隐私政策约束。我们不对第三方服务之内容、可用性、安全性或数据处理行为承担责任。</p>
+        <h3>6.2 外部链接</h3>
+        <p>本站可能包含指向第三方网站或资源之链接，该等链接仅为方便您而提供。我们<strong>不对任何外部网站之内容、隐私实践或安全性负责</strong>，您访问外部链接所产生的风险由您自行承担。</p>
+      </div>
+
+      <div class="terms-block" id="s7">
+        <h2><i class="ph ph-warning"></i> 七、免责声明</h2>
+        <h3>7.1 服务按「现状」提供</h3>
+        <p>本站及其所提供之全部功能与内容，均按<strong>「现状」及「可用」之基础</strong>提供，不作任何明示或默示之担保（包括但不限于对可用性、准确性、及时性、完整性、适销性或特定用途适用性之担保）。在适用法律允许之最大范围内，我们明确否认上述一切担保。</p>
+        <h3>7.2 不保证不间断</h3>
+        <p>由于本站依托第三方平台（如 Cloudflare Pages、GitHub）运行，我们<strong>不保证服务之连续、无中断或无错误</strong>，亦不保证任何缺陷将得到更正。因网络、平台或不可抗力导致之访问中断或数据丢失，我们不承担责任。</p>
+      </div>
+
+      <div class="terms-block" id="s8">
+        <h2><i class="ph ph-scales"></i> 八、责任限制</h2>
+        <p>在适用法律允许之最大范围内，对于因您使用或无法使用本站，或因本协议而产生之任何间接、偶然、特殊、后果性之损害（包括但不限于利润损失、数据丢失、商誉受损），<strong>无论该等损害是否可被合理预见，本站及其运营者、贡献者均不承担责任</strong>。</p>
+        <p>您理解并同意，本站为<strong>非商业、爱好者性质之开源项目</strong>，其运营者不以营利为目的，故您对本站之全部求偿，不应超过您在使用本站过程中实际支付之费用（如有）；若您未支付任何费用，则本站不承担赔偿责任。本条款不影响您依法不可被排除或限制之权利。</p>
+      </div>
+
+      <div class="terms-block" id="s9">
+        <h2><i class="ph ph-scroll"></i> 九、本协议的变更</h2>
+        <p>为适应法律法规之更新或本站服务之演进，我们可能不时修订本协议。修订后之版本将标注新的更新日期并发布于本页。除法律另有规定外，修订后的协议自发布之日起生效；您<strong>继续使用本站，即视为您已阅读并同意变更后之内容</strong>。对于涉及您重大权益之变更，我们将以本页公告等合理方式予以提示。</p>
+      </div>
+
+      <div class="terms-block" id="s10">
+        <h2><i class="ph ph-lifebuoy"></i> 十、联系我们</h2>
+        <p>如您对本协议之内容、本站之使用规则，或您所享有之权利存有任疑问、意见或诉求，欢迎通过以下渠道与我们取得联系：</p>
+        <ul class="terms-list">
+          <li>通过本站<strong>留言墙</strong>留言，我们将予以查阅与回应；</li>
+          <li>通过本站在 GitHub 平台之 <strong>Issues</strong> 渠道提交咨询或请求。</li>
+        </ul>
+        <p class="terms-note">本协议之解释、效力及争议之解决，适用与本站运营相关的现行有效法律；若发生争议，双方应首先友好协商解决，协商不成时，任何一方均可向有管辖权的机构寻求解决。如您所在司法辖区对消费者或用户设有强制性保护规定，该等规定优先适用。</p>
+      </div>
+
+      <p class="terms-updated">本协议最近更新于 <strong>2026 年 8 月</strong>。若站点功能调整，我们将同步更新本页并标注新的生效日期。</p>
+
     </div>
   </section>
 </main>
@@ -330,8 +420,6 @@ body.menu-open { overflow: hidden; }
 </footer>
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部"><i class="ph ph-bold ph-arrow-up"></i></button>
-
-<!-- ═══ 招新表单：金数据 iframe 嵌入，提交由其原生处理，无需本页 JS ═══ -->
 
 <!-- ═══ 导航 / 移动菜单 / 回到顶部（与全站一致） ═══ -->
 <script>
@@ -407,5 +495,6 @@ body.menu-open { overflow: hidden; }
 
 <!-- 主题切换（Light/Dark） -->
 <script src="assets/theme.js" defer></script>
+
 </body>
 </html>

@@ -40,6 +40,7 @@ HOUDA+ is a community site for the fans (Meifen) of Hou Minghao (Hou Da): announ
 | [`guestbook.html`](./guestbook.html) | Fan message wall (powered by Giscus) |
 | [`join.html`](./join.html) | Join us · community recruitment form |
 | [`privacy.html`](./privacy.html) | Privacy policy · data handling disclosure |
+| [`terms.html`](./terms.html) | Terms of Service · usage rules |
 | [`sitemap.html`](./sitemap.html) | Sitemap / navigation hub |
 | [`lover-name.html`](./lover-name.html) | Couple name matcher |
 | [`houda-id-generator.html`](./houda-id-generator.html) | Hou Da ID generator (with 3D front/back flip) |
