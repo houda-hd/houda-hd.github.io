@@ -3,11 +3,10 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>留言墙 · HOUDA+</title>
-<meta content="HOUDA+ 留言墙 / 表白墙 - 用 GitHub Discussions 做后端的零服务器互动区。" name="description"/>
-<meta content="HOUDA+, 侯大, 侯明昊碗慧, 长沙霉粉联盟, 粉丝社群" name="keywords"/>
+<title>隐私政策 · HOUDA+</title>
+<meta content="HOUDA+ 网站如何收集、使用与保护你的信息：纯静态站点、无自有服务器；招新表单由金数据托管、留言墙由 Giscus（GitHub Discussions）提供、站点托管于 Cloudflare Pages。" name="description"/>
+<meta content="HOUDA+, 隐私政策, 数据保护, 金数据, Giscus, Cloudflare" name="keywords"/>
 <meta content="#f4f4f6" name="theme-color"/>
-<meta name="robots" content="noindex"/>
 <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
 <link crossorigin href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -47,6 +46,8 @@
   --accent-light: rgba(37,99,235,0.06);
   --green: #16a34a;
   --green-light: rgba(22,163,74,0.08);
+  --red: #dc2626;
+  --red-light: rgba(220,38,38,0.06);
   --border-hairline: rgba(0,0,0,0.06);
   --border-soft: rgba(0,0,0,0.04);
   --shadow-ambient:
@@ -117,19 +118,14 @@ body.menu-open { overflow: hidden; }
 .nav-cta { display: inline-flex; align-items: center; gap: 0.375rem; margin-left: auto; background: var(--text-primary); color: white; text-decoration: none; font-size: 0.8125rem; font-weight: 700; padding: 0.5rem 1.125rem; border-radius: 999px; letter-spacing: -0.01em; transition: transform var(--dur-press) var(--ease-out), background var(--dur-fast) var(--ease-fluid); }
 .nav-cta:active { transform: scale(0.95); }
 @media (hover: hover) and (pointer: fine) { .nav-cta:hover { background: var(--accent); } }
+.nav-theme-btn { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: none; background: var(--bg); color: var(--text-primary); border-radius: 999px; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; transition: background var(--dur-fast) var(--ease-fluid); }
+.nav-theme-btn:active { background: var(--border-soft); }
 .nav-menu-btn { display: flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: none; background: var(--bg); color: var(--text-primary); border-radius: 999px; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; transition: background var(--dur-fast) var(--ease-fluid); }
 .nav-menu-btn:active { background: var(--border-soft); }
 @media (min-width: 768px) { .nav-menu-btn { display: none; } }
 
-/* ── Mobile nav optimization（与 index.html 一致）── */
-@media (max-width: 767px) {
-  .nav-wrap { padding: 0.875rem 1rem; }
-  .nav { gap: 0.625rem; padding: 0.5rem 0.5rem 0.5rem 1rem; width: 100%; }
-  .nav-cta { min-height: 40px; }
-}
-
 /* ── Mobile menu ── */
-.mobile-menu { position: fixed; inset: 0; z-index: 999; background: rgba(244,244,246,0.92); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); /* Use dynamic viewport height so the menu fills the *visible* viewport on mobile browsers with collapsing URL bars; otherwise 100vh spans below the fold and flex centering parks the links in the upper band. */ height: 100vh; height: 100dvh; max-height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; /* Optical centering: nudge the link cluster down slightly. The close button and the visible header behind the translucent backdrop pull attention up; extra top padding restores balance and moves items toward the thumb zone. */ padding: calc(var(--nav-h) + 1.5rem) 2rem 2rem 2rem; padding: max(calc(var(--nav-h) + 1.5rem), env(safe-area-inset-top)) 2rem max(2rem, env(safe-area-inset-bottom)); opacity: 0; visibility: hidden; transition: opacity var(--dur-normal) var(--ease-fluid), visibility var(--dur-normal) var(--ease-fluid); }
+.mobile-menu { position: fixed; inset: 0; z-index: 999; background: rgba(244,244,246,0.92); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); height: 100vh; height: 100dvh; max-height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; padding: calc(var(--nav-h) + 1.5rem) 2rem 2rem 2rem; padding: max(calc(var(--nav-h) + 1.5rem), env(safe-area-inset-top)) 2rem max(2rem, env(safe-area-inset-bottom)); opacity: 0; visibility: hidden; transition: opacity var(--dur-normal) var(--ease-fluid), visibility var(--dur-normal) var(--ease-fluid); }
 .mobile-menu.open { opacity: 1; visibility: visible; }
 .mobile-menu a { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--text-primary); padding: 0.75rem 0; transform: translateY(22px) scale(0.98); opacity: 0; transition: transform var(--dur-slow) var(--ease-spring), opacity var(--dur-slow) var(--ease-fluid), color var(--dur-fast) var(--ease-out); transition-delay: 0ms; }
 .mobile-menu.open a { transform: translateY(0) scale(1); opacity: 1; transition-delay: calc((var(--i, 0) + 1) * 50ms); }
@@ -149,9 +145,21 @@ body.menu-open { overflow: hidden; }
 .section-label::before { content: ""; width: 1.5rem; height: 2px; border-radius: 2px; background: var(--accent); }
 .page-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; }
 .page-sub { margin-top: 1rem; color: var(--text-secondary); font-size: 1rem; line-height: 1.7; }
+.container { width: 100%; max-width: 820px; margin: 0 auto; padding: 0 1.5rem; }
 
-/* ── 单线程留言区 ── */
-.giscus-wrap { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.5rem; box-shadow: var(--shadow-ambient); padding: 1.5rem; max-width: 820px; margin: 0 auto; transition: background var(--dur-fast) var(--ease-fluid), box-shadow var(--dur-fast) var(--ease-fluid); }
+/* ── 隐私政策内容 ── */
+.privacy-block { background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 1.25rem; box-shadow: var(--shadow-ambient); padding: 1.5rem 1.75rem; margin: 0 auto 1.25rem; max-width: 760px; }
+.privacy-block h2 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); }
+.privacy-block h2 i { color: var(--accent); font-size: 1.05em; }
+.privacy-block p { color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.75; margin: 0 0 0.6rem; }
+.privacy-block p:last-child { margin-bottom: 0; }
+.privacy-list { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.privacy-list li { position: relative; padding-left: 1.5rem; margin-bottom: 0.6rem; color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.7; }
+.privacy-list li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.privacy-list li:last-child { margin-bottom: 0; }
+.privacy-list strong { color: var(--text-primary); }
+.privacy-note { font-size: 0.8125rem; color: var(--text-tertiary); line-height: 1.6; margin-top: 0.5rem; }
+.privacy-updated { text-align: center; font-size: 0.8125rem; color: var(--text-tertiary); margin: 0.5rem 0 1rem; }
 
 /* ── Footer（与全站一致） ── */
 .footer { background: var(--text-primary); color: rgba(255,255,255,0.7); padding: 4rem 2rem 2rem; margin-top: 4rem; }
@@ -186,7 +194,7 @@ body.menu-open { overflow: hidden; }
       <li><a class="nav-link" href="index.html#history">历程</a></li>
       <li><a class="nav-link" href="index.html#activities">活动</a></li>
       <li><a class="nav-link" href="index.html#landmarks">地标</a></li>
-      <li><a class="nav-link is-active" href="guestbook.html" aria-current="page">留言</a></li>
+      <li><a class="nav-link" href="guestbook.html">留言</a></li>
       <li><a class="nav-link" href="search.html">搜索</a></li>
       <li><a class="nav-link" href="join.html">加入</a></li>
     </ul>
@@ -213,20 +221,76 @@ body.menu-open { overflow: hidden; }
   <a href="index.html#contact">关注我们</a>
 </div>
 
-<main id="main" data-pagefind-body>
+<main id="main">
   <!-- ═══ Page header ═══ -->
   <section class="page-head">
     <div class="page-head-inner">
-      <p class="section-label"><i class="ph ph-chat-circle-dots"></i> 留言墙</p>
-      <h1 class="page-title">和大家说点什么</h1>
-      <p class="page-sub">这里是 HOUDA+ 的树洞与表白墙。评论由 GitHub Discussions 提供支持，用 GitHub 账号登录即可，无需注册本站。</p>
+      <p class="section-label"><i class="ph ph-shield-check"></i> 隐私政策</p>
+      <h1 class="page-title">你的信息，如何被对待</h1>
+      <p class="page-sub">我们尽量不收集、不存储你的数据。下面把本站用到的每一处数据处理说清楚，方便你判断要不要留下信息。</p>
     </div>
   </section>
 
-  <!-- ═══ 单线程留言区 ═══ -->
+  <!-- ═══ 隐私政策正文 ═══ -->
   <section class="section" style="padding-top:0;">
     <div class="container">
-      <div class="giscus-wrap" id="giscusWrap"><!-- Giscus 单线程评论区 --></div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-info"></i> 我们是怎么样的站点</h2>
+        <p>HOUDA+ 是一个<strong>纯静态网站</strong>，托管于 Cloudflare Pages，<strong>不运营任何自有服务器，也不在站点本身存储访客数据</strong>。你在本站产生的数据，只会流向下面列出的第三方服务（且只用于对应功能）。</p>
+      </div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-user-plus"></i> 招新表单（金数据）</h2>
+        <p>在「加入我们」页面填写的入群申请，由 <strong>金数据（jinshuju.net）</strong> 收集与存储，本站不接触、不留存这些字段。</p>
+        <ul class="privacy-list">
+          <li>收集内容：昵称、联系方式（微信 / QQ / 邮箱）、想加入的社群、自我介绍（选填）。</li>
+          <li>用途：仅用于与你联系、拉你入群；<strong>不会公开，也不会用于其他目的</strong>。</li>
+          <li>管理：数据归金数据托管，你可随时联系我们（邮箱见文末）要求删除你的申请记录。</li>
+        </ul>
+      </div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-chats-circle"></i> 留言墙（Giscus）</h2>
+        <p>留言墙由 <strong>Giscus</strong> 提供，内容实际发布在 <strong>GitHub Discussions</strong>，属于<strong>公开</strong>内容。</p>
+        <ul class="privacy-list">
+          <li>你发布的留言、昵称会公开显示在站内与 GitHub，请<strong>不要填写真实姓名、电话等敏感信息</strong>。</li>
+          <li>你可在对应 GitHub Discussion 中自行编辑或删除自己的留言。</li>
+        </ul>
+      </div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-magnifying-glass"></i> 站内搜索</h2>
+        <p>站内搜索使用的检索索引随网站一同打包，<strong>不会把你的搜索词上传到任何服务器</strong>，本地即可完成检索。</p>
+      </div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-wifi-high"></i> IP 纯净度检测工具</h2>
+        <p>该工具在<strong>你的浏览器本地</strong>完成检测，<strong>不记录、不存储你的 IP 地址</strong>，也不会把结果发往本站服务器。</p>
+      </div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-paint-brush"></i> 字体与图标</h2>
+        <p>本站界面字体（Plus Jakarta Sans）来自 Google Fonts，图标（Phosphor Icons）来自 jsDelivr CDN。加载这些资源时，相应服务商会按常规收到访问所需的网络请求信息（如 IP、User-Agent）。</p>
+      </div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-cloud"></i> 网站托管与访问日志</h2>
+        <p>本站部署在 <strong>Cloudflare Pages</strong>。作为托管方，Cloudflare 可能按其隐私政策记录标准的访问日志（如访问时间、IP、请求页面），用于安全防护与运行维护。我们不会用这些日志识别个人身份。</p>
+      </div>
+
+      <div class="privacy-block">
+        <h2><i class="ph ph-lifebuoy"></i> 你的权利与联系我们</h2>
+        <p>你有权了解、更正或删除与自己相关的数据：</p>
+        <ul class="privacy-list">
+          <li>招新表单数据：发邮件到 <strong>soobsessedwithurex@gmail.com</strong> 说明，我们会向金数据申请删除。</li>
+          <li>留言墙内容：可在 GitHub Discussions 自行管理。</li>
+        </ul>
+        <p class="privacy-note">如对本政策有疑问，也欢迎通过以上邮箱与我们联系。</p>
+      </div>
+
+      <p class="privacy-updated">本隐私政策最近更新于 2026 年 8 月。若站点功能调整，我们会同步更新本页。</p>
+
     </div>
   </section>
 </main>
@@ -259,52 +323,6 @@ body.menu-open { overflow: hidden; }
 </footer>
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部"><i class="ph ph-bold ph-arrow-up"></i></button>
-
-<script>
-/* ── 留言墙：单线程 Giscus（data-mapping=pathname，本页全部评论汇入同一帖） ──
-   初始主题取当前亮/暗，切换主题时由 theme.js 通过 postMessage 同步换肤。 */
-(function () {
-  var GISCUS = {
-    repo: 'houda-hd/houda-hd.github.io',
-    repoId: 'R_kgDOQSxw3w',
-    category: 'Announcements',
-    categoryId: 'DIC_kwDOQSxw384Cxo4t'
-  };
-
-  function currentTheme() {
-    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  }
-
-  var wrap = document.getElementById('giscusWrap');
-  if (!wrap) return;
-
-  var s = document.createElement('script');
-  s.src = 'https://giscus.app/client.js';
-  s.setAttribute('data-repo', GISCUS.repo);
-  s.setAttribute('data-repo-id', GISCUS.repoId);
-  s.setAttribute('data-category', GISCUS.category);
-  s.setAttribute('data-category-id', GISCUS.categoryId);
-  s.setAttribute('data-mapping', 'pathname');
-  s.setAttribute('data-strict', '0');
-  s.setAttribute('data-reactions-enabled', '1');
-  s.setAttribute('data-emit-metadata', '0');
-  s.setAttribute('data-input-position', 'bottom');
-  s.setAttribute('data-theme', currentTheme());
-  s.setAttribute('data-lang', 'zh-CN');
-  s.setAttribute('data-loading', 'lazy');
-  s.crossOrigin = 'anonymous';
-  s.async = true;
-  wrap.appendChild(s);
-
-  /* 主题切换时，让已加载的 Giscus iframe 同步换肤（theme.js 也会 broadcast，这里双保险） */
-  document.addEventListener('themechange', function (e) {
-    var g = (e && e.detail === 'dark') ? 'dark' : 'light';
-    document.querySelectorAll('iframe.giscus-frame').forEach(function (f) {
-      try { f.contentWindow.postMessage({ giscus: { setConfig: { theme: g } } }, 'https://giscus.app'); } catch (err) {}
-    });
-  });
-})();
-</script>
 
 <!-- ═══ 导航 / 移动菜单 / 回到顶部（与全站一致） ═══ -->
 <script>
@@ -378,7 +396,8 @@ body.menu-open { overflow: hidden; }
   })();
 </script>
 
-<!-- 主题切换（Light/Dark）与 Giscus 同步 -->
+<!-- 主题切换（Light/Dark） -->
 <script src="assets/theme.js" defer></script>
+
 </body>
 </html>
