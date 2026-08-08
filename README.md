@@ -40,6 +40,7 @@ HOUDA+ 是一个面向侯明昊粉丝（霉粉）的社区站点：公告动态�
 | [`guestbook.html`](./guestbook.html) | 粉丝留言墙（基于 Giscus） |
 | [`join.html`](./join.html) | 加入我们 · 入群招新表单 |
 | [`privacy.html`](./privacy.html) | 隐私政策 · 数据处理说明 |
+| [`terms.html`](./terms.html) | 用户协议 · 使用条款与规则 |
 | [`sitemap.html`](./sitemap.html) | 网站地图 / 导航中枢 |
 | [`lover-name.html`](./lover-name.html) | 情侣盘点 |
 | [`houda-id-generator.html`](./houda-id-generator.html) | 侯大身份证生成器（含正反面 3D 翻转） |
