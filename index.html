@@ -249,6 +249,8 @@ body.menu-open { overflow: hidden; }
   transition: transform var(--dur-press) var(--ease-out),
               background var(--dur-fast) var(--ease-fluid);
 }
+@media (max-width: 767px) { .nav-cta { display: none; } }
+
 .nav-cta:active { transform: scale(0.95); }
 @media (hover: hover) and (pointer: fine) {
   .nav-cta:hover { background: var(--accent); }
@@ -1133,6 +1135,10 @@ body.menu-open { overflow: hidden; }
 
 .footer-nav-title { font-weight: 700; font-size: 0.8125rem; color: white; margin-bottom: 0.75rem; }
 .footer-nav { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+@media (max-width: 639px) {
+  .footer-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.625rem 1rem; }
+}
+
 .footer-nav a {
   text-decoration: none;
   color: rgba(255,255,255,0.6);
