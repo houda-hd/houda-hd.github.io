@@ -116,7 +116,6 @@ body.menu-open { overflow: hidden; }
 .nav-link.is-active::after { transform: scaleX(1); }
 @media (hover: hover) and (pointer: fine) { .nav-link:hover { color: var(--text-primary); } .nav-link:hover::after { transform: scaleX(1); } }
 .nav-cta { display: inline-flex; align-items: center; gap: 0.375rem; margin-left: auto; background: var(--text-primary); color: white; text-decoration: none; font-size: 0.8125rem; font-weight: 700; padding: 0.5rem 1.125rem; border-radius: 999px; letter-spacing: -0.01em; transition: transform var(--dur-press) var(--ease-out), background var(--dur-fast) var(--ease-fluid); }
-@media (max-width: 767px) { .nav-cta { display: none; } }
 
 .nav-cta:active { transform: scale(0.95); }
 @media (hover: hover) and (pointer: fine) { .nav-cta:hover { background: var(--accent); } }
@@ -162,6 +161,20 @@ body.menu-open { overflow: hidden; }
 .privacy-list strong { color: var(--text-primary); }
 .privacy-note { font-size: 0.8125rem; color: var(--text-tertiary); line-height: 1.6; margin-top: 0.5rem; }
 .privacy-updated { text-align: center; font-size: 0.8125rem; color: var(--text-tertiary); margin: 0.5rem 0 1rem; }
+
+/* ── 目录（TOC） ── */
+.privacy-toc { background: var(--bg-elevated); border: 1px solid var(--border-soft); border-radius: 1rem; padding: 1.25rem 1.5rem; margin: 0 auto 1.5rem; max-width: 760px; }
+.toc-title { font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin: 0 0 0.625rem; letter-spacing: -0.01em; }
+.toc-list { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 1.75rem; }
+.toc-list li { break-inside: avoid; margin-bottom: 0.45rem; font-size: 0.8125rem; line-height: 1.5; }
+.toc-list a { color: var(--text-secondary); text-decoration: none; transition: color var(--dur-fast) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .toc-list a:hover { color: var(--accent); } }
+@media (max-width: 560px) { .toc-list { columns: 1; } }
+
+/* ── 章节内子标题 ── */
+.privacy-block h3 { font-family: var(--font-display); font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; margin: 1.15rem 0 0.5rem; }
+.privacy-block h3:first-of-type { margin-top: 0.85rem; }
+.privacy-block strong { color: var(--text-primary); }
 
 /* ── Footer（与全站一致） ── */
 .footer { background: var(--text-primary); color: rgba(255,255,255,0.7); padding: 4rem 2rem 2rem; margin-top: 4rem; }
@@ -241,61 +254,133 @@ body.menu-open { overflow: hidden; }
   <section class="section" style="padding-top:0;">
     <div class="container">
 
-      <div class="privacy-block">
-        <h2><i class="ph ph-info"></i> 我们是怎么样的站点</h2>
-        <p>HOUDA+ 是一个<strong>纯静态网站</strong>，托管于 Cloudflare Pages，<strong>不运营任何自有服务器，也不在站点本身存储访客数据</strong>。你在本站产生的数据，只会流向下面列出的第三方服务（且只用于对应功能）。</p>
+      <nav class="privacy-toc" aria-label="隐私政策目录">
+        <p class="toc-title">目录</p>
+        <ol class="toc-list">
+          <li><a href="#s1">一、概述与适用范围</a></li>
+          <li><a href="#s2">二、我们收集的信息及其用途</a></li>
+          <li><a href="#s3">三、信息的共享与披露</a></li>
+          <li><a href="#s4">四、信息的存储与安全保障</a></li>
+          <li><a href="#s5">五、Cookie 与同类技术</a></li>
+          <li><a href="#s6">六、您所享有的权利</a></li>
+          <li><a href="#s7">七、未成年人保护</a></li>
+          <li><a href="#s8">八、本政策的变更</a></li>
+          <li><a href="#s9">九、联系我们</a></li>
+        </ol>
+      </nav>
+
+      <div class="privacy-block" id="s1">
+        <h2><i class="ph ph-info"></i> 一、概述与适用范围</h2>
+        <p>HOUDA+（以下简称「本站」或「我们」）充分重视并尊重每一位访客的个人信息权益。为依据《中华人民共和国个人信息保护法》《网络安全法》及相关国家标准之要求，我们制定本隐私政策（以下简称「本政策」），以清晰、审慎之方式，向您说明本站于服务过程中所进行之信息处理活动的范围、方式、目的，以及您所享有的各项权利。</p>
+        <h3>1.1 政策的生效</h3>
+        <p>本政策自 <strong>2026 年 8 月</strong>起正式生效，适用于该日期之后您对站点的全部访问与使用行为。我们保留依据法律法规之变动或本站功能之调整，适时修订本政策之权利；修订后之版本将以本页所标注之更新日期为准，并取代先前版本之效力。</p>
+        <h3>1.2 适用范围</h3>
+        <p>本政策适用于通过 HOUDA+ 官方域名及其所承载之全部页面、功能与服务而进行的信息处理活动，涵盖访客浏览、留言发布、入群申请提交等情形。本站所接入之第三方服务（包括但不限于金数据、GitHub、Cloudflare）均受其各自隐私政策之约束，本政策仅就本站自身之处理行为作出说明，不涉及对该等第三方处理行为之约定。</p>
+        <h3>1.3 本站的运营性质</h3>
+        <p>本站为<strong>纯静态网站</strong>，部署于 Cloudflare Pages 平台，<strong>不运营任何自建服务器，亦不在网站自身基础设施之上存储任何访客个人信息</strong>。您在使用本站功能时所产生之数据，将依据功能需要流转至下述具备相应资质之第三方服务提供者，且仅供实现对应服务功能之目的使用。</p>
       </div>
 
-      <div class="privacy-block">
-        <h2><i class="ph ph-user-plus"></i> 招新表单（金数据）</h2>
-        <p>在「加入我们」页面填写的入群申请，由 <strong>金数据（jinshuju.net）</strong> 收集与存储，本站不接触、不留存这些字段。</p>
+      <div class="privacy-block" id="s2">
+        <h2><i class="ph ph-database"></i> 二、我们收集的信息及其用途</h2>
+        <p>我们秉持「最小必要」之原则收集信息，即仅收集为提供相应功能所必须之信息，不收集与功能实现无关之数据。以下逐项说明各功能所对应的信息类型、收集方式与使用目的。</p>
+
+        <h3>2.1 入群申请信息（金数据）</h3>
+        <p>当您通过「加入我们」页面提交入群申请时，您所填写之内容由 <strong>金数据（jinshuju.net）</strong> 负责收集与存储，本站不直接接触、亦不留存上述字段之任何副本。</p>
         <ul class="privacy-list">
-          <li>收集内容：昵称、联系方式（微信 / QQ / 邮箱）、想加入的社群、自我介绍（选填）。</li>
-          <li>用途：仅用于与你联系、拉你入群；<strong>不会公开，也不会用于其他目的</strong>。</li>
-          <li>管理：数据归金数据托管，你可随时要求删除自己的申请记录（方式见下方「你的权利与联系我们」）。</li>
+          <li><strong>收集内容：</strong>昵称、联系方式（微信、QQ 或电子邮箱）、拟加入之社群、自我介绍（选填）。</li>
+          <li><strong>使用目的：</strong>仅用于与您取得联系并完成入群流程；<strong>不对外公开，亦不用于本目的以外之任何用途</strong>。</li>
+          <li><strong>处理依据：</strong>基于您主动提交申请之行为所形成之必要联络，以及您所作出之明示同意。</li>
         </ul>
-      </div>
 
-      <div class="privacy-block">
-        <h2><i class="ph ph-chats-circle"></i> 留言墙（Giscus）</h2>
-        <p>留言墙由 <strong>Giscus</strong> 提供，内容实际发布在 <strong>GitHub Discussions</strong>，属于<strong>公开</strong>内容。</p>
+        <h3>2.2 留言墙内容（Giscus / GitHub Discussions）</h3>
+        <p>本站留言墙由 <strong>Giscus</strong> 提供技术支持，留言内容实际发布于 <strong>GitHub Discussions</strong>，属于<strong>公开可见</strong>之信息。</p>
         <ul class="privacy-list">
-          <li>你发布的留言、昵称会公开显示在站内与 GitHub，请<strong>不要填写真实姓名、电话等敏感信息</strong>。</li>
-          <li>你可在对应 GitHub Discussion 中自行编辑或删除自己的留言。</li>
+          <li>您所发布之留言正文及所使用之昵称，将公开显示于本站与 GitHub 平台，敬请<strong>避免填写真实姓名、电话号码、住址等敏感个人信息</strong>。</li>
+          <li>您可于对应之 GitHub Discussions 主题中，自行编辑或删除本人所发布之留言。</li>
         </ul>
+
+        <h3>2.3 站内搜索</h3>
+        <p>本站站内搜索所使用之检索索引随网站一并打包分发，<strong>不会将您的搜索词上传至任何服务器</strong>，检索过程于您的浏览器本地完成，我们无从获知您所检索之具体内容。</p>
+
+        <h3>2.4 IP 纯净度检测工具</h3>
+        <p>该工具于<strong>您的浏览器本地</strong>完成检测，<strong>不记录、不存储您的 IP 地址</strong>，亦不会将检测结果回传至本站服务器或任何第三方。</p>
+
+        <h3>2.5 资源加载与访问日志</h3>
+        <p>为本站界面之呈现，我们引用了来自 Google Fonts 之界面字体（Plus Jakarta Sans）与来自 jsDelivr CDN 之图标资源（Phosphor Icons）。当您的浏览器加载上述资源时，相应服务提供方将按通行技术惯例收到完成请求所必需之网络信息（如 IP 地址、User-Agent、访问时间）。此外，作为托管平台，Cloudflare 可能依据其隐私政策记录标准之访问日志，用于安全防护与运行维护。我们不会利用此类日志识别特定自然人之身份。</p>
       </div>
 
-      <div class="privacy-block">
-        <h2><i class="ph ph-magnifying-glass"></i> 站内搜索</h2>
-        <p>站内搜索使用的检索索引随网站一同打包，<strong>不会把你的搜索词上传到任何服务器</strong>，本地即可完成检索。</p>
-      </div>
-
-      <div class="privacy-block">
-        <h2><i class="ph ph-wifi-high"></i> IP 纯净度检测工具</h2>
-        <p>该工具在<strong>你的浏览器本地</strong>完成检测，<strong>不记录、不存储你的 IP 地址</strong>，也不会把结果发往本站服务器。</p>
-      </div>
-
-      <div class="privacy-block">
-        <h2><i class="ph ph-paint-brush"></i> 字体与图标</h2>
-        <p>本站界面字体（Plus Jakarta Sans）来自 Google Fonts，图标（Phosphor Icons）来自 jsDelivr CDN。加载这些资源时，相应服务商会按常规收到访问所需的网络请求信息（如 IP、User-Agent）。</p>
-      </div>
-
-      <div class="privacy-block">
-        <h2><i class="ph ph-cloud"></i> 网站托管与访问日志</h2>
-        <p>本站部署在 <strong>Cloudflare Pages</strong>。作为托管方，Cloudflare 可能按其隐私政策记录标准的访问日志（如访问时间、IP、请求页面），用于安全防护与运行维护。我们不会用这些日志识别个人身份。</p>
-      </div>
-
-      <div class="privacy-block">
-        <h2><i class="ph ph-lifebuoy"></i> 你的权利与联系我们</h2>
-        <p>你有权了解、更正或删除与自己相关的数据：</p>
+      <div class="privacy-block" id="s3">
+        <h2><i class="ph ph-share-network"></i> 三、信息的共享与披露</h2>
+        <p>我们重视您的信息安全，除下列情形外，不会向任何第三方提供您的信息。</p>
+        <h3>3.1 受托与协作之第三方服务提供者</h3>
+        <p>为向您提供完整之服务功能，本站依赖下列独立第三方服务，相关信息将依据既定目的流转至对应服务方：</p>
         <ul class="privacy-list">
-          <li>招新表单数据：通过站内<strong>留言墙</strong>或 GitHub <strong>Issues</strong> 提出删除申请，我们会向金数据申请删除。</li>
-          <li>留言墙内容：可在 GitHub Discussions 自行管理。</li>
+          <li><strong>金数据（jinshuju.net）：</strong>接收并处理入群申请信息，详见本章 2.1 节。</li>
+          <li><strong>GitHub / Giscus：</strong>接收并公开展示留言墙内容，详见本章 2.2 节。</li>
+          <li><strong>Cloudflare, Inc.：</strong>作为网站托管与安全防护方，处理访问请求所必需之网络日志。</li>
+          <li><strong>Google Fonts / jsDelivr：</strong>应资源加载请求，按通行惯例接收相应网络信息。</li>
         </ul>
-        <p class="privacy-note">如对本政策有疑问，也欢迎通过站内留言墙或 GitHub Issues 与我们联系。</p>
+        <h3>3.2 我们不会出售您的信息</h3>
+        <p>我们<strong>不会出售、出租或交换</strong>您的个人信息以获取商业利益，亦不会将您的信息用于与所声明目的无关之营销或画像活动。</p>
+        <h3>3.3 法定披露</h3>
+        <p>在法律法规明确要求、司法机关或政府主管机关依法定程序调取，或为保护本站及用户之合法权益免受紧迫不法侵害之必要情形下，我们可能在法律所允许之范围内，向有权机关提供相关信息。</p>
       </div>
 
-      <p class="privacy-updated">本隐私政策最近更新于 2026 年 8 月。若站点功能调整，我们会同步更新本页。</p>
+      <div class="privacy-block" id="s4">
+        <h2><i class="ph ph-lock"></i> 四、信息的存储与安全保障</h2>
+        <h3>4.1 存储原则</h3>
+        <p>如前所述，本站自身不存储任何访客个人信息。您所提交之申请信息存储于金数据平台，留言内容存储于 GitHub 平台，其存储地点、期限与安全保护措施均由相应服务方依其隐私政策与服务条款予以负责。</p>
+        <h3>4.2 安全措施</h3>
+        <p>我们采取以下措施以降低信息风险：全站启用 HTTPS 加密传输，确保数据于网络传输过程中之保密性；对第三方服务之选用，优先考量其业内通行之安全合规水平；本站代码开源、可审计，便于接受社区监督。但请您理解，互联网环境不存在绝对安全之保证，任何措施均无法杜绝全部潜在风险。</p>
+        <h3>4.3 信息保留期限</h3>
+        <p>我们仅在实现收集目的所必须之期限内，或法律法规所要求之期限内处理您的信息。当您撤回同意、申请删除或相应功能终止时，我们将协调相关服务方及时停止处理并删除或匿名化相应信息，法律另有规定者除外。</p>
+      </div>
+
+      <div class="privacy-block" id="s5">
+        <h2><i class="ph ph-cookie"></i> 五、Cookie 与同类技术</h2>
+        <p>本站自身<strong>不设置任何第一方 Cookie</strong>，亦不借助 Cookie 进行用户追踪或行为画像。唯需说明者，您于浏览器中所作的<strong>主题偏好（深 / 浅色）</strong>将存储于您本地设备之浏览器存储空间（localStorage），用于下次访问时延续您的显示偏好，该信息留存于您的设备之上，不会上传至本站服务器。此外，前述第三方服务（如 GitHub、Google Fonts、Cloudflare）于提供功能或资源过程中，可能按其自身政策设置 Cookie 或同类技术，相关事宜请以其各自之隐私政策为准。</p>
+      </div>
+
+      <div class="privacy-block" id="s6">
+        <h2><i class="ph ph-user-circle"></i> 六、您所享有的权利</h2>
+        <p>在适用之法律法规框架下，您对个人信息的处理享有如下权利，并可依据本节所述方式予以行使：</p>
+        <ul class="privacy-list">
+          <li><strong>知情权与访问权：</strong>您有权了解我们及所依托第三方如何处理您的信息，并可请求查阅与之相关的信息。</li>
+          <li><strong>更正与补充权：</strong>如您认为所留存之信息不准确或不完整，有权要求予以更正或补充。</li>
+          <li><strong>删除权：</strong>在满足法定条件时，您有权要求删除与您相关的个人信息。</li>
+          <li><strong>撤回同意权：</strong>对于基于您同意而开展之处理，您有权随时撤回该等同意，撤回不影响撤回前已进行处理的效力。</li>
+        </ul>
+        <h3>6.1 权利行使方式</h3>
+        <p>您可通过以下途径行使上述权利：</p>
+        <ul class="privacy-list">
+          <li><strong>入群申请信息：</strong>请通过本站<strong>留言墙</strong>或 GitHub <strong>Issues</strong> 提出删除或更正申请，我们将据此向金数据发起相应处理。</li>
+          <li><strong>留言墙内容：</strong>您可于对应 GitHub Discussions 主题中自行管理、编辑或删除。</li>
+          <li><strong>本地主题偏好：</strong>您可随时于浏览器设置中清除本站相关数据，或切换主题以更新该偏好。</li>
+        </ul>
+        <p class="privacy-note">我们将在收到您之请求后，于法律法规所规定之合理期限内予以响应与处理。部分请求可能因涉及第三方服务而需相应服务方协同完成，届时我们将尽力协调。</p>
+      </div>
+
+      <div class="privacy-block" id="s7">
+        <h2><i class="ph ph-baby"></i> 七、未成年人保护</h2>
+        <p>本站主要面向具备完全民事行为能力之用户，原则上<strong>不主动收集未成年人（未满十八周岁）之个人信息</strong>。若您为未成年人，请在监护人陪同与同意后使用本站；如我们发现在未获监护人同意之情形下收集了未成年人个人信息，将尽快采取删除等补救措施。监护人如对本节内容存有疑问，可通过本章第九节所述方式与我们联系。</p>
+      </div>
+
+      <div class="privacy-block" id="s8">
+        <h2><i class="ph ph-scroll"></i> 八、本政策的变更</h2>
+        <p>为适应法律法规之更新或本站服务之演进，我们可能不时修订本政策。修订后之版本将标注新的更新日期并发布于本页。对于涉及您权利之重大变更，我们将以本页公告等合理方式予以提示。除法律另有规定外，修订后的政策自发布之日起生效；您继续使用本站，即视为您已阅读并同意变更后之内容。</p>
+      </div>
+
+      <div class="privacy-block" id="s9">
+        <h2><i class="ph ph-lifebuoy"></i> 九、联系我们</h2>
+        <p>如您对本政策之内容、我们的信息处理实践，或您所享有权利之行使存有任疑问、意见或诉求，欢迎通过以下渠道与我们取得联系：</p>
+        <ul class="privacy-list">
+          <li>通过本站<strong>留言墙</strong>留言，我们将予以查阅与回应；</li>
+          <li>通过本站在 GitHub 平台之 <strong>Issues</strong> 渠道提交咨询或请求。</li>
+        </ul>
+        <p class="privacy-note">我们重视您的每一条反馈，并将在合理可行之范围内尽快回复。对于涉及个人信息删除、更正等具体请求，请于留言或 Issue 中尽量提供可识别您身份之必要信息，以便我们准确核实与处理。</p>
+      </div>
+
+      <p class="privacy-updated">本隐私政策最近更新于 <strong>2026 年 8 月</strong>。若站点功能调整，我们将同步更新本页并标注新的生效日期。</p>
 
     </div>
   </section>

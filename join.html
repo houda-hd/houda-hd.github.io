@@ -117,7 +117,6 @@ body.menu-open { overflow: hidden; }
 .nav-link.is-active::after { transform: scaleX(1); }
 @media (hover: hover) and (pointer: fine) { .nav-link:hover { color: var(--text-primary); } .nav-link:hover::after { transform: scaleX(1); } }
 .nav-cta { display: inline-flex; align-items: center; gap: 0.375rem; margin-left: auto; background: var(--text-primary); color: white; text-decoration: none; font-size: 0.8125rem; font-weight: 700; padding: 0.5rem 1.125rem; border-radius: 999px; letter-spacing: -0.01em; transition: transform var(--dur-press) var(--ease-out), background var(--dur-fast) var(--ease-fluid); }
-@media (max-width: 767px) { .nav-cta { display: none; } }
 
 .nav-cta:active { transform: scale(0.95); }
 @media (hover: hover) and (pointer: fine) { .nav-cta:hover { background: var(--accent); } }
