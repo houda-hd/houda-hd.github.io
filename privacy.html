@@ -208,7 +208,33 @@ body.menu-open { overflow: hidden; }
 
 .footer-nav a { text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.8125rem; transition: color var(--dur-fast) var(--ease-out); }
 @media (hover: hover) and (pointer: fine) { .footer-nav a:hover { color: white; } }
-.footer-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.75rem; color: rgba(255,255,255,0.45); }
+.footer-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.45); }
+
+/* --- Footer legal links --- */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.8125rem;
+}
+.footer-legal a {
+  color: rgba(255,255,255,0.62);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.footer-legal-sep {
+  color: rgba(255,255,255,0.22);
+  user-select: none;
+}
+.footer-bottom p { margin: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .footer-legal a:hover { color: #fff; }
+}
+
 
 .back-to-top { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 900; width: 48px; height: 48px; border-radius: 999px; background: rgba(37, 99, 235, 0.8); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); border: 1px solid rgba(255, 255, 255, 0.35); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.125rem; box-shadow: var(--shadow-float); opacity: 0; visibility: hidden; transform: translateY(12px) scale(0.9); transition: opacity var(--dur-normal) var(--ease-out), visibility var(--dur-normal) var(--ease-out), transform var(--dur-normal) var(--ease-spring), background var(--dur-fast) var(--ease-fluid), border-color var(--dur-fast) var(--ease-fluid); -webkit-tap-highlight-color: transparent; }
 .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
@@ -288,7 +314,7 @@ body.menu-open { overflow: hidden; }
 
       <div class="privacy-block" id="s1">
         <h2><i class="ph ph-info"></i> 一、概述与适用范围</h2>
-        <p>HOUDA+（以下简称「本站」或「我们」）是一个完全开源的社区项目，站点本身为纯静态网站，源代码托管于 GitHub、经由 Cloudflare Pages 部署。我们高度重视每一位访客的隐私，并参照全球领先科技企业（如 Google、Apple、Microsoft）的隐私实践与国际化通行标准，制定本隐私政策（以下简称「本政策」），以清晰、透明的方式，向您说明本站所进行之信息处理活动的范围、方式、目的，以及您所享有的各项权利。</p>
+        <p>HOUDA+（以下简称「本站」或「我们」）是一个完全开源的社区项目，站点本身为纯静态网站，源代码托管于 GitHub、经由 Cloudflare Pages 部署。我们高度重视每一位访客的隐私，特制定本隐私政策（以下简称「本政策」），以清晰、透明的方式，向您说明本站所进行之信息处理活动的范围、方式、目的，以及您所享有的各项权利。</p>
         <h3>1.1 政策的生效</h3>
         <p>本政策自 <strong>2026 年 8 月</strong>起正式生效，适用于该日期之后您对站点的全部访问与使用行为。我们保留依据法律法规之变动或本站功能之调整，适时修订本政策之权利；修订后之版本将以本页所标注之更新日期为准，并取代先前版本之效力。</p>
         <h3>1.2 适用范围</h3>
@@ -428,12 +454,17 @@ body.menu-open { overflow: hidden; }
         <li><a href="guestbook.html">留言墙</a></li>
         <li><a href="search.html">站内搜索</a></li>
         <li><a href="join.html">加入我们</a></li>
-        <li><a href="privacy.html">隐私政策</a></li>
-        <li><a href="terms.html">用户协议</a></li>
       </ul>
     </div>
   </div>
-  <div class="footer-bottom">© 2026 HOUDA+. All rights reserved.</div>
+  <div class="footer-bottom">
+    <nav class="footer-legal" aria-label="法律条款">
+      <a href="terms.html">用户协议</a>
+      <span class="footer-legal-sep" aria-hidden="true">|</span>
+      <a href="privacy.html">隐私政策</a>
+    </nav>
+    <p class="footer-copy">© 2026 HOUDA+. All rights reserved.</p>
+  </div>
 </footer>
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部"><i class="ph ph-bold ph-arrow-up"></i></button>

@@ -493,6 +493,32 @@ table.url-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
   line-height: 1.7;
 }
 
+/* --- Footer legal links --- */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.8125rem;
+}
+.footer-legal a {
+  color: rgba(255,255,255,0.62);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.footer-legal-sep {
+  color: rgba(255,255,255,0.22);
+  user-select: none;
+}
+.footer-bottom p { margin: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .footer-legal a:hover { color: #fff; }
+}
+
+
 /* — Dock — */
 .dock-container {
   position: fixed;
@@ -921,6 +947,11 @@ body.scrolled .dock-label { display: none; }
       </div>
     </div>
     <div class="footer-bottom">
+      <nav class="footer-legal" aria-label="法律条款">
+        <a href="terms.html">用户协议</a>
+        <span class="footer-legal-sep" aria-hidden="true">|</span>
+        <a href="privacy.html">隐私政策</a>
+      </nav>
       <p>
         <span>© 2026 HOUDA+</span>
         <span>All rights reserved.</span>

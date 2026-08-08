@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>用户协议 · HOUDA+</title>
-<meta content="HOUDA+ 用户协议：使用本站所应遵守的条款，包括可接受使用、用户内容与知识产权、第三方服务、免责声明与责任限制。参照 Google、Apple、Microsoft 等国际通行实践撰写。" name="description"/>
+<meta content="HOUDA+ 用户协议：使用本站所应遵守的条款，包括可接受使用、用户内容与知识产权、第三方服务、免责声明与责任限制。" name="description"/>
 <meta content="HOUDA+, 用户协议, 服务条款, 使用规则, 知识产权, 免责声明" name="keywords"/>
 <meta content="#f4f4f6" name="theme-color"/>
 <link href="assets/HOUDA_squre.jpeg" rel="icon"/>
@@ -207,7 +207,33 @@ body.menu-open { overflow: hidden; }
 
 .footer-nav a { text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.8125rem; transition: color var(--dur-fast) var(--ease-out); }
 @media (hover: hover) and (pointer: fine) { .footer-nav a:hover { color: white; } }
-.footer-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.75rem; color: rgba(255,255,255,0.45); }
+.footer-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.45); }
+
+/* --- Footer legal links --- */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.8125rem;
+}
+.footer-legal a {
+  color: rgba(255,255,255,0.62);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.footer-legal-sep {
+  color: rgba(255,255,255,0.22);
+  user-select: none;
+}
+.footer-bottom p { margin: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .footer-legal a:hover { color: #fff; }
+}
+
 
 .back-to-top { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 900; width: 48px; height: 48px; border-radius: 999px; background: rgba(37, 99, 235, 0.8); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); border: 1px solid rgba(255, 255, 255, 0.35); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.125rem; box-shadow: var(--shadow-float); opacity: 0; visibility: hidden; transform: translateY(12px) scale(0.9); transition: opacity var(--dur-normal) var(--ease-out), visibility var(--dur-normal) var(--ease-out), transform var(--dur-normal) var(--ease-spring), background var(--dur-fast) var(--ease-fluid), border-color var(--dur-fast) var(--ease-fluid); -webkit-tap-highlight-color: transparent; }
 .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
@@ -262,7 +288,7 @@ body.menu-open { overflow: hidden; }
     <div class="page-head-inner">
       <p class="section-label"><i class="ph ph-file-text"></i> 用户协议</p>
       <h1 class="page-title">使用本站，即代表你同意</h1>
-      <p class="page-sub">我们尽量把规则写得清楚、不绕弯。下面是你在使用 HOUDA+ 时应了解的权利与责任，参照 Google、Apple、Microsoft 等国际通行实践撰写。</p>
+      <p class="page-sub">我们尽量把规则写得清楚、不绕弯。下面是你在使用 HOUDA+ 时应了解的权利与责任。</p>
     </div>
   </section>
 
@@ -288,7 +314,7 @@ body.menu-open { overflow: hidden; }
 
       <div class="terms-block" id="s1">
         <h2><i class="ph ph-file-text"></i> 一、协议的接受与概述</h2>
-        <p>欢迎使用 HOUDA+（以下简称「本站」或「我们」）。本站是一个完全开源的社区项目，源代码托管于 GitHub、经由 Cloudflare Pages 部署。本用户协议（以下简称「本协议」）为您与本站在使用本站各项功能与服务（包括浏览、留言、入群申请及站内工具）过程中所形成之法律关系，确立双方之权利与义务，并参照全球领先科技企业（如 Google、Apple、Microsoft）之通行实践与国际化标准起草，力求清晰、透明、易于理解。</p>
+        <p>欢迎使用 HOUDA+（以下简称「本站」或「我们」）。本站是一个完全开源的社区项目，源代码托管于 GitHub、经由 Cloudflare Pages 部署。本用户协议（以下简称「本协议」）为您与本站在使用本站各项功能与服务（包括浏览、留言、入群申请及站内工具）过程中所形成之法律关系，确立双方之权利与义务，并力求以清晰、透明、易于理解之方式予以载明。</p>
         <h3>1.1 协议的接受</h3>
         <p>当您<strong>访问、浏览或使用</strong>本站之任何部分时，即表示您已阅读、理解并<strong>同意受本协议全部条款（含其后续修订版本）之约束</strong>。若您不同意本协议之任何内容，请勿使用本站。</p>
         <h3>1.2 协议适用范围</h3>
@@ -411,12 +437,17 @@ body.menu-open { overflow: hidden; }
         <li><a href="guestbook.html">留言墙</a></li>
         <li><a href="search.html">站内搜索</a></li>
         <li><a href="join.html">加入我们</a></li>
-        <li><a href="privacy.html">隐私政策</a></li>
-        <li><a href="terms.html">用户协议</a></li>
       </ul>
     </div>
   </div>
-  <div class="footer-bottom">© 2026 HOUDA+. All rights reserved.</div>
+  <div class="footer-bottom">
+    <nav class="footer-legal" aria-label="法律条款">
+      <a href="terms.html">用户协议</a>
+      <span class="footer-legal-sep" aria-hidden="true">|</span>
+      <a href="privacy.html">隐私政策</a>
+    </nav>
+    <p class="footer-copy">© 2026 HOUDA+. All rights reserved.</p>
+  </div>
 </footer>
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部"><i class="ph ph-bold ph-arrow-up"></i></button>
