@@ -11,7 +11,7 @@
 ## 🏛️ 项目简介
 **HOUDA+ 官网** 是长沙霉粉联盟六群分支的粉丝站点，全称为「侯明昊碗慧通讯录互吃大学」。
 
-项目基于 **GitHub Pages** 构建，用于展示侯大文化与社区活动，同时作为视觉统一与轻量架构的实验平台。
+项目源码托管于 GitHub，经 **Cloudflare Pages** 自动部署，用于展示侯大文化与社区活动，同时作为视觉统一与轻量架构的实验平台。
 
 **访问地址：** https://houda.pages.dev/
 
@@ -21,6 +21,8 @@
 - **统一设计体系**：主站页面共用 HOUDA+ 设计令牌（浅色主题、Plus Jakarta Sans 字体、Phosphor 图标、统一动效曲线），风格协调一致。
 - **响应式布局**：自适应桌面端与移动端，输入框等组件在窄屏下等宽、易点按。
 - **网站地图**：`sitemap.html` 串联全站导航，工具页以相对路径 `tools/xxx.html` 链接。
+- **招新表单**：`join.html` 提供入群申请通道，表单由金数据托管（无需后端代码，国内可稳定访问），含昵称、联系方式、目标社群等字段。
+- **站内搜索与留言板**：`search.html` 支持全站内容检索，`guestbook.html` 为粉丝留言墙。
 - **趣味小工具**：身份证生成器（含正反面 3D 翻转）、情侣盘点、纪念日、HDTI 人格测试、IP 纯净度检测、美国免税州地址生成器等。
 - **无障碍版本**：`hv/Accessibility.html` 提供长辈版适配。
 
@@ -33,7 +35,7 @@
 | **JavaScript (Vanilla)** | 前端交互逻辑，无构建步骤 |
 | **Phosphor Icons** | 主站图标系统（替代 Font Awesome） |
 | **Plus Jakarta Sans** | 主站字体（Google Fonts） |
-| **GitHub Pages** | 托管与自动部署 |
+| **Cloudflare Pages** | 托管与自动部署（源码托管于 GitHub） |
 | Tailwind CSS（仅 hv/） | 仅历史版本 `hv/index.html` 使用，主站不涉及 |
 
 ---
@@ -42,6 +44,9 @@
 ```
 houda-hd.github.io/
 ├── index.html              # 主站首页（HOUDA+ 设计体系基准）
+├── search.html            # 站内搜索（全站内容检索）
+├── guestbook.html         # 粉丝留言墙
+├── join.html              # 加入我们（金数据招新表单，无需后端）
 ├── sitemap.html            # 网站地图 / 导航中枢
 ├── lover-name.html         # 情侣盘点
 ├── houda-id-generator.html # 侯大身份证生成器（含正反面翻转）
@@ -76,6 +81,9 @@ houda-hd.github.io/
 | 文件 | 说明 |
 |:--|:--|
 | `index.html` | 主站首页，HOUDA+ 设计体系基准 |
+| `search.html` | 站内搜索（全站内容检索） |
+| `guestbook.html` | 粉丝留言墙 |
+| `join.html` | 加入我们（金数据招新表单，无需后端） |
 | `sitemap.html` | 网站地图 / 导航中枢 |
 | `lover-name.html` | 情侣盘点 |
 | `houda-id-generator.html` | 侯大身份证生成器 |
