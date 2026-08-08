@@ -139,6 +139,23 @@ body.menu-open { overflow: hidden; }
 .mobile-menu-close { position: absolute; top: 1.5rem; right: 1.5rem; width: 2.5rem; height: 2.5rem; border: none; background: var(--bg-card); color: var(--text-primary); border-radius: 999px; font-size: 1.125rem; cursor: pointer; box-shadow: var(--shadow-ambient); transition: transform 120ms var(--ease-out); }
 .mobile-menu-close:active { transform: scale(0.92); }
 
+/* ── 导航覆盖（与 index.html 完全一致）── */
+@media (prefers-reduced-transparency: reduce) {
+  .nav { background: var(--bg-card) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .mobile-menu { background: var(--bg) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+
+@media (max-width: 767px) {
+  /* slimmer, well-fitted floating nav bar */
+  .nav-wrap { padding: 0.875rem 1rem; }
+  .nav {
+    gap: 0.625rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    width: 100%;
+  }
+  .nav-cta { min-height: 40px; }
+}
+
 /* ── Inner page header ── */
 .page-head { padding: 9rem 2rem 2.5rem; text-align: center; }
 .page-head-inner { max-width: 720px; margin: 0 auto; }
@@ -204,7 +221,7 @@ body.menu-open { overflow: hidden; }
 <!-- ═══ Nav ═══ -->
 <div class="nav-wrap">
   <nav class="nav" id="nav" aria-label="主导航">
-    <a class="nav-logo" href="index.html" aria-label="HOUDA+ 首页">
+    <a class="nav-logo" href="index.html" id="navLogo" aria-label="HOUDA+ 首页">
       <img class="nav-logo-img" src="assets/HOUDA_squre.jpeg" alt="" width="28" height="28" loading="eager"/>
       HOUDA+
     </a>
