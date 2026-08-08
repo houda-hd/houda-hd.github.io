@@ -10,6 +10,11 @@
 </p>
 
 <p align="center">
+  <a href="./README.md"><img src="https://img.shields.io/badge/简体中文-当前-blue?style=for-the-badge" alt="简体中文"></a>
+  <a href="./README.en.md"><img src="https://img.shields.io/badge/English-切换-blue?style=for-the-badge" alt="English"></a>
+</p>
+
+<p align="center">
   <a href="https://houda.pages.dev/"><img src="https://img.shields.io/badge/Visit-houda.pages.dev-blue?style=flat-square" alt="Website"></a>
   <a href="https://github.com/houda-hd/houda-hd.github.io/stargazers"><img src="https://img.shields.io/github/stars/houda-hd/houda-hd.github.io?style=flat-square" alt="Stars"></a>
   <a href="https://github.com/houda-hd/houda-hd.github.io/commits/main"><img src="https://img.shields.io/github/last-commit/houda-hd/houda-hd.github.io?style=flat-square" alt="Last commit"></a>
