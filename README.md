@@ -24,7 +24,6 @@
 - **招新表单**：`join.html` 提供入群申请通道，表单由金数据托管（无需后端代码，国内可稳定访问），含昵称、联系方式、目标社群等字段。
 - **站内搜索与留言板**：`search.html` 支持全站内容检索，`guestbook.html` 为粉丝留言墙。
 - **趣味小工具**：身份证生成器（含正反面 3D 翻转）、情侣盘点、纪念日、HDTI 人格测试、IP 纯净度检测、美国免税州地址生成器等。
-- **无障碍版本**：`hv/Accessibility.html` 提供长辈版适配。
 
 ---
 
@@ -36,7 +35,6 @@
 | **Phosphor Icons** | 主站图标系统（替代 Font Awesome） |
 | **Plus Jakarta Sans** | 主站字体（Google Fonts） |
 | **Cloudflare Pages** | 托管与自动部署（源码托管于 GitHub） |
-| Tailwind CSS（仅 hv/） | 仅历史版本 `hv/index.html` 使用，主站不涉及 |
 
 ---
 
@@ -56,13 +54,6 @@ houda-hd.github.io/
 │   ├── hdti-test.html       # HDTI 测试（侯大人格实验室）
 │   ├── ippure.html          # IP 检测与纯净度分析
 │   └── mianshui.html        # 美国免税州地址生成器
-├── hv/                     # history version 历史版本（归档 / 换皮 / 旧版）
-│   ├── 26S2.html            # 原正式版首页（归档）
-│   ├── index.html           # Tailwind 版首页
-│   ├── Apple.html           # 仿 Apple 风格
-│   ├── Spotify.html         # 仿 Spotify 风格
-│   ├── Accessibility.html    # 长辈版（无障碍）
-│   └── english-daily-quote.html # 英文每日一言
 ├── assets/                 # 图片等资源
 ├── README.md
 ├── CHANGELOG.md
@@ -96,17 +87,6 @@ houda-hd.github.io/
 | `hdti-test.html` | HDTI 测试（侯大人格实验室） |
 | `ippure.html` | IP 检测与纯净度分析 |
 | `mianshui.html` | 美国免税州地址生成器 |
-
-### hv/（history version 历史版本）
-存放归档、换皮与旧版页面，未接入 `sitemap.html`，默认不对外开放（直接输入 URL 仍可访问）：
-| 文件 | 说明 |
-|:--|:--|
-| `26S2.html` | 原正式版首页（归档） |
-| `index.html` | Tailwind 版首页 |
-| `Apple.html` | 仿 Apple 风格 |
-| `Spotify.html` | 仿 Spotify 风格 |
-| `Accessibility.html` | 长辈版（无障碍） |
-| `english-daily-quote.html` | 英文每日一言 |
 
 ---
 
