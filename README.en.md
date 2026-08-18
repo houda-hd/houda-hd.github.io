@@ -35,25 +35,25 @@ HOUDA+ is a community site for the fans (Meifen) of Hou Minghao (Hou Da): announ
 
 | Page | Description |
 |:--|:--|
-| [`index.html`](./index.html) | Main homepage, the baseline of the HOUDA+ Design System |
-| [`search.html`](./search.html) | On-site search across all content |
-| [`guestbook.html`](./guestbook.html) | Fan message wall (powered by Giscus) |
-| [`join.html`](./join.html) | Join us · community recruitment form |
-| [`privacy.html`](./privacy.html) | Privacy policy · data handling disclosure |
-| [`terms.html`](./terms.html) | Terms of Service · usage rules |
-| [`sitemap.html`](./sitemap.html) | Sitemap / navigation hub |
-| [`lover-name.html`](./lover-name.html) | Couple name matcher |
-| [`houda-id-generator.html`](./houda-id-generator.html) | Hou Da ID generator (with 3D front/back flip) |
-| [`404.html`](./404.html) | 404 error page |
+| [`index.html`](https://houda.pages.dev/) | Main homepage, the baseline of the HOUDA+ Design System |
+| [`search.html`](https://houda.pages.dev/search.html) | On-site search across all content |
+| [`guestbook.html`](https://houda.pages.dev/guestbook.html) | Fan message wall (powered by Giscus) |
+| [`join.html`](https://houda.pages.dev/join.html) | Join us · community recruitment form |
+| [`privacy.html`](https://houda.pages.dev/privacy.html) | Privacy policy · data handling disclosure |
+| [`terms.html`](https://houda.pages.dev/terms.html) | Terms of Service · usage rules |
+| [`sitemap.html`](https://houda.pages.dev/sitemap.html) | Sitemap / navigation hub |
+| [`lover-name.html`](https://houda.pages.dev/lover-name.html) | Couple name matcher |
+| [`houda-id-generator.html`](https://houda.pages.dev/houda-id-generator.html) | Hou Da ID generator (with 3D front/back flip) |
+| [`404.html`](https://houda.pages.dev/404.html) | 404 error page |
 
 ### 🛠️ Tools (`tools/`)
 
 | Tool | Description |
 |:--|:--|
-| [`anniversary.html`](./tools/anniversary.html) | Hou Da anniversary tracker |
-| [`hdti-test.html`](./tools/hdti-test.html) | HDTI test · Hou Da personality lab |
-| [`ippure.html`](./tools/ippure.html) | IP check & purity analysis |
-| [`mianshui.html`](./tools/mianshui.html) | US tax-free state address generator |
+| [`anniversary.html`](https://houda.pages.dev/tools/anniversary.html) | Hou Da anniversary tracker |
+| [`hdti-test.html`](https://houda.pages.dev/tools/hdti-test.html) | HDTI test · Hou Da personality lab |
+| [`ippure.html`](https://houda.pages.dev/tools/ippure.html) | IP check & purity analysis |
+| [`mianshui.html`](https://houda.pages.dev/tools/mianshui.html) | US tax-free state address generator |
 
 ---
 

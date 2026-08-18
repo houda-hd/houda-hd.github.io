@@ -35,25 +35,25 @@ HOUDA+ 是一个面向侯明昊粉丝（霉粉）的社区站点：公告动态�
 
 | 页面 | 简介 |
 |:--|:--|
-| [`index.html`](./index.html) | 主站首页，HOUDA+ 设计体系基准 |
-| [`search.html`](./search.html) | 站内搜索，全站内容检索 |
-| [`guestbook.html`](./guestbook.html) | 粉丝留言墙（基于 Giscus） |
-| [`join.html`](./join.html) | 加入我们 · 入群招新表单 |
-| [`privacy.html`](./privacy.html) | 隐私政策 · 数据处理说明 |
-| [`terms.html`](./terms.html) | 用户协议 · 使用条款与规则 |
-| [`sitemap.html`](./sitemap.html) | 网站地图 / 导航中枢 |
-| [`lover-name.html`](./lover-name.html) | 情侣盘点 |
-| [`houda-id-generator.html`](./houda-id-generator.html) | 侯大身份证生成器（含正反面 3D 翻转） |
-| [`404.html`](./404.html) | 404 错误页 |
+| [`index.html`](https://houda.pages.dev/) | 主站首页，HOUDA+ 设计体系基准 |
+| [`search.html`](https://houda.pages.dev/search.html) | 站内搜索，全站内容检索 |
+| [`guestbook.html`](https://houda.pages.dev/guestbook.html) | 粉丝留言墙（基于 Giscus） |
+| [`join.html`](https://houda.pages.dev/join.html) | 加入我们 · 入群招新表单 |
+| [`privacy.html`](https://houda.pages.dev/privacy.html) | 隐私政策 · 数据处理说明 |
+| [`terms.html`](https://houda.pages.dev/terms.html) | 用户协议 · 使用条款与规则 |
+| [`sitemap.html`](https://houda.pages.dev/sitemap.html) | 网站地图 / 导航中枢 |
+| [`lover-name.html`](https://houda.pages.dev/lover-name.html) | 情侣盘点 |
+| [`houda-id-generator.html`](https://houda.pages.dev/houda-id-generator.html) | 侯大身份证生成器（含正反面 3D 翻转） |
+| [`404.html`](https://houda.pages.dev/404.html) | 404 错误页 |
 
 ### 🛠️ 小工具（`tools/`）
 
 | 工具 | 简介 |
 |:--|:--|
-| [`anniversary.html`](./tools/anniversary.html) | 侯大纪念日 |
-| [`hdti-test.html`](./tools/hdti-test.html) | HDTI 测试 · 侯大人格实验室 |
-| [`ippure.html`](./tools/ippure.html) | IP 检测与纯净度分析 |
-| [`mianshui.html`](./tools/mianshui.html) | 美国免税州地址生成器 |
+| [`anniversary.html`](https://houda.pages.dev/tools/anniversary.html) | 侯大纪念日 |
+| [`hdti-test.html`](https://houda.pages.dev/tools/hdti-test.html) | HDTI 测试 · 侯大人格实验室 |
+| [`ippure.html`](https://houda.pages.dev/tools/ippure.html) | IP 检测与纯净度分析 |
+| [`mianshui.html`](https://houda.pages.dev/tools/mianshui.html) | 美国免税州地址生成器 |
 
 ---
 
