@@ -1,34 +1,20 @@
-MIT License
+版权所有 © 2025-2026 houda-hd（HOUDA+）。保留一切权利。
 
-Copyright (c) 2025-2026 houda-hd
+未经著作权人书面许可，任何人不得以任何方式（包括但不限于复制、修改、改编、翻译、汇编、分发、展示、表演、再许可或用于商业目的）使用本仓库之代码、文档、设计与相关内容。
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+本仓库仅供个人学习、非商业之浏览目的访问；前述访问并不构成对任何权利之授予。任何超出上述范围之使用，均须事先取得著作权人之书面授权。
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+本声明之解释、效力及争议之解决，均适用著作权人所在地法律。
 
 ---
 
 ## 第三方组件与资源（Third-party components）
 
-本站为纯静态项目，以下组件/资源以各自许可协议提供，其版权归原作者所有：
+本站为纯静态项目，下列组件/资源由其各自之许可协议提供，其著作权归原作者所有；本仓库之专有权利保留不适用于该等组件：
 
 - **Phosphor Icons**（图标字体，经 CDN 加载）— MIT License © Phosphor Icons LLC。
 - **Plus Jakarta Sans**（界面字体，经 Google Fonts / CDN 加载）— SIL Open Font License 1.1，由 Tokotype 与 Google 提供。
 - **Giscus**（留言墙后端，经 giscus.app 服务调用）— MIT License，© giscus-app。
 - **金数据（Jinshuju）**（招新表单后端，经 jinshuju.net 嵌入）— 商业服务，非本站代码。
 
-上述组件的许可条款均独立于本仓库的 MIT License；如须复用相关组件，请遵循其各自的许可协议。
+如须复用上述第三方组件，请遵循其各自之许可协议。

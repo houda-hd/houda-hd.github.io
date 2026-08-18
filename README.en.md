@@ -96,4 +96,4 @@ python3 -m http.server 8000
 
 ## 🧾 License
 
-This project is released under the [MIT License](LICENSE). Free to use, modify, and distribute, provided the original authorship is retained.
+All code, documentation, and design of this project are reserved (All Rights Reserved). No permission is granted to copy, modify, distribute, or use them for commercial purposes without prior written authorization from the copyright holder. Personal, non-commercial browsing and study are permitted. Third-party components (Phosphor Icons, Plus Jakarta Sans, Giscus, etc.) remain under their respective licenses. See [LICENSE](LICENSE).

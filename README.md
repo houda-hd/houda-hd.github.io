@@ -96,4 +96,4 @@ python3 -m http.server 8000
 
 ## 🧾 许可证
 
-本项目遵循 [MIT License](LICENSE)。可自由使用、修改与分发，但需保留原作者信息。
+本项目之代码、文档与设计均保留所有权利（All Rights Reserved）。未经著作权人书面许可，任何人不得复制、修改、分发或用于商业目的；仅供个人非商业之浏览与学习。第三方组件（Phosphor Icons、Plus Jakarta Sans、Giscus 等）仍依其各自许可协议。详见 [LICENSE](LICENSE)。
