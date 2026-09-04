@@ -1452,7 +1452,15 @@ body {
 #mobileMenu .m-cta:hover { background: var(--accent); }
 
 /* — Hero — */
-.hero { padding-top: 8.5rem; padding-bottom: 3rem; text-align: center; }
+.hero {
+  /* BUGFIX: 覆盖 index 基础 .hero 的 min-height:100vh + flex 整屏语义，
+     还原为原页面紧凑 hero（避免矮屏裁切 / 大片留白） */
+  padding-top: 8.5rem;
+  padding-bottom: 3rem;
+  text-align: center;
+  min-height: 0;
+  display: block;
+}
 .badge {
   display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.95rem; border-radius: var(--radius-pill);
   background: var(--accent-light); border: 1px solid rgba(37,99,235,0.16); color: var(--accent-hover);

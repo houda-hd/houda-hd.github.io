@@ -1538,9 +1538,13 @@ body {
 
 /* — Hero — */
 .hero {
+  /* BUGFIX: 覆盖 index 基础 .hero 的 min-height:100vh + flex 整屏语义，
+     还原为原页面紧凑 hero（避免矮屏裁切 / 大片留白） */
   padding-top: 8rem;
   padding-bottom: 3.5rem;
   text-align: center;
+  min-height: 0;
+  display: block;
 }
 .badge {
   display: inline-flex;
