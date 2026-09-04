@@ -1423,9 +1423,14 @@ body {
      接入 index 外壳后 body 出现多个兄弟元素，flex 会把
      页脚等并排成一行 -> 改回块级堆叠 */
   display: block;
-  /* 让位顶部固定导航胶囊 */
-  padding: 7rem 1.25rem 3.5rem;
+  /* 让位顶部固定导航胶囊；水平 padding 设为 0，
+     让 <main> 与 <footer> 各自负责自己的水平边距，
+     否则页脚会被 body padding 向内收缩而非延伸到视口边缘 */
+  padding: 7rem 0 3.5rem;
 }
+/* 卡片内容保留水平内边距；页脚 <footer> 不在此处，
+   让它自然以 100% 宽度延伸到视口左右边缘 */
+main { padding-left: 1.25rem; padding-right: 1.25rem; }
 
 /* --- 漫射环境光: 中性冷调, 无 AI 紫渐变 --- */
 .ambient {
@@ -1693,7 +1698,8 @@ h1 {
 
 /* --- 移动端 --- */
 @media (max-width: 767px) {
-  body { padding: 5.75rem 1rem 2.5rem; }
+  body { padding: 5.75rem 0 2.5rem; }
+  main { padding-left: 1rem; padding-right: 1rem; }
   .panel { padding: 2rem 1.25rem 1.75rem; }
   .actions { width: 100%; }
   .actions .btn-houda { flex: 1 1 auto; }
