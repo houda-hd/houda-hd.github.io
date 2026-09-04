@@ -1872,7 +1872,7 @@ h1 {
             return `${y}${m}${d}T${hh}${mm}${ss}Z`;
         }
 
-        function buildCalendarUrl() {
+        function buildCalendarIcs() {
             const now = new Date();
             const year = now.getFullYear();
             const title = '侯大纪念日';
@@ -1896,16 +1896,22 @@ h1 {
                 'END:VCALENDAR'
             ].join('\r\n');
 
-            return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+            return ics;
         }
 
         function importToCalendar() {
             const link = document.createElement('a');
-            link.href = buildCalendarUrl();
+            // Blob + ObjectURL 比 data: URI 在各平台（尤其 iOS Safari/应用内浏览器）
+            // 下载 .ics 更可靠；生成后延迟回收以避免下载被取消
+            const blobUrl = URL.createObjectURL(
+                new Blob([buildCalendarIcs()], { type: 'text/calendar;charset=utf-8' })
+            );
+            link.href = blobUrl;
             link.download = 'houda-anniversary.ics';
             document.body.appendChild(link);
             link.click();
             link.remove();
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
 
             const btn = document.getElementById('addCalendarBtn');
             const originalText = btn.innerText;
