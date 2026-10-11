@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shenzhen North Railway Station - 3D Model</title>
+    <title>Shenzhen North Railway Station - Holographic Blueprint</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #87CEEB; /* Sky blue fallback */
+            background-color: #050914; /* Deep space/hologram background */
             font-family: 'Inter', sans-serif;
+            color: #a0c0ff;
         }
         #canvas-container {
             width: 100vw;
@@ -29,364 +30,438 @@
             pointer-events: none;
             z-index: 10;
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
             padding: 1.5rem;
+            box-sizing: border-box;
         }
         .ui-panel {
             pointer-events: auto;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: rgba(5, 12, 26, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 50, 150, 0.4);
         }
+        /* Custom Checkbox Styling */
+        .layer-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .layer-toggle:hover {
+            color: #ffffff;
+        }
+        .layer-toggle input {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 1px solid #4a75c2;
+            border-radius: 4px;
+            margin-right: 0.75rem;
+            background: rgba(0, 0, 0, 0.5);
+            position: relative;
+            cursor: pointer;
+            outline: none;
+        }
+        .layer-toggle input:checked {
+            background: #2563eb;
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+        }
+        .layer-toggle input:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.8rem;
+        }
+        /* Line Colors in UI */
+        .color-l4 { color: #ff3366; text-shadow: 0 0 5px #ff3366; }
+        .color-l5 { color: #b84dff; text-shadow: 0 0 5px #b84dff; }
+        .color-l6 { color: #00e6e6; text-shadow: 0 0 5px #00e6e6; }
+        .color-hsr { color: #ffffff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
     </style>
 </head>
 <body>
     <div id="ui-layer">
-        <div class="ui-panel p-5 max-w-sm">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Shenzhen North Station</h1>
-            <p class="text-sm text-gray-600 mb-4">
-                Interactive 3D architectural concept featuring the multi-level layout: Arrivals/Exit layer, High-Speed Platforms, suspended Waiting Hall, and Metro Lines 4, 5, & 6.
+        <div class="ui-panel p-6 max-w-sm h-fit">
+            <h1 class="text-2xl font-bold text-white mb-1 uppercase tracking-wider text-blue-300 drop-shadow-md">Shenzhen North</h1>
+            <h2 class="text-xs font-mono text-blue-400 mb-6 tracking-widest border-b border-blue-800 pb-2">Holographic Blueprint</h2>
+            
+            <p class="text-xs text-blue-200/70 mb-6 leading-relaxed">
+                Explore the complex multi-level architecture of Shenzhen North Railway Station. Use controls below to dissect the layers.
             </p>
-            <div class="flex items-center space-x-2 text-xs text-gray-500">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
-                <span>Left Click: Rotate | Right Click: Pan | Scroll: Zoom</span>
+
+            <div id="layer-controls" class="font-mono text-sm">
+                <label class="layer-toggle">
+                    <input type="checkbox" id="toggle-roof" checked> 1. Main Roof (大屋顶)
+                </label>
+                <label class="layer-toggle">
+                    <input type="checkbox" id="toggle-hall" checked> 2. Waiting Hall (高架候车厅)
+                </label>
+                <label class="layer-toggle">
+                    <input type="checkbox" id="toggle-hsr" checked> <span class="color-hsr">3. HSR Tracks (国铁站台)</span>
+                </label>
+                <label class="layer-toggle">
+                    <input type="checkbox" id="toggle-l46" checked> 4. Metro <span class="color-l4">L4</span> & <span class="color-l6">L6</span> (Elevated)
+                </label>
+                <label class="layer-toggle">
+                    <input type="checkbox" id="toggle-l5" checked> 5. Metro <span class="color-l5">L5</span> (Underground)
+                </label>
+                <label class="layer-toggle">
+                    <input type="checkbox" id="toggle-east" checked> 6. East Square (东广场)
+                </label>
             </div>
-        </div>
-        
-        <div class="ui-panel p-3 self-end flex space-x-4 text-sm font-medium text-gray-700">
-            <button id="btn-auto-rotate" class="hover:text-blue-600 transition-colors">Toggle Auto-Rotate</button>
-            <button id="btn-reset" class="hover:text-blue-600 transition-colors">Reset View</button>
+
+            <div class="mt-8 pt-4 border-t border-blue-900/50 flex space-x-4 text-xs font-mono">
+                <button id="btn-rotate" class="px-3 py-1 bg-blue-900/40 hover:bg-blue-800/60 rounded border border-blue-700/50 transition-colors">Auto-Rotate [ON]</button>
+                <button id="btn-reset" class="px-3 py-1 bg-blue-900/40 hover:bg-blue-800/60 rounded border border-blue-700/50 transition-colors">Reset View</button>
+            </div>
         </div>
     </div>
 
     <div id="canvas-container"></div>
 
-    <!-- Load Three.js and OrbitControls -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <script>
+        // --- Core Variables ---
         let scene, camera, renderer, controls;
         let isAutoRotating = true;
         
-        // Configuration
-        const STATION_WIDTH = 300;
-        const STATION_LENGTH = 450;
-        const ROOF_HEIGHT = 85; // Raised to accommodate new levels
+        // Layer Groups
+        const groups = {
+            roof: new THREE.Group(),
+            hall: new THREE.Group(),
+            hsr: new THREE.Group(),
+            l46: new THREE.Group(),
+            l5: new THREE.Group(),
+            east: new THREE.Group()
+        };
 
-        // Colors
-        const COLOR_LINE4 = 0xe51937; // Red
-        const COLOR_LINE5 = 0x93328e; // Purple
-        const COLOR_LINE6 = 0x0099ab; // Cyan
-        const COLOR_WAITING_HALL = 0xddeeff;
-        const COLOR_EXIT_LEVEL = 0xe0e0e0;
+        // Base Scale/Dimensions
+        const STATION_W = 400; // X axis (East-West width)
+        const STATION_L = 600; // Z axis (North-South length)
 
-        init();
-        animate();
+        // Palette (Holographic)
+        const C_BASE = 0x2266cc;
+        const C_ROOF = 0x4488ff;
+        const C_HSR = 0xffffff;
+        const C_L4 = 0xff3366;  // Red
+        const C_L5 = 0xb84dff;  // Purple
+        const C_L6 = 0x00e6e6;  // Cyan
+        const C_SQUARE = 0x33aa88;
 
+        // --- Initialization ---
         function init() {
             const container = document.getElementById('canvas-container');
 
-            // Scene setup
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xaaccff); // Light blue sky
-            scene.fog = new THREE.FogExp2(0xaaccff, 0.0015); // Add distance fog
+            scene.fog = new THREE.FogExp2(0x050914, 0.0008);
 
-            // Camera setup
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
-            camera.position.set(250, 150, 400);
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3000);
+            camera.position.set(400, 300, 600);
 
-            // Renderer setup
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for high DPI
+            renderer.toneMapping = THREE.AdditiveToneMapping;
             container.appendChild(renderer.domElement);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.maxPolarAngle = Math.PI / 2 - 0.02; // Prevent going below ground
-            controls.minDistance = 50;
-            controls.maxDistance = 800;
+            controls.maxPolarAngle = Math.PI - 0.1; // Allow viewing from underneath!
             controls.target.set(0, 20, 0);
 
-            setupLighting();
-            buildEnvironment();
-            buildStation();
-            setupEventListeners();
+            setupEnvironment();
+            buildStationLayers();
+            setupUI();
+
+            window.addEventListener('resize', onWindowResize, false);
+            
+            // Interaction disables auto-rotate
+            controls.addEventListener('start', () => { 
+                isAutoRotating = false; 
+                document.getElementById('btn-rotate').innerText = "Auto-Rotate [OFF]";
+            });
+
+            animate();
         }
 
-        function setupLighting() {
-            // Ambient light for general illumination
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-            scene.add(ambientLight);
+        function setupEnvironment() {
+            // Ambient light is dim
+            scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
-            // Hemisphere light for sky/ground color gradients
-            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.4);
-            hemiLight.position.set(0, 200, 0);
-            scene.add(hemiLight);
+            // Grid helper to establish the "blueprint" ground plane (Y=0)
+            const grid = new THREE.GridHelper(2000, 100, 0x113366, 0x0a1530);
+            grid.position.y = -5; // slightly below HSR level
+            scene.add(grid);
 
-            // Main directional light (Sun)
-            const dirLight = new THREE.DirectionalLight(0xffeedd, 0.8);
-            dirLight.position.set(200, 300, -100);
-            dirLight.castShadow = true;
-            dirLight.shadow.camera.top = 250;
-            dirLight.shadow.camera.bottom = -250;
-            dirLight.shadow.camera.left = -250;
-            dirLight.shadow.camera.right = 250;
-            dirLight.shadow.camera.near = 0.1;
-            dirLight.shadow.camera.far = 1000;
-            dirLight.shadow.mapSize.width = 2048;
-            dirLight.shadow.mapSize.height = 2048;
-            scene.add(dirLight);
+            // X, Y, Z axes for reference
+            const axes = new THREE.AxesHelper(100);
+            axes.position.y = -4.9;
+            scene.add(axes);
         }
 
-        function createLabel(text, x, y, z, bgColor = 'rgba(0, 0, 0, 0.7)', textColor = 'white') {
+        // --- Helper Function: Holographic Material ---
+        function createHoloMesh(geometry, color, opacity = 0.2, emissiveIntensity = 0.5) {
+            const group = new THREE.Group();
+
+            // Transparent solid faces
+            const matFace = new THREE.MeshBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: opacity,
+                side: THREE.DoubleSide,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+            const mesh = new THREE.Mesh(geometry, matFace);
+            group.add(mesh);
+
+            // Glowing wireframe edges
+            const edgesGeo = new THREE.EdgesGeometry(geometry);
+            const matEdge = new THREE.LineBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            const wireframe = new THREE.LineSegments(edgesGeo, matEdge);
+            group.add(wireframe);
+
+            return group;
+        }
+
+        // --- Helper Function: Text Sprites ---
+        function createLabel(text, x, y, z, color = '#ffffff') {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             canvas.width = 512;
             canvas.height = 128;
 
-            // Background pill
-            context.fillStyle = bgColor;
-            context.beginPath();
-            context.roundRect(10, 10, 492, 108, 54);
-            context.fill();
-
-            // Text
-            context.font = "bold 42px Inter, sans-serif";
+            context.font = "bold 36px monospace";
             context.textAlign = "center";
             context.textBaseline = "middle";
-            context.fillStyle = textColor;
+            
+            // Subtle glow
+            context.shadowColor = color;
+            context.shadowBlur = 10;
+            context.fillStyle = color;
             context.fillText(text, 256, 64);
 
             const texture = new THREE.CanvasTexture(canvas);
-            const spriteMaterial = new THREE.SpriteMaterial({ map: texture, depthTest: false });
-            const sprite = new THREE.Sprite(spriteMaterial);
+            const spriteMat = new THREE.SpriteMaterial({ 
+                map: texture, 
+                transparent: true, 
+                blending: THREE.AdditiveBlending,
+                depthTest: false 
+            });
+            const sprite = new THREE.Sprite(spriteMat);
             sprite.position.set(x, y, z);
-            sprite.scale.set(60, 15, 1);
+            sprite.scale.set(100, 25, 1);
             sprite.renderOrder = 999;
             return sprite;
         }
 
-        function buildEnvironment() {
-            // Main ground plane
-            const groundGeo = new THREE.PlaneGeometry(2000, 2000);
-            const groundMat = new THREE.MeshStandardMaterial({ 
-                color: 0xe0e0e0,
-                roughness: 0.8,
-                metalness: 0.1
-            });
-            const ground = new THREE.Mesh(groundGeo, groundMat);
-            ground.rotation.x = -Math.PI / 2;
-            ground.receiveShadow = true;
-            scene.add(ground);
+        // --- Building the 6 Layers ---
+        function buildStationLayers() {
+            // Add all groups to scene
+            Object.values(groups).forEach(g => scene.add(g));
 
-            // Decorative grid/plaza pattern around station
-            const gridHelper = new THREE.GridHelper(1000, 100, 0x000000, 0x000000);
-            gridHelper.material.opacity = 0.05;
-            gridHelper.material.transparent = true;
-            gridHelper.position.y = 0.1;
-            scene.add(gridHelper);
-        }
-
-        function buildStation() {
-            const stationGroup = new THREE.Group();
-
-            // 1. Level -1/0: Arrivals / Exit Level (出站层)
-            const exitLevelGeo = new THREE.BoxGeometry(STATION_WIDTH + 60, 15, STATION_LENGTH + 60);
-            const exitLevelMat = new THREE.MeshStandardMaterial({ color: COLOR_EXIT_LEVEL, roughness: 0.9 });
-            const exitLevel = new THREE.Mesh(exitLevelGeo, exitLevelMat);
-            exitLevel.position.y = 7.5;
-            exitLevel.receiveShadow = true;
-            exitLevel.castShadow = true;
-            stationGroup.add(exitLevel);
+            // ==========================================
+            // 1. MAIN ROOF (大屋顶)
+            // ==========================================
+            const roofGeo = new THREE.PlaneGeometry(STATION_W + 150, STATION_L + 150, 40, 40);
+            const pos = roofGeo.attributes.position;
+            const roofBaseY = 80;
             
-            stationGroup.add(createLabel("Arrivals / Exit Level (出站层)", 0, 7.5, STATION_LENGTH/2 + 40));
+            for (let i = 0; i < pos.count; i++) {
+                const x = pos.getX(i);
+                const y = pos.getY(i);
+                // Create sweeping architectural curve
+                let z = roofBaseY;
+                z -= Math.pow(x / (STATION_W * 0.5), 2) * 20; // curve down sides
+                z -= Math.pow(y / (STATION_L * 0.5), 2) * 15; // curve down front/back
+                z += Math.sin(x * 0.05) * 5; // wave effect
+                pos.setZ(i, z);
+            }
+            roofGeo.computeVertexNormals();
+            
+            const roofMesh = createHoloMesh(roofGeo, C_ROOF, 0.15);
+            roofMesh.rotation.x = -Math.PI / 2;
+            groups.roof.add(roofMesh);
+            groups.roof.add(createLabel("MAIN ROOF (大屋顶)", 0, roofBaseY + 25, 0, '#4488ff'));
 
-            // Metro Line 5 (Purple) - Cuts through the lower/exit level (East-West)
-            const line5Geo = new THREE.BoxGeometry(STATION_WIDTH + 180, 6, 12);
-            const line5Mat = new THREE.MeshStandardMaterial({ color: COLOR_LINE5, emissive: COLOR_LINE5, emissiveIntensity: 0.5 });
-            const line5 = new THREE.Mesh(line5Geo, line5Mat);
-            line5.position.set(0, 7.5, 0); // Runs through the middle of the exit level
-            stationGroup.add(line5);
-            stationGroup.add(createLabel("Line 5", -STATION_WIDTH/2 - 70, 15, 0, '#93328e'));
+            // ==========================================
+            // 2. WAITING HALL (高架候车厅)
+            // ==========================================
+            const hallWidth = STATION_W - 50;
+            const hallLength = STATION_L - 100;
+            const hallHeight = 25;
+            const hallY = 45; // Suspended above tracks
+            
+            const hallGeo = new THREE.BoxGeometry(hallWidth, hallHeight, hallLength);
+            const hallMesh = createHoloMesh(hallGeo, C_BASE, 0.1);
+            hallMesh.position.y = hallY;
+            groups.hall.add(hallMesh);
 
-            // 2. Level 1: High-Speed Rail Platforms (National Rail)
-            const platformBaseY = 15;
-            const numPlatforms = 10;
-            const platformSpacing = (STATION_WIDTH - 40) / numPlatforms;
-            for(let i = 0; i <= numPlatforms; i++) {
-                const xPos = - (STATION_WIDTH - 40)/2 + (i * platformSpacing);
+            // Internal waiting hall divisions (visual detail)
+            const floorGeo = new THREE.PlaneGeometry(hallWidth, hallLength, 10, 15);
+            const floorMesh = new THREE.Mesh(floorGeo, new THREE.MeshBasicMaterial({color: 0x112244, transparent: true, opacity: 0.5, side: THREE.DoubleSide}));
+            floorMesh.rotation.x = -Math.PI/2;
+            floorMesh.position.y = hallY - hallHeight/2 + 0.1;
+            groups.hall.add(floorMesh);
+
+            groups.hall.add(createLabel("WAITING HALL", 0, hallY + hallHeight/2 + 10, hallLength/2 + 20, '#a0c0ff'));
+
+            // ==========================================
+            // 3. HIGH-SPEED RAIL TRACKS (国铁站台)
+            // ==========================================
+            const numPlatforms = 11;
+            const platformWidth = 12;
+            const trackWidth = 8;
+            const platformSpacing = platformWidth + trackWidth;
+            const totalHsrWidth = numPlatforms * platformSpacing;
+            const startX = -totalHsrWidth / 2 + platformSpacing / 2;
+
+            for(let i = 0; i < numPlatforms; i++) {
+                const px = startX + (i * platformSpacing);
                 
                 // Platform
-                const platGeo = new THREE.BoxGeometry(8, 4, STATION_LENGTH + 80);
-                const platMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
-                const platform = new THREE.Mesh(platGeo, platMat);
-                platform.position.set(xPos, platformBaseY + 2, 0);
-                platform.receiveShadow = true;
-                platform.castShadow = true;
-                stationGroup.add(platform);
+                const platGeo = new THREE.BoxGeometry(platformWidth, 4, STATION_L + 50);
+                const platMesh = createHoloMesh(platGeo, C_HSR, 0.2);
+                platMesh.position.set(px, 2, 0); // Ground level
+                groups.hsr.add(platMesh);
 
-                // Simple Train (Randomly placed)
-                if (Math.random() > 0.3 && i < numPlatforms) {
-                    const trainGeo = new THREE.BoxGeometry(6, 8, 150 + Math.random() * 100);
-                    const trainMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.5 });
-                    const train = new THREE.Mesh(trainGeo, trainMat);
-                    train.position.set(xPos + platformSpacing/2, platformBaseY + 4, (Math.random() - 0.5) * 100);
-                    train.castShadow = true;
-                    stationGroup.add(train);
-                    
-                    // Train window strip
-                    const windowGeo = new THREE.BoxGeometry(6.2, 2, trainGeo.parameters.depth - 2);
-                    const windowMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
-                    const windows = new THREE.Mesh(windowGeo, windowMat);
-                    windows.position.set(0, 1, 0);
-                    train.add(windows);
-                }
+                // Tracks (Lines)
+                const trackGeo = new THREE.BoxGeometry(1, 0.5, STATION_L + 150);
+                const trackMat = new THREE.MeshBasicMaterial({color: 0x555555});
+                const t1 = new THREE.Mesh(trackGeo, trackMat);
+                t1.position.set(px - platformWidth/2 - 2, 0.25, 0);
+                const t2 = new THREE.Mesh(trackGeo, trackMat);
+                t2.position.set(px + platformWidth/2 + 2, 0.25, 0);
+                groups.hsr.add(t1, t2);
+            }
+            groups.hsr.add(createLabel("HSR PLATFORMS (国铁)", startX - 60, 5, 0, '#ffffff'));
+
+            // ==========================================
+            // 4. METRO LINE 4 & 6 - ELEVATED
+            // ==========================================
+            // Elevated on the East side (Positive X)
+            const elevatedX = totalHsrWidth / 2 + 60;
+            const elevatedY = 25; // Same level as lower waiting hall
+            
+            // Support Pillars
+            const pillarGeo = new THREE.CylinderGeometry(2, 2, elevatedY, 8);
+            for(let z = -STATION_L/2; z <= STATION_L/2; z+= 60) {
+                const p = createHoloMesh(pillarGeo, C_BASE, 0.1);
+                p.position.set(elevatedX, elevatedY/2, z);
+                groups.l46.add(p);
             }
 
-            // 3. Level 2: Suspended Waiting Hall / Concourse (候车站厅)
-            const concourseBaseY = 35;
+            // Line 4 (Red)
+            const l4Geo = new THREE.BoxGeometry(8, 8, STATION_L + 200);
+            const l4Mesh = createHoloMesh(l4Geo, C_L4, 0.3);
+            l4Mesh.position.set(elevatedX - 6, elevatedY, 0);
+            groups.l46.add(l4Mesh);
+            groups.l46.add(createLabel("LINE 4", elevatedX - 25, elevatedY + 15, -150, '#ff3366'));
+
+            // Line 6 (Cyan)
+            const l6Geo = new THREE.BoxGeometry(8, 8, STATION_L + 200);
+            const l6Mesh = createHoloMesh(l6Geo, C_L6, 0.3);
+            l6Mesh.position.set(elevatedX + 6, elevatedY, 0);
+            groups.l46.add(l6Mesh);
+            groups.l46.add(createLabel("LINE 6", elevatedX + 25, elevatedY + 15, 150, '#00e6e6'));
+
+            // Station enclosure for elevated lines
+            const metroStationGeo = new THREE.BoxGeometry(40, 20, 200);
+            const metroStationMesh = createHoloMesh(metroStationGeo, C_BASE, 0.1);
+            metroStationMesh.position.set(elevatedX, elevatedY + 6, 0);
+            groups.l46.add(metroStationMesh);
+
+            // ==========================================
+            // 5. METRO LINE 5 - UNDERGROUND
+            // ==========================================
+            // Runs East-West (X axis) under the East Square
+            const l5Y = -35; 
+            const l5Geo = new THREE.BoxGeometry(STATION_W + 300, 10, 10);
+            const l5Mesh = createHoloMesh(l5Geo, C_L5, 0.3);
+            l5Mesh.position.set(100, l5Y, 0); // Offset to East
+            groups.l5.add(l5Mesh);
+
+            // Underground Station Box
+            const l5StationGeo = new THREE.BoxGeometry(150, 15, 40);
+            const l5StationMesh = createHoloMesh(l5StationGeo, C_L5, 0.15);
+            l5StationMesh.position.set(elevatedX + 40, l5Y, 0);
+            groups.l5.add(l5StationMesh);
+
+            groups.l5.add(createLabel("LINE 5 (UNDERGROUND)", elevatedX + 150, l5Y + 15, 0, '#b84dff'));
+
+            // ==========================================
+            // 6. EAST SQUARE & ARRIVALS (东广场)
+            // ==========================================
+            const squareX = elevatedX + 70;
             
-            // Solid floor for the concourse
-            const concourseFloorGeo = new THREE.BoxGeometry(STATION_WIDTH - 10, 2, STATION_LENGTH - 40);
-            const concourseFloorMat = new THREE.MeshStandardMaterial({ color: 0xdddddd });
-            const concourseFloor = new THREE.Mesh(concourseFloorGeo, concourseFloorMat);
-            concourseFloor.position.y = concourseBaseY;
-            concourseFloor.castShadow = true;
-            concourseFloor.receiveShadow = true;
-            stationGroup.add(concourseFloor);
+            // Layered plazas connecting ground to underground
+            const b1Geo = new THREE.BoxGeometry(120, 15, 180);
+            const b1Mesh = createHoloMesh(b1Geo, C_SQUARE, 0.1);
+            b1Mesh.position.set(squareX, -10, 0); // B1 level
+            groups.east.add(b1Mesh);
 
-            // Glass enclosure for the waiting hall
-            const concourseGlassGeo = new THREE.BoxGeometry(STATION_WIDTH - 20, 25, STATION_LENGTH - 50);
-            const concourseGlassMat = new THREE.MeshPhysicalMaterial({
-                color: COLOR_WAITING_HALL,
-                metalness: 0.1,
-                roughness: 0.1,
-                transmission: 0.6,
-                transparent: true,
-                opacity: 0.6,
-            });
-            const concourseGlass = new THREE.Mesh(concourseGlassGeo, concourseGlassMat);
-            concourseGlass.position.y = concourseBaseY + 12.5; 
-            concourseGlass.castShadow = true;
-            stationGroup.add(concourseGlass);
+            const b2Geo = new THREE.BoxGeometry(100, 15, 140);
+            const b2Mesh = createHoloMesh(b2Geo, C_SQUARE, 0.1);
+            b2Mesh.position.set(squareX, -25, 0); // B2 level connecting to L5
+            groups.east.add(b2Mesh);
+
+            // Circular Plaza feature on ground level
+            const plazaGeo = new THREE.CylinderGeometry(50, 50, 2, 32);
+            const plazaMesh = createHoloMesh(plazaGeo, C_SQUARE, 0.2);
+            plazaMesh.position.set(squareX, 1, 0);
+            groups.east.add(plazaMesh);
             
-            stationGroup.add(createLabel("Waiting Hall (候车站厅)", 0, concourseBaseY + 15, STATION_LENGTH/2 - 20, 'rgba(0,0,0,0.7)', '#aee0ff'));
+            // Vertical connection core (Elevators/Stairs)
+            const coreGeo = new THREE.BoxGeometry(20, 60, 20);
+            const coreMesh = createHoloMesh(coreGeo, C_SQUARE, 0.3);
+            coreMesh.position.set(squareX, -5, 0);
+            groups.east.add(coreMesh);
 
-            // 4. Elevated Metro Lines (Line 4 & 6) on the East Plaza
-            const elevatedTrackX = STATION_WIDTH/2 + 60;
-            const elevatedTrackY = 25;
-            
-            // Pillar supports for elevated lines
-            const trackPillarGeo = new THREE.CylinderGeometry(2, 2, elevatedTrackY, 16);
-            const trackPillarMat = new THREE.MeshStandardMaterial({ color: 0x888888 });
-            for(let z = -STATION_LENGTH/2; z <= STATION_LENGTH/2; z += 50) {
-                const pillar = new THREE.Mesh(trackPillarGeo, trackPillarMat);
-                pillar.position.set(elevatedTrackX, elevatedTrackY/2, z);
-                pillar.castShadow = true;
-                stationGroup.add(pillar);
-            }
-
-            // Line 4 (Red) Track
-            const line4Geo = new THREE.BoxGeometry(6, 6, STATION_LENGTH + 120);
-            const line4Mat = new THREE.MeshStandardMaterial({ color: COLOR_LINE4, emissive: COLOR_LINE4, emissiveIntensity: 0.4 });
-            const line4 = new THREE.Mesh(line4Geo, line4Mat);
-            line4.position.set(elevatedTrackX - 5, elevatedTrackY, 0);
-            stationGroup.add(line4);
-            stationGroup.add(createLabel("Line 4", elevatedTrackX - 15, elevatedTrackY + 12, 0, '#e51937'));
-
-            // Line 6 (Cyan) Track
-            const line6Geo = new THREE.BoxGeometry(6, 6, STATION_LENGTH + 120);
-            const line6Mat = new THREE.MeshStandardMaterial({ color: COLOR_LINE6, emissive: COLOR_LINE6, emissiveIntensity: 0.4 });
-            const line6 = new THREE.Mesh(line6Geo, line6Mat);
-            line6.position.set(elevatedTrackX + 5, elevatedTrackY, 0);
-            stationGroup.add(line6);
-            stationGroup.add(createLabel("Line 6", elevatedTrackX + 15, elevatedTrackY + 12, 60, '#0099ab'));
-
-            // 5. The Iconic Wave Roof
-            const roofGeo = new THREE.PlaneGeometry(STATION_WIDTH + 80, STATION_LENGTH + 100, 60, 60);
-            
-            // Modify vertices to create a sweeping wave effect
-            const positions = roofGeo.attributes.position;
-            for (let i = 0; i < positions.count; i++) {
-                const x = positions.getX(i);
-                const y = positions.getY(i); 
-                
-                // Base overarching dome curve
-                let z = ROOF_HEIGHT;
-                z -= Math.pow(x / (STATION_WIDTH * 0.6), 2) * 20; 
-                z -= Math.pow(y / (STATION_LENGTH * 0.6), 2) * 15; 
-                
-                // Adding wave ridges
-                z += Math.sin(x * 0.2) * 2; 
-                
-                // Flare up slightly at the ends
-                z += Math.pow(Math.abs(y) / (STATION_LENGTH * 0.5), 3) * 5;
-
-                positions.setZ(i, z);
-            }
-            roofGeo.computeVertexNormals(); 
-
-            const roofMat = new THREE.MeshStandardMaterial({ 
-                color: 0xf0f0f0, 
-                metalness: 0.4, 
-                roughness: 0.3,
-                side: THREE.DoubleSide
-            });
-            const roof = new THREE.Mesh(roofGeo, roofMat);
-            roof.rotation.x = -Math.PI / 2; 
-            roof.position.y = 15; // Vertical offset to sit atop the high concourse
-            roof.castShadow = true;
-            roof.receiveShadow = true;
-            stationGroup.add(roof);
-
-            // 6. Roof Supporting Pillars
-            const pillarGeo = new THREE.CylinderGeometry(1.5, 1, 1, 16);
-            const pillarMat = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.7 });
-            
-            const pillarSpacingX = STATION_WIDTH / 4;
-            const pillarSpacingZ = STATION_LENGTH / 6;
-
-            for(let x = -STATION_WIDTH/2 + 20; x <= STATION_WIDTH/2 - 20; x += pillarSpacingX) {
-                for(let z = -STATION_LENGTH/2 + 20; z <= STATION_LENGTH/2 - 20; z += pillarSpacingZ) {
-                    // Calculate height up to the dynamic roof curve
-                    const roofElevation = ROOF_HEIGHT + 15 - Math.pow(x/(STATION_WIDTH*0.6), 2)*20 - Math.pow(z/(STATION_LENGTH*0.6), 2)*15;
-                    const pillarHeight = roofElevation - platformBaseY;
-                    
-                    if(pillarHeight > 0) {
-                        const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-                        pillar.scale.y = pillarHeight; 
-                        pillar.position.set(x, platformBaseY + pillarHeight / 2, z);
-                        pillar.castShadow = true;
-                        stationGroup.add(pillar);
-                    }
-                }
-            }
-
-            scene.add(stationGroup);
+            groups.east.add(createLabel("EAST SQUARE (东广场)", squareX, 15, 0, '#33aa88'));
         }
 
-        function setupEventListeners() {
-            window.addEventListener('resize', onWindowResize, false);
+        function setupUI() {
+            // Map checkbox IDs to group objects
+            const toggles = {
+                'toggle-roof': groups.roof,
+                'toggle-hall': groups.hall,
+                'toggle-hsr': groups.hsr,
+                'toggle-l46': groups.l46,
+                'toggle-l5': groups.l5,
+                'toggle-east': groups.east
+            };
 
-            document.getElementById('btn-auto-rotate').addEventListener('click', () => {
+            for (const [id, group] of Object.entries(toggles)) {
+                document.getElementById(id).addEventListener('change', (e) => {
+                    group.visible = e.target.checked;
+                });
+            }
+
+            document.getElementById('btn-rotate').addEventListener('click', (e) => {
                 isAutoRotating = !isAutoRotating;
+                e.target.innerText = isAutoRotating ? "Auto-Rotate [ON]" : "Auto-Rotate [OFF]";
             });
 
             document.getElementById('btn-reset').addEventListener('click', () => {
-                camera.position.set(250, 150, 400);
+                camera.position.set(400, 300, 600);
                 controls.target.set(0, 20, 0);
                 controls.update();
             });
-
-            // Temporarily disable auto-rotate if user interacts
-            controls.addEventListener('start', () => { isAutoRotating = false; });
         }
 
         function onWindowResize() {
@@ -399,9 +474,9 @@
             requestAnimationFrame(animate);
             
             if (isAutoRotating) {
-                // Slowly orbit the camera around the target
-                const time = Date.now() * 0.0001;
-                const radius = 450;
+                const time = Date.now() * 0.0002;
+                const radius = 700;
+                // Rotate around the station center
                 camera.position.x = Math.cos(time) * radius;
                 camera.position.z = Math.sin(time) * radius;
                 camera.lookAt(controls.target);
@@ -411,6 +486,9 @@
 
             renderer.render(scene, camera);
         }
+
+        // Boot
+        init();
     </script>
 </body>
 </html>
