@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>深圳北站 · 3D 模型</title>
+<style>
+  :root { color-scheme: dark; --bg:#0b1018; --panel:rgba(18,27,40,.88); --line:rgba(190,215,240,.16); --text:#edf4fb; --muted:#9eb0c5; --accent:#7ed7ff; }
+  * { box-sizing:border-box }
+  html,body { margin:0; width:100%; height:100%; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  body { overflow:hidden; }
+  #scene { position:fixed; inset:0; width:100%; height:100%; display:block; }
+  .top { position:fixed; top:20px; left:20px; z-index:2; max-width:min(540px,calc(100vw - 40px)); }
+  .eyebrow { font-size:11px; letter-spacing:.18em; color:var(--accent); font-weight:700; }
+  h1 { margin:7px 0 5px; font-size:clamp(25px,4vw,42px); letter-spacing:-.04em; font-weight:650; }
+  .sub { color:var(--muted); font-size:13px; line-height:1.55; }
+  .panel { position:fixed; z-index:2; right:20px; top:20px; width:230px; padding:15px; background:var(--panel); border:1px solid var(--line); border-radius:16px; backdrop-filter:blur(16px); box-shadow:0 14px 44px #0003; }
+  .panel h2 { margin:0 0 11px; font-size:12px; letter-spacing:.08em; color:#c9d9e9; }
+  .btns { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+  button { appearance:none; border:1px solid var(--line); color:var(--text); background:#ffffff08; border-radius:9px; padding:9px 8px; font-size:12px; cursor:pointer; transition:background .18s,border-color .18s; }
+  button:hover,button.active { background:#7ed7ff18; border-color:#7ed7ff80; }
+  .wide { grid-column:1/-1; }
+  .legend { margin-top:13px; display:grid; gap:8px; color:var(--muted); font-size:11px; }
+  .key { display:inline-block; width:8px;height:8px;border-radius:2px;margin-right:7px; }
+  .hint { position:fixed; left:20px; bottom:18px; color:#a7b8ca; font-size:11px; z-index:2; background:#0b1018a8; border:1px solid var(--line); border-radius:9px; padding:8px 10px; }
+  .scale { position:fixed; bottom:20px; right:20px; z-index:2; color:#8fa4bb; font-size:10px; letter-spacing:.12em; }
+  @media(max-width:650px) {
+    .top { top:16px; left:16px; }
+    .panel { top:auto; bottom:56px; right:12px; width:174px; padding:11px; }
+    .panel h2 { margin-bottom:8px; }
+    button { padding:8px 5px; font-size:11px; }
+    .hint { left:12px; bottom:12px; max-width:calc(100vw - 205px); font-size:10px; }
+    .scale { display:none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-label="深圳北站概念三维模型"></canvas>
+<header class="top">
+  <div class="eyebrow">ARCHITECTURE STUDY / SHENZHEN</div>
+  <h1>深圳北站</h1>
+  <div class="sub">概念三维模型 · 站房、站台雨棚与轨道布局示意<br>可拖动旋转、滚轮缩放；非工程测绘模型</div>
+</header>
+<aside class="panel">
+  <h2>VIEW CONTROLS</h2>
+  <div class="btns">
+    <button id="orbit" class="active">自动旋转</button>
+    <button id="reset">重置视角</button>
+    <button id="top">俯视</button>
+    <button id="front">正立面</button>
+    <button id="night" class="active">夜景灯光</button>
+    <button id="day">日景模式</button>
+    <button id="labels" class="wide active">显示结构标注</button>
+  </div>
+  <div class="legend">
+    <div><i class="key" style="background:#dce5ee"></i>站房主体</div>
+    <div><i class="key" style="background:#7895b0"></i>站台雨棚</div>
+    <div><i class="key" style="background:#58c9ef"></i>轨道与灯光</div>
+    <div><i class="key" style="background:#40536b"></i>周边城市基座</div>
+  </div>
+</aside>
+<div class="hint">拖动：旋转　·　滚轮：缩放　·　双击：恢复视角</div>
+<div class="scale">SCHEMATIC MODEL · NOT TO SCALE</div>
+<script>
+(() => {
+  const canvas = document.getElementById('scene');
+  const ctx = canvas.getContext('2d');
+  let W=0,H=0,dpr=1, yaw=-0.72,pitch=0.62,zoom=1, auto=true, night=true, showLabels=true;
+  let dragging=false, lastX=0,lastY=0, moved=false;
+  const V=(x,y,z)=>[x,y,z];
+  const objects=[];
+  const addBox=(x,y,z,w,h,d,color,kind='box')=>objects.push({type:'box',x,y,z,w,h,d,color,kind});
+  const addLine=(a,b,color,width=1,kind='line')=>objects.push({type:'line',a,b,color,width,kind});
+  // Main station hall: a long, low, layered massing inspired by the station's broad roof silhouette.
+  addBox(0,1.35,0,11.8,1.55,5.2,'#dce5ee','station');
+  addBox(0,2.22,0,12.8,.26,5.9,'#f3f6f8','roof');
+  addBox(0,.55,0,11.2,.18,4.8,'#a8bac9','base');
+  // Long glazed front facade strips
+  for(let i=0;i<18;i++){
+    const x=-5.35+i*.63;
+    addBox(x,1.35,2.63,.42,1.12,.035,(i%3===0?'#5dc9e9':'#7d9fb5'),'glass');
+  }
+  // Entrance canopy and columns
+  addBox(0,.94,3.35,8.4,.14,1.2,'#8ea5b8','canopy');
+  for(let i=0;i<9;i++) addBox(-3.8+i*.95,.42,3.6,.09,.9,.09,'#d8e4ed','column');
+  // Platform canopy modules and railway tracks
+  for(let i=0;i<5;i++){
+    const z=-4.5+i*1.9;
+    addBox(0,.8,z,15.8,.13,1.25,'#718ba5','platformRoof');
+    for(let j=0;j<15;j++) addBox(-7.2+j*1.03,.16,z,.045,.8,.045,'#4d6176','support');
+    // platform edge
+    addBox(0,.12,z+.72,15.8,.08,.07,'#a8d9ed','platformEdge');
+  }
+  for(let i=0;i<6;i++){
+    const z=-5+i*1.85;
+    addLine(V(-9,.04,z),V(9,.04,z),'#4fc7ef',1.7,'track');
+    addLine(V(-9,.04,z+.16),V(9,.04,z+.16),'#7c8d9e',1.2,'track');
+    for(let x=-8.7;x<9;x+=.48) addBox(x,.025,z+.08,.06,.035,.48,'#596b7d','sleeper');
+  }
+  // City blocks around the station, kept intentionally abstract.
+  const blocks=[
+    [-10,0,-9,2.1,1.2,2.2],[-7,0,-10,1.8,2.1,1.6],[9,0,-9,2.4,2.8,2.1],
+    [11,0,-5,1.5,1.8,2.2],[-10,0,7,2.3,2.3,1.9],[-7,0,8,1.5,1.2,1.7],
+    [9,0,7,2.2,1.4,2.2],[12,0,8,1.4,2.4,1.5],[-13,0,1,1.4,1.7,2.1]
+  ];
+  blocks.forEach((b,i)=>addBox(b[0],b[1]+b[4]/2,b[2],b[3],b[4],b[5],i%2?'#35475c':'#40536b','city'));
+  const labels=[
+    {p:V(0,3.1,0),t:'深圳北站站房'},
+    {p:V(0,1.2,5.1),t:'站前广场 / 入口'},
+    {p:V(0,1.8,-4.5),t:'站台雨棚'},
+    {p:V(8,.5,4),t:'铁路轨道'}
+  ];
+  function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
+  function rotate(p){
+    let [x,y,z]=p;
+    const cy=Math.cos(yaw),sy=Math.sin(yaw);
+    [x,z]=[x*cy-z*sy,x*sy+z*cy];
+    const cp=Math.cos(pitch),sp=Math.sin(pitch);
+    return [x,y*cp-z*sp,y*sp+z*cp];
+  }
+  function project(p){
+    const r=rotate(p), scale=Math.min(W/27,H/19)*zoom;
+    return [W*.5+r[0]*scale,H*.55-r[1]*scale,r[2]];
+  }
+  function poly(points,fill,stroke=null){
+    ctx.beginPath();points.forEach((p,i)=>{const q=project(p);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});
+    ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}
+  }
+  function box(o){
+    const {x,y,z,w,h,d,color,kind}=o;
+    const x0=x-w/2,x1=x+w/2,y0=y-h/2,y1=y+h/2,z0=z-d/2,z1=z+d/2;
+    const faces=[
+      {pts:[V(x0,y0,z1),V(x1,y0,z1),V(x1,y1,z1),V(x0,y1,z1)],shade:night?1:.96},
+      {pts:[V(x1,y0,z0),V(x1,y0,z1),V(x1,y1,z1),V(x1,y1,z0)],shade:night?.72:.78},
+      {pts:[V(x0,y1,z0),V(x1,y1,z0),V(x1,y1,z1),V(x0,y1,z1)],shade:night?1.1:1.05},
+      {pts:[V(x0,y0,z0),V(x1,y0,z0),V(x1,y0,z1),V(x0,y0,z1)],shade:night?.58:.68}
+    ];
+    faces.forEach(f=>poly(f.pts,shadeColor(color,f.shade)));
+    if(kind==='glass'){
+      const p1=project(V(x-w*.34,y-h*.45,z+d*.6)),p2=project(V(x+w*.34,y-h*.45,z+d*.6));
+      ctx.strokeStyle=night?'#a3efff':'#d8f4ff';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(...p1);ctx.lineTo(...p2);ctx.stroke();
+    }
+    if(kind==='track'){
+      const p1=project(o.a),p2=project(o.b);ctx.strokeStyle=o.color;ctx.lineWidth=o.width;ctx.beginPath();ctx.moveTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.stroke();
+    }
+  }
+  function shadeColor(hex,f){
+    const n=parseInt(hex.slice(1),16),r=Math.min(255,Math.round(((n>>16)&255)*f)),g=Math.min(255,Math.round(((n>>8)&255)*f)),b=Math.min(255,Math.round((n&255)*f));
+    return `rgb(${r},${g},${b})`;
+  }
+  function drawLine(o){
+    const a=project(o.a),b=project(o.b);ctx.strokeStyle=o.color;ctx.lineWidth=o.width;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+  }
+  function drawGrid(){
+    ctx.save();ctx.globalAlpha=night?.2:.12;ctx.strokeStyle=night?'#52718c':'#8094a7';ctx.lineWidth=1;
+    for(let i=-20;i<=20;i++){
+      let a=project(V(i,0,-18)),b=project(V(i,0,18));ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+      a=project(V(-20,0,i));b=project(V(20,0,i));ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    }ctx.restore();
+  }
+  function drawLabels(){
+    if(!showLabels)return;
+    labels.forEach(l=>{
+      const p=project(l.p);ctx.font='12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif';
+      const width=ctx.measureText(l.t).width+18;
+      ctx.fillStyle=night?'rgba(8,18,29,.82)':'rgba(255,255,255,.9)';
+      ctx.strokeStyle=night?'#7ed7ff70':'#477d9a60';
+      roundRect(p[0]-width/2,p[1]-13,width,25,7,true,true);
+      ctx.fillStyle=night?'#dff6ff':'#294459';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.t,p[0],p[1]);
+    });
+  }
+  function roundRect(x,y,w,h,r,fill,stroke){
+    ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);if(fill)ctx.fill();if(stroke)ctx.stroke();
+  }
+  function render(){
+    ctx.clearRect(0,0,W,H);
+    const grad=ctx.createLinearGradient(0,0,0,H);
+    if(night){grad.addColorStop(0,'#0b1421');grad.addColorStop(.6,'#111e2c');grad.addColorStop(1,'#080d14');}
+    else{grad.addColorStop(0,'#dceaf3');grad.addColorStop(.62,'#b9cedd');grad.addColorStop(1,'#8fa6b9');}
+    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+    // Subtle radial glow behind the station.
+    const glow=ctx.createRadialGradient(W*.5,H*.5,0,W*.5,H*.5,Math.max(W,H)*.55);
+    glow.addColorStop(0,night?'#23405a55':'#ffffff55');glow.addColorStop(1,'#00000000');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+    drawGrid();
+    const sorted=[...objects].sort((a,b)=>{
+      const za=rotate(V(a.x||0,a.y||0,a.z||0))[2],zb=rotate(V(b.x||0,b.y||0,b.z||0))[2];return za-zb;
+    });
+    sorted.forEach(o=>o.type==='line'?drawLine(o):box(o));
+    // Highlight station edge / lighting
+    if(night){
+      ctx.save();ctx.globalAlpha=.6;ctx.shadowColor='#59d7ff';ctx.shadowBlur=12;
+      const a=project(V(-5.6,1.2,2.66)),b=project(V(5.6,1.2,2.66));ctx.strokeStyle='#64ddff';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();ctx.restore();
+    }
+    drawLabels();
+    if(auto&&!dragging){yaw+=.0022;}
+    requestAnimationFrame(render);
+  }
+  const setActive=id=>{document.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.id===id));};
+  document.getElementById('orbit').onclick=()=>{auto=!auto;document.getElementById('orbit').classList.toggle('active',auto);};
+  document.getElementById('reset').onclick=()=>{yaw=-.72;pitch=.62;zoom=1;auto=true;night=true;showLabels=true;document.getElementById('orbit').classList.add('active');document.getElementById('night').classList.add('active');document.getElementById('day').classList.remove('active');document.getElementById('labels').classList.add('active');};
+  document.getElementById('top').onclick=()=>{pitch=1.15;auto=false;document.getElementById('orbit').classList.remove('active');};
+  document.getElementById('front').onclick=()=>{pitch=.15;yaw=0;auto=false;document.getElementById('orbit').classList.remove('active');};
+  document.getElementById('night').onclick=()=>{night=true;document.getElementById('night').classList.add('active');document.getElementById('day').classList.remove('active');};
+  document.getElementById('day').onclick=()=>{night=false;document.getElementById('day').classList.add('active');document.getElementById('night').classList.remove('active');};
+  document.getElementById('labels').onclick=()=>{showLabels=!showLabels;document.getElementById('labels').classList.toggle('active',showLabels);};
+  canvas.addEventListener('pointerdown',e=>{dragging=true;moved=false;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;if(Math.abs(dx)+Math.abs(dy)>2)moved=true;yaw+=dx*.008;pitch=Math.max(-.15,Math.min(1.4,pitch+dy*.006));lastX=e.clientX;lastY=e.clientY;});
+  canvas.addEventListener('pointerup',()=>{dragging=false;});
+  canvas.addEventListener('pointercancel',()=>{dragging=false;});
+  canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.55,Math.min(1.8,zoom*(e.deltaY>0?.92:1.08)));},{passive:false});
+  canvas.addEventListener('dblclick',()=>{yaw=-.72;pitch=.62;zoom=1;});
+  window.addEventListener('resize',resize);
+  resize();render();
+})();
+</script>
+</body>
+</html>
