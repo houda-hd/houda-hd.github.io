@@ -47,7 +47,7 @@
         <div class="ui-panel p-5 max-w-sm">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Shenzhen North Station</h1>
             <p class="text-sm text-gray-600 mb-4">
-                Interactive 3D architectural concept featuring the iconic sweeping wave roof, massive concourse, and high-speed rail platforms.
+                Interactive 3D architectural concept featuring the multi-level layout: Arrivals/Exit layer, High-Speed Platforms, suspended Waiting Hall, and Metro Lines 4, 5, & 6.
             </p>
             <div class="flex items-center space-x-2 text-xs text-gray-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
@@ -74,7 +74,14 @@
         // Configuration
         const STATION_WIDTH = 300;
         const STATION_LENGTH = 450;
-        const ROOF_HEIGHT = 65;
+        const ROOF_HEIGHT = 85; // Raised to accommodate new levels
+
+        // Colors
+        const COLOR_LINE4 = 0xe51937; // Red
+        const COLOR_LINE5 = 0x93328e; // Purple
+        const COLOR_LINE6 = 0x0099ab; // Cyan
+        const COLOR_WAITING_HALL = 0xddeeff;
+        const COLOR_EXIT_LEVEL = 0xe0e0e0;
 
         init();
         animate();
@@ -138,6 +145,34 @@
             scene.add(dirLight);
         }
 
+        function createLabel(text, x, y, z, bgColor = 'rgba(0, 0, 0, 0.7)', textColor = 'white') {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 512;
+            canvas.height = 128;
+
+            // Background pill
+            context.fillStyle = bgColor;
+            context.beginPath();
+            context.roundRect(10, 10, 492, 108, 54);
+            context.fill();
+
+            // Text
+            context.font = "bold 42px Inter, sans-serif";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.fillStyle = textColor;
+            context.fillText(text, 256, 64);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture, depthTest: false });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.set(x, y, z);
+            sprite.scale.set(60, 15, 1);
+            sprite.renderOrder = 999;
+            return sprite;
+        }
+
         function buildEnvironment() {
             // Main ground plane
             const groundGeo = new THREE.PlaneGeometry(2000, 2000);
@@ -162,41 +197,37 @@
         function buildStation() {
             const stationGroup = new THREE.Group();
 
-            // 1. Base/Plaza Foundation
-            const baseGeo = new THREE.BoxGeometry(STATION_WIDTH + 40, 2, STATION_LENGTH + 40);
-            const baseMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.9 });
-            const base = new THREE.Mesh(baseGeo, baseMat);
-            base.position.y = 1;
-            base.receiveShadow = true;
-            stationGroup.add(base);
+            // 1. Level -1/0: Arrivals / Exit Level (出站层)
+            const exitLevelGeo = new THREE.BoxGeometry(STATION_WIDTH + 60, 15, STATION_LENGTH + 60);
+            const exitLevelMat = new THREE.MeshStandardMaterial({ color: COLOR_EXIT_LEVEL, roughness: 0.9 });
+            const exitLevel = new THREE.Mesh(exitLevelGeo, exitLevelMat);
+            exitLevel.position.y = 7.5;
+            exitLevel.receiveShadow = true;
+            exitLevel.castShadow = true;
+            stationGroup.add(exitLevel);
+            
+            stationGroup.add(createLabel("Arrivals / Exit Level (出站层)", 0, 7.5, STATION_LENGTH/2 + 40));
 
-            // 2. Main Glass Concourse Building
-            const concourseGeo = new THREE.BoxGeometry(STATION_WIDTH - 20, 40, STATION_LENGTH - 60);
-            const concourseMat = new THREE.MeshPhysicalMaterial({
-                color: 0xddeeff,
-                metalness: 0.1,
-                roughness: 0.1,
-                transmission: 0.6, // Glass-like effect
-                transparent: true,
-                opacity: 0.7,
-            });
-            const concourse = new THREE.Mesh(concourseGeo, concourseMat);
-            concourse.position.y = 22; // Center is 20 + 2 (base)
-            concourse.castShadow = true;
-            concourse.receiveShadow = true;
-            stationGroup.add(concourse);
+            // Metro Line 5 (Purple) - Cuts through the lower/exit level (East-West)
+            const line5Geo = new THREE.BoxGeometry(STATION_WIDTH + 180, 6, 12);
+            const line5Mat = new THREE.MeshStandardMaterial({ color: COLOR_LINE5, emissive: COLOR_LINE5, emissiveIntensity: 0.5 });
+            const line5 = new THREE.Mesh(line5Geo, line5Mat);
+            line5.position.set(0, 7.5, 0); // Runs through the middle of the exit level
+            stationGroup.add(line5);
+            stationGroup.add(createLabel("Line 5", -STATION_WIDTH/2 - 70, 15, 0, '#93328e'));
 
-            // 3. Train Platforms and Tracks (Ground level extensions)
+            // 2. Level 1: High-Speed Rail Platforms (National Rail)
+            const platformBaseY = 15;
             const numPlatforms = 10;
             const platformSpacing = (STATION_WIDTH - 40) / numPlatforms;
             for(let i = 0; i <= numPlatforms; i++) {
                 const xPos = - (STATION_WIDTH - 40)/2 + (i * platformSpacing);
                 
                 // Platform
-                const platGeo = new THREE.BoxGeometry(10, 4, STATION_LENGTH + 80);
+                const platGeo = new THREE.BoxGeometry(8, 4, STATION_LENGTH + 80);
                 const platMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
                 const platform = new THREE.Mesh(platGeo, platMat);
-                platform.position.set(xPos, 4, 0);
+                platform.position.set(xPos, platformBaseY + 2, 0);
                 platform.receiveShadow = true;
                 platform.castShadow = true;
                 stationGroup.add(platform);
@@ -206,7 +237,7 @@
                     const trainGeo = new THREE.BoxGeometry(6, 8, 150 + Math.random() * 100);
                     const trainMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.5 });
                     const train = new THREE.Mesh(trainGeo, trainMat);
-                    train.position.set(xPos + platformSpacing/2, 6, (Math.random() - 0.5) * 100);
+                    train.position.set(xPos + platformSpacing/2, platformBaseY + 4, (Math.random() - 0.5) * 100);
                     train.castShadow = true;
                     stationGroup.add(train);
                     
@@ -219,21 +250,80 @@
                 }
             }
 
-            // 4. The Iconic Wave Roof
-            const roofGeo = new THREE.PlaneGeometry(STATION_WIDTH + 60, STATION_LENGTH + 100, 60, 60);
+            // 3. Level 2: Suspended Waiting Hall / Concourse (候车站厅)
+            const concourseBaseY = 35;
+            
+            // Solid floor for the concourse
+            const concourseFloorGeo = new THREE.BoxGeometry(STATION_WIDTH - 10, 2, STATION_LENGTH - 40);
+            const concourseFloorMat = new THREE.MeshStandardMaterial({ color: 0xdddddd });
+            const concourseFloor = new THREE.Mesh(concourseFloorGeo, concourseFloorMat);
+            concourseFloor.position.y = concourseBaseY;
+            concourseFloor.castShadow = true;
+            concourseFloor.receiveShadow = true;
+            stationGroup.add(concourseFloor);
+
+            // Glass enclosure for the waiting hall
+            const concourseGlassGeo = new THREE.BoxGeometry(STATION_WIDTH - 20, 25, STATION_LENGTH - 50);
+            const concourseGlassMat = new THREE.MeshPhysicalMaterial({
+                color: COLOR_WAITING_HALL,
+                metalness: 0.1,
+                roughness: 0.1,
+                transmission: 0.6,
+                transparent: true,
+                opacity: 0.6,
+            });
+            const concourseGlass = new THREE.Mesh(concourseGlassGeo, concourseGlassMat);
+            concourseGlass.position.y = concourseBaseY + 12.5; 
+            concourseGlass.castShadow = true;
+            stationGroup.add(concourseGlass);
+            
+            stationGroup.add(createLabel("Waiting Hall (候车站厅)", 0, concourseBaseY + 15, STATION_LENGTH/2 - 20, 'rgba(0,0,0,0.7)', '#aee0ff'));
+
+            // 4. Elevated Metro Lines (Line 4 & 6) on the East Plaza
+            const elevatedTrackX = STATION_WIDTH/2 + 60;
+            const elevatedTrackY = 25;
+            
+            // Pillar supports for elevated lines
+            const trackPillarGeo = new THREE.CylinderGeometry(2, 2, elevatedTrackY, 16);
+            const trackPillarMat = new THREE.MeshStandardMaterial({ color: 0x888888 });
+            for(let z = -STATION_LENGTH/2; z <= STATION_LENGTH/2; z += 50) {
+                const pillar = new THREE.Mesh(trackPillarGeo, trackPillarMat);
+                pillar.position.set(elevatedTrackX, elevatedTrackY/2, z);
+                pillar.castShadow = true;
+                stationGroup.add(pillar);
+            }
+
+            // Line 4 (Red) Track
+            const line4Geo = new THREE.BoxGeometry(6, 6, STATION_LENGTH + 120);
+            const line4Mat = new THREE.MeshStandardMaterial({ color: COLOR_LINE4, emissive: COLOR_LINE4, emissiveIntensity: 0.4 });
+            const line4 = new THREE.Mesh(line4Geo, line4Mat);
+            line4.position.set(elevatedTrackX - 5, elevatedTrackY, 0);
+            stationGroup.add(line4);
+            stationGroup.add(createLabel("Line 4", elevatedTrackX - 15, elevatedTrackY + 12, 0, '#e51937'));
+
+            // Line 6 (Cyan) Track
+            const line6Geo = new THREE.BoxGeometry(6, 6, STATION_LENGTH + 120);
+            const line6Mat = new THREE.MeshStandardMaterial({ color: COLOR_LINE6, emissive: COLOR_LINE6, emissiveIntensity: 0.4 });
+            const line6 = new THREE.Mesh(line6Geo, line6Mat);
+            line6.position.set(elevatedTrackX + 5, elevatedTrackY, 0);
+            stationGroup.add(line6);
+            stationGroup.add(createLabel("Line 6", elevatedTrackX + 15, elevatedTrackY + 12, 60, '#0099ab'));
+
+            // 5. The Iconic Wave Roof
+            const roofGeo = new THREE.PlaneGeometry(STATION_WIDTH + 80, STATION_LENGTH + 100, 60, 60);
             
             // Modify vertices to create a sweeping wave effect
             const positions = roofGeo.attributes.position;
             for (let i = 0; i < positions.count; i++) {
                 const x = positions.getX(i);
-                const y = positions.getY(i); // Note: Plane is created in XY, will rotate to XZ later
+                const y = positions.getY(i); 
                 
                 // Base overarching dome curve
                 let z = ROOF_HEIGHT;
-                z -= Math.pow(x / (STATION_WIDTH * 0.6), 2) * 20; // Curve down on X axis
-                z -= Math.pow(y / (STATION_LENGTH * 0.6), 2) * 15; // Curve down on Y (length) axis
+                z -= Math.pow(x / (STATION_WIDTH * 0.6), 2) * 20; 
+                z -= Math.pow(y / (STATION_LENGTH * 0.6), 2) * 15; 
                 
-                // Adding wave ridges (architectural details)
+                // Adding wave ridges
                 z += Math.sin(x * 0.2) * 2; 
                 
                 // Flare up slightly at the ends
@@ -241,7 +331,7 @@
 
                 positions.setZ(i, z);
             }
-            roofGeo.computeVertexNormals(); // Recompute lighting normals after modifying shape
+            roofGeo.computeVertexNormals(); 
 
             const roofMat = new THREE.MeshStandardMaterial({ 
                 color: 0xf0f0f0, 
@@ -250,14 +340,14 @@
                 side: THREE.DoubleSide
             });
             const roof = new THREE.Mesh(roofGeo, roofMat);
-            roof.rotation.x = -Math.PI / 2; // Lay flat
-            roof.position.y = 10; // Lift above building
+            roof.rotation.x = -Math.PI / 2; 
+            roof.position.y = 15; // Vertical offset to sit atop the high concourse
             roof.castShadow = true;
             roof.receiveShadow = true;
             stationGroup.add(roof);
 
-            // 5. Roof Supporting Pillars
-            const pillarGeo = new THREE.CylinderGeometry(1.5, 1, 45, 16);
+            // 6. Roof Supporting Pillars
+            const pillarGeo = new THREE.CylinderGeometry(1.5, 1, 1, 16);
             const pillarMat = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.7 });
             
             const pillarSpacingX = STATION_WIDTH / 4;
@@ -265,14 +355,17 @@
 
             for(let x = -STATION_WIDTH/2 + 20; x <= STATION_WIDTH/2 - 20; x += pillarSpacingX) {
                 for(let z = -STATION_LENGTH/2 + 20; z <= STATION_LENGTH/2 - 20; z += pillarSpacingZ) {
-                    const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-                    // Approximate height calculation based on roof curve
-                    const heightFactor = 45 - Math.pow(x/(STATION_WIDTH*0.6), 2)*20 - Math.pow(z/(STATION_LENGTH*0.6), 2)*15;
+                    // Calculate height up to the dynamic roof curve
+                    const roofElevation = ROOF_HEIGHT + 15 - Math.pow(x/(STATION_WIDTH*0.6), 2)*20 - Math.pow(z/(STATION_LENGTH*0.6), 2)*15;
+                    const pillarHeight = roofElevation - platformBaseY;
                     
-                    pillar.scale.y = heightFactor / 45; 
-                    pillar.position.set(x, heightFactor / 2, z);
-                    pillar.castShadow = true;
-                    stationGroup.add(pillar);
+                    if(pillarHeight > 0) {
+                        const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+                        pillar.scale.y = pillarHeight; 
+                        pillar.position.set(x, platformBaseY + pillarHeight / 2, z);
+                        pillar.castShadow = true;
+                        stationGroup.add(pillar);
+                    }
                 }
             }
 
