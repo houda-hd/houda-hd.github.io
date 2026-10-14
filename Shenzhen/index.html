@@ -18,18 +18,18 @@
   --ground: #f3f1ec;
   --ground-elevated: #eae6dd;
   --ground-recessed: #dfd9ce;
-  --ground-canvas: #ece9e1;
+  --ground-canvas: #e8e4dc;
   --ink: #141413;
   --ink-secondary: #4a4843;
   --ink-muted: #78756e;
-  --rule: #d5d0c5;
+  --rule: #d2cdc2;
   --rule-strong: #141413;
 
   /* Primary Action & Wayfinding Signal (International Architectural Orange) */
   --signal: #d94e1f;
   --signal-tint: #f7e6e0;
 
-  /* Authentic Rail & Metro System Identities (Used strictly on transit lines/badges) */
+  /* Authentic Rail & Metro System Identities */
   --cr-navy: #003a70;       /* China Railway High-Speed Rail */
   --cr-crimson: #b81d24;    /* China Railway Emblem / Cross-Border HK Zone */
   --metro-l4: #d62828;      /* Shenzhen Metro Line 4 (Longhua) */
@@ -49,7 +49,7 @@ body[data-theme="carbon"] {
   --ground: #141413;
   --ground-elevated: #1e1e1c;
   --ground-recessed: #282825;
-  --ground-canvas: #0f0f0e;
+  --ground-canvas: #10100f;
   --ink: #f3f1ec;
   --ink-secondary: #b8b4aa;
   --ink-muted: #7d7970;
@@ -79,7 +79,6 @@ html, body {
   overflow: hidden;
 }
 
-/* Subtle architectural scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -258,13 +257,11 @@ html, body {
   }
 }
 
-/* Mobile-only thumb controls hidden on desktop */
 .mobile-tabbar,
 .mobile-floor-rail {
   display: none;
 }
 
-/* Left & Right Editorial Control Columns */
 .side-sheet {
   background-color: var(--ground);
   border-right: 1px solid var(--rule);
@@ -455,16 +452,15 @@ html, body {
   touch-action: none;
 }
 
-/* Top Floating Architectural Title & Camera Bar */
 .viewport-hud-top {
   position: absolute;
-  top: 14px;
-  left: 16px;
-  right: 16px;
+  top: 12px;
+  left: 14px;
+  right: 14px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   pointer-events: none;
   z-index: 20;
 }
@@ -472,13 +468,13 @@ html, body {
 .hud-title-block {
   background-color: var(--ground);
   border: 1px solid var(--rule);
-  padding: 10px 14px;
+  padding: 8px 12px;
   pointer-events: auto;
   max-width: 390px;
 }
 
 .hud-title-block h2 {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 700;
   white-space: nowrap;
   letter-spacing: -0.02em;
@@ -487,9 +483,9 @@ html, body {
 }
 
 .hud-title-block p {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--ink-secondary);
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 .hud-camera-controls {
@@ -523,7 +519,6 @@ html, body {
   color: var(--ground);
 }
 
-/* Interactive 3D Canvas Surface */
 #station3DCanvas {
   width: 100%;
   height: 100%;
@@ -536,52 +531,49 @@ html, body {
   cursor: grabbing;
 }
 
-/* CSS 3D Projected Spatial Callout Pins (Perimeter Anchored — Zero Overlap) */
-.spatial-pins-layer {
+/* Active Route Step Floating Strip */
+.hud-route-ribbon {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 15;
-}
-
-.spatial-pin {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  pointer-events: auto;
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-
-.pin-card {
-  padding: 4px 8px;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: var(--ground);
-  color: var(--ink);
   border: 1px solid var(--ink);
-  border-left: 3px solid var(--signal);
-  font-size: 11px;
-  font-weight: 700;
+  border-left: 4px solid var(--signal);
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
   white-space: nowrap;
+  max-width: calc(100% - 28px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 18;
+  pointer-events: none;
 }
 
-.spatial-pin:hover .pin-card,
-.spatial-pin.is-highlighted .pin-card {
+.hud-route-ribbon span.step-pill {
+  display: inline-block;
   background-color: var(--signal);
   color: #ffffff;
-  border-color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  margin: 0 3px;
 }
 
 /* Bottom HUD Sliders & Scale Legend */
 .viewport-hud-bottom {
   position: absolute;
-  bottom: 14px;
-  left: 16px;
-  right: 16px;
+  bottom: 10px;
+  left: 14px;
+  right: 14px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   pointer-events: none;
   z-index: 20;
 }
@@ -607,7 +599,7 @@ html, body {
 }
 
 .slider-group input[type="range"] {
-  width: 82px;
+  width: 78px;
   accent-color: var(--ink);
   cursor: pointer;
 }
@@ -690,7 +682,6 @@ html, body {
   text-overflow: ellipsis;
 }
 
-/* Active Wayfinding Step-by-Step Instructions */
 .wayfinding-steps {
   margin-top: 10px;
   padding: 10px 12px;
@@ -719,7 +710,6 @@ html, body {
   color: var(--ink);
 }
 
-/* Selected Architectural Element Inspector */
 .element-inspector {
   padding: 10px 12px;
   background-color: var(--ground-elevated);
@@ -746,7 +736,6 @@ html, body {
   line-height: 1.45;
 }
 
-/* Swiss Transit Timetable */
 .transit-table {
   width: 100%;
   border-collapse: collapse;
@@ -774,7 +763,7 @@ html, body {
 }
 
 /* ==========================================================================
-   7. BUILT-IN STYLE.CSS DRAWER (For inspecting & downloading style.css)
+   7. BUILT-IN STYLE.CSS DRAWER
    ========================================================================== */
 .css-drawer-backdrop {
   display: none;
@@ -833,7 +822,6 @@ html, body {
 
 /* ==========================================================================
    8. TABLET & MOBILE ARCHITECTURE (<= 1024px & <= 600px Thumb-First Layout)
-   Follows taste-skill rule: "a phone layout that is its own composition"
    ========================================================================== */
 @media (max-width: 1024px) {
   html, body {
@@ -867,7 +855,6 @@ html, body {
     font-size: 11px;
   }
 
-  /* Split screen: Top 50vh = Interactive 3D Stage, Middle 42px = Thumb Tab Bar, Bottom = Active Control Deck */
   .app-shell {
     display: flex;
     flex-direction: column;
@@ -878,21 +865,20 @@ html, body {
 
   .viewport-stage {
     order: 1;
-    height: 50vh;
-    height: 50dvh;
-    min-height: 310px;
+    height: 52vh;
+    height: 52dvh;
+    min-height: 320px;
     flex-shrink: 0;
     border-bottom: 1px solid var(--rule);
   }
 
-  /* Left-edge thumb floor rail inside the 3D viewport on mobile/tablet */
   .mobile-floor-rail {
     display: flex;
     flex-direction: column;
     gap: 2px;
     position: absolute;
-    left: 10px;
-    top: 50%;
+    left: 8px;
+    top: 48%;
     transform: translateY(-50%);
     z-index: 25;
     background-color: var(--ground);
@@ -902,13 +888,13 @@ html, body {
   }
 
   .m-floor-pill {
-    width: 34px;
-    height: 26px;
+    width: 32px;
+    height: 25px;
     border: none;
     background-color: transparent;
     color: var(--ink);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -921,7 +907,6 @@ html, body {
     color: #ffffff;
   }
 
-  /* Mobile 4-Tab Thumb Switcher Bar */
   .mobile-tabbar {
     order: 2;
     display: grid;
@@ -956,7 +941,6 @@ html, body {
     border-bottom-color: var(--signal);
   }
 
-  /* Bottom Control Deck: Only the active mobile tab section is displayed */
   .side-sheet {
     order: 3;
     border: none;
@@ -980,33 +964,16 @@ html, body {
     display: block;
   }
 
-  /* Compact HUD inside the 3D Stage for Mobile & Tablet */
   .viewport-hud-top {
     top: 8px;
-    left: 10px;
-    right: 10px;
+    left: 8px;
+    right: 8px;
     flex-direction: column;
     align-items: stretch;
-    gap: 6px;
+    gap: 4px;
   }
 
   .hud-title-block {
-    max-width: 100%;
-    padding: 6px 10px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .hud-title-block h2 {
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .hud-title-block p {
     display: none;
   }
 
@@ -1022,10 +989,20 @@ html, body {
     font-size: 11px;
   }
 
+  .hud-route-ribbon {
+    bottom: 40px;
+    left: 48px;
+    right: 8px;
+    transform: none;
+    max-width: none;
+    font-size: 10.5px;
+    padding: 4px 8px;
+  }
+
   .viewport-hud-bottom {
-    bottom: 8px;
-    left: 52px;
-    right: 10px;
+    bottom: 6px;
+    left: 48px;
+    right: 8px;
     flex-direction: column;
     align-items: stretch;
     gap: 4px;
@@ -1034,12 +1011,12 @@ html, body {
   .hud-sliders-bar {
     width: 100%;
     justify-content: space-between;
-    padding: 5px 10px;
+    padding: 4px 10px;
     gap: 8px;
   }
 
   .slider-group input[type="range"] {
-    width: 64px;
+    width: 68px;
   }
 
   .hud-legend-bar {
@@ -1047,7 +1024,6 @@ html, body {
   }
 }
 
-/* Extra-compact adjustments for 390px phone screens */
 @media (max-width: 600px) {
   .station-mark span:last-child {
     font-size: 13.5px;
@@ -1057,17 +1033,8 @@ html, body {
     display: none;
   }
 
-  .hud-sliders-bar {
-    justify-content: space-between;
-  }
-
   .slider-group input[type="range"] {
-    width: 90px;
-  }
-
-  .pin-card {
-    padding: 2px 6px;
-    font-size: 9.5px;
+    width: 82px;
   }
 
   .gate-chip {
@@ -1112,7 +1079,7 @@ html, body {
     </nav>
 
     <div class="topbar-actions">
-      <button class="action-btn" id="btnToggleRoof" onclick="toggleRoofCutaway()">剖开屋顶</button>
+      <button class="action-btn is-active" id="btnToggleRoof" onclick="toggleRoofCutaway()">隐藏屋顶网架</button>
       <button class="action-btn" id="btnToggleTheme" onclick="toggleTheme()">炭黑图纸</button>
       <button class="action-btn action-primary" onclick="openCssDrawer()">style.css</button>
     </div>
@@ -1126,7 +1093,7 @@ html, body {
       <section class="sheet-section" id="secLevels">
         <div class="section-heading">
           <span>垂直楼层剖面切换</span>
-          <span class="section-sub">点击聚焦单层 3D 模型</span>
+          <span class="section-sub">点击单层自动剖切上层</span>
         </div>
 
         <div class="level-stack" id="levelStack">
@@ -1240,15 +1207,15 @@ html, body {
     <section class="viewport-stage" id="viewportStage">
       <div class="viewport-hud-top">
         <div class="hud-title-block">
-          <h2 id="hudActiveTitle">深圳北站三维立体交通枢纽总图 (F4–B2)</h2>
-          <p id="hudActiveSubtitle">单指拖拽 360° 旋转 · 双指捏合缩放 · 点击流线触发三维立体导航轨迹</p>
+          <h2 id="hudActiveTitle">深圳北站三维实体建筑模型 (F4–B2)</h2>
+          <p id="hudActiveSubtitle">单指拖拽 360° 旋转 · 双指捏合缩放 · 左侧切换单层剖面</p>
         </div>
 
         <div class="hud-camera-controls">
-          <button class="cam-btn is-active" onclick="setCameraPreset('iso', this)">东南全景</button>
+          <button class="cam-btn is-active" onclick="setCameraPreset('iso', this)">东南轴测</button>
           <button class="cam-btn" onclick="setCameraPreset('east', this)">东广场地铁</button>
           <button class="cam-btn" onclick="setCameraPreset('west', this)">西广场网约车</button>
-          <button class="cam-btn" onclick="setCameraPreset('top', this)">俯视总图</button>
+          <button class="cam-btn" onclick="setCameraPreset('top', this)">正交俯视</button>
           <button class="cam-btn" onclick="setCameraPreset('underground', this)">B1/B2地下</button>
         </div>
       </div>
@@ -1264,25 +1231,27 @@ html, body {
         <button class="m-floor-pill" data-level="B2" onclick="focusLayer('B2')">B2</button>
       </div>
 
-      <!-- High-DPI 3D Architectural Canvas -->
+      <!-- High-DPI 3D Architectural Canvas (Hierarchical Slab + Back-Face Culled Solid Geometry) -->
       <canvas id="station3DCanvas"></canvas>
 
-      <!-- Synchronized Perimeter 3D Callout Pins -->
-      <div class="spatial-pins-layer" id="spatialPinsLayer"></div>
+      <!-- Clean Single-Line Route Step Ribbon -->
+      <div class="hud-route-ribbon" id="hudRouteRibbon">
+        <span class="step-pill">1</span>F1站台 ➔ <span class="step-pill">2</span>F2东侧A2口 ➔ <span class="step-pill">3</span>东广场免安检梯 ➔ <span class="step-pill">4</span>B1五号线厅 ➔ <span class="step-pill">5</span>B2站台
+      </div>
 
       <div class="viewport-hud-bottom">
         <div class="hud-sliders-bar">
           <label class="slider-group">
             <span>层间展开</span>
-            <input type="range" id="explodeSlider" min="0.7" max="2.5" step="0.05" value="1.35" oninput="updateExplosion(this.value)" />
+            <input type="range" id="explodeSlider" min="0.85" max="2.1" step="0.05" value="1.05" oninput="updateExplosion(this.value)" />
           </label>
           <label class="slider-group">
-            <span>旋转</span>
-            <input type="range" id="yawSlider" min="-180" max="180" step="1" value="-36" oninput="updateYawFromSlider(this.value)" />
+            <span>水平旋转</span>
+            <input type="range" id="yawSlider" min="-180" max="180" step="1" value="-38" oninput="updateYawFromSlider(this.value)" />
           </label>
           <label class="slider-group hide-on-phone">
-            <span>俯仰</span>
-            <input type="range" id="pitchSlider" min="15" max="82" step="1" value="32" oninput="updatePitchFromSlider(this.value)" />
+            <span>俯仰角</span>
+            <input type="range" id="pitchSlider" min="18" max="78" step="1" value="30" oninput="updatePitchFromSlider(this.value)" />
           </label>
         </div>
 
@@ -1292,7 +1261,7 @@ html, body {
           <span class="legend-item"><span class="line-swatch swatch-l4"></span>4号线(F4)</span>
           <span class="legend-item"><span class="line-swatch swatch-l6"></span>6号线(F4)</span>
           <span class="legend-item"><span class="line-swatch swatch-l5"></span>5号线(B2)</span>
-          <span class="legend-item"><span class="line-swatch" style="background:var(--signal);"></span>三维动态导航流线</span>
+          <span class="legend-item"><span class="line-swatch" style="background:var(--signal);"></span>导航轨迹</span>
         </div>
       </div>
     </section>
@@ -1384,14 +1353,14 @@ html, body {
 
       <section class="sheet-section" id="secInspector">
         <div class="section-heading">
-          <span>空间构件参数检视</span>
-          <span class="section-sub">点击 3D 引线标签切换</span>
+          <span>当前空间层段建筑说明</span>
+          <span class="section-sub">随楼层与检票口联动</span>
         </div>
         <div class="element-inspector" id="elementInspector">
-          <h4 id="inspTitle">国铁高架候车大厅 (F2 · +90.0m)</h4>
-          <div class="inspector-meta" id="inspMeta">建筑面积 75,000 m² · 东西跨度 260m · 检票口 A1–A20 / B1–B20</div>
+          <h4 id="inspTitle">深圳北站“上进上出 + 十字正交”三维总图</h4>
+          <div class="inspector-meta" id="inspMeta">总建筑面积 400,000 m² · 站房 75,000 m² · 11台20线 + 三线地铁</div>
           <p id="inspDesc">
-            深圳北站采用国内罕见的“上进上出”立体流线：F2 层以 90m 标高人行平台将西广场、国铁高架候车室与东广场串联为十字形主交通层。东进站口(A)与西进站口(B)共设 52 台实名验证与安检二合一闸机。
+            中央蓝色体块为南北向国铁高架候车室(F2)与下方11座站台20条股道(F1)，南北咽喉区自然露出站台与复兴号/动感号列车；东侧高架桥(F3/F4)平行并列地铁4号线(红)与6号线(青)双岛站台；地下B2层地铁5号线(紫)自东向西垂直下穿全站。
           </p>
         </div>
       </section>
@@ -1469,7 +1438,7 @@ html, body {
     </div>
   </div>
 
-  <!-- ==================== 3D VOLUMETRIC ARCHITECTURAL ENGINE ==================== -->
+  <!-- ==================== HIERARCHICAL + BACK-FACE CULLED 3D ARCHITECTURAL ENGINE ==================== -->
   <script>
     // =========================================================================
     // 1. INITIALIZE GATE QUICK-GRID (1..20)
@@ -1489,23 +1458,22 @@ html, body {
     }
 
     // =========================================================================
-    // 2. 3D ENGINE STATE & CAMERA PARAMETERS
+    // 2. 3D ENGINE STATE & TRUE ARCHITECTURAL PROPORTIONS
     // =========================================================================
     const canvas = document.getElementById('station3DCanvas');
     const ctx = canvas.getContext('2d');
-    const pinsLayer = document.getElementById('spatialPinsLayer');
 
     let state = {
-      yaw: -36 * Math.PI / 180,
-      pitch: 32 * Math.PI / 180,
-      targetYaw: -36 * Math.PI / 180,
-      targetPitch: 32 * Math.PI / 180,
-      zoom: 1.22,
-      targetZoom: 1.22,
+      yaw: -38 * Math.PI / 180,
+      pitch: 30 * Math.PI / 180,
+      targetYaw: -38 * Math.PI / 180,
+      targetPitch: 30 * Math.PI / 180,
+      zoom: 1.08,
+      targetZoom: 1.08,
       panX: 0,
-      panY: 12,
-      explode: 1.35,
-      targetExplode: 1.35,
+      panY: 4,
+      explode: 1.05,
+      targetExplode: 1.05,
       activeLayer: 'ALL',
       showRoof: true,
       darkTheme: false,
@@ -1515,230 +1483,20 @@ html, body {
     };
 
     const LEVEL_BASE_Y = {
-      F4:  112,
-      F3:   60,
-      F2:    8,
-      F1:  -44,
-      B1:  -98,
-      B2: -150
+      F4:   68,
+      F3:   38,
+      F2:    6,
+      F1:  -26,
+      B1:  -58,
+      B2:  -90
     };
 
     function getLevelY(levelKey) {
       return LEVEL_BASE_Y[levelKey] * state.explode;
     }
 
-    function getLayerAlpha(levelKey) {
-      if (state.activeLayer === 'ALL') return 1.0;
-      return state.activeLayer === levelKey ? 1.0 : 0.12;
-    }
-
     // =========================================================================
-    // 3. 7 PASSENGER WAYFINDING 3D PATH RIBBONS & METADATA
-    // =========================================================================
-    const WAYFINDING_FLOWS = [
-      {
-        title: '高铁到达 ➔ 换乘地铁 5 号线 (免安检通道)',
-        cam: { yaw: -32, pitch: 31, explode: 1.42 },
-        steps: [
-          '<strong>F1 站台下车：</strong>认准东侧方向，乘扶梯上行至 <strong>A1 / A2 出站口</strong>（切勿前往西侧 B1/B2 口）。',
-          '<strong>F2 东广场出闸：</strong>优先走 <strong>A2 出站口</strong>，出闸即进入东广场常态化免安检隔离区。',
-          '<strong>直达 B1 站厅：</strong>乘坐新增免安检自动扶梯从东广场 (F2) 直接下达 <strong>B1 层 5 号线站厅</strong>。',
-          '<strong>B2 侧式站台：</strong>5 号线为侧式站台（开右门），在 B1 核对方向后下楼（北侧往赤湾，南侧往大剧院）。'
-        ],
-        path3D: () => [
-          { x: 18,  y: getLevelY('F1') + 5, z: 32,  step: '1', tag: 'F1站台' },
-          { x: 110, y: getLevelY('F2') + 6, z: 58,  step: '2', tag: 'A2出站口' },
-          { x: 156, y: getLevelY('F2') + 6, z: 45,  step: '3', tag: '东广场免安检梯' },
-          { x: 184, y: getLevelY('B1') + 6, z: 18,  step: '4', tag: 'B1五号线站厅' },
-          { x: 145, y: getLevelY('B2') + 6, z: 12,  step: '5', tag: 'B2五号线站台' }
-        ]
-      },
-      {
-        title: '高铁到达 ➔ 换乘地铁 4 / 6 号线 (高架站台)',
-        cam: { yaw: -28, pitch: 30, explode: 1.42 },
-        steps: [
-          '<strong>F1 站台下车：</strong>沿东侧出站通道上行至 F2 层 <strong>A1 或 A2 出站口</strong>。',
-          '<strong>F2 东广场露天层：</strong>出 A1 口左侧即 <strong>地铁 B 口</strong>，出 A2 口右侧即 <strong>地铁 C 口</strong>（均配无障碍垂梯）。',
-          '<strong>上行至 F3 站厅：</strong>乘扶梯上至 F3 层 4/6 号线共用高架站厅。',
-          '<strong>F4 双岛站台：</strong>东侧岛台乘 <strong>4 号线</strong>（福田口岸⇄牛湖），西侧岛台乘 <strong>6 号线</strong>（科学馆⇄松岗）。'
-        ],
-        path3D: () => [
-          { x: 18,  y: getLevelY('F1') + 5, z: -20, step: '1', tag: 'F1站台' },
-          { x: 110, y: getLevelY('F2') + 6, z: -52, step: '2', tag: 'A1/A2出站口' },
-          { x: 156, y: getLevelY('F2') + 6, z: -42, step: '3', tag: '地铁B/C口' },
-          { x: 176, y: getLevelY('F3') + 6, z: -15, step: '4', tag: 'F3高架站厅' },
-          { x: 196, y: getLevelY('F4') + 7, z: 0,   step: '5', tag: 'F4双岛站台' }
-        ]
-      },
-      {
-        title: '地铁 4 / 5 / 6 号线到达 ➔ 进站乘高铁',
-        cam: { yaw: -40, pitch: 34, explode: 1.35 },
-        steps: [
-          '<strong>地铁出闸汇合至 F2 东广场：</strong>4/6 号线从 F3 走 B/C 口下至 F2；5 号线从 B1 站厅西侧扶梯上至 F2。',
-          '<strong>国铁东进站口 (A口)：</strong>正对地铁 B/C 口，通过实名验证与安检二合一通道（急客走 U 彩通道）。',
-          '<strong>F2 候车大厅检票：</strong>东侧为 A1–A20 检票口，西侧为 B1–B20 检票口，检票后下至 F1 对应站台。'
-        ],
-        path3D: () => [
-          { x: 184, y: getLevelY('F3') + 6, z: 24,  step: '1', tag: '地铁出站' },
-          { x: 154, y: getLevelY('F2') + 6, z: 8,   step: '2', tag: 'F2东广场' },
-          { x: 110, y: getLevelY('F2') + 6, z: 0,   step: '3', tag: '东进站口(A)' },
-          { x: 12,  y: getLevelY('F2') + 6, z: 0,   step: '4', tag: 'F2检票口' },
-          { x: 12,  y: getLevelY('F1') + 5, z: 0,   step: '5', tag: 'F1站台登车' }
-        ]
-      },
-      {
-        title: '地铁 4 / 6 号线 ⇄ 地铁 5 号线 (天地大扶梯换乘)',
-        cam: { yaw: -24, pitch: 28, explode: 1.55 },
-        steps: [
-          '<strong>付费区内免出闸换乘：</strong>三线通过付费区专用通道互联，全程切勿刷卡出闸。',
-          '<strong>6台天地换乘大扶梯：</strong>由 F4 站台下至 <strong>F3 站厅付费区西侧</strong>（分南北两组），乘长扶梯跨越 F2、F1 直达 <strong>B1 层 5 号线付费区</strong>。',
-          '<strong>无障碍跨层直梯：</strong>4 号线 F4 站台设有垂直电梯直通 B2 层 5 号线站台。'
-        ],
-        path3D: () => [
-          { x: 196, y: getLevelY('F4') + 7, z: -28, step: '1', tag: 'F4双岛站台' },
-          { x: 158, y: getLevelY('F3') + 6, z: -38, step: '2', tag: 'F3付费区换乘口' },
-          { x: 158, y: getLevelY('B1') + 6, z: -22, step: '3', tag: '天地长扶梯达B1' },
-          { x: 140, y: getLevelY('B2') + 6, z: -4,  step: '4', tag: 'B2五号线站台' }
-        ]
-      },
-      {
-        title: '高铁到达 ➔ 西广场网约车 B 区 / B1 网约车 A 区',
-        cam: { yaw: -138, pitch: 33, explode: 1.35 },
-        steps: [
-          '<strong>F1 站台下车：</strong>务必朝<strong>西侧（B1 / B2 出站口 · 西广场）</strong>方向乘扶梯上行。',
-          '<strong>优选地面网约车 B 区：</strong>从 F2 西侧 B1/B2 口出站，步行至西广场地面<strong>网约车 B 区空调候车室</strong>，屏幕输入车牌号精准寻车（3通道27车位）。',
-          '<strong>B1 层网约车 A 区 / 私家车：</strong>出 B1/B2 口后乘垂直电梯下至西广场 B1 层（网约车 A 区/私家车库 B1）或 B2 层车库。'
-        ],
-        path3D: () => [
-          { x: -38, y: getLevelY('F1') + 5, z: 28,  step: '1', tag: 'F1站台往西' },
-          { x: -112,y: getLevelY('F2') + 6, z: 54,  step: '2', tag: '西侧B1/B2口' },
-          { x: -180,y: getLevelY('F2') + 6, z: 36,  step: '3', tag: '地面网约车B区' },
-          { x: -180,y: getLevelY('B1') + 6, z: -22, step: '4', tag: 'B1网约车A区' }
-        ]
-      },
-      {
-        title: '高铁到达 ➔ 东广场出租车 (1F/2F) & 公交总站',
-        cam: { yaw: -34, pitch: 33, explode: 1.4 },
-        steps: [
-          '<strong>F1 站台下车：</strong>朝东侧 <strong>A2 出站口</strong>上行出闸（距出租车与公交扶梯最近）。',
-          '<strong>下至 F1 或 B1 换乘厅：</strong>出 A2 口后乘扶梯下至东广场换乘厅二层 (F1) 或一层 (B1)。',
-          '<strong>上车点分布：</strong>F1 与 B1 均设正规出租车上客区；西北角 2F 公交总站始发 E11 (大鹏)、M299 (南山科技园)。'
-        ],
-        path3D: () => [
-          { x: 25,  y: getLevelY('F1') + 5, z: 42,  step: '1', tag: 'F1站台往东' },
-          { x: 112, y: getLevelY('F2') + 6, z: 62,  step: '2', tag: '东侧A2出站口' },
-          { x: 175, y: getLevelY('F1') + 6, z: -48, step: '3', tag: 'F1出租2F/公交' },
-          { x: 195, y: getLevelY('B1') + 6, z: -48, step: '4', tag: 'B1出租1F/公交' }
-        ]
-      },
-      {
-        title: '国铁联程同站中转换乘 (不出站)',
-        cam: { yaw: -50, pitch: 36, explode: 1.4 },
-        steps: [
-          '<strong>F1 到达站台：</strong>下车后切勿走向出站闸机，寻找站台蓝底白字<strong>“便捷换乘”</strong>标识。',
-          '<strong>专用换乘扶梯：</strong>经站台南端或北端中转换乘通道刷身份证核验联程车票，直接上行进入 <strong>F2 高架候车室</strong>。',
-          '<strong>接续检票：</strong>核对大屏检票口编号（A1–A20 或 B1–B20），前往下一程站台。'
-        ],
-        path3D: () => [
-          { x: -42, y: getLevelY('F1') + 5, z: -15, step: '1', tag: '前序高铁下车' },
-          { x: -42, y: getLevelY('F1') + 5, z: -68, step: '2', tag: '站台便捷换乘口' },
-          { x: 0,   y: getLevelY('F2') + 6, z: -68, step: '3', tag: '直上F2候车厅' },
-          { x: 42,  y: getLevelY('F2') + 6, z: 28,  step: '4', tag: '下一程检票口' },
-          { x: 42,  y: getLevelY('F1') + 5, z: 28,  step: '5', tag: '换乘站台登车' }
-        ]
-      }
-    ];
-
-    // =========================================================================
-    // 4. PERIMETER SPATIAL CALLOUT PINS
-    // =========================================================================
-    const SPATIAL_PINS = [
-      {
-        id: 'pin-l46',
-        level: 'F4',
-        anchor: () => ({ x: 212, y: getLevelY('F4') + 4, z: -35 }),
-        pinPos: () => ({ x: 248, y: getLevelY('F4') + 14, z: -35 }),
-        label: 'F4 · 4/6号线高架双岛站台',
-        shortLabel: 'F4 · 4/6号线站台',
-        meta: '标高 +102.0m · 双岛四线高架平行站台',
-        desc: '4号线（东岛，往福田口岸/牛湖）与6号线（西岛，往科学馆/松岗）在东广场上空平行穿过车站大屋顶。4号线站台设无障碍垂梯直达B2层5号线站台。'
-      },
-      {
-        id: 'pin-tiandi',
-        level: 'F3',
-        anchor: () => ({ x: 220, y: getLevelY('F3') + 3, z: 35 }),
-        pinPos: () => ({ x: 248, y: getLevelY('F3') + 8, z: 25 }),
-        label: 'F3 · 4/6号线站厅 & 天地换乘梯',
-        shortLabel: 'F3 · 天地换乘梯',
-        meta: 'F3 (+96m) ⇄ B1 (+78m) · 6台超长扶梯免出闸互联',
-        desc: '位于4/6号线高架站厅付费区西侧（南北两组共6台超大提升高度扶梯），跨越F2、F1直接连通地下B1层5号线付费区，耗时约3–4分钟。'
-      },
-      {
-        id: 'pin-east-in',
-        level: 'F2',
-        anchor: () => ({ x: 228, y: getLevelY('F2') + 3, z: 50 }),
-        pinPos: () => ({ x: 246, y: getLevelY('F2') + 6, z: 55 }),
-        label: 'F2 · 东广场 & 国铁东进站口(A)',
-        shortLabel: 'F2 · 东进站口(A)',
-        meta: '标高 +90.0m · 地铁A-D口 · 免安检入地铁通道',
-        desc: '东广场连接地铁4/6号线A-D口、5号线换乘厅及国铁东进站口(A)、A1/A2出站口。乘坐地铁、出租车、公交车到站的旅客由此进出站最近。'
-      },
-      {
-        id: 'pin-west-in',
-        level: 'F2',
-        anchor: () => ({ x: -220, y: getLevelY('F2') + 3, z: 65 }),
-        pinPos: () => ({ x: -235, y: getLevelY('F2') + 38, z: 45 }),
-        label: 'F2 · 西广场 & 地面网约车B区',
-        shortLabel: 'F2 · 西广场网约车B区',
-        meta: '标高 +90.0m · 西进站口(B) · 27车位空调网约车厅',
-        desc: '西广场设国铁西进站口(B)、B1/B2出站口、地面网约车B区（室内空调候车室输车牌寻车）及深圳北汽车客运站。'
-      },
-      {
-        id: 'pin-hk-zone',
-        level: 'F1',
-        anchor: () => ({ x: -108, y: getLevelY('F1') + 3, z: -95 }),
-        pinPos: () => ({ x: -235, y: getLevelY('F1') - 18, z: 15 }),
-        label: 'F1 · 国铁11台20线 (8–15跨境区)',
-        shortLabel: 'F1 · 11台20线/跨境区',
-        meta: '标高 +84.0m · 东1至西20站台 · 11/12正线站台门',
-        desc: '深圳北站共设11座站台20条股道（东1至西20）。中部8–15站台为香港西九龙跨境列车专用区，11、12站台为广深港正线并装有半高全滑动站台门。'
-      },
-      {
-        id: 'pin-l5',
-        level: 'B2',
-        anchor: () => ({ x: 215, y: getLevelY('B2') + 4, z: 12 }),
-        pinPos: () => ({ x: 242, y: getLevelY('B2') + 4, z: 12 }),
-        label: 'B2 · 5号线东西正交侧式站台',
-        shortLabel: 'B2 · 5号线正交站台',
-        meta: '标高 +72.0m · 双侧式站台(开右门) · 深惠城际接口',
-        desc: '深圳地铁5号线自东向西垂直下穿整个国铁站场与东广场。北侧站台往赤湾/前海湾，南侧站台往民治/布吉/大剧院；西北侧毗邻在建深惠城际站体。'
-      }
-    ];
-
-    function buildSpatialPinsDOM() {
-      pinsLayer.innerHTML = '';
-      const isNarrow = window.innerWidth <= 600;
-      SPATIAL_PINS.forEach(pin => {
-        const el = document.createElement('div');
-        el.className = 'spatial-pin';
-        el.id = pin.id;
-        el.innerHTML = `<div class="pin-card">${isNarrow ? pin.shortLabel : pin.label}</div>`;
-        el.onclick = (e) => {
-          e.stopPropagation();
-          document.getElementById('inspTitle').textContent = pin.label;
-          document.getElementById('inspMeta').textContent = pin.meta;
-          document.getElementById('inspDesc').textContent = pin.desc;
-          document.querySelectorAll('.spatial-pin').forEach(p => p.classList.remove('is-highlighted'));
-          el.classList.add('is-highlighted');
-        };
-        pinsLayer.appendChild(el);
-      });
-    }
-    buildSpatialPinsDOM();
-    window.addEventListener('resize', buildSpatialPinsDOM);
-
-    // =========================================================================
-    // 5. 3D PROJECTION & GEOMETRY PRIMITIVES (Responsive Viewport Scale)
+    // 3. TELEPHOTO AXONOMETRIC PROJECTION (Correct Camera Proximity Sign!)
     // =========================================================================
     function project3D(pt) {
       const cosY = Math.cos(state.yaw);
@@ -1746,134 +1504,411 @@ html, body {
       const cosP = Math.cos(state.pitch);
       const sinP = Math.sin(state.pitch);
 
+      // Rotate around Y axis (yaw)
       const x1 = pt.x * cosY - pt.z * sinY;
       const z1 = pt.x * sinY + pt.z * cosY;
 
+      // Tilt around X axis (pitch)
       const y2 = pt.y * cosP - z1 * sinP;
-      const z2 = pt.y * sinP + z1 * cosP;
+      // camProx > 0 means CLOSER to the overhead front viewer!
+      const camProx = pt.y * sinP + z1 * cosP;
 
-      // Responsive scale factor so 390px phones and 768px tablets fit the full 3D hub cleanly
       const w = canvas.clientWidth || 390;
       const h = canvas.clientHeight || 400;
-      const responsiveFactor = (w <= 1024) ? Math.min(0.76, Math.max(0.45, (w / 680) * 0.82)) : 1.0;
 
-      const fov = 1000 * responsiveFactor;
-      const dist = 1120;
-      const scale = (fov / (dist + z2)) * state.zoom;
+      const usableW = w <= 1024 ? w - 54 : w - 80;
+      const usableH = w <= 1024 ? h - 88 : h - 100;
+      const baseScale = Math.min(usableW / 540, usableH / 370);
 
-      const cx = (w < 1024 ? w * 0.53 : w * 0.50) + state.panX;
-      const cy = (w <= 1024 ? h * 0.55 : h * 0.50) + state.panY;
+      // Long-focal-length architectural projection (larger camProx = slightly larger scale)
+      const dist = 3200;
+      const persp = dist / (dist - camProx);
+      const scale = baseScale * persp * state.zoom;
+
+      const cx = (w <= 1024 ? w * 0.54 : w * 0.50) + state.panX;
+      const cy = (w <= 1024 ? h * 0.49 : h * 0.50) + state.panY;
 
       return {
         x: cx + x1 * scale,
         y: cy - y2 * scale,
-        z: z2,
+        camProx: camProx,
         scale: scale
       };
     }
 
-    function drawPoly3D(pts3D, fillStyle, strokeStyle, lineWidth = 1, alpha = 1) {
-      if (alpha <= 0.02) return;
-      const proj = pts3D.map(project3D);
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      proj.forEach((p, idx) => {
-        if (idx === 0) ctx.moveTo(p.x, p.y);
-        else ctx.lineTo(p.x, p.y);
-      });
-      ctx.closePath();
-      if (fillStyle) {
-        ctx.fillStyle = fillStyle;
-        ctx.fill();
-      }
-      if (strokeStyle) {
-        ctx.strokeStyle = strokeStyle;
-        ctx.lineWidth = lineWidth;
-        ctx.stroke();
-      }
-      ctx.restore();
+    // =========================================================================
+    // 4. HIERARCHICAL SLAB + BACK-FACE CULLED PAINTER'S RENDER QUEUE
+    // =========================================================================
+    // Tier hierarchy guarantees lower floors (B2/B1) NEVER draw on top of upper floors (F1/F2/F3/F4)!
+    const TIER = {
+      GRID: 0,
+      B2:   1,
+      B1:   2,
+      F1:   3,
+      F2:   4,
+      F3:   5,
+      F4:   6,
+      ROOF: 7,
+      PATH: 8,
+      PATH_NODE: 9,
+      HUD:  10
+    };
+
+    let renderQueue = [];
+
+    function clearQueue() {
+      renderQueue.length = 0;
     }
 
-    function drawLine3D(a, b, strokeStyle, lineWidth = 1.5, alpha = 1, dash = null) {
-      if (alpha <= 0.02) return;
+    function pushPoly(pts3D, fill, stroke, lineWidth = 0.8, alpha = 1.0, tier = TIER.F1, subBias = 0) {
+      if (alpha <= 0.03) return;
+      const proj = pts3D.map(project3D);
+      let avgProx = 0;
+      for (let i = 0; i < proj.length; i++) avgProx += proj[i].camProx;
+      avgProx /= proj.length;
+
+      renderQueue.push({
+        type: 'poly',
+        proj,
+        fill,
+        stroke,
+        lineWidth,
+        alpha,
+        tier,
+        prox: avgProx + subBias
+      });
+    }
+
+    function pushLine(a, b, stroke, lineWidth = 1.5, alpha = 1.0, dash = null, tier = TIER.GRID, subBias = 0) {
+      if (alpha <= 0.03) return;
       const pa = project3D(a);
       const pb = project3D(b);
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      if (dash) ctx.setLineDash(dash);
-      ctx.strokeStyle = strokeStyle;
-      ctx.lineWidth = lineWidth;
-      ctx.beginPath();
-      ctx.moveTo(pa.x, pa.y);
-      ctx.lineTo(pb.x, pb.y);
-      ctx.stroke();
-      ctx.restore();
+      const avgProx = (pa.camProx + pb.camProx) * 0.5;
+      renderQueue.push({
+        type: 'line',
+        pa,
+        pb,
+        stroke,
+        lineWidth,
+        alpha,
+        dash,
+        tier,
+        prox: avgProx + subBias
+      });
     }
 
-    function drawText3D(pt, text, color, fontSize = 10.5, alpha = 1, bg = null) {
+    function pushBadge(pt, text, fg, bg, borderCol = null, radius = 0, alpha = 1.0, tier = TIER.HUD, subBias = 0) {
       if (alpha <= 0.05) return;
       const p = project3D(pt);
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.font = `700 ${Math.max(8.5, Math.round(fontSize * Math.min(1.15, p.scale)))}px "JetBrains Mono", "PingFang SC", sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      if (bg) {
-        const w = ctx.measureText(text).width + 10;
-        const h = 16;
-        ctx.fillStyle = bg;
-        ctx.fillRect(p.x - w / 2, p.y - h / 2, w, h);
-      }
-      ctx.fillStyle = color;
-      ctx.fillText(text, p.x, p.y);
-      ctx.restore();
+      renderQueue.push({
+        type: 'badge',
+        p,
+        text,
+        fg,
+        bg,
+        borderCol,
+        radius,
+        alpha,
+        tier,
+        prox: p.camProx + subBias
+      });
     }
 
-    function drawExtrudedBox(cx, yBottom, cz, wx, hy, wz, colors, alpha = 1) {
-      if (alpha <= 0.02) return;
-      const hx = wx / 2;
-      const hz = wz / 2;
+    // Back-Face Culled Solid 3D Architectural Prism:
+    // Only renders the Top face + the 2 side faces whose outward normals face the camera!
+    function pushBox(cx, yBottom, cz, wx, hy, wz, palette, alpha = 1.0, tier = TIER.F1, subBias = 0) {
+      if (alpha <= 0.03) return;
+      const hx = wx * 0.5;
+      const hz = wz * 0.5;
       const y0 = yBottom;
       const y1 = yBottom + hy;
 
       const v = [
-        { x: cx - hx, y: y0, z: cz - hz },
-        { x: cx + hx, y: y0, z: cz - hz },
-        { x: cx + hx, y: y0, z: cz + hz },
-        { x: cx - hx, y: y0, z: cz + hz },
-        { x: cx - hx, y: y1, z: cz - hz },
-        { x: cx + hx, y: y1, z: cz - hz },
-        { x: cx + hx, y: y1, z: cz + hz },
-        { x: cx - hx, y: y1, z: cz + hz }
+        { x: cx - hx, y: y0, z: cz - hz }, // 0: B-W-N
+        { x: cx + hx, y: y0, z: cz - hz }, // 1: B-E-N
+        { x: cx + hx, y: y0, z: cz + hz }, // 2: B-E-S
+        { x: cx - hx, y: y0, z: cz + hz }, // 3: B-W-S
+        { x: cx - hx, y: y1, z: cz - hz }, // 4: T-W-N
+        { x: cx + hx, y: y1, z: cz - hz }, // 5: T-E-N
+        { x: cx + hx, y: y1, z: cz + hz }, // 6: T-E-S
+        { x: cx - hx, y: y1, z: cz + hz }  // 7: T-W-S
       ];
 
-      const faces = [
-        { pts: [v[0], v[1], v[5], v[4]], fill: colors.side1 },
-        { pts: [v[3], v[2], v[6], v[7]], fill: colors.side1 },
-        { pts: [v[0], v[3], v[7], v[4]], fill: colors.side2 },
-        { pts: [v[1], v[2], v[6], v[5]], fill: colors.side2 },
-        { pts: [v[4], v[5], v[6], v[7]], fill: colors.top   }
-      ];
+      // Center of box in camera proximity for consistent whole-box sorting
+      const boxCenterProx = project3D({ x: cx, y: (y0 + y1) * 0.5, z: cz }).camProx + subBias;
+      const stroke = palette.stroke || 'rgba(20,20,19,0.38)';
+      const lw = palette.lineWidth || 0.75;
 
-      faces.forEach(f => {
-        const p = f.pts.map(project3D);
-        f.avgZ = p.reduce((acc, item) => acc + item.z, 0) / p.length;
-      });
-      faces.sort((a, b) => b.avgZ - a.avgZ);
+      const cosY = Math.cos(state.yaw);
+      const sinY = Math.sin(state.yaw);
 
-      faces.forEach(f => {
-        drawPoly3D(f.pts, f.fill, colors.stroke, colors.lineWidth || 0.85, alpha);
+      // Back-face culling using camera direction in horizontal plane:
+      // South (+Z) normal has z1 = cosY; North (-Z) normal has z1 = -cosY
+      if (cosY >= 0) {
+        // South face (+Z) is visible
+        const pS = [v[3], v[2], v[6], v[7]].map(project3D);
+        renderQueue.push({ type: 'poly', proj: pS, fill: palette.south, stroke, lineWidth: lw, alpha, tier, prox: boxCenterProx - 0.2 });
+      } else {
+        // North face (-Z) is visible
+        const pN = [v[0], v[1], v[5], v[4]].map(project3D);
+        renderQueue.push({ type: 'poly', proj: pN, fill: palette.north, stroke, lineWidth: lw, alpha, tier, prox: boxCenterProx - 0.2 });
+      }
+
+      // East (+X) normal has z1 = sinY; West (-X) normal has z1 = -sinY
+      if (sinY >= 0) {
+        // East face (+X) is visible
+        const pE = [v[1], v[2], v[6], v[5]].map(project3D);
+        renderQueue.push({ type: 'poly', proj: pE, fill: palette.east, stroke, lineWidth: lw, alpha, tier, prox: boxCenterProx - 0.1 });
+      } else {
+        // West face (-X) is visible
+        const pW = [v[0], v[3], v[7], v[4]].map(project3D);
+        renderQueue.push({ type: 'poly', proj: pW, fill: palette.west, stroke, lineWidth: lw, alpha, tier, prox: boxCenterProx - 0.1 });
+      }
+
+      // Top face (+Y) is always visible from above (pitch > 0)
+      const pT = [v[4], v[5], v[6], v[7]].map(project3D);
+      renderQueue.push({ type: 'poly', proj: pT, fill: palette.top, stroke, lineWidth: lw, alpha, tier, prox: boxCenterProx + 0.2 });
+    }
+
+    function flushQueue() {
+      // Sort primarily by architectural floor TIER (ascending: B2 -> B1 -> F1 -> F2 -> F3 -> F4),
+      // and secondarily by camera proximity (ascending: back -> front)!
+      renderQueue.sort((a, b) => {
+        if (a.tier !== b.tier) return a.tier - b.tier;
+        return a.prox - b.prox;
       });
+
+      const isPhone = (canvas.clientWidth || 390) <= 600;
+
+      for (let i = 0; i < renderQueue.length; i++) {
+        const item = renderQueue[i];
+        ctx.save();
+        ctx.globalAlpha = item.alpha;
+
+        if (item.type === 'poly') {
+          ctx.beginPath();
+          for (let j = 0; j < item.proj.length; j++) {
+            const p = item.proj[j];
+            if (j === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.closePath();
+          if (item.fill) {
+            ctx.fillStyle = item.fill;
+            ctx.fill();
+          }
+          if (item.stroke && item.lineWidth > 0) {
+            ctx.strokeStyle = item.stroke;
+            ctx.lineWidth = item.lineWidth;
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+          }
+        } else if (item.type === 'line') {
+          if (item.dash) ctx.setLineDash(item.dash);
+          ctx.strokeStyle = item.stroke;
+          ctx.lineWidth = item.lineWidth;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(item.pa.x, item.pa.y);
+          ctx.lineTo(item.pb.x, item.pb.y);
+          ctx.stroke();
+        } else if (item.type === 'badge') {
+          const x = item.p.x;
+          const y = item.p.y;
+          if (item.radius > 0) {
+            const r = isPhone ? item.radius * 0.9 : item.radius;
+            ctx.fillStyle = item.bg;
+            ctx.strokeStyle = item.borderCol || '#FFFFFF';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = item.fg;
+            ctx.font = `700 ${isPhone ? 9.5 : 10.5}px "JetBrains Mono", sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(item.text, x, y + 0.5);
+          } else {
+            const fontSize = isPhone ? 9.5 : 10.5;
+            ctx.font = `700 ${fontSize}px "PingFang SC", "Helvetica Neue", sans-serif`;
+            const padX = isPhone ? 5 : 7;
+            const tw = ctx.measureText(item.text).width + padX * 2;
+            const th = isPhone ? 17 : 19;
+
+            const w = canvas.clientWidth || 390;
+            const h = canvas.clientHeight || 400;
+            const minX = (w <= 1024 ? 46 : 16) + tw * 0.5;
+            const maxX = w - 10 - tw * 0.5;
+            const minY = (w <= 1024 ? 46 : 62) + th * 0.5;
+            const maxY = h - (w <= 1024 ? 72 : 52) - th * 0.5;
+            const cx = Math.max(minX, Math.min(maxX, x));
+            const cy = Math.max(minY, Math.min(maxY, y));
+
+            if (item.bg) {
+              ctx.fillStyle = item.bg;
+              ctx.fillRect(cx - tw * 0.5, cy - th * 0.5, tw, th);
+              if (item.borderCol) {
+                ctx.strokeStyle = item.borderCol;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(cx - tw * 0.5, cy - th * 0.5, tw, th);
+                ctx.fillStyle = '#D94E1F';
+                ctx.fillRect(cx - tw * 0.5, cy - th * 0.5, 3, th);
+              }
+            }
+            ctx.fillStyle = item.fg;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(item.text, cx + 1, cy + 0.5);
+          }
+        }
+        ctx.restore();
+      }
     }
 
     function getPlatformX(platNum) {
-      return 95 - (platNum - 1) * 10;
+      return 85 - (platNum - 1) * 8.95;
     }
 
     // =========================================================================
-    // 6. MAIN 3D ARCHITECTURAL SCENE RENDER LOOP
+    // 5. 7 PASSENGER WAYFINDING 3D PATHS
     // =========================================================================
+    const WAYFINDING_FLOWS = [
+      {
+        title: '高铁到达 ➔ 换乘地铁 5 号线 (免安检通道)',
+        ribbon: '<span class="step-pill">1</span>F1站台 ➔ <span class="step-pill">2</span>F2东侧A2口 ➔ <span class="step-pill">3</span>东广场免安检梯 ➔ <span class="step-pill">4</span>B1五号线厅 ➔ <span class="step-pill">5</span>B2站台',
+        cam: { yaw: -38, pitch: 30, explode: 1.12 },
+        steps: [
+          '<strong>F1 站台下车：</strong>认准东侧方向，乘扶梯上行至 <strong>A1 / A2 出站口</strong>（切勿前往西侧 B1/B2 口）。',
+          '<strong>F2 东广场出闸：</strong>优先走 <strong>A2 出站口</strong>，出闸即进入东广场常态化免安检隔离区。',
+          '<strong>直达 B1 站厅：</strong>乘坐新增免安检自动扶梯从东广场 (F2) 直接下达 <strong>B1 层 5 号线站厅</strong>。',
+          '<strong>B2 侧式站台：</strong>5 号线为侧式站台（开右门），在 B1 核对方向后下楼（北侧往赤湾，南侧往大剧院）。'
+        ],
+        path3D: () => [
+          { x: 18,  y: getLevelY('F1') + 8,  z: 95, step: '1' },
+          { x: 96,  y: getLevelY('F2') + 10, z: 52, step: '2' },
+          { x: 158, y: getLevelY('F2') + 9,  z: 45, step: '3' },
+          { x: 185, y: getLevelY('B1') + 8,  z: 18, step: '4' },
+          { x: 145, y: getLevelY('B2') + 8,  z: 12, step: '5' }
+        ]
+      },
+      {
+        title: '高铁到达 ➔ 换乘地铁 4 / 6 号线 (高架站台)',
+        ribbon: '<span class="step-pill">1</span>F1站台 ➔ <span class="step-pill">2</span>F2东侧A1/A2口 ➔ <span class="step-pill">3</span>地铁B/C口 ➔ <span class="step-pill">4</span>F3高架厅 ➔ <span class="step-pill">5</span>F4双岛站台',
+        cam: { yaw: -32, pitch: 28, explode: 1.12 },
+        steps: [
+          '<strong>F1 站台下车：</strong>沿东侧出站通道上行至 F2 层 <strong>A1 或 A2 出站口</strong>。',
+          '<strong>F2 东广场露天层：</strong>出 A1 口左侧即 <strong>地铁 B 口</strong>，出 A2 口右侧即 <strong>地铁 C 口</strong>（均配无障碍垂梯）。',
+          '<strong>上行至 F3 站厅：</strong>乘扶梯上至 F3 层 4/6 号线共用高架站厅。',
+          '<strong>F4 双岛站台：</strong>东侧岛台乘 <strong>4 号线</strong>（福田口岸⇄牛湖），西侧岛台乘 <strong>6 号线</strong>（科学馆⇄松岗）。'
+        ],
+        path3D: () => [
+          { x: 18,  y: getLevelY('F1') + 8,  z: -95, step: '1' },
+          { x: 96,  y: getLevelY('F2') + 10, z: -45, step: '2' },
+          { x: 132, y: getLevelY('F2') + 9,  z: -35, step: '3' },
+          { x: 138, y: getLevelY('F3') + 9,  z: -10, step: '4' },
+          { x: 151, y: getLevelY('F4') + 10, z: 20,  step: '5' }
+        ]
+      },
+      {
+        title: '地铁 4 / 5 / 6 号线到达 ➔ 进站乘高铁',
+        ribbon: '<span class="step-pill">1</span>地铁出闸 ➔ <span class="step-pill">2</span>F2东广场 ➔ <span class="step-pill">3</span>东进站口(A) ➔ <span class="step-pill">4</span>F2候车厅检票 ➔ <span class="step-pill">5</span>F1站台',
+        cam: { yaw: -42, pitch: 32, explode: 1.08 },
+        steps: [
+          '<strong>地铁出闸汇合至 F2 东广场：</strong>4/6 号线从 F3 走 B/C 口下至 F2；5 号线从 B1 站厅西侧扶梯上至 F2。',
+          '<strong>国铁东进站口 (A口)：</strong>正对地铁 B/C 口，通过实名验证与安检二合一通道（急客走 U 彩通道）。',
+          '<strong>F2 候车大厅检票：</strong>东侧为 A1–A20 检票口，西侧为 B1–B20 检票口，检票后下至 F1 对应站台。'
+        ],
+        path3D: () => [
+          { x: 148, y: getLevelY('F3') + 9,  z: 30, step: '1' },
+          { x: 162, y: getLevelY('F2') + 9,  z: 5,  step: '2' },
+          { x: 98,  y: getLevelY('F2') + 10, z: 0,  step: '3' },
+          { x: 15,  y: getLevelY('F2') + 10, z: 36, step: '4' },
+          { x: 15,  y: getLevelY('F1') + 8,  z: 95, step: '5' }
+        ]
+      },
+      {
+        title: '地铁 4 / 6 号线 ⇄ 地铁 5 号线 (天地大扶梯换乘)',
+        ribbon: '<span class="step-pill">1</span>F4双岛站台 ➔ <span class="step-pill">2</span>F3付费区换乘口 ➔ <span class="step-pill">3</span>6台天地长扶梯直达B1 ➔ <span class="step-pill">4</span>B2五号线站台',
+        cam: { yaw: -26, pitch: 26, explode: 1.25 },
+        steps: [
+          '<strong>付费区内免出闸换乘：</strong>三线通过付费区专用通道互联，全程切勿刷卡出闸。',
+          '<strong>6台天地换乘大扶梯：</strong>由 F4 站台下至 <strong>F3 站厅付费区西侧</strong>（分南北两组），乘长扶梯跨越 F2、F1 直达 <strong>B1 层 5 号线付费区</strong>。',
+          '<strong>无障碍跨层直梯：</strong>4 号线 F4 站台设有垂直电梯直通 B2 层 5 号线站台。'
+        ],
+        path3D: () => [
+          { x: 151, y: getLevelY('F4') + 10, z: -35, step: '1' },
+          { x: 126, y: getLevelY('F3') + 9,  z: -35, step: '2' },
+          { x: 158, y: getLevelY('B1') + 8,  z: -18, step: '3' },
+          { x: 135, y: getLevelY('B2') + 8,  z: -8,  step: '4' }
+        ]
+      },
+      {
+        title: '高铁到达 ➔ 西广场网约车 B 区 / B1 网约车 A 区',
+        ribbon: '<span class="step-pill">1</span>F1站台 ➔ <span class="step-pill">2</span>F2西侧B1/B2口 ➔ <span class="step-pill">3</span>西广场地面网约车B区 ➔ <span class="step-pill">4</span>B1网约车A区',
+        cam: { yaw: -138, pitch: 30, explode: 1.10 },
+        steps: [
+          '<strong>F1 站台下车：</strong>务必朝<strong>西侧（B1 / B2 出站口 · 西广场）</strong>方向乘扶梯上行。',
+          '<strong>优选地面网约车 B 区：</strong>从 F2 西侧 B1/B2 口出站，步行至西广场地面<strong>网约车 B 区空调候车室</strong>，屏幕输入车牌号精准寻车（3通道27车位）。',
+          '<strong>B1 层网约车 A 区 / 私家车：</strong>出 B1/B2 口后乘垂直电梯下至西广场 B1 层（网约车 A 区/私家车库 B1）或 B2 层车库。'
+        ],
+        path3D: () => [
+          { x: -36, y: getLevelY('F1') + 8,  z: 95, step: '1' },
+          { x: -96, y: getLevelY('F2') + 10, z: 45, step: '2' },
+          { x: -166,y: getLevelY('F2') + 14, z: 42, step: '3' },
+          { x: -166,y: getLevelY('B1') + 8,  z: -20,step: '4' }
+        ]
+      },
+      {
+        title: '高铁到达 ➔ 东广场出租车 (1F/2F) & 公交总站',
+        ribbon: '<span class="step-pill">1</span>F1站台 ➔ <span class="step-pill">2</span>F2东侧A2口 ➔ <span class="step-pill">3</span>F1东广场出租2F/公交 ➔ <span class="step-pill">4</span>B1出租1F',
+        cam: { yaw: -35, pitch: 30, explode: 1.15 },
+        steps: [
+          '<strong>F1 站台下车：</strong>朝东侧 <strong>A2 出站口</strong>上行出闸（距出租车与公交扶梯最近）。',
+          '<strong>下至 F1 或 B1 换乘厅：</strong>出 A2 口后乘扶梯下至东广场换乘厅二层 (F1) 或一层 (B1)。',
+          '<strong>上车点分布：</strong>F1 与 B1 均设正规出租车上客区；西北角 2F 公交总站始发 E11 (大鹏)、M299 (南山科技园)。'
+        ],
+        path3D: () => [
+          { x: 32,  y: getLevelY('F1') + 8,  z: 95, step: '1' },
+          { x: 96,  y: getLevelY('F2') + 10, z: 52, step: '2' },
+          { x: 185, y: getLevelY('F1') + 8,  z: -42,step: '3' },
+          { x: 192, y: getLevelY('B1') + 8,  z: -42,step: '4' }
+        ]
+      },
+      {
+        title: '国铁联程同站中转换乘 (不出站)',
+        ribbon: '<span class="step-pill">1</span>前序高铁下车 ➔ <span class="step-pill">2</span>站台便捷换乘口 ➔ <span class="step-pill">3</span>直上F2候车厅 ➔ <span class="step-pill">4</span>接续检票口 ➔ <span class="step-pill">5</span>新站台',
+        cam: { yaw: -48, pitch: 34, explode: 1.15 },
+        steps: [
+          '<strong>F1 到达站台：</strong>下车后切勿走向出站闸机，寻找站台蓝底白字<strong>“便捷换乘”</strong>标识。',
+          '<strong>专用换乘扶梯：</strong>经站台南端或北端中转换乘通道刷身份证核验联程车票，直接上行进入 <strong>F2 高架候车室</strong>。',
+          '<strong>接续检票：</strong>核对大屏检票口编号（A1–A20 或 B1–B20），前往下一程站台。'
+        ],
+        path3D: () => [
+          { x: -36, y: getLevelY('F1') + 8,  z: -105, step: '1' },
+          { x: -36, y: getLevelY('F1') + 8,  z: -62,  step: '2' },
+          { x: 0,   y: getLevelY('F2') + 10, z: -62,  step: '3' },
+          { x: 32,  y: getLevelY('F2') + 10, z: 36,   step: '4' },
+          { x: 32,  y: getLevelY('F1') + 8,  z: 105,  step: '5' }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // 6. COMPLETE 3D ARCHITECTURAL SCENE BUILDER
+    // =========================================================================
+    const LEVEL_ORDER = ['B2', 'B1', 'F1', 'F2', 'F3', 'F4'];
+
+    function getFloorVisibility(levelKey) {
+      if (state.activeLayer === 'ALL') return 1.0;
+      const activeIdx = LEVEL_ORDER.indexOf(state.activeLayer);
+      const thisIdx = LEVEL_ORDER.indexOf(levelKey);
+      if (thisIdx === activeIdx) return 1.0;
+      if (thisIdx > activeIdx) return 0.0;
+      return 0.22;
+    }
+
     function renderScene() {
       state.yaw += (state.targetYaw - state.yaw) * 0.14;
       state.pitch += (state.targetPitch - state.pitch) * 0.14;
@@ -1882,8 +1917,8 @@ html, body {
       state.time += 0.016;
 
       const dpr = window.devicePixelRatio || 1;
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
+      const w = canvas.clientWidth || 390;
+      const h = canvas.clientHeight || 400;
       if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
@@ -1891,331 +1926,335 @@ html, body {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
+      clearQueue();
+
       const isDark = state.darkTheme;
       const isPhone = w <= 600;
-      const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(20,20,19,0.07)';
-      const slabFill  = isDark ? 'rgba(36,36,33,0.90)' : 'rgba(245,242,235,0.92)';
-      const slabStroke= isDark ? 'rgba(243,241,236,0.32)' : 'rgba(20,20,19,0.36)';
-      const textMain  = isDark ? '#F3F1EC' : '#141413';
+      const strokeBase = isDark ? 'rgba(243,241,236,0.32)' : 'rgba(20,20,19,0.38)';
+      const badgeBg    = isDark ? '#1E1E1C' : '#F3F1EC';
+      const badgeFg    = isDark ? '#F3F1EC' : '#141413';
 
-      // A. BASE ARCHITECTURAL COMPASS & CONTEXT GRID
-      const baseGridY = getLevelY('B2') - 14;
-      for (let gx = -240; gx <= 240; gx += 40) {
-        drawLine3D({ x: gx, y: baseGridY, z: -150 }, { x: gx, y: baseGridY, z: 150 }, gridColor, 1, 0.85);
+      // 0. GROUND REFERENCE GRID (TIER.GRID)
+      const yGrid = getLevelY('B2') - 8;
+      const gridCol = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(20,20,19,0.07)';
+      for (let gx = -220; gx <= 240; gx += 40) {
+        pushLine({ x: gx, y: yGrid, z: -160 }, { x: gx, y: yGrid, z: 160 }, gridCol, 1, 0.8, null, TIER.GRID);
       }
-      for (let gz = -150; gz <= 150; gz += 30) {
-        drawLine3D({ x: -240, y: baseGridY, z: gz }, { x: 240, y: baseGridY, z: gz }, gridColor, 1, 0.85);
+      for (let gz = -160; gz <= 160; gz += 40) {
+        pushLine({ x: -220, y: yGrid, z: gz }, { x: 240, y: yGrid, z: gz }, gridCol, 1, 0.8, null, TIER.GRID);
       }
-      drawText3D({ x: 0, y: baseGridY, z: -172 }, isPhone ? 'N · 留仙大道(往广州南)' : 'N · 北 (留仙大道 · 往广州南/赣州西)', textMain, 10, 0.78);
-      drawText3D({ x: 0, y: baseGridY, z:  172 }, isPhone ? 'S · 玉龙路(往西九龙)' : 'S · 南 (玉龙路 · 往香港西九龙/厦门北)', textMain, 10, 0.78);
-      drawText3D({ x: -268, y: baseGridY, z: 0 }, 'W · 西广场', '#B5651D', 10, 0.85);
-      drawText3D({ x:  268, y: baseGridY, z: 0 }, 'E · 东广场', '#1B6B4C', 10, 0.85);
 
-      // B. LEVEL B2 (+72m): METRO LINE 5 EAST-WEST ORTHOGONAL TUNNEL & PLATFORMS
+      // 1. LEVEL B2 (-90y): METRO LINE 5 EAST-WEST ORTHOGONAL TUNNEL & WEST PARKING (TIER.B2)
       const yB2 = getLevelY('B2');
-      const aB2 = getLayerAlpha('B2');
+      const aB2 = getFloorVisibility('B2');
+      if (aB2 > 0) {
+        pushBox(-162, yB2, 0, 96, 6, 150, {
+          top: isDark ? '#2A2825' : '#DDD6C7',
+          north: isDark ? '#1D1C19' : '#C4BCAE',
+          south: isDark ? '#23211E' : '#CEC6B7',
+          west:  isDark ? '#1A1917' : '#B8B0A2',
+          east:  isDark ? '#23211E' : '#CEC6B7',
+          stroke: strokeBase
+        }, aB2, TIER.B2);
 
-      drawExtrudedBox(-175, yB2, 0, 105, 6, 170, {
-        top: isDark ? '#252320' : '#E5DFD3',
-        side1: isDark ? '#1A1917' : '#CFC7B8',
-        side2: isDark ? '#1F1E1B' : '#D8D0C2',
-        stroke: slabStroke
-      }, aB2);
+        pushPoly([
+          { x: -135, y: yB2 + 1, z: -120 },
+          { x: -102, y: yB2 + 1, z: -120 },
+          { x:  105, y: yB2 + 1, z:   95 },
+          { x:   72, y: yB2 + 1, z:   95 }
+        ], isDark ? 'rgba(31,111,168,0.28)' : 'rgba(31,111,168,0.20)', '#1F6FA8', 1.0, aB2, TIER.B2, 1);
 
-      drawPoly3D([
-        { x: -120, y: yB2 + 1, z: -115 },
-        { x: -85,  y: yB2 + 1, z: -115 },
-        { x: 110,  y: yB2 + 1, z:  95 },
-        { x: 75,   y: yB2 + 1, z:  95 }
-      ], 'rgba(31, 111, 168, 0.20)', '#1F6FA8', 1.2, aB2);
+        pushBox(10, yB2, 4, 440, 4, 46, {
+          top: isDark ? '#321E3D' : '#E5D7EC',
+          north: '#5A2D70',
+          south: '#6C3686',
+          west:  '#5A2D70',
+          east:  '#6C3686',
+          stroke: '#7B3F98',
+          lineWidth: 1.1
+        }, aB2, TIER.B2, 2);
 
-      drawExtrudedBox(25, yB2, 12, 390, 5, 48, {
-        top: 'rgba(123, 63, 152, 0.24)',
-        side1: 'rgba(123, 63, 152, 0.42)',
-        side2: 'rgba(123, 63, 152, 0.34)',
-        stroke: '#7B3F98',
-        lineWidth: 1.4
-      }, aB2);
+        pushBox(10, yB2 + 4, -10, 420, 4.5, 11, {
+          top: '#8D4DAE', north: '#5A2D70', south: '#7B3F98', west: '#6C3686', east: '#7B3F98', stroke: '#F3F1EC'
+        }, aB2, TIER.B2, 5);
+        pushBox(10, yB2 + 4,  18, 420, 4.5, 11, {
+          top: '#8D4DAE', north: '#5A2D70', south: '#7B3F98', west: '#6C3686', east: '#7B3F98', stroke: '#F3F1EC'
+        }, aB2, TIER.B2, 5);
 
-      drawExtrudedBox(25, yB2 + 5, -4, 370, 4.5, 11, {
-        top: '#8E52AB', side1: '#683283', side2: '#7B3F98', stroke: '#F3F1EC'
-      }, aB2);
-      drawExtrudedBox(25, yB2 + 5, 28, 370, 4.5, 11, {
-        top: '#8E52AB', side1: '#683283', side2: '#7B3F98', stroke: '#F3F1EC'
-      }, aB2);
+        const l5WestX = 180 - ((state.time * 46) % 360);
+        const l5EastX = -160 + ((state.time * 46) % 360);
+        pushBox(l5WestX, yB2 + 4.5, -1, 58, 5.5, 6.5, {
+          top: '#F3F1EC', north: '#7B3F98', south: '#7B3F98', west: '#D4AF37', east: '#D4AF37', stroke: '#5A2D70'
+        }, aB2, TIER.B2, 8);
+        pushBox(l5EastX, yB2 + 4.5,  9, 58, 5.5, 6.5, {
+          top: '#F3F1EC', north: '#7B3F98', south: '#7B3F98', west: '#D4AF37', east: '#D4AF37', stroke: '#5A2D70'
+        }, aB2, TIER.B2, 8);
+      }
 
-      drawLine3D({ x: -165, y: yB2 + 6, z: 6 },  { x: 215, y: yB2 + 6, z: 6 },  '#D4AF37', 2, aB2);
-      drawLine3D({ x: -165, y: yB2 + 6, z: 18 }, { x: 215, y: yB2 + 6, z: 18 }, '#D4AF37', 2, aB2);
-
-      const l5TrainWestX = 180 - ((state.time * 48) % 340);
-      const l5TrainEastX = -140 + ((state.time * 48) % 340);
-      drawExtrudedBox(l5TrainWestX, yB2 + 6, 6, 56, 6, 7, {
-        top: '#F3F1EC', side1: '#7B3F98', side2: '#D4AF37', stroke: '#7B3F98'
-      }, aB2);
-      drawExtrudedBox(l5TrainEastX, yB2 + 6, 18, 56, 6, 7, {
-        top: '#F3F1EC', side1: '#7B3F98', side2: '#D4AF37', stroke: '#7B3F98'
-      }, aB2);
-
-      // C. LEVEL B1 (+78m): LINE 5 CONCOURSE, TAXI 1F, WEST RIDE-HAILING ZONE A
+      // 2. LEVEL B1 (-58y): LINE 5 CONCOURSE, TAXI 1F & WEST RIDE-HAILING ZONE A (TIER.B1)
       const yB1 = getLevelY('B1');
-      const aB1 = getLayerAlpha('B1');
+      const aB1 = getFloorVisibility('B1');
+      if (aB1 > 0) {
+        pushBox(-162, yB1, 0, 96, 5.5, 155, {
+          top: isDark ? '#3D2B1D' : '#EADBC8',
+          north: '#8F4E14', south: '#B5651D', west: '#8F4E14', east: '#B5651D',
+          stroke: '#8F4E14'
+        }, aB1, TIER.B1);
 
-      drawExtrudedBox(-175, yB1, 0, 105, 5.5, 175, {
-        top: isDark ? 'rgba(55,42,30,0.85)' : 'rgba(238,224,205,0.92)',
-        side1: '#B5651D', side2: '#9A5316', stroke: '#B5651D'
-      }, aB1);
+        pushBox(108, yB1, 0, 12, 6, 260, {
+          top: isDark ? '#2B2B28' : '#D5D0C5',
+          north: '#78756E', south: '#78756E', west: '#5C5A55', east: '#5C5A55',
+          stroke: strokeBase
+        }, aB1, TIER.B1);
 
-      drawExtrudedBox(122, yB1 - 2, 0, 16, 7, 250, {
-        top: 'rgba(120,117,110,0.28)', side1: 'rgba(120,117,110,0.4)', side2: 'rgba(120,117,110,0.4)', stroke: slabStroke
-      }, aB1);
+        pushBox(176, yB1, 0, 102, 5.5, 165, {
+          top: isDark ? '#382644' : '#E8DDF0',
+          north: '#63317C', south: '#7B3F98', west: '#63317C', east: '#7B3F98',
+          stroke: '#63317C'
+        }, aB1, TIER.B1);
+      }
 
-      drawExtrudedBox(182, yB1, 0, 96, 5.5, 195, {
-        top: isDark ? 'rgba(48,34,58,0.88)' : 'rgba(237,228,242,0.92)',
-        side1: '#7B3F98', side2: '#63317C', stroke: '#7B3F98'
-      }, aB1);
-
-      // D. LEVEL F1 (+84m): 11 PLATFORMS & 20 TRACKS (NATIONAL RAILWAY) + EAST 2F
+      // 3. LEVEL F1 (-26y): FULL-LENGTH 11 PLATFORMS & 20 TRACKS (TIER.F1)
       const yF1 = getLevelY('F1');
-      const aF1 = getLayerAlpha('F1');
+      const aF1 = getFloorVisibility('F1');
+      if (aF1 > 0) {
+        pushBox(0, yF1, 0, 196, 4, 304, {
+          top: isDark ? '#1D222B' : '#CFD6DF',
+          north: '#00284D', south: '#003A70', west: '#00284D', east: '#003A70',
+          stroke: '#003A70',
+          lineWidth: 1.0
+        }, aF1, TIER.F1, -20);
 
-      drawPoly3D([
-        { x: -108, y: yF1, z: -135 },
-        { x:  108, y: yF1, z: -135 },
-        { x:  108, y: yF1, z:  135 },
-        { x: -108, y: yF1, z:  135 }
-      ], isDark ? 'rgba(24,28,36,0.90)' : 'rgba(220,225,232,0.92)', slabStroke, 1.2, aF1);
+        const platformConfigs = [
+          { label: '20',    pNums: [20],     x: -85, w: 6,   hk: false, pingshan: false },
+          { label: '18·19', pNums: [18, 19], x: -70, w: 9.5, hk: false, pingshan: false },
+          { label: '16·17', pNums: [16, 17], x: -53, w: 9.5, hk: false, pingshan: false },
+          { label: '14·15', pNums: [14, 15], x: -36, w: 9.5, hk: true,  pingshan: false },
+          { label: '12·13', pNums: [12, 13], x: -19, w: 9.5, hk: true,  pingshan: false },
+          { label: '10·11', pNums: [10, 11], x:  -2, w: 9.5, hk: true,  pingshan: false },
+          { label: '8·9',   pNums: [8, 9],   x:  15, w: 9.5, hk: true,  pingshan: false },
+          { label: '6·7',   pNums: [6, 7],   x:  32, w: 9.5, hk: false, pingshan: false },
+          { label: '4·5',   pNums: [4, 5],   x:  49, w: 9.5, hk: false, pingshan: false },
+          { label: '2·3',   pNums: [2, 3],   x:  66, w: 9.5, hk: false, pingshan: false },
+          { label: '1',     pNums: [1],      x:  82, w: 6,   hk: false, pingshan: true  }
+        ];
 
-      const platformConfigs = [
-        { label: '20',    pNums: [20],     x: -95, w: 6,  hk: false, pingshan: false },
-        { label: '18·19', pNums: [18, 19], x: -78, w: 10, hk: false, pingshan: false },
-        { label: '16·17', pNums: [16, 17], x: -58, w: 10, hk: false, pingshan: false },
-        { label: '14·15', pNums: [14, 15], x: -38, w: 10, hk: true,  pingshan: false },
-        { label: '12·13', pNums: [12, 13], x: -18, w: 10, hk: true,  pingshan: false },
-        { label: '10·11', pNums: [10, 11], x:   2, w: 10, hk: true,  pingshan: false },
-        { label: '8·9',   pNums: [8, 9],   x:  22, w: 10, hk: true,  pingshan: false },
-        { label: '6·7',   pNums: [6, 7],   x:  42, w: 10, hk: false, pingshan: false },
-        { label: '4·5',   pNums: [4, 5],   x:  62, w: 10, hk: false, pingshan: false },
-        { label: '2·3',   pNums: [2, 3],   x:  82, w: 10, hk: false, pingshan: false },
-        { label: '1',     pNums: [1],      x:  97, w: 6,  hk: false, pingshan: true  }
-      ];
+        platformConfigs.forEach(pc => {
+          const isSel = state.selectedPlatform && pc.pNums.includes(state.selectedPlatform);
+          let topCol = isDark ? '#384659' : '#E2E8F0';
+          let sideCol = '#003A70';
+          let strokeCol = '#003A70';
 
-      platformConfigs.forEach(pc => {
-        const isSel = state.selectedPlatform && pc.pNums.includes(state.selectedPlatform);
-        let topCol = isDark ? '#334155' : '#CBD5E1';
-        let sideCol = '#003A70';
-        let strokeCol = '#003A70';
+          if (pc.hk) {
+            topCol = isDark ? '#6E2228' : '#F2CFD2';
+            sideCol = '#B81D24';
+            strokeCol = '#B81D24';
+          } else if (pc.pingshan) {
+            topCol = isDark ? '#1E4D3B' : '#CDE5DB';
+            sideCol = '#1B6B4C';
+            strokeCol = '#1B6B4C';
+          }
+          if (isSel) {
+            topCol = '#D94E1F';
+            sideCol = '#A33612';
+            strokeCol = '#FFFFFF';
+          }
 
-        if (pc.hk) {
-          topCol = isDark ? 'rgba(184,29,36,0.58)' : 'rgba(184,29,36,0.28)';
-          sideCol = '#B81D24';
-          strokeCol = '#B81D24';
-        } else if (pc.pingshan) {
-          topCol = 'rgba(27,107,76,0.38)';
-          sideCol = '#1B6B4C';
-          strokeCol = '#1B6B4C';
-        }
-        if (isSel) {
-          topCol = '#D94E1F';
-          sideCol = '#D94E1F';
-          strokeCol = '#FFFFFF';
-        }
-
-        drawExtrudedBox(pc.x, yF1 + 1, 0, pc.w, isSel ? 7.5 : 5.0, 236, {
-          top: topCol, side1: sideCol, side2: sideCol, stroke: strokeCol, lineWidth: isSel ? 1.8 : 0.75
-        }, aF1);
-      });
-
-      const hsrZ1 = -85 + Math.sin(state.time * 0.9) * 35;
-      const hsrZ2 =  65 - ((state.time * 42) % 190);
-      drawExtrudedBox(-5, yF1 + 3, hsrZ1, 5.5, 6.5, 88, {
-        top: '#F3F1EC', side1: '#D94E1F', side2: '#B81D24', stroke: '#B81D24'
-      }, aF1);
-      drawExtrudedBox(52, yF1 + 3, hsrZ2, 5.5, 6.5, 92, {
-        top: '#F3F1EC', side1: '#003A70', side2: '#B81D24', stroke: '#003A70'
-      }, aF1);
-
-      drawExtrudedBox(182, yF1, 0, 96, 5.5, 195, {
-        top: isDark ? 'rgba(27,75,56,0.68)' : 'rgba(218,235,226,0.92)',
-        side1: '#1B6B4C', side2: '#14523A', stroke: '#1B6B4C'
-      }, aF1);
-
-      if (state.activeLayer === 'ALL') {
-        const colColor = isDark ? 'rgba(243,241,236,0.18)' : 'rgba(20,20,19,0.22)';
-        [-95, -58, -18, 22, 62, 97].forEach(cx => {
-          [-75, 0, 75].forEach(cz => {
-            drawLine3D({ x: cx, y: yF1 + 5, z: cz }, { x: cx, y: getLevelY('F2'), z: cz }, colColor, 1.5, 0.75);
-          });
+          pushBox(pc.x, yF1 + 4, 0, pc.w, isSel ? 6.5 : 4.2, 286, {
+            top: topCol, north: sideCol, south: sideCol, west: sideCol, east: sideCol,
+            stroke: strokeCol, lineWidth: isSel ? 1.5 : 0.65
+          }, aF1, TIER.F1, 5);
         });
+
+        const hsrZ1 = -105 + Math.sin(state.time * 1.1) * 32;
+        const hsrZ2 =  115 - ((state.time * 44) % 230);
+        pushBox(-10, yF1 + 4.5, hsrZ1, 5.2, 6.2, 78, {
+          top: '#FFFFFF', north: '#D94E1F', south: '#D94E1F', west: '#B81D24', east: '#B81D24', stroke: '#881318'
+        }, aF1, TIER.F1, 12);
+        pushBox(41, yF1 + 4.5, hsrZ2, 5.2, 6.2, 82, {
+          top: '#F8FAFC', north: '#003A70', south: '#003A70', west: '#B81D24', east: '#003A70', stroke: '#002244'
+        }, aF1, TIER.F1, 12);
+
+        pushBox(176, yF1, 0, 102, 5.5, 165, {
+          top: isDark ? '#214033' : '#D5E6DD',
+          north: '#14523A', south: '#1B6B4C', west: '#14523A', east: '#1B6B4C',
+          stroke: '#14523A'
+        }, aF1, TIER.F1);
+
+        // Structural columns supporting F2 Waiting Hall over F1 Platforms
+        if (state.activeLayer === 'ALL') {
+          const colStroke = isDark ? 'rgba(243,241,236,0.28)' : 'rgba(0,58,112,0.35)';
+          [-85, -53, -19, 15, 49, 82].forEach(cx => {
+            [-75, 75].forEach(cz => {
+              pushLine({ x: cx, y: yF1 + 8, z: cz }, { x: cx, y: getLevelY('F2'), z: cz }, colStroke, 2.0, 0.85, null, TIER.F1, 20);
+            });
+          });
+        }
       }
 
-      // E. LEVEL F2 (+90m): MAIN PEDESTRIAN DECK, WAITING HALL A1-A20 / B1-B20
+      // 4. LEVEL F2 (+6y): CENTRAL ELEVATED WAITING HALL + WEST & EAST SQUARES (TIER.F2)
       const yF2 = getLevelY('F2');
-      const aF2 = getLayerAlpha('F2');
+      const aF2 = getFloorVisibility('F2');
+      if (aF2 > 0) {
+        // West Square F2 Plaza Deck
+        pushBox(-162, yF2, 0, 96, 5.5, 164, {
+          top: isDark ? '#422F1F' : '#EFE2D0',
+          north: '#8F4E14', south: '#B5651D', west: '#8F4E14', east: '#B5651D',
+          stroke: '#8F4E14'
+        }, aF2, TIER.F2, -10);
+        pushBox(-166, yF2 + 5.5, 42, 64, 8, 52, {
+          top: '#D94E1F', north: '#9E3511', south: '#B5651D', west: '#9E3511', east: '#B5651D', stroke: '#F3F1EC'
+        }, aF2, TIER.F2, 10);
+        pushBox(-166, yF2 + 5.5, -44, 64, 7.5, 48, {
+          top: isDark ? '#38332D' : '#DED6C6',
+          north: '#78756E', south: '#8F4E14', west: '#78756E', east: '#8F4E14', stroke: strokeBase
+        }, aF2, TIER.F2, 10);
 
-      drawExtrudedBox(-175, yF2, 0, 105, 5.5, 190, {
-        top: isDark ? 'rgba(68,45,25,0.84)' : 'rgba(244,232,216,0.94)',
-        side1: '#B5651D', side2: '#8F4E14', stroke: '#B5651D'
-      }, aF2);
-      drawExtrudedBox(-182, yF2 + 5.5, 42, 68, 7.5, 58, {
-        top: '#D94E1F', side1: '#B5651D', side2: '#8F4E14', stroke: '#F3F1EC'
-      }, aF2);
-      drawExtrudedBox(-182, yF2 + 5.5, -52, 68, 7.0, 52, {
-        top: isDark ? '#3A352F' : '#DFD7C8', side1: '#8F4E14', side2: '#8F4E14', stroke: slabStroke
-      }, aF2);
+        // National Railway Central Elevated Waiting Hall (X: -102..+102, Z: -82..+82)
+        pushBox(0, yF2, 0, 204, 6.5, 164, {
+          top: isDark ? '#28303D' : '#F5F3EE',
+          north: '#00284D', south: '#003A70', west: '#00284D', east: '#003A70',
+          stroke: '#003A70',
+          lineWidth: 1.3
+        }, aF2, TIER.F2, -10);
 
-      drawExtrudedBox(0, yF2, 0, 224, 6.5, 165, {
-        top: slabFill,
-        side1: '#003A70',
-        side2: '#00284D',
-        stroke: '#003A70',
-        lineWidth: 1.5
-      }, aF2);
+        const gateXs = [-85, -70, -53, -36, -19, -2, 15, 32, 49, 66, 82];
+        const gatePNs = [[20],[18,19],[16,17],[14,15],[12,13],[10,11],[8,9],[6,7],[4,5],[2,3],[1]];
+        gateXs.forEach((gx, idx) => {
+          const pNums = gatePNs[idx];
+          const isSel = state.selectedPlatform && pNums.includes(state.selectedPlatform);
+          const isHK = pNums[0] >= 8 && pNums[0] <= 15;
+          const gCol = isSel ? '#D94E1F' : (isHK ? '#B81D24' : '#003A70');
+          const gH = isSel ? 9.5 : 4.5;
 
-      platformConfigs.forEach(pc => {
-        const isSel = state.selectedPlatform && pc.pNums.includes(state.selectedPlatform);
-        const gateCol = isSel ? '#D94E1F' : (pc.hk ? '#B81D24' : '#003A70');
-        const gateH = isSel ? 10 : 4.5;
+          pushBox(gx, yF2 + 6.5, -36, 6.5, gH, 15, {
+            top: gCol, north: gCol, south: gCol, west: gCol, east: gCol, stroke: '#F3F1EC'
+          }, aF2, TIER.F2, 12);
+          pushBox(gx, yF2 + 6.5,  36, 6.5, gH, 15, {
+            top: gCol, north: gCol, south: gCol, west: gCol, east: gCol, stroke: '#F3F1EC'
+          }, aF2, TIER.F2, 12);
+        });
 
-        drawExtrudedBox(pc.x, yF2 + 6.5, -36, pc.w * 0.85, gateH, 16, {
-          top: gateCol, side1: gateCol, side2: gateCol, stroke: '#F3F1EC'
-        }, aF2);
-        drawExtrudedBox(pc.x, yF2 + 6.5,  36, pc.w * 0.85, gateH, 16, {
-          top: gateCol, side1: gateCol, side2: gateCol, stroke: '#F3F1EC'
-        }, aF2);
-      });
+        pushBox(0, yF2 + 6.5, 0, 22, 5.5, 18, {
+          top: '#D94E1F', north: '#9E3511', south: '#D94E1F', west: '#9E3511', east: '#D94E1F', stroke: '#FFFFFF'
+        }, aF2, TIER.F2, 12);
 
-      drawExtrudedBox(0, yF2 + 6.5, 0, 24, 5.5, 20, {
-        top: '#D94E1F', side1: '#A33612', side2: '#A33612', stroke: '#FFFFFF'
-      }, aF2);
+        pushBox(98, yF2 + 6.5, 0, 7, 9, 52, {
+          top: '#003A70', north: '#00284D', south: '#003A70', west: '#00284D', east: '#003A70', stroke: '#FFFFFF'
+        }, aF2, TIER.F2, 14);
+        pushBox(-98, yF2 + 6.5, 0, 7, 9, 52, {
+          top: '#B5651D', north: '#8F4E14', south: '#B5651D', west: '#8F4E14', east: '#B5651D', stroke: '#FFFFFF'
+        }, aF2, TIER.F2, 14);
 
-      drawExtrudedBox(110, yF2 + 6.5, 0, 8, 9.5, 56, {
-        top: '#003A70', side1: '#003A70', side2: '#00264D', stroke: '#FFFFFF'
-      }, aF2);
-      drawExtrudedBox(-110, yF2 + 6.5, 0, 8, 9.5, 56, {
-        top: '#B5651D', side1: '#B5651D', side2: '#8F4E14', stroke: '#FFFFFF'
-      }, aF2);
+        // East Square F2 Open Pedestrian Plaza
+        pushBox(176, yF2, 0, 102, 5.5, 164, {
+          top: isDark ? '#244739' : '#DFECE5',
+          north: '#14523A', south: '#1B6B4C', west: '#14523A', east: '#1B6B4C',
+          stroke: '#1B6B4C'
+        }, aF2, TIER.F2, -10);
 
-      drawExtrudedBox(182, yF2, 0, 96, 5.5, 195, {
-        top: isDark ? 'rgba(28,58,45,0.86)' : 'rgba(225,239,231,0.94)',
-        side1: '#1B6B4C', side2: '#134E37', stroke: '#1B6B4C'
-      }, aF2);
+        pushBox(188, yF2 + 5.5, 0, 36, 2.5, 54, {
+          top: isDark ? '#182420' : '#B8D4C8',
+          north: '#14523A', south: '#1B6B4C', west: '#14523A', east: '#1B6B4C', stroke: '#14523A'
+        }, aF2, TIER.F2, 10);
+      }
 
-      // F. LEVEL F3 (+96m): METRO 4/6 CONCOURSE & NATIONAL RAIL COMMERCIAL MEZZANINE
+      // 5. LEVEL F3 (+38y): ELEVATED METRO 4/6 CONCOURSE & RAIL MEZZANINE (TIER.F3)
       const yF3 = getLevelY('F3');
-      const aF3 = getLayerAlpha('F3');
+      const aF3 = getFloorVisibility('F3');
+      if (aF3 > 0) {
+        pushBox(0, yF3, -66, 176, 4.5, 24, {
+          top: isDark ? '#323B4A' : '#E5E0D5',
+          north: '#00284D', south: '#003A70', west: '#00284D', east: '#003A70', stroke: strokeBase
+        }, aF3, TIER.F3);
+        pushBox(0, yF3,  66, 176, 4.5, 24, {
+          top: isDark ? '#323B4A' : '#E5E0D5',
+          north: '#00284D', south: '#003A70', west: '#00284D', east: '#003A70', stroke: strokeBase
+        }, aF3, TIER.F3);
 
-      drawExtrudedBox(0, yF3, -64, 190, 5, 28, {
-        top: isDark ? 'rgba(42,48,60,0.84)' : 'rgba(230,226,216,0.92)',
-        side1: '#003A70', side2: '#003A70', stroke: slabStroke
-      }, aF3);
-      drawExtrudedBox(0, yF3,  64, 190, 5, 28, {
-        top: isDark ? 'rgba(42,48,60,0.84)' : 'rgba(230,226,216,0.92)',
-        side1: '#003A70', side2: '#003A70', stroke: slabStroke
-      }, aF3);
+        pushBox(138, yF3, 0, 52, 5.5, 230, {
+          top: isDark ? '#2D3A3A' : '#E4ECEA',
+          north: '#007A6E', south: '#009B8D', west: '#007A6E', east: '#D62828',
+          stroke: '#141413', lineWidth: 1.0
+        }, aF3, TIER.F3);
 
-      drawExtrudedBox(182, yF3, 0, 82, 5.5, 210, {
-        top: isDark ? 'rgba(40,48,48,0.92)' : 'rgba(235,242,240,0.94)',
-        side1: '#009B8D', side2: '#D62828', stroke: '#141413'
-      }, aF3);
-
-      const escAlpha = Math.max(aF3, aB1) * 0.92;
-      drawLine3D({ x: 156, y: yF3 + 2, z: -45 }, { x: 156, y: yB1 + 4, z: -20 }, '#1B6B4C', 4.5, escAlpha);
-      drawLine3D({ x: 156, y: yF3 + 2, z:  45 }, { x: 156, y: yB1 + 4, z:  20 }, '#1B6B4C', 4.5, escAlpha);
-
-      // G. LEVEL F4 (+102m): METRO LINE 4 & LINE 6 DUAL-ISLAND ELEVATED PLATFORMS
-      const yF4 = getLevelY('F4');
-      const aF4 = getLayerAlpha('F4');
-
-      drawPoly3D([
-        { x: 144, y: yF4, z: -145 },
-        { x: 220, y: yF4, z: -145 },
-        { x: 220, y: yF4, z:  145 },
-        { x: 144, y: yF4, z:  145 }
-      ], isDark ? 'rgba(30,34,34,0.88)' : 'rgba(232,230,223,0.92)', slabStroke, 1.2, aF4);
-
-      drawExtrudedBox(164, yF4 + 1, 0, 14, 5.5, 220, {
-        top: '#009B8D', side1: '#007A6E', side2: '#007A6E', stroke: '#FFFFFF'
-      }, aF4);
-      drawExtrudedBox(198, yF4 + 1, 0, 14, 5.5, 220, {
-        top: '#D62828', side1: '#A81C1C', side2: '#A81C1C', stroke: '#FFFFFF'
-      }, aF4);
-
-      const l6TrainZ = -80 + ((state.time * 45) % 170);
-      const l4TrainZ =  85 - ((state.time * 45) % 170);
-      drawExtrudedBox(153, yF4 + 3, l6TrainZ, 5, 6, 54, {
-        top: '#F3F1EC', side1: '#009B8D', side2: '#009B8D', stroke: '#007A6E'
-      }, aF4);
-      drawExtrudedBox(209, yF4 + 3, l4TrainZ, 5, 6, 54, {
-        top: '#F3F1EC', side1: '#D62828', side2: '#D62828', stroke: '#A81C1C'
-      }, aF4);
-
-      // H. WAVE-ARCH STEEL ROOF CANOPY
-      if (state.showRoof && state.activeLayer === 'ALL') {
-        const yRoof = yF4 + 26;
-        const roofColor = isDark ? 'rgba(243,241,236,0.20)' : 'rgba(20,20,19,0.20)';
-        for (let rz = -90; rz <= 90; rz += 30) {
-          const archPts = [];
-          for (let rx = -115; rx <= 225; rx += 17) {
-            const wave = Math.sin(((rx + 115) / 340) * Math.PI) * 18;
-            archPts.push({ x: rx, y: yRoof + wave, z: rz });
-          }
-          for (let i = 0; i < archPts.length - 1; i++) {
-            drawLine3D(archPts[i], archPts[i + 1], roofColor, 1.2, 0.85);
-          }
+        // Elevated Metro Viaduct Support Piers (F2 -> F3 -> F4)
+        if (state.activeLayer === 'ALL') {
+          const pierCol = isDark ? 'rgba(243,241,236,0.30)' : 'rgba(20,20,19,0.35)';
+          [-95, -45, 45, 95].forEach(pz => {
+            pushLine({ x: 120, y: getLevelY('F2') + 5.5, z: pz }, { x: 120, y: getLevelY('F4'), z: pz }, pierCol, 2.2, 0.85, null, TIER.F3, -5);
+            pushLine({ x: 156, y: getLevelY('F2') + 5.5, z: pz }, { x: 156, y: getLevelY('F4'), z: pz }, pierCol, 2.2, 0.85, null, TIER.F3, -5);
+          });
         }
       }
 
-      // I. ARCHITECTURAL LEADER LINES FOR PERIMETER CALLOUT PINS
-      const leaderColor = isDark ? 'rgba(243,241,236,0.55)' : 'rgba(20,20,19,0.55)';
-      SPATIAL_PINS.forEach((pin, idx) => {
-        const el = document.getElementById(pin.id);
-        if (!el) return;
-        const alpha = getLayerAlpha(pin.level);
-        // On phone screens (<=600px) in ALL view, show key boundary pins (F4, F2 East, F1 Rail, B2 L5) to avoid clutter
-        const hideOnPhone = isPhone && state.activeLayer === 'ALL' && (idx === 1 || idx === 3);
-        if (alpha < 0.3 || hideOnPhone) {
-          el.style.opacity = '0';
-          el.style.pointerEvents = 'none';
-          return;
+      if (aF3 > 0 && aB1 > 0) {
+        pushLine({ x: 132, y: yF3 + 2, z: -38 }, { x: 158, y: yB1 + 5, z: -18 }, '#1B6B4C', 4.0, 0.92, null, TIER.F3, 15);
+        pushLine({ x: 132, y: yF3 + 2, z:  38 }, { x: 158, y: yB1 + 5, z:  18 }, '#1B6B4C', 4.0, 0.92, null, TIER.F3, 15);
+      }
+
+      // 6. LEVEL F4 (+68y): METRO LINE 4 & LINE 6 DUAL-ISLAND ELEVATED PLATFORMS (TIER.F4)
+      const yF4 = getLevelY('F4');
+      const aF4 = getFloorVisibility('F4');
+      if (aF4 > 0) {
+        pushBox(138, yF4, 0, 56, 3.5, 290, {
+          top: isDark ? '#262B2B' : '#DCD9D0',
+          north: '#5C5A55', south: '#78756E', west: '#5C5A55', east: '#78756E',
+          stroke: strokeBase
+        }, aF4, TIER.F4, -15);
+
+        pushBox(125, yF4 + 3.5, 0, 12, 5.0, 230, {
+          top: '#009B8D', north: '#006B61', south: '#00877B', west: '#006B61', east: '#00877B', stroke: '#FFFFFF'
+        }, aF4, TIER.F4, 5);
+
+        pushBox(151, yF4 + 3.5, 0, 12, 5.0, 230, {
+          top: '#D62828', north: '#991B1B', south: '#B91C1C', west: '#991B1B', east: '#B91C1C', stroke: '#FFFFFF'
+        }, aF4, TIER.F4, 5);
+
+        const l6Z = -90 + ((state.time * 45) % 180);
+        const l4Z =  90 - ((state.time * 45) % 180);
+        pushBox(115, yF4 + 4.0, l6Z, 4.5, 5.5, 52, {
+          top: '#FFFFFF', north: '#009B8D', south: '#009B8D', west: '#009B8D', east: '#007A6E', stroke: '#004D46'
+        }, aF4, TIER.F4, 12);
+        pushBox(161, yF4 + 4.0, l4Z, 4.5, 5.5, 52, {
+          top: '#FFFFFF', north: '#D62828', south: '#D62828', west: '#A81C1C', east: '#D62828', stroke: '#7F1D1D'
+        }, aF4, TIER.F4, 12);
+      }
+
+      // 7. ICONIC SHENZHEN NORTH STATION WAVE-ARCH STEEL ROOF CANOPY (TIER.ROOF)
+      if (state.showRoof && state.activeLayer === 'ALL') {
+        const yRoof = yF4 + 14;
+        const roofCol = isDark ? 'rgba(243,241,236,0.30)' : 'rgba(0,58,112,0.26)';
+        const purlinCol = isDark ? 'rgba(243,241,236,0.16)' : 'rgba(0,58,112,0.14)';
+        for (let rz = -80; rz <= 80; rz += 20) {
+          const pts = [];
+          for (let rx = -102; rx <= 166; rx += 16) {
+            const arch = Math.sin(((rx + 102) / 268) * Math.PI) * 15;
+            pts.push({ x: rx, y: yRoof + arch, z: rz });
+          }
+          for (let i = 0; i < pts.length - 1; i++) {
+            pushLine(pts[i], pts[i + 1], roofCol, 1.3, 0.85, null, TIER.ROOF);
+          }
         }
-        const aPt = pin.anchor();
-        const pPt = pin.pinPos();
-        drawLine3D(aPt, pPt, leaderColor, 1.1, 0.8, [3, 3]);
+        for (let rx = -102; rx <= 166; rx += 33.5) {
+          const arch = Math.sin(((rx + 102) / 268) * Math.PI) * 15;
+          pushLine({ x: rx, y: yRoof + arch, z: -80 }, { x: rx, y: yRoof + arch, z: 80 }, purlinCol, 1.0, 0.8, null, TIER.ROOF);
+        }
+      }
 
-        const pa = project3D(aPt);
-        ctx.save();
-        ctx.fillStyle = textMain;
-        ctx.beginPath();
-        ctx.arc(pa.x, pa.y, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-
-        const pp = project3D(pPt);
-        const minX = isPhone ? 92 : 105;
-        const maxX = isPhone ? w - 68 : w - 115;
-        const minY = (w <= 1024) ? 82 : 78;
-        const maxY = (w <= 1024) ? h - 54 : h - 68;
-        const clampedX = Math.max(minX, Math.min(maxX, pp.x));
-        const clampedY = Math.max(minY, Math.min(maxY, pp.y));
-        el.style.opacity = '1';
-        el.style.pointerEvents = 'auto';
-        el.style.left = clampedX + 'px';
-        el.style.top = clampedY + 'px';
-      });
-
-      // J. 3D ANIMATED PASSENGER WAYFINDING PATH RIBBON & CRISP STEP BADGES
+      // 8. 3D ANIMATED PASSENGER WAYFINDING PATH & NUMBERED SPHERES (TIER.PATH)
       let activeWaypoints = null;
       if (state.selectedPlatform !== null) {
         const px = getPlatformX(state.selectedPlatform);
         const isEast = state.selectedPlatform <= 10;
-        const enterX = isEast ? 158 : -158;
-        const gateEdgeX = isEast ? 110 : -110;
+        const enterX = isEast ? 165 : -165;
+        const gateEdgeX = isEast ? 98 : -98;
         const gateZ = isEast ? 36 : -36;
         activeWaypoints = [
-          { x: enterX,    y: yF2 + 7, z: 0,     step: '1', tag: isEast ? '东广场出发' : '西广场出发' },
-          { x: gateEdgeX, y: yF2 + 9, z: 0,     step: '2', tag: isEast ? '东进站口(A)' : '西进站口(B)' },
-          { x: px,        y: yF2 + 11,z: gateZ, step: '3', tag: (isEast ? 'A' : 'B') + state.selectedPlatform + '检票口' },
-          { x: px,        y: yF1 + 8, z: 0,     step: '4', tag: state.selectedPlatform + '站台登车' }
+          { x: enterX,    y: yF2 + 9,  z: 0,     step: '1' },
+          { x: gateEdgeX, y: yF2 + 11, z: 0,     step: '2' },
+          { x: px,        y: yF2 + 13, z: gateZ, step: '3' },
+          { x: px,        y: yF1 + 9,  z: 95,    step: '4' }
         ];
       } else if (WAYFINDING_FLOWS[state.activeFlowIndex]) {
         activeWaypoints = WAYFINDING_FLOWS[state.activeFlowIndex].path3D();
@@ -2223,41 +2262,57 @@ html, body {
 
       if (activeWaypoints && activeWaypoints.length > 1) {
         for (let i = 0; i < activeWaypoints.length - 1; i++) {
-          drawLine3D(activeWaypoints[i], activeWaypoints[i + 1], '#D94E1F', isPhone ? 4.0 : 5.0, 0.96);
-          drawLine3D(activeWaypoints[i], activeWaypoints[i + 1], '#FFFFFF', 1.8, 0.96, [5, 7]);
+          pushLine(activeWaypoints[i], activeWaypoints[i + 1], '#D94E1F', isPhone ? 4.2 : 5.0, 0.98, null, TIER.PATH, i);
+          pushLine(activeWaypoints[i], activeWaypoints[i + 1], '#FFFFFF', 1.8, 0.98, [5, 7], TIER.PATH, i + 0.5);
         }
         activeWaypoints.forEach((wp, idx) => {
-          const p = project3D(wp);
-          ctx.save();
-          ctx.fillStyle = '#D94E1F';
-          ctx.strokeStyle = '#FFFFFF';
-          ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, isPhone ? 8 : 9, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = `700 ${isPhone ? 9.5 : 10}px "JetBrains Mono", sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(wp.step || String(idx + 1), p.x, p.y);
-
-          if (wp.tag) {
-            const labelText = wp.tag;
-            ctx.font = `700 ${isPhone ? 9.5 : 10.5}px "PingFang SC", sans-serif`;
-            const tw = ctx.measureText(labelText).width + 8;
-            const offsetX = (idx % 2 === 0) ? 12 : -12 - tw;
-            ctx.fillStyle = '#D94E1F';
-            ctx.fillRect(p.x + offsetX, p.y - 8, tw, 16);
-            ctx.fillStyle = '#FFFFFF';
-            ctx.textAlign = 'left';
-            ctx.fillText(labelText, p.x + offsetX + 4, p.y);
-          }
-          ctx.restore();
+          pushBadge(wp, wp.step || String(idx + 1), '#FFFFFF', '#D94E1F', '#FFFFFF', 10.0, 1.0, TIER.PATH_NODE, idx);
         });
       }
 
+      // 9. CLEAN PERIMETER ARCHITECTURAL CALLOUTS (TIER.HUD)
+      const leaderCol = isDark ? 'rgba(243,241,236,0.65)' : 'rgba(20,20,19,0.65)';
+      const perimeterCallouts = [
+        {
+          level: 'F4',
+          from: { x: 151, y: yF4 + 6, z: -85 },
+          to:   { x: 195, y: yF4 + 24, z: -105 },
+          text: isPhone ? 'F4 · 4/6号线高架站台' : 'F4 · 地铁4/6号线高架双岛站台'
+        },
+        {
+          level: 'F2',
+          from: { x: 185, y: yF2 + 5, z: 55 },
+          to:   { x: 225, y: yF2 + 14, z: 85 },
+          text: isPhone ? 'F2 · 东广场/A进站口' : 'F2 · 东广场 & 国铁东进站口(A)'
+        },
+        {
+          level: 'F2',
+          from: { x: -166, y: yF2 + 10, z: 42 },
+          to:   { x: -215, y: yF2 + 22, z: 75 },
+          text: isPhone ? 'F2 · 西广场/网约车B区' : 'F2 · 西广场 & 地面网约车B区'
+        },
+        {
+          level: 'F1',
+          from: { x: -19, y: yF1 + 6, z: -125 },
+          to:   { x: -135, y: yF1 + 16, z: -145 },
+          text: isPhone ? 'F1 · 国铁11台20线' : 'F1 · 国铁11台20线 (8–15跨境区)'
+        },
+        {
+          level: 'B2',
+          from: { x: -185, y: yB2 + 6, z: 10 },
+          to:   { x: -215, y: yB2 - 6, z: 45 },
+          text: isPhone ? 'B2 · 5号线正交站台' : 'B2 · 5号线东西向正交侧式站台'
+        }
+      ];
+
+      perimeterCallouts.forEach(pc => {
+        const vis = getFloorVisibility(pc.level);
+        if (vis < 0.5) return;
+        pushLine(pc.from, pc.to, leaderCol, 1.15, 0.9, [3, 3], TIER.HUD, 1);
+        pushBadge(pc.to, pc.text, badgeFg, badgeBg, strokeBase, 0, 0.98, TIER.HUD, 5);
+      });
+
+      flushQueue();
       requestAnimationFrame(renderScene);
     }
 
@@ -2284,7 +2339,7 @@ html, body {
 
       if (dragMode === 'orbit') {
         state.targetYaw += dx * 0.0075;
-        state.targetPitch = Math.max(0.22, Math.min(1.42, state.targetPitch + dy * 0.0065));
+        state.targetPitch = Math.max(0.28, Math.min(1.36, state.targetPitch + dy * 0.0065));
         document.getElementById('yawSlider').value = Math.round(state.targetYaw * 180 / Math.PI);
         document.getElementById('pitchSlider').value = Math.round(state.targetPitch * 180 / Math.PI);
       } else {
@@ -2299,10 +2354,9 @@ html, body {
     canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
       const factor = e.deltaY > 0 ? 0.92 : 1.08;
-      state.targetZoom = Math.max(0.65, Math.min(2.3, state.targetZoom * factor));
+      state.targetZoom = Math.max(0.70, Math.min(2.2, state.targetZoom * factor));
     }, { passive: false });
 
-    // Multi-Touch Gestures for Mobile & Tablet
     canvas.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         isDragging = true;
@@ -2329,7 +2383,7 @@ html, body {
         const dy = e.touches[0].clientY - lastMouse.y;
         lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         state.targetYaw += dx * 0.0085;
-        state.targetPitch = Math.max(0.22, Math.min(1.42, state.targetPitch + dy * 0.0075));
+        state.targetPitch = Math.max(0.28, Math.min(1.36, state.targetPitch + dy * 0.0075));
         document.getElementById('yawSlider').value = Math.round(state.targetYaw * 180 / Math.PI);
         document.getElementById('pitchSlider').value = Math.round(state.targetPitch * 180 / Math.PI);
       } else if (e.touches.length === 2) {
@@ -2338,7 +2392,7 @@ html, body {
         const dist = Math.hypot(dx, dy);
         if (lastPinchDist > 10) {
           const scaleFactor = dist / lastPinchDist;
-          state.targetZoom = Math.max(0.65, Math.min(2.3, state.targetZoom * scaleFactor));
+          state.targetZoom = Math.max(0.70, Math.min(2.2, state.targetZoom * scaleFactor));
         }
         lastPinchDist = dist;
 
@@ -2407,13 +2461,13 @@ html, body {
       if (btnEl) btnEl.classList.add('is-active');
 
       state.panX = 0;
-      state.panY = 12;
+      state.panY = 4;
       const presets = {
-        iso:         { yaw: -36,  pitch: 32, zoom: 1.22, explode: 1.35 },
-        east:        { yaw: -16,  pitch: 26, zoom: 1.30, explode: 1.50 },
-        west:        { yaw: -145, pitch: 32, zoom: 1.26, explode: 1.35 },
-        top:         { yaw: 0,    pitch: 80, zoom: 1.18, explode: 0.75 },
-        underground: { yaw: -46,  pitch: 20, zoom: 1.32, explode: 1.75 }
+        iso:         { yaw: -38,  pitch: 30, zoom: 1.08, explode: 1.05 },
+        east:        { yaw: -18,  pitch: 26, zoom: 1.16, explode: 1.25 },
+        west:        { yaw: -142, pitch: 30, zoom: 1.14, explode: 1.10 },
+        top:         { yaw: 0,    pitch: 76, zoom: 1.08, explode: 0.85 },
+        underground: { yaw: -46,  pitch: 22, zoom: 1.16, explode: 1.45 }
       };
       const p = presets[preset] || presets.iso;
       state.targetYaw = p.yaw * Math.PI / 180;
@@ -2432,18 +2486,57 @@ html, body {
         row.classList.toggle('is-selected', row.getAttribute('data-level') === levelKey);
       });
 
-      const titles = {
-        ALL: ['深圳北站三维立体交通枢纽总图 (F4–B2)', '国铁11台20线 + 高架4/6号线 + 地下5号线东西正交全貌'],
-        F4:  ['F4 高架四层 · 地铁 4 / 6 号线双岛站台 (+102m)', '东岛4号线(福田口岸⇄牛湖) · 西岛6号线(科学馆⇄松岗)'],
-        F3:  ['F3 高架三层 · 4/6号线站厅 & 商业夹层 (+96m)', '付费区西侧设6台天地换乘大扶梯直通B1层5号线站厅'],
-        F2:  ['F2 主交通层 · 国铁候车室 & 东西广场 (+90m)', '东进站口(A)对地铁B/C口 · 西进站口(B)对网约车B区'],
-        F1:  ['F1 站台层 · 国铁 11 台 20 线 (+84m)', '东1站台至西20站台 · 8–15站台香港西九龙跨境专区'],
-        B1:  ['B1 地下一层 · 5号线站厅 & 东西广场地下 (+78m)', '东侧为5号线主站厅与出租车1F · 西侧为网约车A区'],
-        B2:  ['B2 地下二层 · 5号线东西正交站台 (+72m)', '5号线自东向西垂直下穿国铁站房 · 西北侧接深惠城际']
+      const layerInfo = {
+        ALL: [
+          '深圳北站三维实体建筑模型 (F4–B2)',
+          '中央国铁候车厅与11台20线 + 东侧高架4/6号线 + 地下5号线东西正交全貌',
+          '总建筑面积 400,000 m² · 站房 75,000 m² · 11台20线 + 三线地铁',
+          '中央蓝色体块为南北向国铁高架候车室(F2)与下方11座站台20条股道(F1)，南北咽喉区自然露出站台与复兴号/动感号列车；东侧高架桥(F3/F4)平行并列地铁4号线(红)与6号线(青)双岛站台；地下B2层地铁5号线(紫)自东向西垂直下穿全站。'
+        ],
+        F4: [
+          'F4 高架四层 · 地铁 4 / 6 号线双岛站台 (+102m)',
+          '东岛4号线(福田口岸⇄牛湖) · 西岛6号线(科学馆⇄松岗)',
+          '标高 +102.0m · 双岛四线平行高架站台 · 开左侧车门',
+          '位于东广场上空，4号线（红色东岛）与6号线（青色西岛）平行穿过车站屋顶。4号线站台付费区中部设垂直电梯可跨层直达B2层5号线站台。'
+        ],
+        F3: [
+          'F3 高架三层 · 4/6号线站厅 & 国铁商业夹层 (+96m)',
+          '付费区西侧设6台天地换乘大扶梯直通B1层5号线站厅',
+          '标高 +96.0m · 港铁(深圳)管辖高架站厅 + 国铁候车厅二层餐饮区',
+          '已自动剖切上方F4站台层：东侧为4/6号线共用高架站厅（中央设智慧卫生间、瑞幸咖啡及6台天地换乘长扶梯上口）；中部南北两端为国铁候车室二层快餐与咖啡商业夹层。'
+        ],
+        F2: [
+          'F2 主交通层 · 国铁高架候车室 & 东西广场 (+90m)',
+          '东进站口(A)对地铁B/C口 · 西进站口(B)对网约车B区',
+          '标高 +90.0m · 检票口 A1–A20 (东) / B1–B20 (西) · 迎春花服务台',
+          '已自动剖切上方F3/F4层：完整展示中央7.5万㎡国铁高架候车室内部11列A/B检票口门廊、中央迎春花服务岛、东广场露天平台(含中央采光穹顶)及西广场网约车B区空调候车馆与汽车站。'
+        ],
+        F1: [
+          'F1 站台层 · 国铁 11 座站台 20 条股道 (+84m)',
+          '东1站台(坪山捷运)至西20站台 · 8–15站台香港西九龙跨境专区',
+          '标高 +84.0m · 9座岛式站台 + 2座侧式站台 · 东广场2F公交/出租',
+          '已自动剖切上方F2候车大厅：全视野展示下方11座站台与20条股道全长布局！中部红色区为8–15号香港西九龙跨境专区（11/12正线装有半高站台门），东侧1站台为坪山捷运线，再往东为换乘厅2F公交总站与出租车2F。'
+        ],
+        B1: [
+          'B1 地下一层 · 5号线站厅 & 东西广场地下 (+78m)',
+          '东侧为5号线主站厅与出租车1F · 西侧为网约车A区及车库B1',
+          '标高 +78.0m · 5号线南侧进闸/四面出闸 · 新区大道南北地下隧道',
+          '已自动剖切地上全部楼层：展示东侧地下一层地铁5号线主站厅、东广场1F出租车与公交场站、中间南北向穿过的新区大道地下隧道，以及西侧B1层网约车A区与私家车接送车库。'
+        ],
+        B2: [
+          'B2 地下二层 · 5号线东西正交侧式站台 (+72m)',
+          '5号线自东向西垂直下穿国铁站房 · 西北侧接深惠城际',
+          '标高 +72.0m · 双侧式站台(宽5.4m · 开右侧车门) · 1971车位地下车库',
+          '已自动剖切上方全部楼层：清晰呈现深圳地铁5号线（环中线）自东向西正交横穿整个枢纽的地下双侧式站台（北侧往赤湾/前海湾，南侧往民治/大剧院），以及西北侧斜交的在建深惠城际铁路隧道。'
+        ]
       };
-      if (titles[levelKey]) {
-        document.getElementById('hudActiveTitle').textContent = titles[levelKey][0];
-        document.getElementById('hudActiveSubtitle').textContent = titles[levelKey][1];
+
+      if (layerInfo[levelKey]) {
+        document.getElementById('hudActiveTitle').textContent = layerInfo[levelKey][0];
+        document.getElementById('hudActiveSubtitle').textContent = layerInfo[levelKey][1];
+        document.getElementById('inspTitle').textContent = layerInfo[levelKey][0];
+        document.getElementById('inspMeta').textContent = layerInfo[levelKey][2];
+        document.getElementById('inspDesc').textContent = layerInfo[levelKey][3];
       }
     }
 
@@ -2470,9 +2563,16 @@ html, body {
 
       const isEast = pNum <= 10;
       const isHK = pNum >= 8 && pNum <= 15;
-      state.targetYaw = (isEast ? -32 : -142) * Math.PI / 180;
-      state.targetPitch = 34 * Math.PI / 180;
-      state.targetExplode = 1.42;
+      state.targetYaw = (isEast ? -34 : -140) * Math.PI / 180;
+      state.targetPitch = 32 * Math.PI / 180;
+      state.targetExplode = 1.12;
+
+      const gateCode = (isEast ? 'A' : 'B') + pNum;
+      document.getElementById('hudRouteRibbon').innerHTML =
+        `<span class="step-pill">1</span>${isEast ? '东广场出发' : '西广场出发'} ➔ ` +
+        `<span class="step-pill">2</span>${isEast ? '东进站口(A)' : '西进站口(B)'} ➔ ` +
+        `<span class="step-pill">3</span>F2层 ${gateCode}检票口 ➔ ` +
+        `<span class="step-pill">4</span>F1层 ${pNum}号站台登车`;
 
       let note = '常规高速动车组站台（广深港 / 厦深 / 赣深各方向）。';
       if (pNum === 1) {
@@ -2504,13 +2604,14 @@ html, body {
 
       document.getElementById('wfTitle').textContent = f.title;
       document.getElementById('wfList').innerHTML = f.steps.map(s => `<li>${s}</li>`).join('');
+      document.getElementById('hudRouteRibbon').innerHTML = f.ribbon;
     }
 
     function toggleRoofCutaway() {
       state.showRoof = !state.showRoof;
       const btn = document.getElementById('btnToggleRoof');
-      btn.textContent = state.showRoof ? '剖开屋顶' : '显示屋顶';
-      btn.classList.toggle('is-active', !state.showRoof);
+      btn.textContent = state.showRoof ? '隐藏屋顶网架' : '显示屋顶网架';
+      btn.classList.toggle('is-active', state.showRoof);
     }
 
     function toggleTheme() {
