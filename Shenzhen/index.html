@@ -1477,6 +1477,7 @@ html, body {
       activeLayer: 'ALL',
       showRoof: true,
       darkTheme: false,
+      invertTouch: false,
       selectedPlatform: null,
       activeFlowIndex: 0,
       time: 0
@@ -2338,8 +2339,9 @@ html, body {
       lastMouse = { x: e.clientX, y: e.clientY };
 
       if (dragMode === 'orbit') {
-        state.targetYaw += dx * 0.0075;
-        state.targetPitch = Math.max(0.28, Math.min(1.36, state.targetPitch + dy * 0.0065));
+        const dir = state.invertTouch ? -1 : 1;
+        state.targetYaw -= dx * 0.0075 * dir;
+        state.targetPitch = Math.max(0.28, Math.min(1.36, state.targetPitch + dy * 0.0065 * dir));
         document.getElementById('yawSlider').value = Math.round(state.targetYaw * 180 / Math.PI);
         document.getElementById('pitchSlider').value = Math.round(state.targetPitch * 180 / Math.PI);
       } else {
@@ -2382,8 +2384,9 @@ html, body {
         const dx = e.touches[0].clientX - lastMouse.x;
         const dy = e.touches[0].clientY - lastMouse.y;
         lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        state.targetYaw += dx * 0.0085;
-        state.targetPitch = Math.max(0.28, Math.min(1.36, state.targetPitch + dy * 0.0075));
+        const dir = state.invertTouch ? -1 : 1;
+        state.targetYaw -= dx * 0.0085 * dir;
+        state.targetPitch = Math.max(0.28, Math.min(1.36, state.targetPitch + dy * 0.0075 * dir));
         document.getElementById('yawSlider').value = Math.round(state.targetYaw * 180 / Math.PI);
         document.getElementById('pitchSlider').value = Math.round(state.targetPitch * 180 / Math.PI);
       } else if (e.touches.length === 2) {
