@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>深圳北站综合交通枢纽 · 高精度旅客立体导览模型 (国铁 + 地铁4/5/6号线)</title>
+  <!-- 外部独立样式表 (位于同级目录 Shenzhen/style.css) -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- 内嵌同步样式回退，确保单文件预览与离线打开均100%高保真渲染 -->
+  <style>
+/* ==========================================================================
+   深圳北站综合交通枢纽 · 高精度旅客立体导览模型 (HTML5 + CSS3)
+   Shenzhen North Railway & Metro Hub High-Precision Passenger Model
+   涵盖：国铁（11台20线 / 高架候车室 A1-A20 & B1-B20）+ 深圳地铁（4号线 / 5号线 / 6号线）
+   ========================================================================== */
+
+:root {
+  /* 核心品牌与交通标识色系 (基于中国铁路与深圳地铁官方视觉规范) */
+  --cr-blue: #1d4ed8;
+  --cr-blue-light: #eff6ff;
+  --cr-blue-border: #3b82f6;
+  --cr-red: #dc2626;
+  --cr-gold: #d97706;
+
+  /* 深圳地铁标准线路色 */
+  --metro-l4: #da291c;       /* 4号线 龙华线 港铁红 */
+  --metro-l4-bg: #fef2f2;
+  --metro-l5: #9b51e0;       /* 5号线 环中线 紫色 */
+  --metro-l5-gold: #eab308;  /* 5号线站内装饰金黄色 */
+  --metro-l5-bg: #faf5ff;
+  --metro-l6: #00b2a9;       /* 6号线 光明线 薄荷绿/青色 */
+  --metro-l6-bg: #f0fdfa;
+  --intercity-sh: #0284c7;   /* 深惠城际（在建） */
+
+  /* 空间与功能分区颜色 */
+  --east-sq: #059669;        /* 东广场（公共交通主导） */
+  --west-sq: #ea580c;        /* 西广场（网约车/私家车/汽车站） */
+  --hk-zone: #be123c;        /* 8-15站台 香港西九龙跨境专区 */
+  --transfer-green: #16a34a; /* 免安检及换乘通道 */
+
+  /* 界面深浅背景与文字高对比度系统 (WCAG >= 4.5:1) */
+  --bg-app: #0f172a;
+  --bg-panel: #1e293b;
+  --bg-card: #263349;
+  --bg-surface: #ffffff;
+  --bg-canvas: #0b1120;
+  --text-main: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-subtle: rgba(148, 163, 184, 0.22);
+  --border-active: #38bdf8;
+  --accent-cyan: #0ea5e9;
+  --accent-amber: #f59e0b;
+
+  /* 字体与圆角尺寸 */
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   1. 顶部枢纽总控导航栏 (Header Bar)
+   ========================================================================== */
+.station-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: linear-gradient(90deg, #0f172a 0%, #172554 55%, #0f172a 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cr-emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.brand-titles h1 {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.station-code-badge {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  background: rgba(56, 189, 248, 0.16);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.brand-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* 顶部线路与关键指标胶囊栏 */
+.header-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.line-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.line-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.line-pill.cr { background: var(--cr-blue); }
+.line-pill.l4 { background: var(--metro-l4); }
+.line-pill.l5 { background: var(--metro-l5); }
+.line-pill.l6 { background: var(--metro-l6); }
+.line-pill.sh { background: var(--intercity-sh); }
+
+.view-mode-Segment {
+  display: flex;
+  background: #090e1a;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.mode-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mode-btn.active {
+  background: var(--accent-cyan);
+  color: #082f49;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
+}
+
+/* ==========================================================================
+   2. 主工作区三栏网格布局 (Main 3-Column Workspace)
+   ========================================================================== */
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr 360px;
+  gap: 16px;
+  padding: 16px 20px;
+  min-height: calc(100vh - 80px);
+  align-items: start;
+}
+
+@media (max-width: 1440px) {
+  .workspace-grid {
+    grid-template-columns: 290px 1fr 330px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 通用面板样式 */
+.panel-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
+}
+
+.panel-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title span.tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+/* ==========================================================================
+   3. 左侧控制栏：楼层切换器 + 检票口/站台极速定位 + 图层筛选
+   ========================================================================== */
+.floor-stack-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.floor-btn {
+  display: grid;
+  grid-template-columns: 54px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.floor-btn:hover {
+  border-color: var(--border-active);
+  transform: translateX(3px);
+}
+
+.floor-btn.active {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.24) 0%, rgba(30, 58, 138, 0.45) 100%);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px #38bdf8 inset;
+}
+
+.floor-code {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 800;
+  padding: 6px 0;
+  text-align: center;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.7);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.floor-btn.active .floor-code {
+  background: #38bdf8;
+  color: #082f49;
+}
+
+.floor-meta h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.floor-meta p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.floor-elev {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.55);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 检票口与站台快速查询器 */
+.gate-finder-box {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.finder-controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.finder-select, .finder-input {
+  width: 100%;
+  background: #0f172a;
+  color: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+}
+
+.finder-select:focus, .finder-input:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+}
+
+.btn-primary {
+  background: var(--accent-cyan);
+  color: #082f49;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.gate-result-card {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(30, 58, 138, 0.35);
+  border-left: 3px solid #38bdf8;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.gate-result-card strong {
+  color: #fff;
+}
+
+/* 设施分类高亮过滤 */
+.facility-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+
+.filter-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.filter-chip:hover, .filter-chip.active {
+  background: rgba(56, 189, 248, 0.18);
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* ==========================================================================
+   4. 中央主视窗：高精度平面图 (2D Floor Map) & 立体模型 (2.5D Isometric Stack)
+   ========================================================================== */
+.center-stage {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 780px;
+}
+
+.stage-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(30, 41, 59, 0.85);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.compass-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.compass-rose {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #0f172a;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.stage-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-btn {
+  background: #1e293b;
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tool-btn:hover {
+  border-color: #38bdf8;
+}
+
+/* 方位与外部道路环绕外框 */
+.hub-viewport {
+  position: relative;
+  flex: 1;
+  padding: 36px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(30, 64, 175, 0.14), transparent 70%),
+    linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px, 24px 24px;
+  overflow: auto;
+}
+
+.road-label {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 3px 12px;
+  border-radius: 999px;
+  z-index: 10;
+}
+
+.road-north { top: 8px; left: 50%; transform: translateX(-50%); }
+.road-south { bottom: 8px; left: 50%; transform: translateX(-50%); }
+.road-west  { left: 8px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
+.road-east  { right: 8px; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
+
+/* --------------------------------------------------------------------------
+   2D 高精度分层建筑平面图样式 (West Square | National Rail | East Square)
+   -------------------------------------------------------------------------- */
+.floor-plan-container {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  animation: fadeIn 0.22s ease;
+}
+
+.floor-plan-container.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.floor-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, rgba(30, 58, 138, 0.5) 0%, rgba(15, 23, 42, 0.85) 100%);
+  border-left: 4px solid #38bdf8;
+  border-radius: var(--radius-md);
+}
+
+.floor-banner h2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.floor-banner p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* 深圳北站标准三区十字总图布局：西广场(左) + 国铁核心站房(中) + 东广场/高架地铁(右) */
+.hub-three-zones {
+  display: grid;
+  grid-template-columns: 230px 1fr 270px;
+  gap: 12px;
+  min-height: 540px;
+}
+
+@media (max-width: 960px) {
+  .hub-three-zones {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zone-column {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.zone-column.west-zone {
+  border-color: rgba(234, 88, 12, 0.5);
+  background: linear-gradient(180deg, rgba(67, 20, 7, 0.28) 0%, rgba(15, 23, 42, 0.88) 100%);
+}
+
+.zone-column.rail-zone {
+  border-color: rgba(59, 130, 246, 0.6);
+  background: linear-gradient(180deg, rgba(23, 37, 84, 0.35) 0%, rgba(15, 23, 42, 0.92) 100%);
+}
+
+.zone-column.east-zone {
+  border-color: rgba(16, 185, 129, 0.55);
+  background: linear-gradient(180deg, rgba(6, 78, 59, 0.28) 0%, rgba(15, 23, 42, 0.88) 100%);
+}
+
+.zone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
+}
+
+.zone-header h3 {
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zone-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.tag-west { background: rgba(234, 88, 12, 0.25); color: #fdba74; border: 1px solid rgba(234, 88, 12, 0.45); }
+.tag-rail { background: rgba(59, 130, 246, 0.25); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.45); }
+.tag-east { background: rgba(16, 185, 129, 0.25); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.45); }
+
+/* 建筑功能块 (POI Block) */
+.poi-block {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  position: relative;
+}
+
+.poi-block:hover, .poi-block.selected-poi {
+  border-color: #38bdf8;
+  background: rgba(30, 58, 138, 0.55);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+  transform: translateY(-1px);
+}
+
+.poi-block.highlight-pulse {
+  border-color: #f59e0b !important;
+  background: rgba(245, 158, 11, 0.24) !important;
+  box-shadow: 0 0 0 2px #f59e0b, 0 0 18px rgba(245, 158, 11, 0.55) !important;
+  animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 1px #f59e0b, 0 0 12px rgba(245, 158, 11, 0.5); }
+  50%      { box-shadow: 0 0 0 3px #fbbf24, 0 0 22px rgba(251, 191, 36, 0.85); }
+}
+
+.poi-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.poi-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+/* F2 高架候车室 A1-A20 与 B1-B20 检票口矩阵 */
+.waiting-hall-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: var(--radius-md);
+  padding: 10px;
+}
+
+.corridor-strip {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 10px;
+  background: rgba(16, 185, 129, 0.13);
+  border: 1px dashed rgba(16, 185, 129, 0.45);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+
+.gate-matrix-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gate-row-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #93c5fd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 10组对应站台列的检票口网格（从西向东：B20/A20 -> B1/A1，符合左西右东） */
+.gate-columns-grid {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 5px;
+}
+
+.gate-pair-col {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 6px;
+  padding: 5px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.gate-pair-col:hover, .gate-pair-col.active-gate {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.22);
+  transform: scale(1.04);
+}
+
+.gate-pair-col.hk-cross-border {
+  border-color: rgba(244, 63, 94, 0.45);
+  background: rgba(136, 19, 55, 0.28);
+}
+
+.gate-pill-b, .gate-pill-a {
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 2px;
+  border-radius: 4px;
+}
+
+.gate-pill-b {
+  background: rgba(234, 88, 12, 0.25);
+  color: #fdba74;
+  border: 1px solid rgba(234, 88, 12, 0.4);
+}
+
+.gate-pill-a {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.plat-num-mini {
+  font-size: 9px;
+  color: #cbd5e1;
+  text-align: center;
+}
+
+/* 中央候车大厅服务岛 */
+.central-concourse-aisle {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 8px;
+  background: rgba(30, 58, 138, 0.22);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+/* F1 11台20线高精度站台与股道图 */
+.platforms-11-20-grid {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 6px;
+  min-height: 360px;
+}
+
+.platform-island {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 6px;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.16s;
+}
+
+.platform-island:hover, .platform-island.active-plat {
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+  transform: translateY(-2px);
+}
+
+.platform-island.hk-plat {
+  border-color: rgba(244, 63, 94, 0.65);
+  background: linear-gradient(180deg, rgba(136, 19, 55, 0.42) 0%, rgba(15, 23, 42, 0.95) 100%);
+}
+
+.platform-island.pingshan-plat {
+  border-color: rgba(16, 185, 129, 0.65);
+  background: linear-gradient(180deg, rgba(6, 78, 59, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+}
+
+.track-line-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.plat-center-title {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  margin: 10px auto;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 2px;
+}
+
+/* 地铁5号线东西向横穿轨道带 (B1 / B2) */
+.line5-ew-corridor {
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, rgba(155, 81, 224, 0.28) 0%, rgba(234, 179, 8, 0.22) 50%, rgba(155, 81, 224, 0.28) 100%);
+  border: 2px solid var(--metro-l5);
+  position: relative;
+}
+
+.line5-track-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  margin: 6px 0;
+  background: rgba(15, 23, 42, 0.85);
+  border-radius: 6px;
+  border-left: 4px solid var(--metro-l5-gold);
+  border-right: 4px solid var(--metro-l5-gold);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   2.5D / 3D 立体轴测多层透视模型 (Isometric 6-Layer Stack View)
+   -------------------------------------------------------------------------- */
+.iso-3d-stage {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 640px;
+  perspective: 1400px;
+  padding: 30px 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.iso-3d-stage.active {
+  display: flex;
+}
+
+.iso-controls-overlay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  z-index: 20;
+}
+
+.iso-controls-overlay label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iso-tower {
+  width: 680px;
+  max-width: 92vw;
+  display: flex;
+  flex-direction: column;
+  gap: var(--iso-gap, 18px);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--iso-rx, 52deg)) rotateZ(var(--iso-rz, -18deg));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), gap 0.3s ease;
+  margin: 20px auto;
+}
+
+.iso-slab {
+  position: relative;
+  width: 100%;
+  min-height: 82px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid rgba(56, 189, 248, 0.45);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 145px 1fr 185px;
+  gap: 10px;
+  align-items: center;
+  box-shadow:
+    -8px 10px 0 rgba(15, 23, 42, 0.95),
+    -8px 10px 0 1px rgba(148, 163, 184, 0.3),
+    0 18px 30px rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.iso-slab:hover, .iso-slab.iso-active {
+  transform: translateZ(16px) translateX(6px);
+  border-color: #f59e0b;
+  box-shadow:
+    -10px 12px 0 rgba(30, 58, 138, 0.95),
+    0 0 25px rgba(245, 158, 11, 0.55);
+}
+
+.iso-slab-badge {
+  position: absolute;
+  left: -58px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #0ea5e9;
+  color: #082f49;
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 13px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.iso-zone-box {
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.iso-west { background: rgba(234, 88, 12, 0.22); color: #fed7aa; }
+.iso-rail { background: rgba(29, 78, 216, 0.32); color: #bfdbfe; }
+.iso-east { background: rgba(5, 150, 105, 0.28); color: #a7f3d0; }
+.iso-l46  { background: linear-gradient(90deg, rgba(0, 178, 169, 0.45), rgba(218, 41, 28, 0.45)); color: #fff; }
+.iso-l5   { background: rgba(155, 81, 224, 0.42); color: #f3e8ff; border-color: #eab308; }
+
+/* ==========================================================================
+   5. 右侧导航栏：旅客智能路径规划器 + 节点详情面板 + 首末班车表
+   ========================================================================== */
+.route-presets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.route-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.route-btn:hover, .route-btn.active {
+  background: rgba(22, 163, 74, 0.22);
+  border-color: #4ade80;
+}
+
+.route-btn-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.route-time-badge {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: #4ade80;
+  background: rgba(22, 163, 74, 0.2);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.route-steps-card {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.step-timeline {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.step-timeline li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  align-items: start;
+}
+
+.step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+/* 选中区域的详情卡片 */
+.poi-inspector-card {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.poi-inspector-card h4 {
+  font-size: 14px;
+  color: #38bdf8;
+  margin-bottom: 4px;
+}
+
+.poi-inspector-card p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+/* 首末班车紧凑表格 */
+.timetable-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  margin-top: 6px;
+}
+
+.timetable-table th, .timetable-table td {
+  padding: 6px 7px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  text-align: left;
+}
+
+.timetable-table th {
+  color: #94a3b8;
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.timetable-table td.mono {
+  font-family: var(--font-mono);
+  text-align: right;
+  color: #f8fafc;
+}
+
+/* 底部图例与旅客防走错贴士 */
+.stage-footer-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(15, 23, 42, 0.9);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 5px;
+}
+  </style>
+</head>
+<body>
+
+  <!-- ==================== 顶部枢纽总控栏 ==================== -->
+  <header class="station-header">
+    <div class="brand-group">
+      <div class="cr-emblem" title="中国铁路 · 深圳北站特等站">CR</div>
+      <div class="brand-titles">
+        <h1>
+          深圳北站高精度旅客导览模型
+          <span class="station-code-badge">特等站 · 电报码 IOQ / 拼音码 SZB</span>
+          <span class="station-code-badge">“上进上出”立体枢纽</span>
+        </h1>
+        <div class="brand-subtitle">
+          广东省深圳市龙华区民治街道致远中路28号 ｜ 国铁（广深港 / 厦深 / 赣深 11台20线）+ 深圳地铁（4号线 / 5号线 / 6号线 / 深惠城际在建）
+        </div>
+      </div>
+    </div>
+
+    <div class="header-badges">
+      <span class="line-pill cr" onclick="switchFloor('F2')" title="点击查看国铁候车室与检票口">🚄 国铁 11台20线</span>
+      <span class="line-pill l4" onclick="switchFloor('F4')" title="点击查看地铁4号线高架站台">🚇 4号线 (福田口岸⇄牛湖)</span>
+      <span class="line-pill l5" onclick="switchFloor('B2')" title="点击查看地铁5号线地下站台">🚇 5号线 (赤湾⇄大剧院)</span>
+      <span class="line-pill l6" onclick="switchFloor('F4')" title="点击查看地铁6号线高架站台">🚇 6号线 (科学馆⇄松岗)</span>
+      <span class="line-pill sh" onclick="switchFloor('B2')" title="深惠城际在建换乘接口">🚆 深惠城际 (在建)</span>
+    </div>
+
+    <div class="view-mode-Segment" role="tablist" aria-label="模型视图切换">
+      <button id="btnMode2D" class="mode-btn active" onclick="setViewMode('2d')">
+        🗺️ 高精度分层平面图 (2D)
+      </button>
+      <button id="btnMode3D" class="mode-btn" onclick="setViewMode('3d')">
+        🧊 6层立体透视模型 (2.5D轴测)
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== 主体三栏交互工作区 ==================== -->
+  <main class="workspace-grid">
+
+    <!-- 左侧栏：6层垂直楼层导航 + 检票口/站台定位器 + 设施筛选 -->
+    <aside class="panel-box">
+      <div class="panel-title">
+        <span>🏢 枢纽6层垂直空间切换</span>
+        <span class="tag">F4 → B2</span>
+      </div>
+
+      <div class="floor-stack-list" id="floorStackList">
+        <button class="floor-btn" data-floor="F4" onclick="switchFloor('F4')">
+          <div class="floor-code">F4</div>
+          <div class="floor-meta">
+            <h4>地铁 4 / 6 号线高架站台层</h4>
+            <p>东广场上空 · 双岛式4线平行站台</p>
+          </div>
+          <span class="floor-elev">+102m</span>
+        </button>
+
+        <button class="floor-btn" data-floor="F3" onclick="switchFloor('F3')">
+          <div class="floor-code">F3</div>
+          <div class="floor-meta">
+            <h4>4/6号线高架站厅 & 国铁商业层</h4>
+            <p>天地换乘大扶梯入口 · 智慧卫生间 · 餐饮</p>
+          </div>
+          <span class="floor-elev">+96m</span>
+        </button>
+
+        <button class="floor-btn active" data-floor="F2" onclick="switchFloor('F2')">
+          <div class="floor-code">F2</div>
+          <div class="floor-meta">
+            <h4>国铁高架候车厅 & 东西广场平台</h4>
+            <p>主交通层 · 检票口A1-A20/B1-B20 · 地铁A-D口</p>
+          </div>
+          <span class="floor-elev">+90m</span>
+        </button>
+
+        <button class="floor-btn" data-floor="F1" onclick="switchFloor('F1')">
+          <div class="floor-code">F1</div>
+          <div class="floor-meta">
+            <h4>国铁11台20线站台 & 东换乘厅2F</h4>
+            <p>1-20站台 · 8-15跨境专区 · 公交/出租2F</p>
+          </div>
+          <span class="floor-elev">+84m</span>
+        </button>
+
+        <button class="floor-btn" data-floor="B1" onclick="switchFloor('B1')">
+          <div class="floor-code">B1</div>
+          <div class="floor-meta">
+            <h4>地铁5号线站厅 & 东西地下一层</h4>
+            <p>5号线进出闸 · 出租/公交1F · 西广场网约车A区</p>
+          </div>
+          <span class="floor-elev">+78m</span>
+        </button>
+
+        <button class="floor-btn" data-floor="B2" onclick="switchFloor('B2')">
+          <div class="floor-code">B2</div>
+          <div class="floor-meta">
+            <h4>地铁5号线站台 & 西广场停车B2</h4>
+            <p>东西向横穿侧式站台 · 深惠城际接口 · P停车</p>
+          </div>
+          <span class="floor-elev">+72m</span>
+        </button>
+      </div>
+
+      <!-- 检票口/站台极速查询器 -->
+      <div class="panel-title">
+        <span>🎫 车票检票口 / 站台定位器</span>
+        <span class="tag">A1-A20 / B1-B20</span>
+      </div>
+      <div class="gate-finder-box">
+        <div style="font-size:11.5px; color:var(--text-secondary);">
+          选择车票右上角标注的<strong>检票口</strong>或<strong>站台号</strong>，自动定位最优进站口与站台属性：
+        </div>
+        <div class="finder-controls">
+          <select id="gateSelect" class="finder-select" onchange="locateTicketGate()">
+            <option value="">-- 请选择检票口或站台 --</option>
+            <option value="1">A1 / B1 检票口 (对应 1站台 · 坪山快捷/城际)</option>
+            <option value="2">A2 / B2 检票口 (对应 2站台 · 靠东进站口)</option>
+            <option value="3">A3 / B3 检票口 (对应 3站台 · 靠东进站口)</option>
+            <option value="4">A4 / B4 检票口 (对应 4站台)</option>
+            <option value="5">A5 / B5 检票口 (对应 5站台)</option>
+            <option value="6">A6 / B6 检票口 (对应 6站台)</option>
+            <option value="7">A7 / B7 检票口 (对应 7站台)</option>
+            <option value="8">A8 / B8 检票口 (对应 8站台 · 🇭🇰跨境高铁专区)</option>
+            <option value="9">A9 / B9 检票口 (对应 9站台 · 🇭🇰跨境高铁专区)</option>
+            <option value="10">A10 / B10 检票口 (对应 10站台 · 🇭🇰本站始发西九龙)</option>
+            <option value="11">A11 / B11 检票口 (对应 11站台 · 🇭🇰正线半高站台门)</option>
+            <option value="12">A12 / B12 检票口 (对应 12站台 · 🇭🇰正线半高站台门)</option>
+            <option value="13">A13 / B13 检票口 (对应 13站台 · 🇭🇰西九龙终到)</option>
+            <option value="14">A14 / B14 检票口 (对应 14站台 · 🇭🇰长途跨境)</option>
+            <option value="15">A15 / B15 检票口 (对应 15站台 · 🇭🇰长途跨境)</option>
+            <option value="16">A16 / B16 检票口 (对应 16站台 · 靠西进站口)</option>
+            <option value="17">A17 / B17 检票口 (对应 17站台 · 靠西进站口)</option>
+            <option value="18">A18 / B18 检票口 (对应 18站台 · 靠西进站口)</option>
+            <option value="19">A19 / B19 检票口 (对应 19站台 · 靠西进站口)</option>
+            <option value="20">A20 / B20 检票口 (对应 20站台 · 最西侧侧式站台)</option>
+          </select>
+          <button class="btn-primary" onclick="locateTicketGate()">定位</button>
+        </div>
+        <div id="gateResultBox" class="gate-result-card">
+          💡 <strong>进站口黄金法则：</strong><br/>
+          • <strong>A1–A20 检票口</strong>位于候车大厅<strong>东侧</strong>（坐地铁4/5/6号线、出租车、公交车到达请走<strong>东广场A进站口</strong>，步行最近）。<br/>
+          • <strong>B1–B20 检票口</strong>位于候车大厅<strong>西侧</strong>（打网约车、自驾停车、长途汽车到达请走<strong>西广场B进站口</strong>）。<br/>
+          • 东西进站口进入同一候车大厅，A/B两侧均可检票下至同一站台（A端为车头/车尾方向一侧，B端为另一侧）。
+        </div>
+      </div>
+
+      <!-- 便民设施分类高亮 -->
+      <div class="panel-title">
+        <span>🔍 站内设施图层高亮</span>
+        <span class="tag">点击闪烁定位</span>
+      </div>
+      <div class="facility-filter-grid">
+        <button class="filter-chip" onclick="highlightCategory('entrance')">🚪 进出站口/安检</button>
+        <button class="filter-chip" onclick="highlightCategory('metro')">🚇 地铁口/换乘梯</button>
+        <button class="filter-chip" onclick="highlightCategory('transfer')">🔄 免安检/中转道</button>
+        <button class="filter-chip" onclick="highlightCategory('ride')">🚕 网约车/出租车</button>
+        <button class="filter-chip" onclick="highlightCategory('vip')">🛋️ 商务座/服务台</button>
+        <button class="filter-chip" onclick="highlightCategory('wc')">🚻 洗手间/饮水处</button>
+      </div>
+    </aside>
+
+    <!-- 中央主舞台：高精度分层平面图 & 2.5D立体模型 -->
+    <section class="center-stage">
+      <div class="stage-toolbar">
+        <div class="compass-bar">
+          <span class="compass-rose">🧭 上北 (N · 留仙大道/广州南方向) ｜ 下南 (S · 玉龙路/西九龙方向) ｜ 左西 (W · 西广场) ｜ 右东 (E · 东广场)</span>
+        </div>
+        <div class="stage-controls">
+          <button class="tool-btn" onclick="clearHighlights()">✨ 清除高亮</button>
+          <button class="tool-btn" onclick="setViewMode('3d')">📐 查看6层立体咬合关系</button>
+        </div>
+      </div>
+
+      <div class="hub-viewport">
+        <!-- 四周城市主干道真实地理围合标注 -->
+        <div class="road-label road-north">⬆️ 北：留仙大道 (高架跨铁) · 广深港/赣深高铁 往光明城 / 广州南 / 赣州西 方向</div>
+        <div class="road-label road-south">⬇️ 南：玉龙路 · 广深港高铁 往福田 / 香港西九龙 ＆ 厦深铁路 往深圳坪山 / 厦门北 方向</div>
+        <div class="road-label road-west">⬅️ 西：致远中路 (西广场 · 网约车/客运站)</div>
+        <div class="road-label road-east">➡️ 东：民塘路 / 新区大道下穿 (东广场 · 地铁/公交)</div>
+
+        <!-- ==================== 视图1：2D 高精度分层建筑平面图 ==================== -->
+        <div id="view2DWrapper">
+
+          <!-- 【F4 层】地铁 4号线 & 6号线 高架双岛式站台层 -->
+          <div id="floor-F4" class="floor-plan-container">
+            <div class="floor-banner">
+              <div>
+                <h2>F4 高架四层 · 深圳地铁 4号线 ＆ 6号线 高架双岛式站台层（标高 +102m）</h2>
+                <p>位于东广场正上方，包裹于车站巨型钢结构大屋顶内，与南北向国铁股道平行；两座岛式站台同层平行布置（西侧6号线、东侧4号线）</p>
+              </div>
+              <span class="station-code-badge">双岛四线高架站台</span>
+            </div>
+
+            <div class="hub-three-zones">
+              <div class="zone-column west-zone" style="opacity:0.65;">
+                <div class="zone-header">
+                  <h3>西广场上空 (净空)</h3>
+                  <span class="zone-tag tag-west">F4 屋顶视野</span>
+                </div>
+                <div class="poi-block" onclick="inspectPOI('西广场高架俯瞰区', 'F4层西侧为开敞城市空间，下方F2层为西广场露天平台及网约车B区，B1/B2层为1971车位大型社会停车场。')">
+                  <div class="poi-title">🌤️ 西广场北侧/南侧天际线</div>
+                  <div class="poi-desc">下方为深圳北汽车客运站、网约车B区及致远中路</div>
+                </div>
+              </div>
+
+              <div class="zone-column rail-zone" style="opacity:0.75;">
+                <div class="zone-header">
+                  <h3>国铁深圳北站大跨度钢结构屋顶</h3>
+                  <span class="zone-tag tag-rail">跨度空间上空</span>
+                </div>
+                <div class="poi-block" onclick="inspectPOI('国铁高架站房屋顶及采光天窗', '深圳北站站房建筑面积7.5万平方米，下方F2层为高架候车大厅，F1层为11台20线站台层。东侧与4/6号线高架车站共构。')">
+                  <div class="poi-title">🏛️ 国铁站房巨型网架大屋顶 (下方为F2候车厅 & F1站台)</div>
+                  <div class="poi-desc">南北向11座站台20条股道在下方F1层穿行，东侧紧邻新区大道地下隧道与地铁高架站体</div>
+                </div>
+              </div>
+
+              <div class="zone-column east-zone" style="grid-column: span 1; border-width: 2px; border-color: #00b2a9;">
+                <div class="zone-header">
+                  <h3>🚇 东广场高架 · 4/6号线平行双岛站台</h3>
+                  <span class="zone-tag tag-east">核心乘车层</span>
+                </div>
+
+                <!-- 6号线岛式站台（西岛） -->
+                <div class="poi-block" data-cat="metro" style="border-left: 5px solid var(--metro-l6);" onclick="inspectPOI('地铁6号线（光明线）高架岛式站台 (F4西侧)', '【西侧轨道】往科学馆方向（下一站：梅林关，首班06:17/末班23:50，半程往梅林关00:22）\n【东侧轨道】往松岗方向（下一站：红山，首班05:56/末班23:20，半程往凤凰城23:48）\n【特色设施】站台南端设双存车线，站台设公共艺术《绿荫下的站台》（艺术家：景育民）。')">
+                  <div class="poi-title">
+                    <span>█ 6号线岛式站台 (西侧岛)</span>
+                    <span class="station-code-badge" style="background:rgba(0,178,169,0.25); color:#5eead4;">开左侧车门</span>
+                  </div>
+                  <div class="poi-desc">
+                    ⬅️ 西侧轨：<strong>往 科学馆</strong> (下一站：梅林关)<br/>
+                    ➡️ 东侧轨：<strong>往 松岗</strong> (下一站：红山)<br/>
+                    🎨 站台艺术：《绿荫下的站台》｜ 南端设双存车线
+                  </div>
+                </div>
+
+                <!-- 4号线岛式站台（东岛） -->
+                <div class="poi-block" data-cat="metro" style="border-left: 5px solid var(--metro-l4);" onclick="inspectPOI('地铁4号线（龙华线）高架岛式站台 (F4东侧)', '【2号站台（西侧轨）】往福田口岸方向（下一站：白石龙，首班06:17/末班23:33）\n【1号站台（东侧轨）】往牛湖方向（下一站：红山，首班06:50/末班23:33，半程往清湖00:05）\n【无障碍直梯】站台付费区中部设垂直电梯，可直达F3站厅及B2层5号线站台！')">
+                  <div class="poi-title">
+                    <span>█ 4号线岛式站台 (东侧岛 · 1/2号站台)</span>
+                    <span class="station-code-badge" style="background:rgba(218,41,28,0.25); color:#fca5a5;">开左侧车门</span>
+                  </div>
+                  <div class="poi-desc">
+                    ⬅️ 2号站台(西轨)：<strong>往 福田口岸</strong> (下一站：白石龙)<br/>
+                    ➡️ 1号站台(东轨)：<strong>往 牛湖</strong> (下一站：红山 / 半程末班往清湖)<br/>
+                    🛗 <strong>无障碍跨层直梯</strong>：4号线站台直通 F3站厅 ＆ B2五号线站台
+                  </div>
+                </div>
+
+                <div class="poi-block" data-cat="transfer" onclick="inspectPOI('4号线 ⇄ 6号线 换乘提示', '虽然4号线与6号线站台同处F4层平行布置，但为两座独立岛式站台（中间隔有轨道），乘客需乘扶梯下至F3站厅付费区即可同厅跨站台换乘（耗时约1-2分钟，无需出闸）。')">
+                  <div class="poi-title">🔄 4号线 ⇄ 6号线 换乘流线</div>
+                  <div class="poi-desc">下至 F3 共用高架站厅付费区，步行15米即达对方站台扶梯（免出闸）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 【F3 层】地铁 4/6号线高架站厅层 & 国铁商业夹层 -->
+          <div id="floor-F3" class="floor-plan-container">
+            <div class="floor-banner">
+              <div>
+                <h2>F3 高架三层 · 地铁 4/6号线高架站厅层 ＆ 国铁候车厅二层商业区（标高 +96m）</h2>
+                <p>东侧为4号线与6号线共构高架站厅（设6台“天地换乘大扶梯”直达B1层5号线站厅）；中部为国铁高架候车室南北两侧餐饮商业夹层</p>
+              </div>
+              <span class="station-code-badge">高架站厅 · 天地换乘枢纽</span>
+            </div>
+
+            <div class="hub-three-zones">
+              <div class="zone-column west-zone" style="opacity:0.75;">
+                <div class="zone-header">
+                  <h3>西广场上空</h3>
+                  <span class="zone-tag tag-west">F3 视野</span>
+                </div>
+                <div class="poi-block" onclick="inspectPOI('西广场挑空区', '下方F2层为西广场进站平台及网约车B区。')">
+                  <div class="poi-title">🌤️ 西广场挑空区</div>
+                  <div class="poi-desc">由F2层西进站口进入候车室后，可乘内部扶梯上至国铁F3餐饮夹层</div>
+                </div>
+              </div>
+
+              <div class="zone-column rail-zone">
+                <div class="zone-header">
+                  <h3>🚄 国铁高架二层 · 候车餐饮与商业夹层</h3>
+                  <span class="zone-tag tag-rail">候车厅上方夹层</span>
+                </div>
+                <div class="poi-block" data-cat="vip" onclick="inspectPOI('国铁高架二层北侧餐饮长廊 (F3)', '位于国铁候车大厅北端挑空夹层，设有麦当劳、肯德基、真功夫、面点王、便利店及休闲候车座，可俯瞰整个F2候车大厅及检票口动态大屏。')">
+                  <div class="poi-title">🍔 国铁候车厅北侧餐饮商业区 (F3)</div>
+                  <div class="poi-desc">中西快餐、咖啡茶饮、特产便利店｜从F2候车大厅内扶梯上行即达</div>
+                </div>
+                <div class="poi-block" onclick="inspectPOI('国铁高架候车大厅挑空采光区', 'F3层中央为挑空空间，可直接俯瞰F2层A1-A20与B1-B20检票口及中央迎春花服务台。')">
+                  <div class="poi-title">👁️ 候车大厅中央挑空俯瞰区</div>
+                  <div class="poi-desc">正下方为 F2 层国铁主候车室（A1–A20 / B1–B20 检票口）</div>
+                </div>
+                <div class="poi-block" data-cat="vip" onclick="inspectPOI('国铁高架二层南侧餐饮与商务休息区 (F3)', '位于候车大厅南侧二层夹层，提供连锁餐饮、充电吧台及安静候车空间。')">
+                  <div class="poi-title">☕ 国铁候车厅南侧餐饮休闲区 (F3)</div>
+                  <div class="poi-desc">连锁咖啡、简餐、充电休息区｜近A12-A20 / B12-B20上方</div>
+                </div>
+              </div>
+
+              <div class="zone-column east-zone">
+                <div class="zone-header">
+                  <h3>🚇 地铁 4 / 6 号线高架共用站厅 (F3)</h3>
+                  <span class="zone-tag tag-east">港铁(深圳)管辖站厅</span>
+                </div>
+
+                <div class="poi-block" data-cat="transfer" style="border-left:4px solid var(--transfer-green);" onclick="inspectPOI('南北两组“天地换乘长扶梯”（6台扶梯直通B1层5号线）', '位于4/6号线F3站厅付费区西侧（分南北两组通道，共6台超大提升高度自动扶梯），无需出闸，直接从F3高架站厅跨越F2、F1两层直达地下B1层5号线站厅付费区！全程约3-4分钟。')">
+                  <div class="poi-title">
+                    <span>⚡ 付费区“天地换乘大扶梯” (往 █5号线)</span>
+                    <span class="station-code-badge">免出闸直达B1</span>
+                  </div>
+                  <div class="poi-desc">北端换乘通道 + 南端换乘通道（共6台长扶梯 + 4台垂直电梯直通B1/B2五号线）</div>
+                </div>
+
+                <div class="poi-block" data-cat="wc" onclick="inspectPOI('4/6号线站厅中央智慧卫生间 & 艺术雕塑《望》', '【智慧卫生间】设于4/6号线站厅付费区中央垂直电梯旁，配备空位智能导视屏。\n【艺术墙/雕塑】站厅设有雕塑《望》（寓意相聚与期盼）及社区画栏。\n【商铺与终端】设瑞幸咖啡（A区SZB001商铺）、两台多功能智能终端、港铁客服中心。')">
+                  <div class="poi-title">🚻 付费区中央智慧卫生间 ＆ 客服/商铺</div>
+                  <div class="poi-desc">智慧公厕系统、瑞幸咖啡(SZB001)、多功能智能终端、雕塑《望》</div>
+                </div>
+
+                <div class="poi-block" data-cat="entrance" onclick="inspectPOI('4/6号线站厅安检机与售票机群 (通往F2东广场A/B/C/D口)', '非付费区四角连接下层F2（东广场露天层）的A、B、C、D四个地铁出入口。逢节假日及高峰期，高铁A1/A2出站口往4/6号线开启免安检绿色通道。')">
+                  <div class="poi-title">🛡️ 4/6号线安检区、自动售票机 (港澳回乡证可用)</div>
+                  <div class="poi-desc">向下连接 F2 东广场露天层 A、B、C、D 四个地铁出入口</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 【F2 层】主交通层 (90m标高)：国铁高架候车厅 + 东广场露天层 + 西广场平台层 (默认激活) -->
+          <div id="floor-F2" class="floor-plan-container active">
+            <div class="floor-banner">
+              <div>
+                <h2>F2 主交通层（标高 +90m）· 国铁高架候车大厅 ＆ 东、西广场露天平台层</h2>
+                <p>中国大陆唯一大型“上进上出”高铁枢纽核心层：国铁进站、候车、检票（A1–A20 / B1–B20）、出站（A1/A2/B1/B2）与地铁A–D口同层无缝衔接</p>
+              </div>
+              <span class="station-code-badge">核心进出站与候车层</span>
+            </div>
+
+            <div class="hub-three-zones">
+              <!-- 左列：西广场 (F2) -->
+              <div class="zone-column west-zone">
+                <div class="zone-header">
+                  <h3>⬅️ 西广场 (私人交通/客运)</h3>
+                  <span class="zone-tag tag-west">致远中路侧</span>
+                </div>
+
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('深圳北汽车客运站 (西广场西北侧)', '建筑面积5076㎡，设33个发车位、8个售票窗及自助购票机。开通往广州、惠州、河源、粤东、香港等方向班线；外侧致远中路设“深圳北汽车站”公交站及NA2机场夜班线。')">
+                  <div class="poi-title">🚌 深圳北汽车客运站 (西北侧)</div>
+                  <div class="poi-desc">省际/市际长途大巴、西广场公交场站、机场夜班线 NA2</div>
+                </div>
+
+                <div class="poi-block" data-cat="entrance" style="border-left:4px solid #f97316;" onclick="inspectPOI('国铁西进站口 (B进站口 · 实名制验证+安检二合一)', '位于西广场中部东侧，改造后实名验证与安检二合一，配备自助实名闸机（支持二代身份证、港澳台居住证、回乡证、台胞证、外国人永居证）、“U”彩急客通道（开车前15分钟内）、商务座专用通道。适合乘网约车/自驾/大巴到达旅客极速进站！')">
+                  <div class="poi-title">
+                    <span>🚪 国铁西进站口 (B进站口)</span>
+                    <span class="station-code-badge">验检二合一</span>
+                  </div>
+                  <div class="poi-desc">网约车/自驾送站首选！排队少、10秒丝滑过闸直入B侧检票区</div>
+                </div>
+
+                <div class="poi-block" data-cat="ride" style="border-left:4px solid #fb923c;" onclick="inspectPOI('西广场地面“网约车B区”（空调候车大厅 · 27车位3通道）', '由原地面长途客运站部分空间改造升级而成！配备宽敞明亮空调候车室与充足座椅。操作指南：从西广场B1/B2出站口出站后按指示牌步行即达，在候车区电脑屏幕输入网约车车牌号，即可引导司机驶入对应通道上车，彻底告别“人找车”。')">
+                  <div class="poi-title">
+                    <span>📱 网约车B区 (地面空调候车室)</span>
+                    <span class="station-code-badge" style="color:#fdba74;">强烈推荐</span>
+                  </div>
+                  <div class="poi-desc">3条车道27车位｜室内吹空调+屏幕输车牌精准寻车（由B1/B2口出站即达）</div>
+                </div>
+
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('西广场垂直电梯/扶梯群（通往B1网约车A区 & B1/B2私家车停车场）', '位于西广场B1/B2出站口外不远处。下至B1层即为网约车A区上客点及社会车辆停车场B1层；下至B2层为社会车辆停车场B2层（共1971个车位）。')">
+                  <div class="poi-title">🛗 往 B1网约车A区 / 私家车库电梯</div>
+                  <div class="poi-desc">从西侧B1/B2出站口出站后乘垂梯下B1/B2层（接站私家车请提前约定楼层）</div>
+                </div>
+
+                <div class="poi-block" onclick="inspectPOI('站房北侧站外人行连廊（东西广场互通通道）', '若未购票或已出站需要往返东广场（地铁/出租车）与西广场（网约车/汽车站），请走车站北侧外围的24小时露天人行通道（不可逆向穿越单向候车室出口）。')">
+                  <div class="poi-title">🚶 站外南北人行通道 (东西广场互通)</div>
+                  <div class="poi-desc">无需进站安检，连接西广场与东广场地铁A/B口</div>
+                </div>
+              </div>
+
+              <!-- 中列：国铁深圳北站高架候车大厅 (F2核心) -->
+              <div class="zone-column rail-zone">
+                <div class="zone-header">
+                  <h3>🚄 国铁深圳北站 · 高架一层候车大厅 (7.5万㎡)</h3>
+                  <span class="zone-tag tag-rail">左西(B1-B20) · 右东(A1-A20)</span>
+                </div>
+
+                <div class="waiting-hall-shell">
+                  <!-- 北侧出站走廊与便捷换乘通道 -->
+                  <div class="corridor-strip">
+                    <div class="poi-block" data-cat="entrance" onclick="inspectPOI('西侧 B1 出站口 (西北出站口)', '位于站房西北侧，高铁下车后乘北端出站扶梯上行至此。前往：西广场网约车B区、B1层网约车A区、B1/B2私家车停车场、深圳北汽车客运站。')">
+                      <div class="poi-title">⬅️ B1 出站口 (往西广场/网约车)</div>
+                      <div class="poi-desc">西广场北侧出站通道｜候车室西出口位于西进站口北侧</div>
+                    </div>
+
+                    <div class="poi-block" data-cat="transfer" style="border-color:#4ade80;" onclick="inspectPOI('国铁站内中转换乘通道（免出站同站换乘）', '持联程车票（下一程仍在深圳北站乘车）的旅客，下车后在F1站台寻找“便捷换乘”标识，沿换乘通道直接上至F2候车大厅刷证核验，无需出站、免二次安检！')">
+                      <div class="poi-title">🔄 铁路便捷换乘通道 (北/南)</div>
+                      <div class="poi-desc">联程高铁不出站直接上候车厅</div>
+                    </div>
+
+                    <div class="poi-block" data-cat="entrance" onclick="inspectPOI('东侧 A1 出站口 (东北出站口) & A1 售票厅', '位于站房东北侧，紧邻东广场地铁B出入口、公交场站及出租车下客区。A1售票厅18号窗口等提供票务及商务座核验服务。')">
+                      <div class="poi-title">A1 出站口 ＆ A1售票厅 ➡️</div>
+                      <div class="poi-desc">往东广场、地铁4/5/6号线(近B口)、公交总站</div>
+                    </div>
+                  </div>
+
+                  <!-- 检票口矩阵：从西(20站台)到东(1站台)精确映射左西右东地理方位 -->
+                  <div class="gate-matrix-wrap">
+                    <div class="gate-row-label">
+                      <span>⬅️ 西端 (近B进站口 · 20–16站台)</span>
+                      <span style="color:#fda4af;">🇭🇰 中部 8–15站台 (香港西九龙跨境专区 · 11/12正线)</span>
+                      <span>东端 (近A进站口 · 7–1站台) ➡️</span>
+                    </div>
+
+                    <div class="gate-columns-grid" id="gateColumnsGrid">
+                      <!-- Col 1: Plat 20 (Side) -->
+                      <div class="gate-pair-col" data-plat="20" onclick="selectGateColumn(20)">
+                        <span class="gate-pill-b">B20</span>
+                        <span class="plat-num-mini">20站台<br/>侧式</span>
+                        <span class="gate-pill-a">A20</span>
+                      </div>
+                      <!-- Col 2: Plat 18/19 -->
+                      <div class="gate-pair-col" data-plat="18-19" onclick="selectGateColumn(19)">
+                        <span class="gate-pill-b">B18/19</span>
+                        <span class="plat-num-mini">18·19台<br/>岛式</span>
+                        <span class="gate-pill-a">A18/19</span>
+                      </div>
+                      <!-- Col 3: Plat 16/17 -->
+                      <div class="gate-pair-col" data-plat="16-17" onclick="selectGateColumn(17)">
+                        <span class="gate-pill-b">B16/17</span>
+                        <span class="plat-num-mini">16·17台<br/>岛式</span>
+                        <span class="gate-pill-a">A16/17</span>
+                      </div>
+                      <!-- Col 4: Plat 14/15 (HK Cross-border) -->
+                      <div class="gate-pair-col hk-cross-border" data-plat="14-15" onclick="selectGateColumn(15)">
+                        <span class="gate-pill-b">B14/15</span>
+                        <span class="plat-num-mini">14·15台<br/>🇭🇰跨境</span>
+                        <span class="gate-pill-a">A14/15</span>
+                      </div>
+                      <!-- Col 5: Plat 12/13 (HK Mainline) -->
+                      <div class="gate-pair-col hk-cross-border" data-plat="12-13" onclick="selectGateColumn(12)">
+                        <span class="gate-pill-b">B12/13</span>
+                        <span class="plat-num-mini">12·13台<br/>🇭🇰正线</span>
+                        <span class="gate-pill-a">A12/13</span>
+                      </div>
+                      <!-- Col 6: Plat 10/11 (HK Mainline) -->
+                      <div class="gate-pair-col hk-cross-border" data-plat="10-11" onclick="selectGateColumn(11)">
+                        <span class="gate-pill-b">B10/11</span>
+                        <span class="plat-num-mini">10·11台<br/>🇭🇰正线</span>
+                        <span class="gate-pill-a">A10/11</span>
+                      </div>
+                      <!-- Col 7: Plat 8/9 (HK Cross-border) -->
+                      <div class="gate-pair-col hk-cross-border" data-plat="8-9" onclick="selectGateColumn(8)">
+                        <span class="gate-pill-b">B8/9</span>
+                        <span class="plat-num-mini">8·9台<br/>🇭🇰跨境</span>
+                        <span class="gate-pill-a">A8/9</span>
+                      </div>
+                      <!-- Col 8: Plat 6/7 -->
+                      <div class="gate-pair-col" data-plat="6-7" onclick="selectGateColumn(6)">
+                        <span class="gate-pill-b">B6/7</span>
+                        <span class="plat-num-mini">6·7台<br/>岛式</span>
+                        <span class="gate-pill-a">A6/7</span>
+                      </div>
+                      <!-- Col 9: Plat 4/5 -->
+                      <div class="gate-pair-col" data-plat="4-5" onclick="selectGateColumn(4)">
+                        <span class="gate-pill-b">B4/5</span>
+                        <span class="plat-num-mini">4·5台<br/>岛式</span>
+                        <span class="gate-pill-a">A4/5</span>
+                      </div>
+                      <!-- Col 10: Plat 2/3 -->
+                      <div class="gate-pair-col" data-plat="2-3" onclick="selectGateColumn(2)">
+                        <span class="gate-pill-b">B2/3</span>
+                        <span class="plat-num-mini">2·3台<br/>岛式</span>
+                        <span class="gate-pill-a">A2/3</span>
+                      </div>
+                      <!-- Col 11: Plat 1 (Pingshan C-train) -->
+                      <div class="gate-pair-col" data-plat="1" style="border-color:#10b981;" onclick="selectGateColumn(1)">
+                        <span class="gate-pill-b">新B1</span>
+                        <span class="plat-num-mini">1站台<br/>坪山捷运</span>
+                        <span class="gate-pill-a">新A1</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 候车大厅中央服务带 -->
+                  <div class="central-concourse-aisle">
+                    <div class="poi-block" data-cat="vip" onclick="inspectPOI('中央“迎春花”服务台 & 重点旅客候车区', '位于候车大厅正中央，由全国学雷锋标兵“迎春花”服务队值守，提供轮椅预约、失物招领联动、车次改签咨询、老幼病残孕及军人优先检票服务。')">
+                      <div class="poi-title">🌺 “迎春花”中央服务台</div>
+                      <div class="poi-desc">重点旅客帮扶、轮椅/担架预约、问询</div>
+                    </div>
+
+                    <div class="poi-block" data-cat="vip" onclick="inspectPOI('商务座候车专区 & 贵宾进站验证通道', '位于东、西进站口旁及候车室专区，免费提供饮品、休闲食品、报刊、航班/列车时刻提醒及独立专人引导检票服务。')">
+                      <div class="poi-title">🛋️ 商务座专用候车区</div>
+                      <div class="poi-desc">免费茶点饮品、独立安检验证、专人引导入闸</div>
+                    </div>
+
+                    <div class="poi-block" data-cat="wc" onclick="inspectPOI('候车室南北两侧洗手间、母婴室与开水间', '分布在A1/B1、A10/B10、A19/B19检票口后方走廊，配备恒温饮水机、无障碍卫生间及独立母婴哺乳室。')">
+                      <div class="poi-title">🚻 卫生间 / 母婴室 / 饮水处</div>
+                      <div class="poi-desc">A/B检票列外侧走廊均设开水间与无障碍公厕</div>
+                    </div>
+
+                    <div class="poi-block" onclick="inspectPOI('候车室东/西单向出口指引', '若进站后临时取消行程或需出候车室：候车室东出口位于东进站口A2、A3检票口斜前方；候车室西出口位于西进站口右方（北端）。仅限单向出厅。')">
+                      <div class="poi-title">🚪 候车室东/西应急出口</div>
+                      <div class="poi-desc">东出口在A2/A3斜前方；西出口在西进站口北端</div>
+                    </div>
+                  </div>
+
+                  <!-- 南侧出站走廊 -->
+                  <div class="corridor-strip">
+                    <div class="poi-block" data-cat="entrance" onclick="inspectPOI('西侧 B2 出站口 (西南出站口)', '位于站房西南侧，连接西广场网约车B区及B1/B2社会停车场垂梯。')">
+                      <div class="poi-title">⬅️ B2 出站口 (往西广场/私家车库)</div>
+                      <div class="poi-desc">西广场南侧出站通道｜近私家车B1/B2垂梯</div>
+                    </div>
+
+                    <div class="poi-block" data-cat="transfer" onclick="inspectPOI('南侧铁路便捷换乘通道', '供列车中停或南端下车旅客直接上至F2候车大厅换乘后续列车。')">
+                      <div class="poi-title">🔄 南侧出站与中转换乘走廊</div>
+                      <div class="poi-desc">直通A2/B2出站口及高架候车厅</div>
+                    </div>
+
+                    <div class="poi-block" data-cat="entrance" style="border-color:#34d399;" onclick="inspectPOI('东侧 A2 出站口 (东南出站口) & A2 售票厅', '【换乘地铁/出租车最近出站口！】紧邻地铁C出入口、直达B1层5号线免安检扶梯、以及下至东广场1F/2F出租车上客区的扶梯！A2售票厅3号窗口提供夜间(21:00-24:00)售退签服务。')">
+                      <div class="poi-title">A2 出站口 (换乘地铁/出租最近) ➡️</div>
+                      <div class="poi-desc">含A2售票厅(夜间窗口)、紧邻免安检入地铁通道</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 右列：东广场露天平台层 (F2 / 枢纽3F) -->
+              <div class="zone-column east-zone">
+                <div class="zone-header">
+                  <h3>➡️ 东广场露天层 (地铁/公交/出租)</h3>
+                  <span class="zone-tag tag-east">民塘路/新区大道侧</span>
+                </div>
+
+                <div class="poi-block" data-cat="entrance" style="border-left:4px solid #3b82f6;" onclick="inspectPOI('国铁东进站口 (A进站口 · 实名制验证+安检二合一)', '位于东广场正中偏西，正对地铁B、C出入口及5号线换乘厅上行扶梯！改造后实名验证与安检二合一（全站共52台实名闸机），设“U”彩急客通道（开车前15分钟内）及商务座验证口。乘坐地铁4/5/6号线、公交、出租车到站的旅客由此进站最快捷！')">
+                  <div class="poi-title">
+                    <span>🚪 国铁东进站口 (A进站口)</span>
+                    <span class="station-code-badge">地铁换乘首选</span>
+                  </div>
+                  <div class="poi-desc">正对地铁B/C口！实名+安检二合一，直入A1–A20检票区</div>
+                </div>
+
+                <div class="poi-block" data-cat="transfer" style="border-left:4px solid #22c55e;" onclick="inspectPOI('高铁出站换乘地铁免安检绿色通道 (A1/A2出站口外)', '深圳市交通局推进常态化高铁换乘地铁免安检方案：在东广场A1/A2高铁出站口外设专用免安检隔离区，新增从东广场(F2/枢纽3F)直达地下5号线站厅(B1/枢纽1F)的免安检自动扶梯和步梯，以及通往高架4/6号线的免安检通道，高峰期免去20分钟二次安检排队！')">
+                  <div class="poi-title">
+                    <span>🟢 高铁换乘地铁免安检通道</span>
+                    <span class="station-code-badge" style="color:#86efac;">直达5号线/4·6号线</span>
+                  </div>
+                  <div class="poi-desc">A1/A2出站口直联扶梯下B1层5号线站厅 / 上F3层4·6号线</div>
+                </div>
+
+                <div class="poi-block" data-cat="metro" onclick="inspectPOI('地铁 4/6号线 A、B、C、D 四个出入口 (位于东广场露天层四角)', '• 【B口 (西北角·带垂梯)】：距国铁东进站口、A1出站口、A1售票厅最近！\n• 【C口 (西南角·带垂梯)】：距国铁东进站口、A2出站口、A2售票厅、北站派出所最近！\n• 【A口 (东北角)】：往公交场站出口、北侧往西广场通道、深铁铂尔曼酒店、汇德大厦。\n• 【D口 (东南角·带垂梯)】：往HBC汇隆中心、优越时代广场、缤果空间商场。')">
+                  <div class="poi-title">🚇 地铁 4/6号线 A · B · C · D 出入口</div>
+                  <div class="poi-desc">
+                    • <strong>B口(西北) / C口(西南)</strong>：带垂直电梯，正对国铁东进站口与A1/A2口<br/>
+                    • <strong>A口(东北)</strong>：汇德大厦/铂尔曼酒店｜<strong>D口(东南)</strong>：汇隆中心/缤果空间
+                  </div>
+                </div>
+
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('东广场下沉换乘大厅扶梯/垂梯（往F1/B1出租车、公交总站、5号线）', '从东广场A1/A2出站口（建议走A2口更近）出站后，乘扶梯或垂直电梯下至F1层（换乘厅二层）或B1层（换乘厅一层），两层均可乘坐出租车或公交车，B1层即为地铁5号线站厅！')">
+                  <div class="poi-title">🚕 往出租车(1F/2F) · 公交总站 · 5号线扶梯</div>
+                  <div class="poi-desc">A2出站口外乘扶梯下F1/B1层即达出租车上客点及地铁5号线</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 【F1 层】国铁 11台20线站台层 & 东广场换乘厅二层 (84m标高) -->
+          <div id="floor-F1" class="floor-plan-container">
+            <div class="floor-banner">
+              <div>
+                <h2>F1 地面/夹层（标高 +84m）· 国铁 11座站台 20条股道 ＆ 东广场换乘大厅二层</h2>
+                <p>自东(1站台)向西(20站台)排列：含2座侧式站台(1、20)与9座岛式站台；其中 8–15站台为香港西九龙跨境列车专区，11/12站台设半高滑动站台门</p>
+              </div>
+              <span class="station-code-badge">11台20线 · 轨行区全景</span>
+            </div>
+
+            <div class="hub-three-zones">
+              <!-- 西侧 F1 -->
+              <div class="zone-column west-zone">
+                <div class="zone-header">
+                  <h3>西广场夹层通道</h3>
+                  <span class="zone-tag tag-west">F1 过渡层</span>
+                </div>
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('西广场垂梯/扶梯转换通道 (F1)', '连接F2西广场出站层与B1层（网约车A区、出租车蓄车区、社会停车场B1层）。')">
+                  <div class="poi-title">🛗 西广场垂直交通核 (F2 ⇄ B1/B2)</div>
+                  <div class="poi-desc">承接B1/B2出站口客流下达B1层网约车上客区及私家车库</div>
+                </div>
+              </div>
+
+              <!-- 中部：11台20线高精度站台矩阵 (左西 20站台 -> 右东 1站台) -->
+              <div class="zone-column rail-zone">
+                <div class="zone-header">
+                  <h3>🛤️ 国铁深圳北站 · 11座站台20条到发线 (左西20台 → 右东1台)</h3>
+                  <span class="zone-tag tag-rail">日均开行超840列</span>
+                </div>
+
+                <div class="platforms-11-20-grid">
+                  <div class="platform-island" onclick="inspectPOI('20号站台（西侧侧式站台 · 20道）', '非跨境高铁到发线（往返广州南、长沙南、武汉、北京西、赣州西等方向），对应上方F2层A20/B20检票口。')">
+                    <span class="track-line-badge">20道</span>
+                    <div class="plat-center-title">20站台(侧式)</div>
+                    <span class="plat-num-mini">非跨境高铁</span>
+                  </div>
+
+                  <div class="platform-island" onclick="inspectPOI('18·19号岛式站台（18道 / 19道）', '非跨境高铁岛式站台，对应上方F2层A18/A19与B18/B19检票口，靠近西广场B进站口。')">
+                    <span class="track-line-badge">19·18道</span>
+                    <div class="plat-center-title">19·18站台</div>
+                    <span class="plat-num-mini">非跨境岛式</span>
+                  </div>
+
+                  <div class="platform-island" onclick="inspectPOI('16·17号岛式站台（16道 / 17道）', '非跨境高铁岛式站台，对应上方F2层A16/A17与B16/B17检票口。')">
+                    <span class="track-line-badge">17·16道</span>
+                    <div class="plat-center-title">17·16站台</div>
+                    <span class="plat-num-mini">非跨境岛式</span>
+                  </div>
+
+                  <div class="platform-island hk-plat" onclick="inspectPOI('14·15号岛式站台（🇭🇰跨境高铁专区 · 14道/15道）', '8-15号站台为香港西九龙跨境高铁专用站台区！14、15站台主要停靠往返内地其他城市与香港西九龙的长途跨境列车及京港卧铺动车组（如D902次）。')">
+                    <span class="track-line-badge" style="color:#fda4af;">15·14道</span>
+                    <div class="plat-center-title">15·14站台</div>
+                    <span class="plat-num-mini">🇭🇰长途跨境</span>
+                  </div>
+
+                  <div class="platform-island hk-plat" onclick="inspectPOI('12·13号岛式站台（🇭🇰广深港正线 · 12道/13道）', '【12站台】广深港高铁往广州南方向正线（2026年7月升级安装半高全滑动型站台门，防护不停站直达穗港列车）。\n【13站台】从香港西九龙出发、在本站终到的跨境列车到发线。')">
+                    <span class="track-line-badge" style="color:#fda4af;">13·12道</span>
+                    <div class="plat-center-title">13·12站台</div>
+                    <span class="plat-num-mini">🇭🇰正线站台门</span>
+                  </div>
+
+                  <div class="platform-island hk-plat" onclick="inspectPOI('10·11号岛式站台（🇭🇰广深港正线 · 10道/11道）', '【11站台】广深港高铁往香港西九龙方向正线（已增设半高全滑动型站台门）。\n【10站台】深圳北站始发开往香港西九龙站的跨境高铁专用线。')">
+                    <span class="track-line-badge" style="color:#fda4af;">11·10道</span>
+                    <div class="plat-center-title">11·10站台</div>
+                    <span class="plat-num-mini">🇭🇰正线站台门</span>
+                  </div>
+
+                  <div class="platform-island hk-plat" onclick="inspectPOI('8·9号岛式站台（🇭🇰跨境与换向作业站台 · 8道/9道）', '长途跨境高铁（往香港西九龙方向）及厦港、潮港、汕港动车组在本站进行换向作业（停留约20分钟）的核心站台。')">
+                    <span class="track-line-badge" style="color:#fda4af;">9·8道</span>
+                    <div class="plat-center-title">9·8站台</div>
+                    <span class="plat-num-mini">🇭🇰跨境/换向</span>
+                  </div>
+
+                  <div class="platform-island" onclick="inspectPOI('6·7号岛式站台（6道 / 7道）', '非跨境高铁岛式站台（广深港、厦深、赣深各方向动车组），对应上方F2层A6/A7与B6/B7检票口。')">
+                    <span class="track-line-badge">7·6道</span>
+                    <div class="plat-center-title">7·6站台</div>
+                    <span class="plat-num-mini">非跨境岛式</span>
+                  </div>
+
+                  <div class="platform-island" onclick="inspectPOI('4·5号岛式站台（4道 / 5道）', '非跨境高铁岛式站台（主要接发厦深铁路潮汕、厦门北、上海虹桥、杭州东及赣深方向列车），对应A4/A5与B4/B5检票口。')">
+                    <span class="track-line-badge">5·4道</span>
+                    <div class="plat-center-title">5·4站台</div>
+                    <span class="plat-num-mini">非跨境岛式</span>
+                  </div>
+
+                  <div class="platform-island" onclick="inspectPOI('2·3号岛式站台（2道 / 3道）', '非跨境高铁岛式站台，紧邻东广场侧，对应上方F2层A2/A3与B2/B3检票口。')">
+                    <span class="track-line-badge">3·2道</span>
+                    <div class="plat-center-title">3·2站台</div>
+                    <span class="plat-num-mini">靠东进站口</span>
+                  </div>
+
+                  <div class="platform-island pingshan-plat" onclick="inspectPOI('1号站台（东侧侧式站台 · 1道）& 失物招领处', '【1站台】停靠往返深圳坪山、惠阳、汕尾方向的捷运化城际动车（C68XX次等）。\n【重要提醒】原紧邻1站台的地面层“坪山快捷线专用候车室”自2024年中起已停用并改为【深圳北站失物招领处】，乘坐坪山快捷线的旅客请统一前往F2高架候车室新A1/B1检票口检票！')">
+                    <span class="track-line-badge" style="color:#6ee7b7;">1道</span>
+                    <div class="plat-center-title">1站台(侧式)</div>
+                    <span class="plat-num-mini">坪山捷运/失物处</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 东侧 F1：东广场综合换乘大厅二层 -->
+              <div class="zone-column east-zone">
+                <div class="zone-header">
+                  <h3>东广场综合换乘厅 2F</h3>
+                  <span class="zone-tag tag-east">公交/出租/5号线北闸</span>
+                </div>
+
+                <div class="poi-block" data-cat="metro" style="border-left:4px solid var(--metro-l5);" onclick="inspectPOI('地铁5号线换乘厅二层进站口 (F1北侧)', '很少人知道的隐藏快捷入口！在东广场换乘大厅二层（F1层）北侧，设有一处5号线专用安检及进站闸机，进闸后乘扶梯/垂梯可直接下至B1站厅或B2五号线站台，避开B1主站厅拥堵！')">
+                  <div class="poi-title">
+                    <span>🚇 5号线 F1北侧进站闸机</span>
+                    <span class="station-code-badge">分流快捷口</span>
+                  </div>
+                  <div class="poi-desc">位于换乘厅二层北侧，进闸后乘扶梯直下B2层5号线站台</div>
+                </div>
+
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('深圳北站交通枢纽公交场站（二层上客区）', '位于东广场西北角换乘厅2F，主要始发干线及快线巴士：\n• E7（往龙岗义乌）、E11（往大鹏新大/南澳）、E22（往坑梓）\n• M299（往南山科技园）、M300（往平湖）、M347（往深圳湾体育中心）、M217、M340、M363、M462等。')">
+                  <div class="poi-title">🚌 公交总站二层 (E11大鹏快线/M299科技园)</div>
+                  <div class="poi-desc">东广场西北角2F｜大鹏半岛旅游快线E11、南山科技园M299在此上车</div>
+                </div>
+
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('东广场出租车上客区（二层平台）', '深圳北站东广场一层（B1）与二层（F1）均设有大型出租车排队上客区！从国铁A2出站口下扶梯至二层即可按地面指引乘出租车（往罗湖口岸约55元）。')">
+                  <div class="poi-title">🚕 东广场出租车二层上客区</div>
+                  <div class="poi-desc">A1/A2出站口下扶梯即达｜与一层出租车站联动发车</div>
+                </div>
+
+                <div class="poi-block" onclick="inspectPOI('缤果空间购物中心 L2层 (东广场商业)', '位于东广场东侧L1-L2层（约3万平方米），汇聚餐饮美食、品牌折扣店及茶饮休息区。')">
+                  <div class="poi-title">🛍️ 缤果空间商场 L2层</div>
+                  <div class="poi-desc">东广场商业配套餐饮、服饰折扣、休息用餐</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 【B1 层】地铁5号线站厅层 & 东广场换乘厅一层 & 西广场地下一层 (78m标高) -->
+          <div id="floor-B1" class="floor-plan-container">
+            <div class="floor-banner">
+              <div>
+                <h2>B1 地下一层（标高 +78m）· 地铁5号线站厅层 ＆ 东广场换乘厅一层 ＆ 西广场网约车A区</h2>
+                <p>东侧为地铁5号线主站厅、出租车一层、公交场站一层及缤果空间L1；西侧为西广场B1层网约车上客区及社会车辆停车场B1层</p>
+              </div>
+              <span class="station-code-badge">5号线站厅 · 出租/网约车核心层</span>
+            </div>
+
+            <div class="hub-three-zones">
+              <!-- 西侧 B1 -->
+              <div class="zone-column west-zone">
+                <div class="zone-header">
+                  <h3>西广场地下一层 (B1)</h3>
+                  <span class="zone-tag tag-west">网约车A区/私家车B1</span>
+                </div>
+
+                <div class="poi-block" data-cat="ride" style="border-left:4px solid #f97316;" onclick="inspectPOI('西广场 B1层网约车上客区（网约车A区）', '各大打车软件自动定位的深圳北站标准上车点之一！乘客从F2层西侧B1/B2出站口出站后，乘垂直电梯或步梯下至B1层，根据墙面及地面灯箱指引即可抵达网约车上车通道。')">
+                  <div class="poi-title">
+                    <span>📱 西广场 B1层网约车上客区</span>
+                    <span class="station-code-badge">打车软件定位点</span>
+                  </div>
+                  <div class="poi-desc">由F2西侧B1/B2口乘垂梯下至B1层｜留意对应候车区号</div>
+                </div>
+
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('西广场社会车辆停车场 B1层 & 出租车蓄车区', '西广场B1、B2两层共设社会停车位1971个（其中B1层另设300车位出租车蓄车场）。私家车接人请提前与乘客约定在西广场B1层还是B2层会合。')">
+                  <div class="poi-title">🅿️ 西广场社会车辆停车场 (B1层)</div>
+                  <div class="poi-desc">私家车接送客核心层｜与B2层共设1,971个泊位</div>
+                </div>
+              </div>
+
+              <!-- 中部 B1 -->
+              <div class="zone-column rail-zone">
+                <div class="zone-header">
+                  <h3>国铁站房地下一层 & 新区大道隧道</h3>
+                  <span class="zone-tag tag-rail">地下连廊与下穿道</span>
+                </div>
+                <div class="poi-block" onclick="inspectPOI('国铁地下到达层通道 & 新区大道龙华隧道', '新区大道沿南北方向在国铁站房与东广场之间从地下穿过车站；原地下一层捷运候车区已整合至F2层高架候车室。')">
+                  <div class="poi-title">🛣️ 新区大道南北向地下下穿隧道</div>
+                  <div class="poi-desc">实现过境市政车流与枢纽内部客流完全立体分离</div>
+                </div>
+              </div>
+
+              <!-- 东侧 B1：地铁5号线站厅层 & 东广场换乘厅1F -->
+              <div class="zone-column east-zone" style="border-width:2px; border-color:var(--metro-l5);">
+                <div class="zone-header">
+                  <h3>🚇 地铁5号线站厅 & 东换乘厅1F</h3>
+                  <span class="zone-tag tag-east">深铁运营 · 金黄色主题</span>
+                </div>
+
+                <div class="poi-block" data-cat="metro" style="border-left:5px solid var(--metro-l5);" onclick="inspectPOI('深圳地铁5号线（环中线）B1层主站厅', '• 【进站闸机】：主要设于站厅南侧（及F1层北侧分流口）。\n• 【出站闸机】：分布于站厅付费区东、西、南、北四面，方便向各接驳设施疏散。\n• 【高铁免安检直达】：承接从F2东广场A1/A2口直下的免安检扶梯/步梯。')">
+                  <div class="poi-title">
+                    <span>█ 5号线 B1主站厅 (南侧进闸 / 四面出闸)</span>
+                    <span class="station-code-badge" style="background:rgba(155,81,224,0.28); color:#e9d5ff;">金黄色站厅</span>
+                  </div>
+                  <div class="poi-desc">中央为付费区（向下通往B2侧式站台），四侧均设出站闸机</div>
+                </div>
+
+                <div class="poi-block" data-cat="transfer" style="border-left:4px solid var(--transfer-green);" onclick="inspectPOI('5号线 ⇄ 4/6号线 付费区“天地换乘扶梯”下口', '位于5号线B1站厅付费区西侧（分南北两端换乘口），6台大扶梯直上F3层4号线/6号线高架站厅付费区，无需出闸重新购票安检！')">
+                  <div class="poi-title">⚡ 往 █4号线 / █6号线 天地换乘扶梯口</div>
+                  <div class="poi-desc">位于付费区西侧（南北两端），乘长扶梯直上F3高架站厅</div>
+                </div>
+
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('东广场换乘厅一层：出租车上客区(1F) & 公交场站(1F)', '• 【出租车1F】：位于5号线站厅外综合换乘大厅一层，车源充足。\n• 【公交场站1F】：停靠M130、M341、M352、M567、M572及北侧临时公交站M354。\n• 【便民设施】：5号线非付费区洗手间、深圳通服务点、缤果空间L1入口。')">
+                  <div class="poi-title">🚕 出租车一层上客区 ＆ 公交总站1F ＆ 深圳通</div>
+                  <div class="poi-desc">含5号线非付费区洗手间、深圳通服务网点、缤果空间L1商场</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 【B2 层】地铁5号线地下二层侧式站台层 & 深惠城际(在建) & 西广场停车场B2 -->
+          <div id="floor-B2" class="floor-plan-container">
+            <div class="floor-banner">
+              <div>
+                <h2>B2 地下二层（标高 +72m）· 地铁5号线东西向侧式站台层 ＆ 深惠城际(在建) ＆ 西广场B2车库</h2>
+                <p>地铁5号线自东向西垂直下穿整个国铁站房与东广场！采用双侧式站台设计（宽5.4米，开右侧车门），西北侧接入在建深惠城际铁路</p>
+              </div>
+              <span class="station-code-badge">东西向横穿 · 侧式站台</span>
+            </div>
+
+            <div class="hub-three-zones">
+              <div class="zone-column west-zone">
+                <div class="zone-header">
+                  <h3>西广场地下二层 (B2)</h3>
+                  <span class="zone-tag tag-west">大型地下车库</span>
+                </div>
+                <div class="poi-block" data-cat="ride" onclick="inspectPOI('西广场社会车辆停车场 B2层', '与B1层合计提供1971个社会停车泊位，设有清晰的分区寻车编码与多部垂直电梯直通F2西广场B1/B2高铁出站口。')">
+                  <div class="poi-title">🅿️ 西广场社会车辆停车场 (B2层)</div>
+                  <div class="poi-desc">长时停车与接送客车库｜乘垂梯直达F2西广场进出站口</div>
+                </div>
+              </div>
+
+              <div class="zone-column rail-zone" style="grid-column: span 2; border-color: var(--metro-l5);">
+                <div class="zone-header">
+                  <h3>🚇 深圳地铁5号线（环中线）地下二层侧式站台 ＆ 🚆 深惠城际（在建共构区）</h3>
+                  <span class="zone-tag tag-east">东西向正交下穿国铁与东广场</span>
+                </div>
+
+                <!-- 深惠城际在建区 -->
+                <div class="poi-block" style="border-left:4px solid var(--intercity-sh);" onclick="inspectPOI('深惠城际铁路深圳北站（在建 · 5号线西北侧）', '深惠城际铁路（前海保税区—坪地/惠州）在此设站，利用既有平南铁路隧道位置设置站点，呈西南—东北走向布置（2026年7月已完成平南铁路隧道顶板拆除），建成后与5号线共用站厅便捷换乘！')">
+                  <div class="poi-title">
+                    <span>🚆 深惠城际铁路站体 (5号线西北侧 · 在建共构)</span>
+                    <span class="station-code-badge">西南—东北走向</span>
+                  </div>
+                  <div class="poi-desc">占用既有平南铁路隧道廊道建设，未来与5号线B1站厅共构换乘（连接前海、西丽、五和、龙岗、凤岗、坪地）</div>
+                </div>
+
+                <!-- 5号线东西向双侧式站台可视化模型 -->
+                <div class="line5-ew-corridor">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-weight:800; color:#f3e8ff;">⬅️ 西向：往 赤湾 / 前海湾 (下一站：长岭陂)</span>
+                    <span class="station-code-badge" style="background:#eab308; color:#1e293b;">⚠️ 侧式站台 · 开右边车门 (下扶梯前请看清方向)</span>
+                    <span style="font-weight:800; color:#f3e8ff;">东向：往 大剧院 / 黄贝岭 (下一站：民治) ➡️</span>
+                  </div>
+
+                  <!-- 北侧站台：往赤湾 -->
+                  <div class="poi-block" data-cat="metro" onclick="inspectPOI('5号线北侧站台：往 赤湾 / 前海湾 方向（下一站：长岭陂）', '【运行方向】自东向西，开往大学城、西丽、留仙洞、宝安中心、前海湾、赤湾方向。\n【首末班车】往赤湾首班05:51 / 末班23:22（节假日延至00:22）；半程末班车：往前海湾23:47、往宝安中心00:02、往长岭陂00:42。\n【无障碍直梯】站台设垂直电梯可直达F3/F4层（4号线站厅及站台）。')">
+                    <div class="poi-title">
+                      <span>⬆️ 北侧侧式站台 (宽5.4m) · 往 赤湾 (下一站：长岭陂)</span>
+                      <span class="station-code-badge">首05:51 / 末23:22 (半程至00:42)</span>
+                    </div>
+                    <div class="poi-desc">途经：长岭陂 → 大学城 → 西丽 → 留仙洞 → 洪浪北 → 宝安中心 → 前海湾 → 赤湾</div>
+                  </div>
+
+                  <div class="line5-track-bar">
+                    <span>◀ ◀ ◀ 5号线西行轨道 (往 赤湾 / 前海湾)</span>
+                    <span style="color:#fde047;">☀️ 两端设玻璃穹顶自然采光天井 ｜ 🛗 4部垂直电梯直通4号线</span>
+                    <span>5号线东行轨道 (往 民治 / 布吉 / 大剧院) ▶ ▶ ▶</span>
+                  </div>
+
+                  <!-- 南侧站台：往大剧院/黄贝岭 -->
+                  <div class="poi-block" data-cat="metro" onclick="inspectPOI('5号线南侧站台：往 大剧院 / 黄贝岭 方向（下一站：民治）', '【运行方向】自西向东，开往民治、五和、坂田、布吉、太安、黄贝岭、东门、大剧院方向。\n【首末班车】往大剧院首班05:52 / 末班00:04（节假日延至01:04）。\n【重要提示】5号线为侧式站台，南北两个方向站台被轨道隔开，请务必在B1站厅看清方向后再下站台！')">
+                    <div class="poi-title">
+                      <span>⬇️ 南侧侧式站台 (宽5.4m) · 往 大剧院/黄贝岭 (下一站：民治)</span>
+                      <span class="station-code-badge">首05:52 / 末00:04</span>
+                    </div>
+                    <div class="poi-desc">途经：民治 → 五和 → 坂田 → 布吉 → 百鸽笼 → 太安 → 黄贝岭 → 东门 → 大剧院</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /#view2DWrapper -->
+
+        <!-- ==================== 视图2：2.5D / 3D 6层立体轴测模型 ==================== -->
+        <div id="view3DWrapper" class="iso-3d-stage">
+          <div class="iso-controls-overlay">
+            <label>
+              🔄 俯仰角 (X):
+              <input type="range" id="isoRx" min="25" max="68" value="52" oninput="updateIsoTransform()" />
+            </label>
+            <label>
+              🧭 旋转角 (Z):
+              <input type="range" id="isoRz" min="-45" max="35" value="-18" oninput="updateIsoTransform()" />
+            </label>
+            <label>
+              📏 层间展开高度:
+              <input type="range" id="isoGap" min="8" max="42" value="18" oninput="updateIsoTransform()" />
+            </label>
+            <button class="tool-btn" onclick="resetIsoTransform()">重置视角</button>
+          </div>
+
+          <div class="iso-tower" id="isoTower">
+            <!-- F4 Slab -->
+            <div class="iso-slab" onclick="switchFloorFrom3D('F4')">
+              <span class="iso-slab-badge">F4 +102m</span>
+              <div class="iso-zone-box iso-west">西广场上空净空</div>
+              <div class="iso-zone-box iso-rail">国铁巨型网架大屋顶 (南北向跨线)</div>
+              <div class="iso-zone-box iso-l46">🚇 4号线 & 6号线 高架双岛站台 (南北向)</div>
+            </div>
+
+            <!-- F3 Slab -->
+            <div class="iso-slab" onclick="switchFloorFrom3D('F3')">
+              <span class="iso-slab-badge">F3 +96m</span>
+              <div class="iso-zone-box iso-west">西广场挑空视野</div>
+              <div class="iso-zone-box iso-rail">🍔 国铁高架二层 餐饮商业夹层</div>
+              <div class="iso-zone-box iso-l46">🚇 4/6号线共用高架站厅 + ⚡天地换乘梯上口</div>
+            </div>
+
+            <!-- F2 Slab -->
+            <div class="iso-slab iso-active" onclick="switchFloorFrom3D('F2')">
+              <span class="iso-slab-badge" style="background:#f59e0b;">F2 +90m</span>
+              <div class="iso-zone-box iso-west">📱 西广场：B进站口 · 网约车B区 · 汽车站</div>
+              <div class="iso-zone-box iso-rail">🚄 国铁高架候车大厅 (A1–A20 / B1–B20检票口)</div>
+              <div class="iso-zone-box iso-east">🚪 东广场：A进站口 · 地铁A-D口 · 免安检梯</div>
+            </div>
+
+            <!-- F1 Slab -->
+            <div class="iso-slab" onclick="switchFloorFrom3D('F1')">
+              <span class="iso-slab-badge">F1 +84m</span>
+              <div class="iso-zone-box iso-west">🛗 西广场垂梯转换层</div>
+              <div class="iso-zone-box iso-rail">🛤️ 国铁11台20线站台层 (8-15台🇭🇰跨境专区)</div>
+              <div class="iso-zone-box iso-east">🚌 东换乘厅2F：公交2F · 出租2F · 5号线北闸</div>
+            </div>
+
+            <!-- B1 Slab -->
+            <div class="iso-slab" onclick="switchFloorFrom3D('B1')">
+              <span class="iso-slab-badge">B1 +78m</span>
+              <div class="iso-zone-box iso-west">📱 西广场B1：网约车A区 · 私家车库B1</div>
+              <div class="iso-zone-box iso-rail">🛣️ 新区大道南北地下隧道 & 地下连廊</div>
+              <div class="iso-zone-box iso-l5">🚇 5号线B1站厅 + ⚡天地换乘梯下口 + 🚕出租1F</div>
+            </div>
+
+            <!-- B2 Slab -->
+            <div class="iso-slab" onclick="switchFloorFrom3D('B2')">
+              <span class="iso-slab-badge">B2 +72m</span>
+              <div class="iso-zone-box iso-west">🅿️ 西广场B2：大型社会停车场 (共1971泊位)</div>
+              <div class="iso-zone-box iso-l5" style="grid-column: span 2;">
+                🚇 5号线地下二层侧式站台 (⬅️赤湾 ⇄ 大剧院➡️ 东西向正交横穿) ＋ 🚆 深惠城际(在建)
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:12px; color:var(--text-secondary); text-align:center; max-width:680px; margin-top:8px;">
+            💡 <strong>立体空间咬合解析：</strong>国铁（F1/F2）与地铁4、6号线（F3/F4）均呈<strong>南北向</strong>平行布置；地铁5号线（B1/B2）呈<strong>东西向</strong>在地下正交下穿整个枢纽。点击任意立体楼板即可切回该层高精度2D平面图。
+          </div>
+        </div>
+
+      </div><!-- /.hub-viewport -->
+
+      <footer class="stage-footer-legend">
+        <div class="legend-items">
+          <span><i class="legend-dot" style="background:var(--cr-blue);"></i>国铁候车/站台区</span>
+          <span><i class="legend-dot" style="background:var(--hk-zone);"></i>8–15站台香港西九龙跨境专区</span>
+          <span><i class="legend-dot" style="background:var(--metro-l4);"></i>地铁4号线(高架)</span>
+          <span><i class="legend-dot" style="background:var(--metro-l6);"></i>地铁6号线(高架)</span>
+          <span><i class="legend-dot" style="background:var(--metro-l5);"></i>地铁5号线(地下)</span>
+          <span><i class="legend-dot" style="background:var(--east-sq);"></i>东广场(地铁/出租/公交)</span>
+          <span><i class="legend-dot" style="background:var(--west-sq);"></i>西广场(网约车/私家车/客运站)</span>
+        </div>
+        <div>提示：点击平面图中任意区域、检票口或右侧流线方案可查看详细乘车指引</div>
+      </footer>
+    </section>
+
+    <!-- 右侧栏：旅客智能路径规划器 + 区域详情检视器 + 地铁首末班时刻表 -->
+    <aside class="panel-box">
+      <div class="panel-title">
+        <span>🧭 旅客高频换乘流线导航</span>
+        <span class="tag">一键规划路径</span>
+      </div>
+
+      <div class="route-presets-list" id="routePresetsList">
+        <button class="route-btn active" onclick="selectRoute(0, this)">
+          <div class="route-btn-top">
+            <span>1. 高铁下车 ➔ 换乘地铁 5 号线</span>
+            <span class="route-time-badge">约 4–6 分钟</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">走东侧 A1/A2 出站口 ➔ 东广场免安检扶梯直下 B1</div>
+        </button>
+
+        <button class="route-btn" onclick="selectRoute(1, this)">
+          <div class="route-btn-top">
+            <span>2. 高铁下车 ➔ 换乘地铁 4 / 6 号线</span>
+            <span class="route-time-badge">约 5–7 分钟</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">走东侧 A1/A2 出站口 ➔ 地铁 B/C 口扶梯上 F3/F4</div>
+        </button>
+
+        <button class="route-btn" onclick="selectRoute(2, this)">
+          <div class="route-btn-top">
+            <span>3. 地铁 4/5/6 号线 ➔ 进站坐高铁</span>
+            <span class="route-time-badge">约 6–10 分钟</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">汇聚至 F2 东广场 ➔ 东进站口(A口) 验检二合一</div>
+        </button>
+
+        <button class="route-btn" onclick="selectRoute(3, this)">
+          <div class="route-btn-top">
+            <span>4. 地铁 4/6 号线 ⇄ 地铁 5 号线互换</span>
+            <span class="route-time-badge">约 3–5 分钟</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">付费区内 6 台“天地换乘长扶梯” (F3 ⇄ B1) 免出闸</div>
+        </button>
+
+        <button class="route-btn" onclick="selectRoute(4, this)">
+          <div class="route-btn-top">
+            <span>5. 高铁下车 ➔ 打网约车 / 私家车接站</span>
+            <span class="route-time-badge">约 4–6 分钟</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">务必走西侧 B1/B2 出站口 ➔ 西广场网约车B区或B1层</div>
+        </button>
+
+        <button class="route-btn" onclick="selectRoute(5, this)">
+          <div class="route-btn-top">
+            <span>6. 高铁下车 ➔ 打出租车 / 坐公交车</span>
+            <span class="route-time-badge">约 4–6 分钟</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">首选东侧 A2 出站口 ➔ 下 F1/B1 层出租车或公交总站</div>
+        </button>
+
+        <button class="route-btn" onclick="selectRoute(6, this)">
+          <div class="route-btn-top">
+            <span>7. 高铁联程中转换乘 (不出站)</span>
+            <span class="route-time-badge">约 5–8 分钟</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">F1 站台寻“便捷换乘”标识 ➔ 专道直送 F2 候车厅</div>
+        </button>
+      </div>
+
+      <!-- 动态分步导航卡片 -->
+      <div id="routeStepsCard" class="route-steps-card">
+        <div style="font-size:13px; font-weight:800; color:#4ade80;" id="routeStepTitle">
+          📍 当前流线：高铁下车 ➔ 换乘地铁 5 号线（环中线）
+        </div>
+        <ol class="step-timeline" id="routeStepList">
+          <li><span class="step-num">1</span><div><strong>F1 站台层下车：</strong>抬头看站台上方蓝底白字导向牌，往<strong>东侧（A1 / A2 出站口）</strong>方向乘扶梯上楼（切勿去B1/B2口）。</div></li>
+          <li><span class="step-num">2</span><div><strong>F2 东侧 A1/A2 口出闸：</strong>刷身份证出闸到东广场露天层（推荐走 <strong>A2出站口</strong> 距离最近）。</div></li>
+          <li><span class="step-num">3</span><div><strong>直下 B1 五号线站厅：</strong>进入出站口外常态化免安检专用通道（或换乘大厅下沉扶梯），直达 <strong>B1层 5号线站厅</strong>。</div></li>
+          <li><span class="step-num">4</span><div><strong>B2 侧式站台乘车：</strong>5号线为侧式站台，请在B1看清方向再下楼（北侧往<strong>赤湾/前海湾</strong>，南侧往<strong>民治/布吉/大剧院</strong>）。</div></li>
+        </ol>
+      </div>
+
+      <!-- 节点详情检视器 -->
+      <div class="panel-title">
+        <span>📋 选中区域 / 设施详情</span>
+        <span class="tag">实时交互</span>
+      </div>
+      <div class="poi-inspector-card" id="poiInspector">
+        <h4 id="poiTitle">深圳北站 F2 主交通层（“上进上出”核心层）</h4>
+        <p id="poiBody">
+          点击中央模型中的任意检票口（A1–A20 / B1–B20）、站台（1–20站台）、地铁口（A–D口）或接驳场站，此处将显示精确的旅客实操指南与避坑提示。
+        </p>
+      </div>
+
+      <!-- 深圳北站地铁 4/5/6 号线首末班车时刻表 -->
+      <div class="panel-title">
+        <span>🕒 深圳北站地铁首末班车时刻表</span>
+        <span class="tag">含夜间半程末班车</span>
+      </div>
+      <table class="timetable-table">
+        <thead>
+          <tr>
+            <th>线路 / 开往方向</th>
+            <th>下一站</th>
+            <th style="text-align:right;">首班车</th>
+            <th style="text-align:right;">全程末班 (半程)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#f87171;">█ 4号线</strong> 往 福田口岸</td>
+            <td>白石龙</td>
+            <td class="mono">06:17</td>
+            <td class="mono">23:33 (节00:33)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#f87171;">█ 4号线</strong> 往 牛湖</td>
+            <td>红山</td>
+            <td class="mono">06:50</td>
+            <td class="mono">23:33 (清湖00:05)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#c084fc;">█ 5号线</strong> 往 赤湾</td>
+            <td>长岭陂</td>
+            <td class="mono">05:51</td>
+            <td class="mono">23:22 (前海23:47)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#c084fc;">█ 5号线</strong> 往 大剧院</td>
+            <td>民治</td>
+            <td class="mono">05:52</td>
+            <td class="mono">00:04 (节01:04)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#2dd4bf;">█ 6号线</strong> 往 科学馆</td>
+            <td>梅林关</td>
+            <td class="mono">06:26</td>
+            <td class="mono">00:17 (梅林00:23)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#2dd4bf;">█ 6号线</strong> 往 松岗</td>
+            <td>红山</td>
+            <td class="mono">05:56</td>
+            <td class="mono">23:18 (凤凰23:48)</td>
+          </tr>
+        </tbody>
+      </table>
+    </aside>
+
+  </main>
+
+  <!-- ==================== 交互逻辑脚本 ==================== -->
+  <script>
+    // 1. 切换 2D 平面图 与 2.5D 立体模型
+    function setViewMode(mode) {
+      const v2d = document.getElementById('view2DWrapper');
+      const v3d = document.getElementById('view3DWrapper');
+      const b2d = document.getElementById('btnMode2D');
+      const b3d = document.getElementById('btnMode3D');
+
+      if (mode === '3d') {
+        v2d.style.display = 'none';
+        v3d.classList.add('active');
+        b2d.classList.remove('active');
+        b3d.classList.add('active');
+      } else {
+        v3d.classList.remove('active');
+        v2d.style.display = 'block';
+        b3d.classList.remove('active');
+        b2d.classList.add('active');
+      }
+    }
+
+    // 2. 切换楼层 (F4, F3, F2, F1, B1, B2)
+    function switchFloor(floorId) {
+      setViewMode('2d');
+      document.querySelectorAll('.floor-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-floor') === floorId);
+      });
+      document.querySelectorAll('.floor-plan-container').forEach(plan => {
+        plan.classList.toggle('active', plan.id === 'floor-' + floorId);
+      });
+
+      const floorDescriptions = {
+        'F4': ['F4 地铁4/6号线高架站台层 (+102m)', '位于东广场上空，4号线（东岛）与6号线（西岛）同层平行布置，均采用岛式站台（开左侧车门）。4号线站台设有垂直电梯直通F3站厅与B2层5号线站台。'],
+        'F3': ['F3 地铁4/6号线高架站厅 & 国铁商业夹层 (+96m)', '东侧为4/6号线共用站厅，付费区西侧设有6台“天地换乘长扶梯”直达地下B1层5号线站厅（免出闸）；中部为国铁候车室二层餐饮区。'],
+        'F2': ['F2 主交通层 · 国铁高架候车厅 & 东西广场 (+90m)', '全枢纽核心集散层！东广场连接地铁4/5/6号线与东进站口(A)、A1/A2出站口；中央为国铁A1-A20与B1-B20检票口；西广场连接西进站口(B)、B1/B2出站口、网约车B区及汽车站。'],
+        'F1': ['F1 国铁11台20线站台层 & 东广场换乘厅2F (+84m)', '国铁共设11座站台20条股道，自东(1站台)向西(20站台)排列。其中1站台为坪山捷运线，8-15站台为香港西九龙跨境专区（11/12正线装有半高站台门）。东侧为公交总站2F、出租车2F及5号线北侧分流进站闸机。'],
+        'B1': ['B1 地铁5号线站厅层 & 东换乘厅1F & 西广场B1 (+78m)', '东侧为5号线主站厅（承接4/6号线天地换乘扶梯及东广场免安检扶梯）、出租车1F、公交总站1F；西侧为西广场B1层网约车上客区及私家车停车场B1层。'],
+        'B2': ['B2 地铁5号线地下侧式站台层 & 西广场车库B2 (+72m)', '地铁5号线自东向西正交下穿国铁站房！采用侧式站台（开右侧车门：北侧往赤湾，南侧往大剧院），下楼前请务必核对方向。西北侧紧邻在建深惠城际铁路站体。']
+      };
+
+      if (floorDescriptions[floorId]) {
+        inspectPOI(floorDescriptions[floorId][0], floorDescriptions[floorId][1]);
+      }
+    }
+
+    function switchFloorFrom3D(floorId) {
+      switchFloor(floorId);
+    }
+
+    // 3. 3D 轴测模型角度与层高调节
+    function updateIsoTransform() {
+      const rx = document.getElementById('isoRx').value;
+      const rz = document.getElementById('isoRz').value;
+      const gap = document.getElementById('isoGap').value;
+      const tower = document.getElementById('isoTower');
+      tower.style.setProperty('--iso-rx', rx + 'deg');
+      tower.style.setProperty('--iso-rz', rz + 'deg');
+      tower.style.setProperty('--iso-gap', gap + 'px');
+    }
+
+    function resetIsoTransform() {
+      document.getElementById('isoRx').value = 52;
+      document.getElementById('isoRz').value = -18;
+      document.getElementById('isoGap').value = 18;
+      updateIsoTransform();
+    }
+
+    // 4. 检票口 & 站台精准定位器
+    function locateTicketGate() {
+      const val = parseInt(document.getElementById('gateSelect').value, 10);
+      if (!val) return;
+      switchFloor('F2');
+      selectGateColumn(val);
+    }
+
+    function selectGateColumn(platNum) {
+      clearHighlights();
+      const cols = document.querySelectorAll('.gate-pair-col');
+      cols.forEach(c => {
+        const range = c.getAttribute('data-plat').split('-').map(Number);
+        if (range.includes(platNum)) {
+          c.classList.add('active-gate', 'highlight-pulse');
+        }
+      });
+
+      const isEastCloser = platNum <= 10;
+      const isHK = platNum >= 8 && platNum <= 15;
+      const entranceRec = isEastCloser
+        ? '<strong>东广场 A进站口</strong>（距 A' + platNum + ' 检票口最近，地铁4/5/6号线及出租车直达）'
+        : '<strong>西广场 B进站口</strong>（距 B' + platNum + ' 检票口最近，网约车/自驾首选；若乘地铁到达走东进站口亦可直通）';
+
+      let specialNote = '常规高速动车组站台（广深港/厦深/赣深各方向）。';
+      if (platNum === 1) {
+        specialNote = '🚄 <strong>1号侧式站台（坪山快捷线 C字头专区）：</strong>注意原地面层专用候车室已于2024年中停用并改为失物招领处，请统一在 F2 高架候车室东端 <strong>新A1 / 新B1 检票口</strong>检票下楼！';
+      } else if (platNum === 11 || platNum === 12) {
+        specialNote = '🇭🇰 <strong>广深港高铁正线站台（8–15跨境专区）：</strong>已配备<strong>半高全滑动型站台门</strong>（11站台往香港西九龙方向，12站台往广州南方向），检票后请勿越过安全门黄线。';
+      } else if (isHK) {
+        specialNote = '🇭🇰 <strong>8–15号站台为香港西九龙跨境高铁专区：</strong>请注意香港西九龙站实行“一地两检”，乘跨境列车请预留充足时间并备好港澳通行证/回乡证及有效签注。';
+      }
+
+      const resBox = document.getElementById('gateResultBox');
+      resBox.innerHTML =
+        '🎯 <strong>已定位：A' + platNum + ' / B' + platNum + ' 检票口（对应 F1层 ' + platNum + '号站台）</strong><br/>' +
+        '• <strong>最优进站口：</strong>' + entranceRec + '<br/>' +
+        '• <strong>A/B检票口区别：</strong>A' + platNum + '（东侧）与 B' + platNum + '（西侧）下达同一站台的不同车厢段（16编组或重联列车建议按车票提示选择A或B检票口，少走站台路）。<br/>' +
+        '• <strong>站台属性：</strong>' + specialNote;
+
+      inspectPOI(
+        'A' + platNum + ' / B' + platNum + ' 检票口 ➔ ' + platNum + '号站台',
+        resBox.innerText
+      );
+    }
+
+    // 5. 设施分类闪烁高亮
+    function highlightCategory(cat) {
+      clearHighlights();
+      const matched = document.querySelectorAll('.floor-plan-container.active [data-cat="' + cat + '"]');
+      if (matched.length === 0) {
+        switchFloor('F2');
+      }
+      document.querySelectorAll('[data-cat="' + cat + '"]').forEach(el => {
+        el.classList.add('highlight-pulse');
+      });
+    }
+
+    function clearHighlights() {
+      document.querySelectorAll('.highlight-pulse, .active-gate, .selected-poi').forEach(el => {
+        el.classList.remove('highlight-pulse', 'active-gate', 'selected-poi');
+      });
+    }
+
+    // 6. 区域详情面板更新
+    function inspectPOI(title, desc) {
+      document.getElementById('poiTitle').textContent = title;
+      document.getElementById('poiBody').innerHTML = desc.replace(/\n/g, '<br/>');
+    }
+
+    // 7. 7大旅客高频流线导航数据
+    const ROUTES_DATA = [
+      {
+        floor: 'F2',
+        cat: 'transfer',
+        title: '📍 流线1：高铁下车 ➔ 换乘地铁 5 号线（免安检极速流线）',
+        steps: [
+          '<strong>F1 站台层下车：</strong>认准站台上方“东广场（A1 / A2 出站口）”标识乘扶梯上行，<strong>切勿走B1/B2口</strong>。',
+          '<strong>F2 东侧 A1/A2 口出站：</strong>刷证出闸至东广场露天层（<strong>A2出站口</strong>距离换乘扶梯最近）。',
+          '<strong>免安检扶梯直下 B1：</strong>由东广场高铁出站免安检专用隔离区扶梯/步梯直下 <strong>B1层 5号线站厅</strong>。',
+          '<strong>B2 侧式站台乘车：</strong>在B1站厅看清方向再下扶梯（北侧站台往<strong>赤湾/前海湾</strong>，南侧站台往<strong>民治/布吉/大剧院</strong>）。'
+        ]
+      },
+      {
+        floor: 'F2',
+        cat: 'metro',
+        title: '📍 流线2：高铁下车 ➔ 换乘地铁 4 号线 / 6 号线（高架线）',
+        steps: [
+          '<strong>F1 站台层下车：</strong>沿“东广场（A1 / A2 出站口）”指示上至 F2 层出闸。',
+          '<strong>F2 东广场露天层：</strong>出 A1 口即见左手边 <strong>地铁B口</strong>；出 A2 口即见右手边 <strong>地铁C口</strong>（均设扶梯与无障碍直梯）。',
+          '<strong>上行至 F3 高架站厅：</strong>乘扶梯上至 F3 层 4/6 号线共用高架站厅（节假日高峰开启免安检绿色通道）。',
+          '<strong>F4 双岛站台乘车：</strong>东侧岛式站台为 <strong>█ 4号线</strong>（福田口岸⇄牛湖），西侧岛式站台为 <strong>█ 6号线</strong>（科学馆⇄松岗）。'
+        ]
+      },
+      {
+        floor: 'F2',
+        cat: 'entrance',
+        title: '📍 流线3：乘坐地铁 4 / 5 / 6 号线到达 ➔ 进站乘高铁',
+        steps: [
+          '<strong>4/6号线到站：</strong>从 F4 站台下至 F3 站厅，走 <strong>B出入口 或 C出入口</strong> 下至 F2 东广场露天层。',
+          '<strong>5号线到站：</strong>从 B2 站台到 B1 站厅西侧出闸，乘扶梯上至 F2 东广场露天层。',
+          '<strong>国铁东进站口（A进站口）：</strong>正对地铁B/C口！实名验证与安检二合一（距开车不足15分钟请走“U”彩急客通道）。',
+          '<strong>F2 候车室检票：</strong>东侧即为 A1–A20 检票口，西侧为 B1–B20 检票口，核对大屏后检票下至 F1 对应站台。'
+        ]
+      },
+      {
+        floor: 'F3',
+        cat: 'transfer',
+        title: '📍 流线4：地铁 4/6 号线 ⇄ 地铁 5 号线（付费区天地大扶梯换乘）',
+        steps: [
+          '<strong>全程无需出闸：</strong>三条地铁线在深圳北站通过付费区专用通道互联，千万不要刷卡出站！',
+          '<strong>4/6号线 换 5号线：</strong>由 F4 站台下至 <strong>F3 站厅付费区西侧</strong>（分南北两端换乘口），乘坐6台“天地换乘长扶梯”直达 <strong>B1层 5号线站厅付费区</strong>，再下 B2 站台。',
+          '<strong>无障碍直梯捷径：</strong>携带大件行李或婴儿车的旅客，可在 4号线站台直接乘付费区垂直电梯一键直达 B2层 5号线站台！'
+        ]
+      },
+      {
+        floor: 'F2',
+        cat: 'ride',
+        title: '📍 流线5：高铁下车 ➔ 打网约车 / 私家车接站（西广场专属）',
+        steps: [
+          '<strong>F1 站台层下车：</strong>务必朝<strong>西侧（B1 / B2 出站口 · 西广场）</strong>方向出站！',
+          '<strong>优选方案A（地面网约车B区 · 吹空调等车）：</strong>从 F2 层 B1/B2 口出站后，按地面指示牌步行至西广场地面<strong>“网约车B区”空调候车室</strong>，在屏幕输入预约车牌号即可引导司机驶入27车位上客通道。',
+          '<strong>方案B（B1层网约车A区 / 私家车接人）：</strong>从 B1/B2 出站口外乘垂直电梯下至 <strong>西广场B1层（网约车A区/社会车库B1）</strong> 或 <strong>B2层社会车库</strong>。'
+        ]
+      },
+      {
+        floor: 'F1',
+        cat: 'ride',
+        title: '📍 流线6：高铁下车 ➔ 打出租车 / 坐公交车（东广场1F/2F）',
+        steps: [
+          '<strong>F1 站台层下车：</strong>朝<strong>东侧（A1 / A2 出站口）</strong>方向上楼出站（推荐走 <strong>A2出站口</strong> 距离最近）。',
+          '<strong>下至 F1 或 B1 换乘厅：</strong>出 A2 口后乘扶梯或垂直电梯下至<strong>东广场一层（B1）或二层（F1）平台</strong>。',
+          '<strong>乘出租车：</strong>东广场一层与二层均设有正规巡游出租车排队上客点（往福田CBD约30元、往罗湖口岸约55元）。',
+          '<strong>乘公交车：</strong>前往东广场西北角换乘厅 1F/2F 公交总站（E11往大鹏南澳、M299往科技园均在2F上车）。'
+        ]
+      },
+      {
+        floor: 'F2',
+        cat: 'transfer',
+        title: '📍 流线7：高铁联程中转换乘（不出站同站换乘）',
+        steps: [
+          '<strong>适用旅客：</strong>已购买两段车票、在深圳北站中转接续下一趟高铁/动车的旅客（建议两车间隙 ≥ 20分钟）。',
+          '<strong>F1 站台寻找标识：</strong>下车后不要进出站闸机，在站台寻找蓝底白字<strong>“便捷换乘”</strong>标识（位于站台北端/南端转换通道）。',
+          '<strong>刷身份证核验上行：</strong>在换乘通道口刷身份证核验下一程电子客票，乘扶梯直接进入 <strong>F2 高架候车大厅</strong>，免出站、免二次安检！'
+        ]
+      }
+    ];
+
+    function selectRoute(idx, btnEl) {
+      document.querySelectorAll('.route-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      const r = ROUTES_DATA[idx];
+      switchFloor(r.floor);
+      highlightCategory(r.cat);
+
+      document.getElementById('routeStepTitle').textContent = r.title;
+      const listEl = document.getElementById('routeStepList');
+      listEl.innerHTML = r.steps.map((s, i) =>
+        '<li><span class="step-num">' + (i + 1) + '</span><div>' + s + '</div></li>'
+      ).join('');
+    }
+  </script>
+</body>
+</html>
