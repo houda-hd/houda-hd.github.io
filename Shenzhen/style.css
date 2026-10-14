@@ -1,54 +1,58 @@
 /* ==========================================================================
-   SHENZHEN NORTH STATION · 3D ARCHITECTURAL PASSENGER WAYFINDING MODEL
+   SHENZHEN NORTH STATION · V7 BIM-GRADE 3D ARCHITECTURAL WAYFINDING SYSTEM
    Art Direction: Swiss Architectural Maquette & Precision Transit Cartography
    Reference Discipline: Leonxlnx/taste-skill (1440px / 768px / 390px Responsive)
    Files: Shenzhen/index.html + Shenzhen/style.css
    ========================================================================== */
 
 :root {
-  /* Architectural Maquette Palette — One Ground, One Ink, One Action Accent */
-  --ground: #f3f1ec;
-  --ground-elevated: #eae6dd;
-  --ground-recessed: #dfd9ce;
-  --ground-canvas: #e8e4dc;
+  /* Warm Architectural Maquette Daylight Palette */
+  --ground: #e8e4dc;
+  --ground-grid: #dcd6ca;
+  --surface: rgba(245, 242, 236, 0.96);
+  --surface-solid: #f5f2ec;
+  --surface-elevated: #ebe6dc;
+  --surface-recessed: #ded8cc;
   --ink: #141413;
-  --ink-secondary: #4a4843;
-  --ink-muted: #78756e;
-  --rule: #d2cdc2;
+  --ink-secondary: #4a4842;
+  --ink-muted: #78746c;
+  --rule: #cfc9bc;
   --rule-strong: #141413;
 
-  /* Primary Action & Wayfinding Signal (International Architectural Orange) */
+  /* Primary Wayfinding Signal (International Architectural Orange) */
   --signal: #d94e1f;
-  --signal-tint: #f7e6e0;
+  --signal-tint: rgba(217, 78, 31, 0.12);
 
-  /* Authentic Rail & Metro System Identities */
+  /* Authentic Rail & Shenzhen Metro Identity Colors */
   --cr-navy: #003a70;       /* China Railway High-Speed Rail */
-  --cr-crimson: #b81d24;    /* China Railway Emblem / Cross-Border HK Zone */
+  --cr-crimson: #b81d24;    /* Platforms 8-15 HK West Kowloon Cross-Border */
   --metro-l4: #d62828;      /* Shenzhen Metro Line 4 (Longhua) */
   --metro-l5: #7b3f98;      /* Shenzhen Metro Line 5 (Huanzhong) */
   --metro-l6: #009b8d;      /* Shenzhen Metro Line 6 (Guangming) */
   --intercity: #1f6fa8;     /* Shenhui Intercity (Under Construction) */
   --east-green: #1b6b4c;    /* East Square Public Transit Hub */
-  --west-ochre: #b5651d;    /* West Square Ride-Hailing & Coach Hub */
+  --west-ochre: #b5651d;    /* West Square Ride-Hailing Zone A/B */
 
-  /* Typography — Two families max, tabular figures enforced */
+  /* Typography — Strict 2-Font Discipline + Tabular Numerals */
   --font-sans: "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-/* Blueprint Dark Mode (Toggleable Architectural Carbon Theme) */
+/* Blueprint Carbon Dark Mode */
 body[data-theme="carbon"] {
-  --ground: #141413;
-  --ground-elevated: #1e1e1c;
-  --ground-recessed: #282825;
-  --ground-canvas: #10100f;
-  --ink: #f3f1ec;
+  --ground: #111110;
+  --ground-grid: #1c1c1a;
+  --surface: rgba(24, 24, 22, 0.96);
+  --surface-solid: #181816;
+  --surface-elevated: #22221f;
+  --surface-recessed: #2c2c28;
+  --ink: #f4f1ea;
   --ink-secondary: #b8b4aa;
   --ink-muted: #7d7970;
-  --rule: #2e2d2a;
-  --rule-strong: #f3f1ec;
+  --rule: #2e2d29;
+  --rule-strong: #f4f1ea;
   --signal: #ff5c26;
-  --signal-tint: #2c1a14;
+  --signal-tint: rgba(255, 92, 38, 0.16);
 }
 
 *, *::before, *::after {
@@ -61,14 +65,15 @@ body[data-theme="carbon"] {
 html, body {
   width: 100%;
   height: 100%;
+  overflow: hidden;
   background-color: var(--ground);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.45;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
+  user-select: none;
 }
 
 ::-webkit-scrollbar {
@@ -76,439 +81,25 @@ html, body {
   height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--ground);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--rule);
 }
 
 /* ==========================================================================
-   1. TOP NAVIGATION BAR (Strict 54px Desktop / 48px Mobile Cap)
+   1. FULL-BLEED 3D STAGE CANVAS (100vw x 100dvh on ALL viewports)
    ========================================================================== */
-.topbar {
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 18px;
+.stage-viewport {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   background-color: var(--ground);
-  border-bottom: 1px solid var(--rule);
-  position: relative;
-  z-index: 40;
-  white-space: nowrap;
-}
-
-.topbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  min-width: 0;
-}
-
-.station-mark {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  white-space: nowrap;
-}
-
-.station-mark-code {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 7px;
-  background-color: var(--ink);
-  color: var(--ground);
-  letter-spacing: 0.04em;
-  flex-shrink: 0;
-}
-
-.topbar-meta {
-  font-size: 12px;
-  color: var(--ink-muted);
-  white-space: nowrap;
-}
-
-@media (max-width: 1360px) {
-  .topbar-meta {
-    display: none;
-  }
-}
-
-.topbar-nav {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.line-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 10px;
-  background-color: var(--ground-elevated);
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.line-indicator:hover {
-  background-color: var(--ink);
-  color: var(--ground);
-}
-
-.line-swatch {
-  width: 8px;
-  height: 8px;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.swatch-cr { background-color: var(--cr-navy); }
-.swatch-hk { background-color: var(--cr-crimson); }
-.swatch-l4 { background-color: var(--metro-l4); }
-.swatch-l5 { background-color: var(--metro-l5); }
-.swatch-l6 { background-color: var(--metro-l6); }
-
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.action-btn {
-  height: 32px;
-  padding: 0 11px;
-  background-color: var(--ground-elevated);
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.action-btn:hover,
-.action-btn.is-active {
-  background-color: var(--ink);
-  color: var(--ground);
-  border-color: var(--ink);
-}
-
-.action-btn.action-primary {
-  background-color: var(--signal);
-  color: #ffffff;
-  border-color: var(--signal);
-}
-
-.action-btn.action-primary:hover {
-  opacity: 0.92;
-}
-
-/* ==========================================================================
-   2. MAIN ARCHITECTURAL WORKSPACE (Desktop 3-Col vs Mobile Split-Screen)
-   ========================================================================== */
-.app-shell {
-  display: grid;
-  grid-template-columns: 300px 1fr 350px;
-  grid-template-areas: "left stage right";
-  height: calc(100vh - 54px);
-  width: 100%;
-}
-
-.side-sheet.sheet-left {
-  grid-area: left;
-}
-.viewport-stage {
-  grid-area: stage;
-}
-.side-sheet.sheet-right {
-  grid-area: right;
-}
-
-@media (max-width: 1240px) {
-  .app-shell {
-    grid-template-columns: 265px 1fr 315px;
-  }
-}
-
-.mobile-tabbar,
-.mobile-floor-rail {
-  display: none;
-}
-
-.side-sheet {
-  background-color: var(--ground);
-  border-right: 1px solid var(--rule);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-
-.side-sheet.sheet-right {
-  border-right: none;
-  border-left: 1px solid var(--rule);
-}
-
-.sheet-section {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--rule);
-}
-
-.section-heading {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-
-.section-sub {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ink-muted);
-}
-
-/* ==========================================================================
-   3. VERTICAL SECTION SELECTOR (6 Levels: F4 to B2)
-   ========================================================================== */
-.level-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.level-row {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  background-color: var(--ground-elevated);
-  border: none;
-  border-left: 3px solid transparent;
-  color: var(--ink);
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.14s ease, border-color 0.14s ease;
-}
-
-.level-row:hover {
-  background-color: var(--ground-recessed);
-}
-
-.level-row.is-selected {
-  background-color: var(--ink);
-  color: var(--ground);
-  border-left-color: var(--signal);
-}
-
-.level-id {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.level-info strong {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
+  z-index: 1;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.level-info span {
-  display: block;
-  font-size: 10.5px;
-  color: var(--ink-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.level-row.is-selected .level-info span,
-.level-row.is-selected .level-elev {
-  color: var(--ground-recessed);
-}
-
-.level-elev {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--ink-muted);
-  text-align: right;
-}
-
-/* ==========================================================================
-   4. TICKET GATE & PLATFORM LOCATOR (A1-A20 / B1-B20)
-   ========================================================================== */
-.locator-form {
-  margin-bottom: 8px;
-}
-
-.arch-select {
-  width: 100%;
-  height: 36px;
-  padding: 0 8px;
-  background-color: var(--ground-elevated);
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.arch-select:focus {
-  outline: 1px solid var(--ink);
-}
-
-.gate-quick-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 3px;
-  margin-bottom: 8px;
-}
-
-.gate-chip {
-  padding: 5px 2px;
-  background-color: var(--ground-elevated);
-  border: 1px solid transparent;
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-}
-
-.gate-chip:hover {
-  border-color: var(--ink);
-}
-
-.gate-chip.is-hk {
-  background-color: rgba(184, 29, 36, 0.12);
-  color: var(--cr-crimson);
-}
-
-.gate-chip.is-active {
-  background-color: var(--signal);
-  color: #ffffff;
-}
-
-.locator-readout {
-  padding: 10px 12px;
-  background-color: var(--ground-elevated);
-  border-left: 3px solid var(--cr-navy);
-  font-size: 11.5px;
-  color: var(--ink-secondary);
-  line-height: 1.48;
-}
-
-.locator-readout strong {
-  color: var(--ink);
-}
-
-/* ==========================================================================
-   5. CENTER 3D ARCHITECTURAL VIEWPORT (Interactive 3D Canvas + Clean HUD)
-   ========================================================================== */
-.viewport-stage {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 520px;
-  background-color: var(--ground-canvas);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  user-select: none;
   touch-action: none;
-}
-
-.viewport-hud-top {
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  right: 14px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  pointer-events: none;
-  z-index: 20;
-}
-
-.hud-title-block {
-  background-color: var(--ground);
-  border: 1px solid var(--rule);
-  padding: 8px 12px;
-  pointer-events: auto;
-  max-width: 390px;
-}
-
-.hud-title-block h2 {
-  font-size: 14.5px;
-  font-weight: 700;
-  white-space: nowrap;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  color: var(--ink);
-}
-
-.hud-title-block p {
-  font-size: 11px;
-  color: var(--ink-secondary);
-  margin-top: 2px;
-}
-
-.hud-camera-controls {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 2px;
-  background-color: var(--ground);
-  border: 1px solid var(--rule);
-  padding: 3px;
-  pointer-events: auto;
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-.cam-btn {
-  padding: 5px 9px;
-  background-color: transparent;
-  color: var(--ink);
-  border: none;
-  font-family: var(--font-sans);
-  font-size: 11.5px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.cam-btn:hover,
-.cam-btn.is-active {
-  background-color: var(--ink);
-  color: var(--ground);
 }
 
 #station3DCanvas {
@@ -523,150 +114,439 @@ html, body {
   cursor: grabbing;
 }
 
-/* Active Route Step Floating Strip */
-.hud-route-ribbon {
-  position: absolute;
-  bottom: 52px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--ground);
-  border: 1px solid var(--ink);
+/* ==========================================================================
+   2. TOP ARCHITECTURAL HEADER BAR (50px Desktop / 44px Mobile)
+   ========================================================================== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  z-index: 50;
+  white-space: nowrap;
+}
+
+.brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.station-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 7px;
+  background-color: var(--ink);
+  color: var(--surface-solid);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.station-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.station-subtitle {
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  border-left: 1px solid var(--rule);
+  padding-left: 10px;
+}
+
+@media (max-width: 1320px) {
+  .station-subtitle {
+    display: none;
+  }
+}
+
+.camera-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--rule);
+  padding: 2px;
+}
+
+.cam-pill {
+  height: 26px;
+  padding: 0 9px;
+  border: none;
+  background: transparent;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.cam-pill:hover,
+.cam-pill.is-active {
+  background-color: var(--ink);
+  color: var(--surface-solid);
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.ctrl-btn {
+  height: 28px;
+  padding: 0 9px;
+  background-color: var(--surface-elevated);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.ctrl-btn:hover,
+.ctrl-btn.is-active {
+  background-color: var(--ink);
+  color: var(--surface-solid);
+  border-color: var(--ink);
+}
+
+.ctrl-btn.ctrl-signal {
+  background-color: var(--signal);
+  color: #ffffff;
+  border-color: var(--signal);
+}
+
+/* ==========================================================================
+   3. FLOATING TOP WAYFINDING TELEMETRY BAR (Route Steps + 3D Tour Play)
+   ========================================================================== */
+.telemetry-ribbon {
+  position: fixed;
+  top: 60px;
+  left: 306px;
+  right: 356px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background-color: var(--surface);
+  border: 1px solid var(--rule);
   border-left: 4px solid var(--signal);
-  padding: 5px 12px;
+  padding: 5px 10px;
+  z-index: 35;
+  pointer-events: auto;
+}
+
+.telemetry-steps {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11.5px;
   font-weight: 600;
   color: var(--ink);
+  overflow-x: auto;
   white-space: nowrap;
-  max-width: calc(100% - 28px);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index: 18;
-  pointer-events: none;
+  scrollbar-width: none;
 }
 
-.hud-route-ribbon span.step-pill {
-  display: inline-block;
+.telemetry-steps::-webkit-scrollbar {
+  display: none;
+}
+
+.t-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
   background-color: var(--signal);
   color: #ffffff;
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  padding: 1px 5px;
-  margin: 0 3px;
 }
 
-/* Bottom HUD Sliders & Scale Legend */
-.viewport-hud-bottom {
-  position: absolute;
-  bottom: 10px;
-  left: 14px;
-  right: 14px;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  pointer-events: none;
-  z-index: 20;
-}
-
-.hud-sliders-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background-color: var(--ground);
-  border: 1px solid var(--rule);
-  padding: 6px 12px;
-  pointer-events: auto;
-}
-
-.slider-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.t-step-arrow {
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
-  color: var(--ink-secondary);
-  white-space: nowrap;
+  margin: 0 2px;
 }
 
-.slider-group input[type="range"] {
-  width: 78px;
-  accent-color: var(--ink);
+.tour-play-btn {
+  height: 24px;
+  padding: 0 9px;
+  background-color: var(--signal);
+  color: #ffffff;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
-}
-
-.hud-legend-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: var(--ground);
-  border: 1px solid var(--rule);
-  padding: 6px 12px;
-  font-size: 11px;
-  color: var(--ink-secondary);
-  pointer-events: auto;
-  white-space: nowrap;
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-.legend-item {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-weight: 600;
-  flex-shrink: 0;
+  gap: 4px;
+}
+
+.tour-play-btn.is-playing {
+  background-color: var(--ink);
+  color: var(--surface-solid);
 }
 
 /* ==========================================================================
-   6. RIGHT SHEET: PASSENGER WAYFINDING FLOWS & TIMETABLE
+   4. DESKTOP LEFT & RIGHT ARCHITECTURAL DOCKS
    ========================================================================== */
-.flow-list {
+.dock-left {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  width: 294px;
+  background-color: var(--surface);
+  border-right: 1px solid var(--rule);
+  z-index: 40;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  overflow-y: auto;
 }
 
-.flow-item {
-  padding: 7px 10px;
-  background-color: var(--ground-elevated);
+.dock-right {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  width: 344px;
+  background-color: var(--surface);
+  border-left: 1px solid var(--rule);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.panel-block {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.block-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.block-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.block-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-muted);
+}
+
+/* Vertical Floor Stack (F4 -> B2) */
+.floor-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.floor-item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 9px;
+  background-color: var(--surface-elevated);
   border: none;
   border-left: 3px solid transparent;
   color: var(--ink);
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.14s ease;
+  transition: background-color 0.12s ease;
 }
 
-.flow-item:hover {
-  background-color: var(--ground-recessed);
+.floor-item:hover {
+  background-color: var(--surface-recessed);
 }
 
-.flow-item.is-active {
+.floor-item.is-selected {
+  background-color: var(--ink);
+  color: var(--surface-solid);
+  border-left-color: var(--signal);
+}
+
+.floor-code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.floor-desc strong {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.floor-desc span {
+  display: block;
+  font-size: 10px;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.floor-item.is-selected .floor-desc span,
+.floor-item.is-selected .floor-elev {
+  color: var(--rule);
+}
+
+.floor-elev {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+
+/* Ticket Gate & Platform Locator */
+.gate-select {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  background-color: var(--surface-elevated);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.gate-matrix {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.gate-btn {
+  padding: 4px 2px;
+  background-color: var(--surface-elevated);
+  border: 1px solid transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+.gate-btn:hover {
+  border-color: var(--ink);
+}
+
+.gate-btn.is-hk {
+  background-color: rgba(184, 29, 36, 0.11);
+  color: var(--cr-crimson);
+}
+
+.gate-btn.is-active {
+  background-color: var(--signal);
+  color: #ffffff;
+}
+
+.gate-callout {
+  padding: 8px 10px;
+  background-color: var(--surface-elevated);
+  border-left: 3px solid var(--cr-navy);
+  font-size: 11px;
+  color: var(--ink-secondary);
+  line-height: 1.45;
+}
+
+.gate-callout strong {
+  color: var(--ink);
+}
+
+/* Wayfinding Flow Cards */
+.route-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.route-card {
+  padding: 7px 10px;
+  background-color: var(--surface-elevated);
+  border: none;
+  border-left: 3px solid transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.route-card:hover {
+  background-color: var(--surface-recessed);
+}
+
+.route-card.is-active {
   background-color: var(--signal-tint);
   border-left-color: var(--signal);
 }
 
-.flow-header {
+.route-card-top {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 6px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
 }
 
-.flow-duration {
+.route-time {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--signal);
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.flow-summary {
-  font-size: 11px;
+.route-sub {
+  font-size: 10.5px;
   color: var(--ink-secondary);
   margin-top: 1px;
   white-space: nowrap;
@@ -674,90 +554,168 @@ html, body {
   text-overflow: ellipsis;
 }
 
-.wayfinding-steps {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background-color: var(--ground-elevated);
+.route-detail-box {
+  margin-top: 8px;
+  padding: 9px 11px;
+  background-color: var(--surface-elevated);
   border-top: 2px solid var(--ink);
 }
 
-.wayfinding-steps h4 {
-  font-size: 12px;
+.route-detail-box h4 {
+  font-size: 11.5px;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   color: var(--ink);
 }
 
-.wayfinding-ol {
-  padding-left: 16px;
+.route-ol {
+  padding-left: 15px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--ink-secondary);
   line-height: 1.42;
 }
 
-.wayfinding-ol li strong {
+.route-ol li strong {
   color: var(--ink);
 }
 
-.element-inspector {
-  padding: 10px 12px;
-  background-color: var(--ground-elevated);
+/* Selected Zone Inspector & Timetable */
+.inspector-card {
+  padding: 9px 11px;
+  background-color: var(--surface-elevated);
   border-left: 3px solid var(--ink);
 }
 
-.element-inspector h4 {
-  font-size: 12.5px;
+.inspector-card h4 {
+  font-size: 12px;
   font-weight: 700;
   color: var(--ink);
-  margin-bottom: 2px;
 }
 
-.element-inspector .inspector-meta {
+.inspector-tag {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 10px;
   color: var(--signal);
-  margin-bottom: 4px;
+  margin: 2px 0 4px;
 }
 
-.element-inspector p {
-  font-size: 11.5px;
+.inspector-card p {
+  font-size: 11px;
   color: var(--ink-secondary);
-  line-height: 1.45;
+  line-height: 1.44;
 }
 
-.transit-table {
+.schedule-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 10.5px;
 }
 
-.transit-table th,
-.transit-table td {
+.schedule-table th,
+.schedule-table td {
   padding: 4px 3px;
   border-bottom: 1px solid var(--rule);
   text-align: left;
   white-space: nowrap;
 }
 
-.transit-table th {
-  font-size: 10px;
+.schedule-table th {
+  font-size: 9.5px;
   font-weight: 700;
   color: var(--ink-muted);
 }
 
-.transit-table td.num {
+.schedule-table td.mono-r {
   font-family: var(--font-mono);
   text-align: right;
   font-weight: 600;
 }
 
 /* ==========================================================================
-   7. BUILT-IN STYLE.CSS DRAWER
+   5. DESKTOP BOTTOM FLOATING DOCK (Sliders + System Color Legend)
    ========================================================================== */
-.css-drawer-backdrop {
+.bottom-dock {
+  position: fixed;
+  bottom: 10px;
+  left: 306px;
+  right: 356px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 35;
+  pointer-events: none;
+}
+
+.slider-cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 5px 11px;
+  pointer-events: auto;
+}
+
+.slider-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+
+.slider-item input[type="range"] {
+  width: 72px;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+
+.legend-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 5px 11px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  pointer-events: auto;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.leg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.leg-dot {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   6. MOBILE-ONLY FLOATING CONTROLS & BOTTOM SHEET (Hidden on Desktop)
+   ========================================================================== */
+.mobile-cam-strip,
+.mobile-floor-rail,
+.mobile-sheet-header {
+  display: none;
+}
+
+/* ==========================================================================
+   7. BUILT-IN STYLE.CSS VIEWER MODAL
+   ========================================================================== */
+.css-modal-backdrop {
   display: none;
   position: fixed;
   inset: 0;
@@ -768,44 +726,43 @@ html, body {
   padding: 16px;
 }
 
-.css-drawer-backdrop.is-open {
+.css-modal-backdrop.is-open {
   display: flex;
 }
 
-.css-drawer {
-  width: 880px;
+.css-modal-window {
+  width: 860px;
   max-width: 96vw;
-  height: 82vh;
-  background-color: var(--ground);
+  height: 80vh;
+  background-color: var(--surface-solid);
   border: 1px solid var(--ink);
   display: flex;
   flex-direction: column;
 }
 
-.css-drawer-bar {
+.css-modal-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 12px 14px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--rule);
-  flex-wrap: wrap;
 }
 
-.css-drawer-bar h3 {
-  font-size: 13px;
+.css-modal-top h3 {
+  font-size: 12.5px;
   font-weight: 700;
 }
 
-.css-drawer-pre {
+.css-modal-area {
   flex: 1;
   width: 100%;
-  padding: 14px;
-  background-color: var(--ground-elevated);
+  padding: 12px;
+  background-color: var(--surface-elevated);
   color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  line-height: 1.5;
+  font-size: 11px;
+  line-height: 1.48;
   border: none;
   resize: none;
   overflow: auto;
@@ -813,80 +770,112 @@ html, body {
 }
 
 /* ==========================================================================
-   8. TABLET & MOBILE ARCHITECTURE (<= 1024px & <= 600px Thumb-First Layout)
+   8. NATIVE-GRADE MOBILE & TABLET ARCHITECTURE (<= 960px)
+      100% Full-Screen 3D Viewport + 3-State Draggable Bottom Sheet
    ========================================================================== */
-@media (max-width: 1024px) {
-  html, body {
-    overflow: hidden;
-    height: 100%;
-  }
-
+@media (max-width: 960px) {
   .topbar {
-    height: 48px;
-    padding: 0 12px;
-    gap: 8px;
+    height: 44px;
+    padding: 0 10px;
   }
 
-  .topbar-nav {
+  .camera-presets-bar {
     display: none;
   }
 
-  .station-mark {
-    font-size: 14px;
-    gap: 6px;
-  }
-
-  .station-mark-code {
+  .station-badge {
     font-size: 10px;
     padding: 2px 5px;
   }
 
-  .action-btn {
-    height: 28px;
-    padding: 0 8px;
-    font-size: 11px;
+  .brand-cluster {
+    gap: 6px;
   }
 
-  .app-shell {
+  .station-badge {
+    display: none;
+  }
+
+  .station-title {
+    font-size: 13.5px;
+  }
+
+  .ctrl-btn {
+    height: 25px;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  /* Horizontal scrollable camera preset bar directly under topbar */
+  .mobile-cam-strip {
     display: flex;
-    flex-direction: column;
-    height: calc(100vh - 48px);
-    height: calc(100dvh - 48px);
-    overflow: hidden;
+    align-items: center;
+    gap: 3px;
+    position: fixed;
+    top: 48px;
+    left: 8px;
+    right: 8px;
+    height: 30px;
+    padding: 2px;
+    background-color: var(--surface);
+    border: 1px solid var(--rule);
+    z-index: 38;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
 
-  .viewport-stage {
-    order: 1;
-    height: 52vh;
-    height: 52dvh;
-    min-height: 320px;
-    flex-shrink: 0;
-    border-bottom: 1px solid var(--rule);
+  .mobile-cam-strip::-webkit-scrollbar {
+    display: none;
   }
 
+  .mobile-cam-strip .cam-pill {
+    flex: 1;
+    height: 24px;
+    padding: 0 6px;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  /* Compact route step ribbon under mobile camera strip */
+  .telemetry-ribbon {
+    top: 82px;
+    left: 8px;
+    right: 46px;
+    padding: 4px 8px;
+  }
+
+  .telemetry-steps {
+    font-size: 10.5px;
+  }
+
+  .tour-play-btn {
+    height: 22px;
+    padding: 0 7px;
+    font-size: 10px;
+  }
+
+  /* Right-Edge Vertical Quick Floor Slicer Rail (ALL / F4..B2) */
   .mobile-floor-rail {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    position: absolute;
-    left: 8px;
-    top: 48%;
-    transform: translateY(-50%);
-    z-index: 25;
-    background-color: var(--ground);
+    position: fixed;
+    top: 82px;
+    right: 8px;
+    background-color: var(--surface);
     border: 1px solid var(--rule);
     padding: 2px;
-    pointer-events: auto;
+    z-index: 39;
   }
 
-  .m-floor-pill {
-    width: 32px;
-    height: 25px;
+  .m-rail-btn {
+    width: 30px;
+    height: 24px;
     border: none;
-    background-color: transparent;
+    background: transparent;
     color: var(--ink);
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -894,147 +883,153 @@ html, body {
     justify-content: center;
   }
 
-  .m-floor-pill.is-selected {
+  .m-rail-btn.is-selected {
     background-color: var(--signal);
     color: #ffffff;
   }
 
-  .mobile-tabbar {
-    order: 2;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    height: 42px;
-    flex-shrink: 0;
-    background-color: var(--ground);
-    border-bottom: 1px solid var(--rule);
-    z-index: 30;
+  .bottom-dock {
+    display: none;
   }
 
-  .m-tab-btn {
+  /* 3-State Mobile Bottom Sheet:
+     - peek: 0px body height (only the 68px header bar is visible at bottom!)
+     - half: 32dvh body height (default — leaves 60% of phone screen for 3D model!)
+     - full: 66dvh body height (expanded details) */
+  body[data-sheet="peek"] {
+    --sheet-h: 0px;
+  }
+  body[data-sheet="half"] {
+    --sheet-h: 31dvh;
+  }
+  body[data-sheet="full"] {
+    --sheet-h: 66dvh;
+  }
+
+  .dock-left,
+  .dock-right {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: var(--sheet-h, 31dvh);
+    background-color: var(--surface-solid);
+    border: none;
+    z-index: 45;
+    transition: height 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: none;
+  }
+
+  .dock-left.m-dock-active,
+  .dock-right.m-dock-active {
+    display: flex;
+  }
+
+  /* Mobile Sheet Header (Grabber Pill + 3 Height Buttons + Explosion Slider + 4 Tabs) */
+  .mobile-sheet-header {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--sheet-h, 31dvh);
+    background-color: var(--surface-solid);
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    z-index: 46;
+    transition: bottom 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    touch-action: none;
+  }
+
+  .sheet-grabber-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px;
+    background-color: var(--surface-elevated);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .sheet-size-btns {
+    display: flex;
+    gap: 3px;
+  }
+
+  .size-pill {
+    padding: 2px 7px;
+    border: 1px solid var(--rule);
+    background-color: var(--surface-solid);
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .size-pill.is-active {
+    background-color: var(--ink);
+    color: var(--surface-solid);
+    border-color: var(--ink);
+  }
+
+  .m-explode-inline {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-secondary);
+  }
+
+  .m-explode-inline input[type="range"] {
+    width: 64px;
+    accent-color: var(--ink);
+  }
+
+  .m-tabs-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 34px;
+  }
+
+  .m-tab {
     border: none;
     border-right: 1px solid var(--rule);
     border-bottom: 3px solid transparent;
-    background-color: var(--ground-elevated);
+    background-color: var(--surface-solid);
     color: var(--ink-secondary);
     font-family: var(--font-sans);
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
   }
 
-  .m-tab-btn:last-child {
+  .m-tab:last-child {
     border-right: none;
   }
 
-  .m-tab-btn.is-active {
-    background-color: var(--ground);
+  .m-tab.is-active {
     color: var(--ink);
+    background-color: var(--surface-elevated);
     border-bottom-color: var(--signal);
   }
 
-  .side-sheet {
-    order: 3;
-    border: none;
-    flex: 1;
-    overflow-y: auto;
+  .panel-block {
     display: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .side-sheet.m-sheet-active {
-    display: flex;
-  }
-
-  .sheet-section {
-    display: none;
-    padding: 12px 14px;
+    padding: 10px 12px;
     border-bottom: none;
   }
 
-  .sheet-section.m-section-active {
+  .panel-block.m-block-active {
     display: block;
   }
 
-  .viewport-hud-top {
-    top: 8px;
-    left: 8px;
-    right: 8px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-  }
-
-  .hud-title-block {
-    display: none;
-  }
-
-  .hud-camera-controls {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .cam-btn {
-    flex: 1;
-    text-align: center;
-    padding: 5px 4px;
-    font-size: 11px;
-  }
-
-  .hud-route-ribbon {
-    bottom: 40px;
-    left: 48px;
-    right: 8px;
-    transform: none;
-    max-width: none;
+  .gate-btn {
+    padding: 6px 2px;
     font-size: 10.5px;
-    padding: 4px 8px;
-  }
-
-  .viewport-hud-bottom {
-    bottom: 6px;
-    left: 48px;
-    right: 8px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-  }
-
-  .hud-sliders-bar {
-    width: 100%;
-    justify-content: space-between;
-    padding: 4px 10px;
-    gap: 8px;
-  }
-
-  .slider-group input[type="range"] {
-    width: 68px;
-  }
-
-  .hud-legend-bar {
-    display: none;
-  }
-}
-
-@media (max-width: 600px) {
-  .station-mark span:last-child {
-    font-size: 13.5px;
-  }
-
-  .slider-group.hide-on-phone {
-    display: none;
-  }
-
-  .slider-group input[type="range"] {
-    width: 82px;
-  }
-
-  .gate-chip {
-    padding: 7px 2px;
-    font-size: 11px;
-  }
-
-  .flow-item {
-    padding: 9px 10px;
   }
 }
