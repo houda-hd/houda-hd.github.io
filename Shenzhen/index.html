@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>深圳北站 · 三维建筑空间与旅客换乘导览模型</title>
   <link rel="stylesheet" href="style.css" />
   <style>
 /* ==========================================================================
    SHENZHEN NORTH STATION · 3D ARCHITECTURAL PASSENGER WAYFINDING MODEL
    Art Direction: Swiss Architectural Maquette & Precision Transit Cartography
-   Reference Discipline: Leonxlnx/taste-skill (Anti-Slop, Zero Emoji, Flat Tone Steps)
+   Reference Discipline: Leonxlnx/taste-skill (1440px / 768px / 390px Responsive)
    Files: Shenzhen/index.html + Shenzhen/style.css
    ========================================================================== */
 
@@ -63,6 +63,7 @@ body[data-theme="carbon"] {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -91,7 +92,7 @@ html, body {
 }
 
 /* ==========================================================================
-   1. TOP NAVIGATION BAR (Strict 54px height cap, single-line nowrap)
+   1. TOP NAVIGATION BAR (Strict 54px Desktop / 48px Mobile Cap)
    ========================================================================== */
 .topbar {
   height: 54px;
@@ -110,17 +111,17 @@ html, body {
 .topbar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .station-mark {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 15px;
   font-weight: 700;
-  white-space: nowrap;
   letter-spacing: -0.02em;
   color: var(--ink);
   white-space: nowrap;
@@ -134,6 +135,7 @@ html, body {
   background-color: var(--ink);
   color: var(--ground);
   letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
 .topbar-meta {
@@ -230,13 +232,24 @@ html, body {
 }
 
 /* ==========================================================================
-   2. MAIN ARCHITECTURAL WORKSPACE (Asymmetric Split: 3D Stage + Control Sheet)
+   2. MAIN ARCHITECTURAL WORKSPACE (Desktop 3-Col vs Mobile Split-Screen)
    ========================================================================== */
 .app-shell {
   display: grid;
   grid-template-columns: 300px 1fr 350px;
+  grid-template-areas: "left stage right";
   height: calc(100vh - 54px);
   width: 100%;
+}
+
+.side-sheet.sheet-left {
+  grid-area: left;
+}
+.viewport-stage {
+  grid-area: stage;
+}
+.side-sheet.sheet-right {
+  grid-area: right;
 }
 
 @media (max-width: 1240px) {
@@ -245,14 +258,10 @@ html, body {
   }
 }
 
-@media (max-width: 980px) {
-  html, body {
-    overflow: auto;
-  }
-  .app-shell {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
+/* Mobile-only thumb controls hidden on desktop */
+.mobile-tabbar,
+.mobile-floor-rail {
+  display: none;
 }
 
 /* Left & Right Editorial Control Columns */
@@ -370,7 +379,7 @@ html, body {
 
 .arch-select {
   width: 100%;
-  height: 34px;
+  height: 36px;
   padding: 0 8px;
   background-color: var(--ground-elevated);
   color: var(--ink);
@@ -392,7 +401,7 @@ html, body {
 }
 
 .gate-chip {
-  padding: 4px 2px;
+  padding: 5px 2px;
   background-color: var(--ground-elevated);
   border: 1px solid transparent;
   color: var(--ink);
@@ -437,12 +446,13 @@ html, body {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 640px;
+  min-height: 520px;
   background-color: var(--ground-canvas);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   user-select: none;
+  touch-action: none;
 }
 
 /* Top Floating Architectural Title & Camera Bar */
@@ -464,7 +474,7 @@ html, body {
   border: 1px solid var(--rule);
   padding: 10px 14px;
   pointer-events: auto;
-  max-width: 460px;
+  max-width: 390px;
 }
 
 .hud-title-block h2 {
@@ -490,6 +500,8 @@ html, body {
   border: 1px solid var(--rule);
   padding: 3px;
   pointer-events: auto;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .cam-btn {
@@ -502,6 +514,7 @@ html, body {
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .cam-btn:hover,
@@ -516,6 +529,7 @@ html, body {
   height: 100%;
   display: block;
   cursor: grab;
+  touch-action: none;
 }
 
 #station3DCanvas:active {
@@ -609,6 +623,8 @@ html, body {
   color: var(--ink-secondary);
   pointer-events: auto;
   white-space: nowrap;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .legend-item {
@@ -616,6 +632,7 @@ html, body {
   align-items: center;
   gap: 5px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -767,7 +784,7 @@ html, body {
   z-index: 200;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
 }
 
 .css-drawer-backdrop.is-open {
@@ -788,39 +805,290 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 18px;
+  gap: 8px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
 }
 
 .css-drawer-bar h3 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .css-drawer-pre {
   flex: 1;
   width: 100%;
-  padding: 16px 18px;
+  padding: 14px;
   background-color: var(--ground-elevated);
   color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.5;
   border: none;
   resize: none;
   overflow: auto;
   white-space: pre;
 }
+
+/* ==========================================================================
+   8. TABLET & MOBILE ARCHITECTURE (<= 1024px & <= 600px Thumb-First Layout)
+   Follows taste-skill rule: "a phone layout that is its own composition"
+   ========================================================================== */
+@media (max-width: 1024px) {
+  html, body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .topbar {
+    height: 48px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .topbar-nav {
+    display: none;
+  }
+
+  .station-mark {
+    font-size: 14px;
+    gap: 6px;
+  }
+
+  .station-mark-code {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+
+  .action-btn {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  /* Split screen: Top 50vh = Interactive 3D Stage, Middle 42px = Thumb Tab Bar, Bottom = Active Control Deck */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
+    overflow: hidden;
+  }
+
+  .viewport-stage {
+    order: 1;
+    height: 50vh;
+    height: 50dvh;
+    min-height: 310px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Left-edge thumb floor rail inside the 3D viewport on mobile/tablet */
+  .mobile-floor-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 25;
+    background-color: var(--ground);
+    border: 1px solid var(--rule);
+    padding: 2px;
+    pointer-events: auto;
+  }
+
+  .m-floor-pill {
+    width: 34px;
+    height: 26px;
+    border: none;
+    background-color: transparent;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .m-floor-pill.is-selected {
+    background-color: var(--signal);
+    color: #ffffff;
+  }
+
+  /* Mobile 4-Tab Thumb Switcher Bar */
+  .mobile-tabbar {
+    order: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 42px;
+    flex-shrink: 0;
+    background-color: var(--ground);
+    border-bottom: 1px solid var(--rule);
+    z-index: 30;
+  }
+
+  .m-tab-btn {
+    border: none;
+    border-right: 1px solid var(--rule);
+    border-bottom: 3px solid transparent;
+    background-color: var(--ground-elevated);
+    color: var(--ink-secondary);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .m-tab-btn:last-child {
+    border-right: none;
+  }
+
+  .m-tab-btn.is-active {
+    background-color: var(--ground);
+    color: var(--ink);
+    border-bottom-color: var(--signal);
+  }
+
+  /* Bottom Control Deck: Only the active mobile tab section is displayed */
+  .side-sheet {
+    order: 3;
+    border: none;
+    flex: 1;
+    overflow-y: auto;
+    display: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .side-sheet.m-sheet-active {
+    display: flex;
+  }
+
+  .sheet-section {
+    display: none;
+    padding: 12px 14px;
+    border-bottom: none;
+  }
+
+  .sheet-section.m-section-active {
+    display: block;
+  }
+
+  /* Compact HUD inside the 3D Stage for Mobile & Tablet */
+  .viewport-hud-top {
+    top: 8px;
+    left: 10px;
+    right: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .hud-title-block {
+    max-width: 100%;
+    padding: 6px 10px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .hud-title-block h2 {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hud-title-block p {
+    display: none;
+  }
+
+  .hud-camera-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cam-btn {
+    flex: 1;
+    text-align: center;
+    padding: 5px 4px;
+    font-size: 11px;
+  }
+
+  .viewport-hud-bottom {
+    bottom: 8px;
+    left: 52px;
+    right: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .hud-sliders-bar {
+    width: 100%;
+    justify-content: space-between;
+    padding: 5px 10px;
+    gap: 8px;
+  }
+
+  .slider-group input[type="range"] {
+    width: 64px;
+  }
+
+  .hud-legend-bar {
+    display: none;
+  }
+}
+
+/* Extra-compact adjustments for 390px phone screens */
+@media (max-width: 600px) {
+  .station-mark span:last-child {
+    font-size: 13.5px;
+  }
+
+  .slider-group.hide-on-phone {
+    display: none;
+  }
+
+  .hud-sliders-bar {
+    justify-content: space-between;
+  }
+
+  .slider-group input[type="range"] {
+    width: 90px;
+  }
+
+  .pin-card {
+    padding: 2px 6px;
+    font-size: 9.5px;
+  }
+
+  .gate-chip {
+    padding: 7px 2px;
+    font-size: 11px;
+  }
+
+  .flow-item {
+    padding: 9px 10px;
+  }
+}
   </style>
 </head>
 <body>
 
-  <!-- ==================== TOP BAR (54px Single-Line Strict Cap) ==================== -->
+  <!-- ==================== TOP BAR (54px Desktop / 48px Mobile) ==================== -->
   <header class="topbar">
     <div class="topbar-brand">
       <div class="station-mark">
         <span class="station-mark-code">SZB · IOQ</span>
-        <span>深圳北站三维建筑导览模型</span>
+        <span>深圳北站三维建筑导览</span>
       </div>
       <span class="topbar-meta">11台20线国铁高架站房 · 深圳地铁 4 / 5 / 6 号线立体正交枢纽</span>
     </div>
@@ -850,12 +1118,12 @@ html, body {
     </div>
   </header>
 
-  <!-- ==================== MAIN 3-COLUMN ARCHITECTURAL SHELL ==================== -->
+  <!-- ==================== MAIN WORKSPACE (Desktop 3-Col / Mobile Split-Screen) ==================== -->
   <main class="app-shell">
 
     <!-- LEFT SHEET: 6-LEVEL VERTICAL STACK + GATE/PLATFORM LOCATOR -->
-    <aside class="side-sheet">
-      <section class="sheet-section">
+    <aside class="side-sheet sheet-left" id="sheetLeft">
+      <section class="sheet-section" id="secLevels">
         <div class="section-heading">
           <span>垂直楼层剖面切换</span>
           <span class="section-sub">点击聚焦单层 3D 模型</span>
@@ -927,7 +1195,7 @@ html, body {
         </div>
       </section>
 
-      <section class="sheet-section">
+      <section class="sheet-section" id="secGates">
         <div class="section-heading">
           <span>检票口与站台三维定位</span>
           <span class="section-sub">A1–A20 / B1–B20</span>
@@ -973,22 +1241,33 @@ html, body {
       <div class="viewport-hud-top">
         <div class="hud-title-block">
           <h2 id="hudActiveTitle">深圳北站三维立体交通枢纽总图 (F4–B2)</h2>
-          <p id="hudActiveSubtitle">左键拖拽 360° 旋转 · 滚轮缩放 · 右键或按住 Shift 平移 · 点击右侧流线触发三维立体导航轨迹</p>
+          <p id="hudActiveSubtitle">单指拖拽 360° 旋转 · 双指捏合缩放 · 点击流线触发三维立体导航轨迹</p>
         </div>
 
         <div class="hud-camera-controls">
-          <button class="cam-btn is-active" onclick="setCameraPreset('iso', this)">东南轴测全景</button>
-          <button class="cam-btn" onclick="setCameraPreset('east', this)">东广场地铁剖面</button>
-          <button class="cam-btn" onclick="setCameraPreset('west', this)">西广场网约车视角</button>
-          <button class="cam-btn" onclick="setCameraPreset('top', this)">正交俯视总图</button>
-          <button class="cam-btn" onclick="setCameraPreset('underground', this)">B1/B2 地下正交</button>
+          <button class="cam-btn is-active" onclick="setCameraPreset('iso', this)">东南全景</button>
+          <button class="cam-btn" onclick="setCameraPreset('east', this)">东广场地铁</button>
+          <button class="cam-btn" onclick="setCameraPreset('west', this)">西广场网约车</button>
+          <button class="cam-btn" onclick="setCameraPreset('top', this)">俯视总图</button>
+          <button class="cam-btn" onclick="setCameraPreset('underground', this)">B1/B2地下</button>
         </div>
+      </div>
+
+      <!-- Mobile Left-Thumb Quick Floor Switcher Rail -->
+      <div class="mobile-floor-rail" aria-label="移动端楼层快切">
+        <button class="m-floor-pill is-selected" data-level="ALL" onclick="focusLayer('ALL')">全</button>
+        <button class="m-floor-pill" data-level="F4" onclick="focusLayer('F4')">F4</button>
+        <button class="m-floor-pill" data-level="F3" onclick="focusLayer('F3')">F3</button>
+        <button class="m-floor-pill" data-level="F2" onclick="focusLayer('F2')">F2</button>
+        <button class="m-floor-pill" data-level="F1" onclick="focusLayer('F1')">F1</button>
+        <button class="m-floor-pill" data-level="B1" onclick="focusLayer('B1')">B1</button>
+        <button class="m-floor-pill" data-level="B2" onclick="focusLayer('B2')">B2</button>
       </div>
 
       <!-- High-DPI 3D Architectural Canvas -->
       <canvas id="station3DCanvas"></canvas>
 
-      <!-- Synchronized Perimeter 3D Callout Pins (Leader-Line Anchored) -->
+      <!-- Synchronized Perimeter 3D Callout Pins -->
       <div class="spatial-pins-layer" id="spatialPinsLayer"></div>
 
       <div class="viewport-hud-bottom">
@@ -998,11 +1277,11 @@ html, body {
             <input type="range" id="explodeSlider" min="0.7" max="2.5" step="0.05" value="1.35" oninput="updateExplosion(this.value)" />
           </label>
           <label class="slider-group">
-            <span>水平旋转</span>
+            <span>旋转</span>
             <input type="range" id="yawSlider" min="-180" max="180" step="1" value="-36" oninput="updateYawFromSlider(this.value)" />
           </label>
-          <label class="slider-group">
-            <span>俯仰角</span>
+          <label class="slider-group hide-on-phone">
+            <span>俯仰</span>
             <input type="range" id="pitchSlider" min="15" max="82" step="1" value="32" oninput="updatePitchFromSlider(this.value)" />
           </label>
         </div>
@@ -1018,9 +1297,17 @@ html, body {
       </div>
     </section>
 
+    <!-- MOBILE 4-TAB THUMB SWITCHER BAR (Visible on <= 1024px) -->
+    <nav class="mobile-tabbar" aria-label="移动端功能切换">
+      <button class="m-tab-btn is-active" onclick="switchMobileTab('flows', this)">换乘流线 (7)</button>
+      <button class="m-tab-btn" onclick="switchMobileTab('gates', this)">检票口定位</button>
+      <button class="m-tab-btn" onclick="switchMobileTab('levels', this)">楼层与详情</button>
+      <button class="m-tab-btn" onclick="switchMobileTab('timetable', this)">首末班车</button>
+    </nav>
+
     <!-- RIGHT SHEET: 7 PASSENGER WAYFINDING FLOWS + ELEMENT INSPECTOR + TIMETABLE -->
-    <aside class="side-sheet sheet-right">
-      <section class="sheet-section">
+    <aside class="side-sheet sheet-right m-sheet-active" id="sheetRight">
+      <section class="sheet-section m-section-active" id="secFlows">
         <div class="section-heading">
           <span>三维动态旅客换乘流线</span>
           <span class="section-sub">点击在 3D 模型中演示</span>
@@ -1095,7 +1382,7 @@ html, body {
         </div>
       </section>
 
-      <section class="sheet-section">
+      <section class="sheet-section" id="secInspector">
         <div class="section-heading">
           <span>空间构件参数检视</span>
           <span class="section-sub">点击 3D 引线标签切换</span>
@@ -1109,7 +1396,7 @@ html, body {
         </div>
       </section>
 
-      <section class="sheet-section">
+      <section class="sheet-section" id="secTimetable">
         <div class="section-heading">
           <span>深圳北站地铁首末班时刻</span>
           <span class="section-sub">含半程加班车</span>
@@ -1172,8 +1459,8 @@ html, body {
     <div class="css-drawer">
       <div class="css-drawer-bar">
         <h3>Shenzhen/style.css — 独立样式表源码</h3>
-        <div style="display:flex; gap:8px;">
-          <button class="action-btn" id="btnCopyCss" onclick="copyCssCode()">复制全部 CSS</button>
+        <div style="display:flex; gap:6px;">
+          <button class="action-btn" id="btnCopyCss" onclick="copyCssCode()">复制 CSS</button>
           <button class="action-btn action-primary" onclick="downloadCssBlob()">下载 style.css</button>
           <button class="action-btn" onclick="closeCssDrawer()">关闭</button>
         </div>
@@ -1213,10 +1500,10 @@ html, body {
       pitch: 32 * Math.PI / 180,
       targetYaw: -36 * Math.PI / 180,
       targetPitch: 32 * Math.PI / 180,
-      zoom: 1.24,
-      targetZoom: 1.24,
+      zoom: 1.22,
+      targetZoom: 1.22,
       panX: 0,
-      panY: 10,
+      panY: 12,
       explode: 1.35,
       targetExplode: 1.35,
       activeLayer: 'ALL',
@@ -1345,7 +1632,7 @@ html, body {
         ]
       },
       {
-        title: '国铁联程同站中转换乘 (免出站二次安检)',
+        title: '国铁联程同站中转换乘 (不出站)',
         cam: { yaw: -50, pitch: 36, explode: 1.4 },
         steps: [
           '<strong>F1 到达站台：</strong>下车后切勿走向出站闸机，寻找站台蓝底白字<strong>“便捷换乘”</strong>标识。',
@@ -1363,7 +1650,7 @@ html, body {
     ];
 
     // =========================================================================
-    // 4. PERIMETER SPATIAL CALLOUT PINS (Leader-Line Anchored to Avoid Overlap!)
+    // 4. PERIMETER SPATIAL CALLOUT PINS
     // =========================================================================
     const SPATIAL_PINS = [
       {
@@ -1372,6 +1659,7 @@ html, body {
         anchor: () => ({ x: 212, y: getLevelY('F4') + 4, z: -35 }),
         pinPos: () => ({ x: 248, y: getLevelY('F4') + 14, z: -35 }),
         label: 'F4 · 4/6号线高架双岛站台',
+        shortLabel: 'F4 · 4/6号线站台',
         meta: '标高 +102.0m · 双岛四线高架平行站台',
         desc: '4号线（东岛，往福田口岸/牛湖）与6号线（西岛，往科学馆/松岗）在东广场上空平行穿过车站大屋顶。4号线站台设无障碍垂梯直达B2层5号线站台。'
       },
@@ -1381,6 +1669,7 @@ html, body {
         anchor: () => ({ x: 220, y: getLevelY('F3') + 3, z: 35 }),
         pinPos: () => ({ x: 248, y: getLevelY('F3') + 8, z: 25 }),
         label: 'F3 · 4/6号线站厅 & 天地换乘梯',
+        shortLabel: 'F3 · 天地换乘梯',
         meta: 'F3 (+96m) ⇄ B1 (+78m) · 6台超长扶梯免出闸互联',
         desc: '位于4/6号线高架站厅付费区西侧（南北两组共6台超大提升高度扶梯），跨越F2、F1直接连通地下B1层5号线付费区，耗时约3–4分钟。'
       },
@@ -1390,6 +1679,7 @@ html, body {
         anchor: () => ({ x: 228, y: getLevelY('F2') + 3, z: 50 }),
         pinPos: () => ({ x: 246, y: getLevelY('F2') + 6, z: 55 }),
         label: 'F2 · 东广场 & 国铁东进站口(A)',
+        shortLabel: 'F2 · 东进站口(A)',
         meta: '标高 +90.0m · 地铁A-D口 · 免安检入地铁通道',
         desc: '东广场连接地铁4/6号线A-D口、5号线换乘厅及国铁东进站口(A)、A1/A2出站口。乘坐地铁、出租车、公交车到站的旅客由此进出站最近。'
       },
@@ -1397,8 +1687,9 @@ html, body {
         id: 'pin-west-in',
         level: 'F2',
         anchor: () => ({ x: -220, y: getLevelY('F2') + 3, z: 65 }),
-        pinPos: () => ({ x: -252, y: getLevelY('F2') + 12, z: 65 }),
+        pinPos: () => ({ x: -235, y: getLevelY('F2') + 38, z: 45 }),
         label: 'F2 · 西广场 & 地面网约车B区',
+        shortLabel: 'F2 · 西广场网约车B区',
         meta: '标高 +90.0m · 西进站口(B) · 27车位空调网约车厅',
         desc: '西广场设国铁西进站口(B)、B1/B2出站口、地面网约车B区（室内空调候车室输车牌寻车）及深圳北汽车客运站。'
       },
@@ -1406,8 +1697,9 @@ html, body {
         id: 'pin-hk-zone',
         level: 'F1',
         anchor: () => ({ x: -108, y: getLevelY('F1') + 3, z: -95 }),
-        pinPos: () => ({ x: -245, y: getLevelY('F1') + 6, z: -105 }),
+        pinPos: () => ({ x: -235, y: getLevelY('F1') - 18, z: 15 }),
         label: 'F1 · 国铁11台20线 (8–15跨境区)',
+        shortLabel: 'F1 · 11台20线/跨境区',
         meta: '标高 +84.0m · 东1至西20站台 · 11/12正线站台门',
         desc: '深圳北站共设11座站台20条股道（东1至西20）。中部8–15站台为香港西九龙跨境列车专用区，11、12站台为广深港正线并装有半高全滑动站台门。'
       },
@@ -1417,6 +1709,7 @@ html, body {
         anchor: () => ({ x: 215, y: getLevelY('B2') + 4, z: 12 }),
         pinPos: () => ({ x: 242, y: getLevelY('B2') + 4, z: 12 }),
         label: 'B2 · 5号线东西正交侧式站台',
+        shortLabel: 'B2 · 5号线正交站台',
         meta: '标高 +72.0m · 双侧式站台(开右门) · 深惠城际接口',
         desc: '深圳地铁5号线自东向西垂直下穿整个国铁站场与东广场。北侧站台往赤湾/前海湾，南侧站台往民治/布吉/大剧院；西北侧毗邻在建深惠城际站体。'
       }
@@ -1424,11 +1717,12 @@ html, body {
 
     function buildSpatialPinsDOM() {
       pinsLayer.innerHTML = '';
+      const isNarrow = window.innerWidth <= 600;
       SPATIAL_PINS.forEach(pin => {
         const el = document.createElement('div');
         el.className = 'spatial-pin';
         el.id = pin.id;
-        el.innerHTML = `<div class="pin-card">${pin.label}</div>`;
+        el.innerHTML = `<div class="pin-card">${isNarrow ? pin.shortLabel : pin.label}</div>`;
         el.onclick = (e) => {
           e.stopPropagation();
           document.getElementById('inspTitle').textContent = pin.label;
@@ -1441,9 +1735,10 @@ html, body {
       });
     }
     buildSpatialPinsDOM();
+    window.addEventListener('resize', buildSpatialPinsDOM);
 
     // =========================================================================
-    // 5. 3D PROJECTION & GEOMETRY PRIMITIVES
+    // 5. 3D PROJECTION & GEOMETRY PRIMITIVES (Responsive Viewport Scale)
     // =========================================================================
     function project3D(pt) {
       const cosY = Math.cos(state.yaw);
@@ -1457,12 +1752,17 @@ html, body {
       const y2 = pt.y * cosP - z1 * sinP;
       const z2 = pt.y * sinP + z1 * cosP;
 
-      const fov = 1000;
+      // Responsive scale factor so 390px phones and 768px tablets fit the full 3D hub cleanly
+      const w = canvas.clientWidth || 390;
+      const h = canvas.clientHeight || 400;
+      const responsiveFactor = (w <= 1024) ? Math.min(0.76, Math.max(0.45, (w / 680) * 0.82)) : 1.0;
+
+      const fov = 1000 * responsiveFactor;
       const dist = 1120;
       const scale = (fov / (dist + z2)) * state.zoom;
 
-      const cx = canvas.clientWidth * 0.5 + state.panX;
-      const cy = canvas.clientHeight * 0.50 + state.panY;
+      const cx = (w < 1024 ? w * 0.53 : w * 0.50) + state.panX;
+      const cy = (w <= 1024 ? h * 0.55 : h * 0.50) + state.panY;
 
       return {
         x: cx + x1 * scale,
@@ -1516,12 +1816,12 @@ html, body {
       const p = project3D(pt);
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.font = `700 ${Math.max(9, Math.round(fontSize * Math.min(1.15, p.scale)))}px "JetBrains Mono", "PingFang SC", sans-serif`;
+      ctx.font = `700 ${Math.max(8.5, Math.round(fontSize * Math.min(1.15, p.scale)))}px "JetBrains Mono", "PingFang SC", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       if (bg) {
         const w = ctx.measureText(text).width + 10;
-        const h = 18;
+        const h = 16;
         ctx.fillStyle = bg;
         ctx.fillRect(p.x - w / 2, p.y - h / 2, w, h);
       }
@@ -1592,14 +1892,13 @@ html, body {
       ctx.clearRect(0, 0, w, h);
 
       const isDark = state.darkTheme;
+      const isPhone = w <= 600;
       const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(20,20,19,0.07)';
       const slabFill  = isDark ? 'rgba(36,36,33,0.90)' : 'rgba(245,242,235,0.92)';
       const slabStroke= isDark ? 'rgba(243,241,236,0.32)' : 'rgba(20,20,19,0.36)';
       const textMain  = isDark ? '#F3F1EC' : '#141413';
 
-      // -----------------------------------------------------------------------
-      // A. BASE ARCHITECTURAL COMPASS & CONTEXT GRID (at B2 base plane)
-      // -----------------------------------------------------------------------
+      // A. BASE ARCHITECTURAL COMPASS & CONTEXT GRID
       const baseGridY = getLevelY('B2') - 14;
       for (let gx = -240; gx <= 240; gx += 40) {
         drawLine3D({ x: gx, y: baseGridY, z: -150 }, { x: gx, y: baseGridY, z: 150 }, gridColor, 1, 0.85);
@@ -1607,18 +1906,15 @@ html, body {
       for (let gz = -150; gz <= 150; gz += 30) {
         drawLine3D({ x: -240, y: baseGridY, z: gz }, { x: 240, y: baseGridY, z: gz }, gridColor, 1, 0.85);
       }
-      drawText3D({ x: 0, y: baseGridY, z: -172 }, 'N · 北 (留仙大道 · 往广州南/赣州西)', textMain, 10.5, 0.78);
-      drawText3D({ x: 0, y: baseGridY, z:  172 }, 'S · 南 (玉龙路 · 往香港西九龙/厦门北)', textMain, 10.5, 0.78);
-      drawText3D({ x: -268, y: baseGridY, z: 0 }, 'W · 西广场 (致远中路)', '#B5651D', 10.5, 0.85);
-      drawText3D({ x:  268, y: baseGridY, z: 0 }, 'E · 东广场 (民塘路)', '#1B6B4C', 10.5, 0.85);
+      drawText3D({ x: 0, y: baseGridY, z: -172 }, isPhone ? 'N · 留仙大道(往广州南)' : 'N · 北 (留仙大道 · 往广州南/赣州西)', textMain, 10, 0.78);
+      drawText3D({ x: 0, y: baseGridY, z:  172 }, isPhone ? 'S · 玉龙路(往西九龙)' : 'S · 南 (玉龙路 · 往香港西九龙/厦门北)', textMain, 10, 0.78);
+      drawText3D({ x: -268, y: baseGridY, z: 0 }, 'W · 西广场', '#B5651D', 10, 0.85);
+      drawText3D({ x:  268, y: baseGridY, z: 0 }, 'E · 东广场', '#1B6B4C', 10, 0.85);
 
-      // -----------------------------------------------------------------------
       // B. LEVEL B2 (+72m): METRO LINE 5 EAST-WEST ORTHOGONAL TUNNEL & PLATFORMS
-      // -----------------------------------------------------------------------
       const yB2 = getLevelY('B2');
       const aB2 = getLayerAlpha('B2');
 
-      // West Square B2 Parking Slab (1971 spaces)
       drawExtrudedBox(-175, yB2, 0, 105, 6, 170, {
         top: isDark ? '#252320' : '#E5DFD3',
         side1: isDark ? '#1A1917' : '#CFC7B8',
@@ -1626,7 +1922,6 @@ html, body {
         stroke: slabStroke
       }, aB2);
 
-      // Shenhui Intercity Railway (Under Construction, NW-SE Diagonal Corridor)
       drawPoly3D([
         { x: -120, y: yB2 + 1, z: -115 },
         { x: -85,  y: yB2 + 1, z: -115 },
@@ -1634,7 +1929,6 @@ html, body {
         { x: 75,   y: yB2 + 1, z:  95 }
       ], 'rgba(31, 111, 168, 0.20)', '#1F6FA8', 1.2, aB2);
 
-      // Metro Line 5 East-West Orthogonal Box (Cuts East-West across entire hub)
       drawExtrudedBox(25, yB2, 12, 390, 5, 48, {
         top: 'rgba(123, 63, 152, 0.24)',
         side1: 'rgba(123, 63, 152, 0.42)',
@@ -1643,7 +1937,6 @@ html, body {
         lineWidth: 1.4
       }, aB2);
 
-      // Line 5 North & South Side Platforms
       drawExtrudedBox(25, yB2 + 5, -4, 370, 4.5, 11, {
         top: '#8E52AB', side1: '#683283', side2: '#7B3F98', stroke: '#F3F1EC'
       }, aB2);
@@ -1651,7 +1944,6 @@ html, body {
         top: '#8E52AB', side1: '#683283', side2: '#7B3F98', stroke: '#F3F1EC'
       }, aB2);
 
-      // Line 5 Dual Tracks + Animated Line 5 Purple Trains
       drawLine3D({ x: -165, y: yB2 + 6, z: 6 },  { x: 215, y: yB2 + 6, z: 6 },  '#D4AF37', 2, aB2);
       drawLine3D({ x: -165, y: yB2 + 6, z: 18 }, { x: 215, y: yB2 + 6, z: 18 }, '#D4AF37', 2, aB2);
 
@@ -1664,9 +1956,7 @@ html, body {
         top: '#F3F1EC', side1: '#7B3F98', side2: '#D4AF37', stroke: '#7B3F98'
       }, aB2);
 
-      // -----------------------------------------------------------------------
       // C. LEVEL B1 (+78m): LINE 5 CONCOURSE, TAXI 1F, WEST RIDE-HAILING ZONE A
-      // -----------------------------------------------------------------------
       const yB1 = getLevelY('B1');
       const aB1 = getLayerAlpha('B1');
 
@@ -1675,20 +1965,16 @@ html, body {
         side1: '#B5651D', side2: '#9A5316', stroke: '#B5651D'
       }, aB1);
 
-      // Xinqu Avenue North-South Underground Tunnel
       drawExtrudedBox(122, yB1 - 2, 0, 16, 7, 250, {
         top: 'rgba(120,117,110,0.28)', side1: 'rgba(120,117,110,0.4)', side2: 'rgba(120,117,110,0.4)', stroke: slabStroke
       }, aB1);
 
-      // East Square B1 Concourse
       drawExtrudedBox(182, yB1, 0, 96, 5.5, 195, {
         top: isDark ? 'rgba(48,34,58,0.88)' : 'rgba(237,228,242,0.92)',
         side1: '#7B3F98', side2: '#63317C', stroke: '#7B3F98'
       }, aB1);
 
-      // -----------------------------------------------------------------------
       // D. LEVEL F1 (+84m): 11 PLATFORMS & 20 TRACKS (NATIONAL RAILWAY) + EAST 2F
-      // -----------------------------------------------------------------------
       const yF1 = getLevelY('F1');
       const aF1 = getLayerAlpha('F1');
 
@@ -1739,7 +2025,6 @@ html, body {
         }, aF1);
       });
 
-      // Animated High-Speed Trains on F1 Tracks
       const hsrZ1 = -85 + Math.sin(state.time * 0.9) * 35;
       const hsrZ2 =  65 - ((state.time * 42) % 190);
       drawExtrudedBox(-5, yF1 + 3, hsrZ1, 5.5, 6.5, 88, {
@@ -1749,13 +2034,11 @@ html, body {
         top: '#F3F1EC', side1: '#003A70', side2: '#B81D24', stroke: '#003A70'
       }, aF1);
 
-      // East Square 2F Transfer Hall Slab
       drawExtrudedBox(182, yF1, 0, 96, 5.5, 195, {
         top: isDark ? 'rgba(27,75,56,0.68)' : 'rgba(218,235,226,0.92)',
         side1: '#1B6B4C', side2: '#14523A', stroke: '#1B6B4C'
       }, aF1);
 
-      // Structural Columns connecting F1 -> F2
       if (state.activeLayer === 'ALL') {
         const colColor = isDark ? 'rgba(243,241,236,0.18)' : 'rgba(20,20,19,0.22)';
         [-95, -58, -18, 22, 62, 97].forEach(cx => {
@@ -1765,27 +2048,21 @@ html, body {
         });
       }
 
-      // -----------------------------------------------------------------------
       // E. LEVEL F2 (+90m): MAIN PEDESTRIAN DECK, WAITING HALL A1-A20 / B1-B20
-      // -----------------------------------------------------------------------
       const yF2 = getLevelY('F2');
       const aF2 = getLayerAlpha('F2');
 
-      // 1) West Square F2 Deck
       drawExtrudedBox(-175, yF2, 0, 105, 5.5, 190, {
         top: isDark ? 'rgba(68,45,25,0.84)' : 'rgba(244,232,216,0.94)',
         side1: '#B5651D', side2: '#8F4E14', stroke: '#B5651D'
       }, aF2);
-      // Ride-Hailing Zone B Lounge Building on West Square F2
       drawExtrudedBox(-182, yF2 + 5.5, 42, 68, 7.5, 58, {
         top: '#D94E1F', side1: '#B5651D', side2: '#8F4E14', stroke: '#F3F1EC'
       }, aF2);
-      // Coach Terminal Building on West Square North
       drawExtrudedBox(-182, yF2 + 5.5, -52, 68, 7.0, 52, {
         top: isDark ? '#3A352F' : '#DFD7C8', side1: '#8F4E14', side2: '#8F4E14', stroke: slabStroke
       }, aF2);
 
-      // 2) National Railway Elevated Waiting Hall Slab (Straddling the 20 tracks)
       drawExtrudedBox(0, yF2, 0, 224, 6.5, 165, {
         top: slabFill,
         side1: '#003A70',
@@ -1794,7 +2071,6 @@ html, body {
         lineWidth: 1.5
       }, aF2);
 
-      // Render A1-A20 & B1-B20 Ticket Gate Portals in 3D
       platformConfigs.forEach(pc => {
         const isSel = state.selectedPlatform && pc.pNums.includes(state.selectedPlatform);
         const gateCol = isSel ? '#D94E1F' : (pc.hk ? '#B81D24' : '#003A70');
@@ -1808,12 +2084,10 @@ html, body {
         }, aF2);
       });
 
-      // Central "Yingchunhua" Service Island in F2 Waiting Hall
       drawExtrudedBox(0, yF2 + 6.5, 0, 24, 5.5, 20, {
         top: '#D94E1F', side1: '#A33612', side2: '#A33612', stroke: '#FFFFFF'
       }, aF2);
 
-      // East Entrance (A) & West Entrance (B) Gatehouses
       drawExtrudedBox(110, yF2 + 6.5, 0, 8, 9.5, 56, {
         top: '#003A70', side1: '#003A70', side2: '#00264D', stroke: '#FFFFFF'
       }, aF2);
@@ -1821,15 +2095,12 @@ html, body {
         top: '#B5651D', side1: '#B5651D', side2: '#8F4E14', stroke: '#FFFFFF'
       }, aF2);
 
-      // 3) East Square F2 Open Deck
       drawExtrudedBox(182, yF2, 0, 96, 5.5, 195, {
         top: isDark ? 'rgba(28,58,45,0.86)' : 'rgba(225,239,231,0.94)',
         side1: '#1B6B4C', side2: '#134E37', stroke: '#1B6B4C'
       }, aF2);
 
-      // -----------------------------------------------------------------------
       // F. LEVEL F3 (+96m): METRO 4/6 CONCOURSE & NATIONAL RAIL COMMERCIAL MEZZANINE
-      // -----------------------------------------------------------------------
       const yF3 = getLevelY('F3');
       const aF3 = getLayerAlpha('F3');
 
@@ -1842,20 +2113,16 @@ html, body {
         side1: '#003A70', side2: '#003A70', stroke: slabStroke
       }, aF3);
 
-      // Metro Line 4 & Line 6 Elevated Shared Concourse (F3 East Square)
       drawExtrudedBox(182, yF3, 0, 82, 5.5, 210, {
         top: isDark ? 'rgba(40,48,48,0.92)' : 'rgba(235,242,240,0.94)',
         side1: '#009B8D', side2: '#D62828', stroke: '#141413'
       }, aF3);
 
-      // 3D Diagonal "Heaven-and-Earth" Long Escalators (F3 -> B1)
       const escAlpha = Math.max(aF3, aB1) * 0.92;
       drawLine3D({ x: 156, y: yF3 + 2, z: -45 }, { x: 156, y: yB1 + 4, z: -20 }, '#1B6B4C', 4.5, escAlpha);
       drawLine3D({ x: 156, y: yF3 + 2, z:  45 }, { x: 156, y: yB1 + 4, z:  20 }, '#1B6B4C', 4.5, escAlpha);
 
-      // -----------------------------------------------------------------------
       // G. LEVEL F4 (+102m): METRO LINE 4 & LINE 6 DUAL-ISLAND ELEVATED PLATFORMS
-      // -----------------------------------------------------------------------
       const yF4 = getLevelY('F4');
       const aF4 = getLayerAlpha('F4');
 
@@ -1866,16 +2133,13 @@ html, body {
         { x: 144, y: yF4, z:  145 }
       ], isDark ? 'rgba(30,34,34,0.88)' : 'rgba(232,230,223,0.92)', slabStroke, 1.2, aF4);
 
-      // West Island Platform: Metro Line 6 (Teal #009B8D)
       drawExtrudedBox(164, yF4 + 1, 0, 14, 5.5, 220, {
         top: '#009B8D', side1: '#007A6E', side2: '#007A6E', stroke: '#FFFFFF'
       }, aF4);
-      // East Island Platform: Metro Line 4 (MTR Red #D62828)
       drawExtrudedBox(198, yF4 + 1, 0, 14, 5.5, 220, {
         top: '#D62828', side1: '#A81C1C', side2: '#A81C1C', stroke: '#FFFFFF'
       }, aF4);
 
-      // Animated Line 6 & Line 4 Elevated Metro Trains
       const l6TrainZ = -80 + ((state.time * 45) % 170);
       const l4TrainZ =  85 - ((state.time * 45) % 170);
       drawExtrudedBox(153, yF4 + 3, l6TrainZ, 5, 6, 54, {
@@ -1885,9 +2149,7 @@ html, body {
         top: '#F3F1EC', side1: '#D62828', side2: '#D62828', stroke: '#A81C1C'
       }, aF4);
 
-      // -----------------------------------------------------------------------
-      // H. WAVE-ARCH STEEL ROOF CANOPY (Cutaway Toggleable)
-      // -----------------------------------------------------------------------
+      // H. WAVE-ARCH STEEL ROOF CANOPY
       if (state.showRoof && state.activeLayer === 'ALL') {
         const yRoof = yF4 + 26;
         const roofColor = isDark ? 'rgba(243,241,236,0.20)' : 'rgba(20,20,19,0.20)';
@@ -1903,43 +2165,45 @@ html, body {
         }
       }
 
-      // -----------------------------------------------------------------------
       // I. ARCHITECTURAL LEADER LINES FOR PERIMETER CALLOUT PINS
-      // -----------------------------------------------------------------------
       const leaderColor = isDark ? 'rgba(243,241,236,0.55)' : 'rgba(20,20,19,0.55)';
-      SPATIAL_PINS.forEach(pin => {
+      SPATIAL_PINS.forEach((pin, idx) => {
         const el = document.getElementById(pin.id);
         if (!el) return;
         const alpha = getLayerAlpha(pin.level);
-        if (alpha < 0.3) {
+        // On phone screens (<=600px) in ALL view, show key boundary pins (F4, F2 East, F1 Rail, B2 L5) to avoid clutter
+        const hideOnPhone = isPhone && state.activeLayer === 'ALL' && (idx === 1 || idx === 3);
+        if (alpha < 0.3 || hideOnPhone) {
           el.style.opacity = '0';
           el.style.pointerEvents = 'none';
           return;
         }
         const aPt = pin.anchor();
         const pPt = pin.pinPos();
-        drawLine3D(aPt, pPt, leaderColor, 1.2, 0.85, [3, 3]);
+        drawLine3D(aPt, pPt, leaderColor, 1.1, 0.8, [3, 3]);
 
         const pa = project3D(aPt);
         ctx.save();
         ctx.fillStyle = textMain;
         ctx.beginPath();
-        ctx.arc(pa.x, pa.y, 3, 0, Math.PI * 2);
+        ctx.arc(pa.x, pa.y, 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
 
         const pp = project3D(pPt);
+        const minX = isPhone ? 92 : 105;
+        const maxX = isPhone ? w - 68 : w - 115;
+        const minY = (w <= 1024) ? 82 : 78;
+        const maxY = (w <= 1024) ? h - 54 : h - 68;
+        const clampedX = Math.max(minX, Math.min(maxX, pp.x));
+        const clampedY = Math.max(minY, Math.min(maxY, pp.y));
         el.style.opacity = '1';
         el.style.pointerEvents = 'auto';
-        const clampedX = Math.max(105, Math.min(w - 115, pp.x));
-        const clampedY = Math.max(78, Math.min(h - 68, pp.y));
         el.style.left = clampedX + 'px';
         el.style.top = clampedY + 'px';
       });
 
-      // -----------------------------------------------------------------------
       // J. 3D ANIMATED PASSENGER WAYFINDING PATH RIBBON & CRISP STEP BADGES
-      // -----------------------------------------------------------------------
       let activeWaypoints = null;
       if (state.selectedPlatform !== null) {
         const px = getPlatformX(state.selectedPlatform);
@@ -1959,38 +2223,36 @@ html, body {
 
       if (activeWaypoints && activeWaypoints.length > 1) {
         for (let i = 0; i < activeWaypoints.length - 1; i++) {
-          drawLine3D(activeWaypoints[i], activeWaypoints[i + 1], '#D94E1F', 5.0, 0.96);
-          drawLine3D(activeWaypoints[i], activeWaypoints[i + 1], '#FFFFFF', 2.0, 0.96, [6, 8]);
+          drawLine3D(activeWaypoints[i], activeWaypoints[i + 1], '#D94E1F', isPhone ? 4.0 : 5.0, 0.96);
+          drawLine3D(activeWaypoints[i], activeWaypoints[i + 1], '#FFFFFF', 1.8, 0.96, [5, 7]);
         }
         activeWaypoints.forEach((wp, idx) => {
           const p = project3D(wp);
           ctx.save();
-          // Numbered architectural circle node
           ctx.fillStyle = '#D94E1F';
           ctx.strokeStyle = '#FFFFFF';
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, isPhone ? 8 : 9, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
 
           ctx.fillStyle = '#FFFFFF';
-          ctx.font = '700 10px "JetBrains Mono", sans-serif';
+          ctx.font = `700 ${isPhone ? 9.5 : 10}px "JetBrains Mono", sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(wp.step || String(idx + 1), p.x, p.y);
 
-          // Compact side tag next to node
           if (wp.tag) {
             const labelText = wp.tag;
-            ctx.font = '700 10.5px "PingFang SC", sans-serif';
-            const tw = ctx.measureText(labelText).width + 10;
-            const offsetX = (idx % 2 === 0) ? 14 : -14 - tw;
+            ctx.font = `700 ${isPhone ? 9.5 : 10.5}px "PingFang SC", sans-serif`;
+            const tw = ctx.measureText(labelText).width + 8;
+            const offsetX = (idx % 2 === 0) ? 12 : -12 - tw;
             ctx.fillStyle = '#D94E1F';
-            ctx.fillRect(p.x + offsetX, p.y - 9, tw, 18);
+            ctx.fillRect(p.x + offsetX, p.y - 8, tw, 16);
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'left';
-            ctx.fillText(labelText, p.x + offsetX + 5, p.y);
+            ctx.fillText(labelText, p.x + offsetX + 4, p.y);
           }
           ctx.restore();
         });
@@ -2000,11 +2262,13 @@ html, body {
     }
 
     // =========================================================================
-    // 7. MOUSE / TOUCH ORBIT, PAN & ZOOM INTERACTION
+    // 7. DESKTOP MOUSE + MOBILE MULTI-TOUCH (1-Finger Orbit, 2-Finger Pinch/Pan)
     // =========================================================================
     let isDragging = false;
     let dragMode = 'orbit';
     let lastMouse = { x: 0, y: 0 };
+    let lastPinchDist = 0;
+    let lastTouchMid = { x: 0, y: 0 };
 
     canvas.addEventListener('mousedown', (e) => {
       isDragging = true;
@@ -2038,9 +2302,94 @@ html, body {
       state.targetZoom = Math.max(0.65, Math.min(2.3, state.targetZoom * factor));
     }, { passive: false });
 
+    // Multi-Touch Gestures for Mobile & Tablet
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        dragMode = 'orbit';
+        lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      } else if (e.touches.length === 2) {
+        isDragging = true;
+        dragMode = 'pinch';
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastPinchDist = Math.hypot(dx, dy);
+        lastTouchMid = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) * 0.5,
+          y: (e.touches[0].clientY + e.touches[1].clientY) * 0.5
+        };
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      if (e.touches.length === 1 && dragMode === 'orbit') {
+        const dx = e.touches[0].clientX - lastMouse.x;
+        const dy = e.touches[0].clientY - lastMouse.y;
+        lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        state.targetYaw += dx * 0.0085;
+        state.targetPitch = Math.max(0.22, Math.min(1.42, state.targetPitch + dy * 0.0075));
+        document.getElementById('yawSlider').value = Math.round(state.targetYaw * 180 / Math.PI);
+        document.getElementById('pitchSlider').value = Math.round(state.targetPitch * 180 / Math.PI);
+      } else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (lastPinchDist > 10) {
+          const scaleFactor = dist / lastPinchDist;
+          state.targetZoom = Math.max(0.65, Math.min(2.3, state.targetZoom * scaleFactor));
+        }
+        lastPinchDist = dist;
+
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) * 0.5;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) * 0.5;
+        state.panX += (midX - lastTouchMid.x) * 0.8;
+        state.panY += (midY - lastTouchMid.y) * 0.8;
+        lastTouchMid = { x: midX, y: midY };
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', () => {
+      isDragging = false;
+      lastPinchDist = 0;
+    });
+
     // =========================================================================
-    // 8. UI CONTROLLERS
+    // 8. MOBILE TAB SWITCHER & UI CONTROLLERS
     // =========================================================================
+    function switchMobileTab(tabKey, btnEl) {
+      document.querySelectorAll('.m-tab-btn').forEach(b => b.classList.remove('is-active'));
+      if (btnEl) btnEl.classList.add('is-active');
+
+      const sheetLeft = document.getElementById('sheetLeft');
+      const sheetRight = document.getElementById('sheetRight');
+      const secLevels = document.getElementById('secLevels');
+      const secGates = document.getElementById('secGates');
+      const secFlows = document.getElementById('secFlows');
+      const secInspector = document.getElementById('secInspector');
+      const secTimetable = document.getElementById('secTimetable');
+
+      [secLevels, secGates, secFlows, secInspector, secTimetable].forEach(s => s.classList.remove('m-section-active'));
+      sheetLeft.classList.remove('m-sheet-active');
+      sheetRight.classList.remove('m-sheet-active');
+
+      if (tabKey === 'flows') {
+        sheetRight.classList.add('m-sheet-active');
+        secFlows.classList.add('m-section-active');
+      } else if (tabKey === 'gates') {
+        sheetLeft.classList.add('m-sheet-active');
+        secGates.classList.add('m-section-active');
+      } else if (tabKey === 'levels') {
+        sheetLeft.classList.add('m-sheet-active');
+        secLevels.classList.add('m-section-active');
+      } else if (tabKey === 'timetable') {
+        sheetRight.classList.add('m-sheet-active');
+        secInspector.classList.add('m-section-active');
+        secTimetable.classList.add('m-section-active');
+      }
+    }
+
     function updateExplosion(val) {
       state.targetExplode = parseFloat(val);
     }
@@ -2058,13 +2407,13 @@ html, body {
       if (btnEl) btnEl.classList.add('is-active');
 
       state.panX = 0;
-      state.panY = 10;
+      state.panY = 12;
       const presets = {
-        iso:         { yaw: -36,  pitch: 32, zoom: 1.24, explode: 1.35 },
-        east:        { yaw: -16,  pitch: 26, zoom: 1.32, explode: 1.50 },
-        west:        { yaw: -145, pitch: 32, zoom: 1.28, explode: 1.35 },
-        top:         { yaw: 0,    pitch: 80, zoom: 1.22, explode: 0.75 },
-        underground: { yaw: -46,  pitch: 20, zoom: 1.34, explode: 1.75 }
+        iso:         { yaw: -36,  pitch: 32, zoom: 1.22, explode: 1.35 },
+        east:        { yaw: -16,  pitch: 26, zoom: 1.30, explode: 1.50 },
+        west:        { yaw: -145, pitch: 32, zoom: 1.26, explode: 1.35 },
+        top:         { yaw: 0,    pitch: 80, zoom: 1.18, explode: 0.75 },
+        underground: { yaw: -46,  pitch: 20, zoom: 1.32, explode: 1.75 }
       };
       const p = presets[preset] || presets.iso;
       state.targetYaw = p.yaw * Math.PI / 180;
@@ -2079,18 +2428,18 @@ html, body {
 
     function focusLayer(levelKey) {
       state.activeLayer = levelKey;
-      document.querySelectorAll('.level-row').forEach(row => {
+      document.querySelectorAll('.level-row, .m-floor-pill').forEach(row => {
         row.classList.toggle('is-selected', row.getAttribute('data-level') === levelKey);
       });
 
       const titles = {
         ALL: ['深圳北站三维立体交通枢纽总图 (F4–B2)', '国铁11台20线 + 高架4/6号线 + 地下5号线东西正交全貌'],
-        F4:  ['F4 高架四层 · 地铁 4 / 6 号线双岛四线站台 (+102.0m)', '东岛4号线(福田口岸⇄牛湖) · 西岛6号线(科学馆⇄松岗) · 4号线直梯通B2层5号线'],
-        F3:  ['F3 高架三层 · 4 / 6 号线共用站厅 & 国铁商业夹层 (+96.0m)', '付费区西侧设6台天地换乘大扶梯直通B1层5号线站厅 · 中央设智慧卫生间'],
-        F2:  ['F2 主交通层 · 国铁高架候车室 & 东西广场 (+90.0m)', '东进站口(A)对地铁B/C口 · 西进站口(B)对网约车B区 · 候车厅A1–A20 / B1–B20检票口'],
-        F1:  ['F1 站台层 · 国铁 11 座站台 20 条股道 (+84.0m)', '东1站台(坪山捷运)至西20站台 · 8–15站台香港西九龙跨境专区 · 东换乘厅2F公交/出租'],
-        B1:  ['B1 地下一层 · 地铁 5 号线站厅 & 东西广场地下 (+78.0m)', '东侧为5号线主站厅与出租车1F · 西侧为西广场B1网约车A区及私家车库B1'],
-        B2:  ['B2 地下二层 · 地铁 5 号线东西正交侧式站台 (+72.0m)', '5号线自东向西垂直下穿整个国铁站房(北台往赤湾/南台往大剧院) · 西北侧接深惠城际']
+        F4:  ['F4 高架四层 · 地铁 4 / 6 号线双岛站台 (+102m)', '东岛4号线(福田口岸⇄牛湖) · 西岛6号线(科学馆⇄松岗)'],
+        F3:  ['F3 高架三层 · 4/6号线站厅 & 商业夹层 (+96m)', '付费区西侧设6台天地换乘大扶梯直通B1层5号线站厅'],
+        F2:  ['F2 主交通层 · 国铁候车室 & 东西广场 (+90m)', '东进站口(A)对地铁B/C口 · 西进站口(B)对网约车B区'],
+        F1:  ['F1 站台层 · 国铁 11 台 20 线 (+84m)', '东1站台至西20站台 · 8–15站台香港西九龙跨境专区'],
+        B1:  ['B1 地下一层 · 5号线站厅 & 东西广场地下 (+78m)', '东侧为5号线主站厅与出租车1F · 西侧为网约车A区'],
+        B2:  ['B2 地下二层 · 5号线东西正交站台 (+72m)', '5号线自东向西垂直下穿国铁站房 · 西北侧接深惠城际']
       };
       if (titles[levelKey]) {
         document.getElementById('hudActiveTitle').textContent = titles[levelKey][0];
@@ -2111,7 +2460,7 @@ html, body {
       }
       state.selectedPlatform = pNum;
       state.activeLayer = 'ALL';
-      document.querySelectorAll('.level-row').forEach(r => {
+      document.querySelectorAll('.level-row, .m-floor-pill').forEach(r => {
         r.classList.toggle('is-selected', r.getAttribute('data-level') === 'ALL');
       });
 
@@ -2190,7 +2539,7 @@ html, body {
       navigator.clipboard.writeText(area.value).then(() => {
         const btn = document.getElementById('btnCopyCss');
         btn.textContent = '已复制';
-        setTimeout(() => { btn.textContent = '复制全部 CSS'; }, 1800);
+        setTimeout(() => { btn.textContent = '复制 CSS'; }, 1800);
       });
     }
 
