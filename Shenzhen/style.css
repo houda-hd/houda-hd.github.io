@@ -1,57 +1,57 @@
 /* ==========================================================================
-   深圳北站综合交通枢纽 · 高精度旅客立体导览模型 (HTML5 + CSS3)
-   Shenzhen North Railway & Metro Hub High-Precision Passenger Model
-   涵盖：国铁（11台20线 / 高架候车室 A1-A20 & B1-B20）+ 深圳地铁（4号线 / 5号线 / 6号线）
+   SHENZHEN NORTH STATION · 3D ARCHITECTURAL PASSENGER WAYFINDING MODEL
+   Art Direction: Swiss Architectural Maquette & Precision Transit Cartography
+   Reference Discipline: Leonxlnx/taste-skill (Anti-Slop, Zero Emoji, Flat Tone Steps)
+   Files: Shenzhen/index.html + Shenzhen/style.css
    ========================================================================== */
 
 :root {
-  /* 核心品牌与交通标识色系 (基于中国铁路与深圳地铁官方视觉规范) */
-  --cr-blue: #1d4ed8;
-  --cr-blue-light: #eff6ff;
-  --cr-blue-border: #3b82f6;
-  --cr-red: #dc2626;
-  --cr-gold: #d97706;
+  /* Architectural Maquette Palette — One Ground, One Ink, One Action Accent */
+  --ground: #f3f1ec;
+  --ground-elevated: #eae6dd;
+  --ground-recessed: #dfd9ce;
+  --ground-canvas: #ece9e1;
+  --ink: #141413;
+  --ink-secondary: #4a4843;
+  --ink-muted: #78756e;
+  --rule: #d5d0c5;
+  --rule-strong: #141413;
 
-  /* 深圳地铁标准线路色 */
-  --metro-l4: #da291c;       /* 4号线 龙华线 港铁红 */
-  --metro-l4-bg: #fef2f2;
-  --metro-l5: #9b51e0;       /* 5号线 环中线 紫色 */
-  --metro-l5-gold: #eab308;  /* 5号线站内装饰金黄色 */
-  --metro-l5-bg: #faf5ff;
-  --metro-l6: #00b2a9;       /* 6号线 光明线 薄荷绿/青色 */
-  --metro-l6-bg: #f0fdfa;
-  --intercity-sh: #0284c7;   /* 深惠城际（在建） */
+  /* Primary Action & Wayfinding Signal (International Architectural Orange) */
+  --signal: #d94e1f;
+  --signal-tint: #f7e6e0;
 
-  /* 空间与功能分区颜色 */
-  --east-sq: #059669;        /* 东广场（公共交通主导） */
-  --west-sq: #ea580c;        /* 西广场（网约车/私家车/汽车站） */
-  --hk-zone: #be123c;        /* 8-15站台 香港西九龙跨境专区 */
-  --transfer-green: #16a34a; /* 免安检及换乘通道 */
+  /* Authentic Rail & Metro System Identities (Used strictly on transit lines/badges) */
+  --cr-navy: #003a70;       /* China Railway High-Speed Rail */
+  --cr-crimson: #b81d24;    /* China Railway Emblem / Cross-Border HK Zone */
+  --metro-l4: #d62828;      /* Shenzhen Metro Line 4 (Longhua) */
+  --metro-l5: #7b3f98;      /* Shenzhen Metro Line 5 (Huanzhong) */
+  --metro-l6: #009b8d;      /* Shenzhen Metro Line 6 (Guangming) */
+  --intercity: #1f6fa8;     /* Shenhui Intercity (Under Construction) */
+  --east-green: #1b6b4c;    /* East Square Public Transit Hub */
+  --west-ochre: #b5651d;    /* West Square Ride-Hailing & Coach Hub */
 
-  /* 界面深浅背景与文字高对比度系统 (WCAG >= 4.5:1) */
-  --bg-app: #0f172a;
-  --bg-panel: #1e293b;
-  --bg-card: #263349;
-  --bg-surface: #ffffff;
-  --bg-canvas: #0b1120;
-  --text-main: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --border-subtle: rgba(148, 163, 184, 0.22);
-  --border-active: #38bdf8;
-  --accent-cyan: #0ea5e9;
-  --accent-amber: #f59e0b;
-
-  /* 字体与圆角尺寸 */
-  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.45);
+  /* Typography — Two families max, tabular figures enforced */
+  --font-sans: "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-* {
+/* Blueprint Dark Mode (Toggleable Architectural Carbon Theme) */
+body[data-theme="carbon"] {
+  --ground: #141413;
+  --ground-elevated: #1e1e1c;
+  --ground-recessed: #282825;
+  --ground-canvas: #0f0f0e;
+  --ink: #f3f1ec;
+  --ink-secondary: #b8b4aa;
+  --ink-muted: #7d7970;
+  --rule: #2e2d2a;
+  --rule-strong: #f3f1ec;
+  --signal: #ff5c26;
+  --signal-tint: #2c1a14;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -59,1136 +59,745 @@
 
 html, body {
   width: 100%;
-  min-height: 100vh;
-  background-color: var(--bg-app);
-  color: var(--text-main);
+  height: 100%;
+  background-color: var(--ground);
+  color: var(--ink);
   font-family: var(--font-sans);
   font-size: 14px;
-  line-height: 1.5;
-  overflow-x: hidden;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* Subtle architectural scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ground);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--rule);
 }
 
 /* ==========================================================================
-   1. 顶部枢纽总控导航栏 (Header Bar)
+   1. TOP NAVIGATION BAR (Strict 54px height cap, single-line nowrap)
    ========================================================================== */
-.station-header {
+.topbar {
+  height: 54px;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 14px 24px;
-  background: linear-gradient(90deg, #0f172a 0%, #172554 55%, #0f172a 100%);
-  border-bottom: 1px solid var(--border-subtle);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  gap: 12px;
+  padding: 0 18px;
+  background-color: var(--ground);
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  z-index: 40;
+  white-space: nowrap;
 }
 
-.brand-group {
+.topbar-brand {
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-
-.cr-emblem {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 18px;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  gap: 12px;
   flex-shrink: 0;
 }
 
-.brand-titles h1 {
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.station-code-badge {
-  font-size: 11px;
-  font-family: var(--font-mono);
-  background: rgba(56, 189, 248, 0.16);
-  color: #7dd3fc;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-weight: 600;
-}
-
-.brand-subtitle {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-
-/* 顶部线路与关键指标胶囊栏 */
-.header-badges {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.line-pill {
+.station-mark {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.line-pill:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-}
-
-.line-pill.cr { background: var(--cr-blue); }
-.line-pill.l4 { background: var(--metro-l4); }
-.line-pill.l5 { background: var(--metro-l5); }
-.line-pill.l6 { background: var(--metro-l6); }
-.line-pill.sh { background: var(--intercity-sh); }
-
-.view-mode-Segment {
-  display: flex;
-  background: #090e1a;
-  padding: 4px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
-}
-
-.mode-btn {
-  background: transparent;
-  color: var(--text-secondary);
-  border: none;
-  padding: 7px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mode-btn.active {
-  background: var(--accent-cyan);
-  color: #082f49;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
-}
-
-/* ==========================================================================
-   2. 主工作区三栏网格布局 (Main 3-Column Workspace)
-   ========================================================================== */
-.workspace-grid {
-  display: grid;
-  grid-template-columns: 320px 1fr 360px;
-  gap: 16px;
-  padding: 16px 20px;
-  min-height: calc(100vh - 80px);
-  align-items: start;
-}
-
-@media (max-width: 1440px) {
-  .workspace-grid {
-    grid-template-columns: 290px 1fr 330px;
-  }
-}
-
-@media (max-width: 1180px) {
-  .workspace-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 通用面板样式 */
-.panel-box {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  box-shadow: var(--shadow-lg);
-}
-
-.panel-title {
+  gap: 10px;
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  white-space: nowrap;
 }
 
-.panel-title span.tag {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-}
-
-/* ==========================================================================
-   3. 左侧控制栏：楼层切换器 + 检票口/站台极速定位 + 图层筛选
-   ========================================================================== */
-.floor-stack-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 18px;
-}
-
-.floor-btn {
-  display: grid;
-  grid-template-columns: 54px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  color: var(--text-main);
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-
-.floor-btn:hover {
-  border-color: var(--border-active);
-  transform: translateX(3px);
-}
-
-.floor-btn.active {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.24) 0%, rgba(30, 58, 138, 0.45) 100%);
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 1px #38bdf8 inset;
-}
-
-.floor-code {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 800;
-  padding: 6px 0;
-  text-align: center;
-  border-radius: 6px;
-  background: rgba(15, 23, 42, 0.7);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-.floor-btn.active .floor-code {
-  background: #38bdf8;
-  color: #082f49;
-}
-
-.floor-meta h4 {
-  font-size: 13px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.floor-meta p {
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-
-.floor-elev {
+.station-mark-code {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #94a3b8;
-  background: rgba(15, 23, 42, 0.55);
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-/* 检票口与站台快速查询器 */
-.gate-finder-box {
-  background: rgba(15, 23, 42, 0.65);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 12px;
-  margin-bottom: 16px;
-}
-
-.finder-controls {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.finder-select, .finder-input {
-  width: 100%;
-  background: #0f172a;
-  color: #fff;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  font-size: 13px;
-  font-family: var(--font-sans);
-}
-
-.finder-select:focus, .finder-input:focus {
-  outline: none;
-  border-color: var(--accent-cyan);
-}
-
-.btn-primary {
-  background: var(--accent-cyan);
-  color: #082f49;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
   font-weight: 700;
+  padding: 3px 7px;
+  background-color: var(--ink);
+  color: var(--ground);
+  letter-spacing: 0.04em;
+}
+
+.topbar-meta {
   font-size: 12px;
-  cursor: pointer;
-  transition: opacity 0.15s;
+  color: var(--ink-muted);
+  white-space: nowrap;
 }
 
-.btn-primary:hover {
-  opacity: 0.9;
-}
-
-.gate-result-card {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  background: rgba(30, 58, 138, 0.35);
-  border-left: 3px solid #38bdf8;
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.gate-result-card strong {
-  color: #fff;
-}
-
-/* 设施分类高亮过滤 */
-.facility-filter-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 7px;
-}
-
-.filter-chip {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  padding: 7px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s;
-}
-
-.filter-chip:hover, .filter-chip.active {
-  background: rgba(56, 189, 248, 0.18);
-  color: #ffffff;
-  border-color: #38bdf8;
-}
-
-/* ==========================================================================
-   4. 中央主视窗：高精度平面图 (2D Floor Map) & 立体模型 (2.5D Isometric Stack)
-   ========================================================================== */
-.center-stage {
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-height: 780px;
-}
-
-.stage-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 18px;
-  background: rgba(30, 41, 59, 0.85);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.compass-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.compass-rose {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: #0f172a;
-  border: 1px solid var(--border-subtle);
-  border-radius: 999px;
-  font-weight: 700;
-  color: #38bdf8;
-}
-
-.stage-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tool-btn {
-  background: #1e293b;
-  color: var(--text-main);
-  border: 1px solid var(--border-subtle);
-  padding: 5px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.tool-btn:hover {
-  border-color: #38bdf8;
-}
-
-/* 方位与外部道路环绕外框 */
-.hub-viewport {
-  position: relative;
-  flex: 1;
-  padding: 36px 44px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background:
-    radial-gradient(circle at 50% 40%, rgba(30, 64, 175, 0.14), transparent 70%),
-    linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
-  background-size: 100% 100%, 24px 24px, 24px 24px;
-  overflow: auto;
-}
-
-.road-label {
-  position: absolute;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #94a3b8;
-  background: rgba(15, 23, 42, 0.88);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  padding: 3px 12px;
-  border-radius: 999px;
-  z-index: 10;
-}
-
-.road-north { top: 8px; left: 50%; transform: translateX(-50%); }
-.road-south { bottom: 8px; left: 50%; transform: translateX(-50%); }
-.road-west  { left: 8px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
-.road-east  { right: 8px; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
-
-/* --------------------------------------------------------------------------
-   2D 高精度分层建筑平面图样式 (West Square | National Rail | East Square)
-   -------------------------------------------------------------------------- */
-.floor-plan-container {
-  display: none;
-  flex-direction: column;
-  gap: 14px;
-  width: 100%;
-  animation: fadeIn 0.22s ease;
-}
-
-.floor-plan-container.active {
-  display: flex;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.floor-banner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 16px;
-  background: linear-gradient(90deg, rgba(30, 58, 138, 0.5) 0%, rgba(15, 23, 42, 0.85) 100%);
-  border-left: 4px solid #38bdf8;
-  border-radius: var(--radius-md);
-}
-
-.floor-banner h2 {
-  font-size: 17px;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.floor-banner p {
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-/* 深圳北站标准三区十字总图布局：西广场(左) + 国铁核心站房(中) + 东广场/高架地铁(右) */
-.hub-three-zones {
-  display: grid;
-  grid-template-columns: 230px 1fr 270px;
-  gap: 12px;
-  min-height: 540px;
-}
-
-@media (max-width: 960px) {
-  .hub-three-zones {
-    grid-template-columns: 1fr;
+@media (max-width: 1360px) {
+  .topbar-meta {
+    display: none;
   }
 }
 
-.zone-column {
-  background: rgba(15, 23, 42, 0.82);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: relative;
-}
-
-.zone-column.west-zone {
-  border-color: rgba(234, 88, 12, 0.5);
-  background: linear-gradient(180deg, rgba(67, 20, 7, 0.28) 0%, rgba(15, 23, 42, 0.88) 100%);
-}
-
-.zone-column.rail-zone {
-  border-color: rgba(59, 130, 246, 0.6);
-  background: linear-gradient(180deg, rgba(23, 37, 84, 0.35) 0%, rgba(15, 23, 42, 0.92) 100%);
-}
-
-.zone-column.east-zone {
-  border-color: rgba(16, 185, 129, 0.55);
-  background: linear-gradient(180deg, rgba(6, 78, 59, 0.28) 0%, rgba(15, 23, 42, 0.88) 100%);
-}
-
-.zone-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 8px;
-  border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
-}
-
-.zone-header h3 {
-  font-size: 14px;
-  font-weight: 800;
+.topbar-nav {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
-.zone-tag {
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 700;
-}
-
-.tag-west { background: rgba(234, 88, 12, 0.25); color: #fdba74; border: 1px solid rgba(234, 88, 12, 0.45); }
-.tag-rail { background: rgba(59, 130, 246, 0.25); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.45); }
-.tag-east { background: rgba(16, 185, 129, 0.25); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.45); }
-
-/* 建筑功能块 (POI Block) */
-.poi-block {
-  background: rgba(30, 41, 59, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  border-radius: var(--radius-sm);
-  padding: 9px 10px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  position: relative;
-}
-
-.poi-block:hover, .poi-block.selected-poi {
-  border-color: #38bdf8;
-  background: rgba(30, 58, 138, 0.55);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
-  transform: translateY(-1px);
-}
-
-.poi-block.highlight-pulse {
-  border-color: #f59e0b !important;
-  background: rgba(245, 158, 11, 0.24) !important;
-  box-shadow: 0 0 0 2px #f59e0b, 0 0 18px rgba(245, 158, 11, 0.55) !important;
-  animation: pulseGlow 1.5s infinite;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 1px #f59e0b, 0 0 12px rgba(245, 158, 11, 0.5); }
-  50%      { box-shadow: 0 0 0 3px #fbbf24, 0 0 22px rgba(251, 191, 36, 0.85); }
-}
-
-.poi-title {
+.line-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  background-color: var(--ground-elevated);
+  color: var(--ink);
   font-size: 12px;
-  font-weight: 700;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-}
-
-.poi-desc {
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-top: 3px;
-}
-
-/* F2 高架候车室 A1-A20 与 B1-B20 检票口矩阵 */
-.waiting-hall-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-  background: rgba(15, 23, 42, 0.65);
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  border-radius: var(--radius-md);
-  padding: 10px;
-}
-
-.corridor-strip {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 8px;
-  align-items: center;
-  padding: 7px 10px;
-  background: rgba(16, 185, 129, 0.13);
-  border: 1px dashed rgba(16, 185, 129, 0.45);
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-}
-
-.gate-matrix-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.gate-row-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #93c5fd;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* 10组对应站台列的检票口网格（从西向东：B20/A20 -> B1/A1，符合左西右东） */
-.gate-columns-grid {
-  display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  gap: 5px;
-}
-
-.gate-pair-col {
-  background: rgba(30, 41, 59, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 6px;
-  padding: 5px 3px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  font-weight: 600;
+  border: none;
   cursor: pointer;
-  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.gate-pair-col:hover, .gate-pair-col.active-gate {
-  border-color: #f59e0b;
-  background: rgba(245, 158, 11, 0.22);
-  transform: scale(1.04);
+.line-indicator:hover {
+  background-color: var(--ink);
+  color: var(--ground);
 }
 
-.gate-pair-col.hk-cross-border {
-  border-color: rgba(244, 63, 94, 0.45);
-  background: rgba(136, 19, 55, 0.28);
+.line-swatch {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-.gate-pill-b, .gate-pill-a {
+.swatch-cr { background-color: var(--cr-navy); }
+.swatch-hk { background-color: var(--cr-crimson); }
+.swatch-l4 { background-color: var(--metro-l4); }
+.swatch-l5 { background-color: var(--metro-l5); }
+.swatch-l6 { background-color: var(--metro-l6); }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  height: 32px;
+  padding: 0 11px;
+  background-color: var(--ground-elevated);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.action-btn:hover,
+.action-btn.is-active {
+  background-color: var(--ink);
+  color: var(--ground);
+  border-color: var(--ink);
+}
+
+.action-btn.action-primary {
+  background-color: var(--signal);
+  color: #ffffff;
+  border-color: var(--signal);
+}
+
+.action-btn.action-primary:hover {
+  opacity: 0.92;
+}
+
+/* ==========================================================================
+   2. MAIN ARCHITECTURAL WORKSPACE (Asymmetric Split: 3D Stage + Control Sheet)
+   ========================================================================== */
+.app-shell {
+  display: grid;
+  grid-template-columns: 300px 1fr 350px;
+  height: calc(100vh - 54px);
   width: 100%;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 2px;
-  border-radius: 4px;
 }
 
-.gate-pill-b {
-  background: rgba(234, 88, 12, 0.25);
-  color: #fdba74;
-  border: 1px solid rgba(234, 88, 12, 0.4);
+@media (max-width: 1240px) {
+  .app-shell {
+    grid-template-columns: 265px 1fr 315px;
+  }
 }
 
-.gate-pill-a {
-  background: rgba(59, 130, 246, 0.25);
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.4);
+@media (max-width: 980px) {
+  html, body {
+    overflow: auto;
+  }
+  .app-shell {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
 }
 
-.plat-num-mini {
-  font-size: 9px;
-  color: #cbd5e1;
-  text-align: center;
-}
-
-/* 中央候车大厅服务岛 */
-.central-concourse-aisle {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 8px;
-  background: rgba(30, 58, 138, 0.22);
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-}
-
-/* F1 11台20线高精度站台与股道图 */
-.platforms-11-20-grid {
-  display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  gap: 6px;
-  min-height: 360px;
-}
-
-.platform-island {
+/* Left & Right Editorial Control Columns */
+.side-sheet {
+  background-color: var(--ground);
+  border-right: 1px solid var(--rule);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.side-sheet.sheet-right {
+  border-right: none;
+  border-left: 1px solid var(--rule);
+}
+
+.sheet-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-heading {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  border-radius: 6px;
-  padding: 8px 4px;
+}
+
+.section-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+/* ==========================================================================
+   3. VERTICAL SECTION SELECTOR (6 Levels: F4 to B2)
+   ========================================================================== */
+.level-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.level-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  background-color: var(--ground-elevated);
+  border: none;
+  border-left: 3px solid transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.14s ease, border-color 0.14s ease;
+}
+
+.level-row:hover {
+  background-color: var(--ground-recessed);
+}
+
+.level-row.is-selected {
+  background-color: var(--ink);
+  color: var(--ground);
+  border-left-color: var(--signal);
+}
+
+.level-id {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.level-info strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.level-info span {
+  display: block;
+  font-size: 10.5px;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.level-row.is-selected .level-info span,
+.level-row.is-selected .level-elev {
+  color: var(--ground-recessed);
+}
+
+.level-elev {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
+/* ==========================================================================
+   4. TICKET GATE & PLATFORM LOCATOR (A1-A20 / B1-B20)
+   ========================================================================== */
+.locator-form {
+  margin-bottom: 8px;
+}
+
+.arch-select {
+  width: 100%;
+  height: 34px;
+  padding: 0 8px;
+  background-color: var(--ground-elevated);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.arch-select:focus {
+  outline: 1px solid var(--ink);
+}
+
+.gate-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.gate-chip {
+  padding: 4px 2px;
+  background-color: var(--ground-elevated);
+  border: 1px solid transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
   text-align: center;
   cursor: pointer;
-  position: relative;
-  transition: all 0.16s;
 }
 
-.platform-island:hover, .platform-island.active-plat {
-  border-color: #38bdf8;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
-  transform: translateY(-2px);
+.gate-chip:hover {
+  border-color: var(--ink);
 }
 
-.platform-island.hk-plat {
-  border-color: rgba(244, 63, 94, 0.65);
-  background: linear-gradient(180deg, rgba(136, 19, 55, 0.42) 0%, rgba(15, 23, 42, 0.95) 100%);
+.gate-chip.is-hk {
+  background-color: rgba(184, 29, 36, 0.12);
+  color: var(--cr-crimson);
 }
 
-.platform-island.pingshan-plat {
-  border-color: rgba(16, 185, 129, 0.65);
-  background: linear-gradient(180deg, rgba(6, 78, 59, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
-}
-
-.track-line-badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  color: #38bdf8;
-  background: rgba(15, 23, 42, 0.8);
-  padding: 2px 4px;
-  border-radius: 4px;
-}
-
-.plat-center-title {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  margin: 10px auto;
-  font-size: 12px;
-  font-weight: 800;
+.gate-chip.is-active {
+  background-color: var(--signal);
   color: #ffffff;
-  letter-spacing: 2px;
 }
 
-/* 地铁5号线东西向横穿轨道带 (B1 / B2) */
-.line5-ew-corridor {
-  margin-top: 10px;
-  padding: 14px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(90deg, rgba(155, 81, 224, 0.28) 0%, rgba(234, 179, 8, 0.22) 50%, rgba(155, 81, 224, 0.28) 100%);
-  border: 2px solid var(--metro-l5);
+.locator-readout {
+  padding: 10px 12px;
+  background-color: var(--ground-elevated);
+  border-left: 3px solid var(--cr-navy);
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  line-height: 1.48;
+}
+
+.locator-readout strong {
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   5. CENTER 3D ARCHITECTURAL VIEWPORT (Interactive 3D Canvas + Clean HUD)
+   ========================================================================== */
+.viewport-stage {
   position: relative;
-}
-
-.line5-track-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 14px;
-  margin: 6px 0;
-  background: rgba(15, 23, 42, 0.85);
-  border-radius: 6px;
-  border-left: 4px solid var(--metro-l5-gold);
-  border-right: 4px solid var(--metro-l5-gold);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-/* --------------------------------------------------------------------------
-   2.5D / 3D 立体轴测多层透视模型 (Isometric 6-Layer Stack View)
-   -------------------------------------------------------------------------- */
-.iso-3d-stage {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
   min-height: 640px;
-  perspective: 1400px;
-  padding: 30px 10px;
+  background-color: var(--ground-canvas);
   overflow: hidden;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
 }
 
-.iso-3d-stage.active {
+/* Top Floating Architectural Title & Camera Bar */
+.viewport-hud-top {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  right: 16px;
   display: flex;
-}
-
-.iso-controls-overlay {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 18px;
-  background: rgba(15, 23, 42, 0.85);
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border-subtle);
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
   z-index: 20;
 }
 
-.iso-controls-overlay label {
-  font-size: 12px;
-  color: var(--text-secondary);
+.hud-title-block {
+  background-color: var(--ground);
+  border: 1px solid var(--rule);
+  padding: 10px 14px;
+  pointer-events: auto;
+  max-width: 460px;
+}
+
+.hud-title-block h2 {
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.hud-title-block p {
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  margin-top: 3px;
+}
+
+.hud-camera-controls {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  background-color: var(--ground);
+  border: 1px solid var(--rule);
+  padding: 3px;
+  pointer-events: auto;
+}
+
+.cam-btn {
+  padding: 5px 9px;
+  background-color: transparent;
+  color: var(--ink);
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cam-btn:hover,
+.cam-btn.is-active {
+  background-color: var(--ink);
+  color: var(--ground);
+}
+
+/* Interactive 3D Canvas Surface */
+#station3DCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+
+#station3DCanvas:active {
+  cursor: grabbing;
+}
+
+/* CSS 3D Projected Spatial Callout Pins (Perimeter Anchored — Zero Overlap) */
+.spatial-pins-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 15;
+}
+
+.spatial-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.pin-card {
+  padding: 4px 8px;
+  background-color: var(--ground);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-left: 3px solid var(--signal);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.spatial-pin:hover .pin-card,
+.spatial-pin.is-highlighted .pin-card {
+  background-color: var(--signal);
+  color: #ffffff;
+  border-color: var(--signal);
+}
+
+/* Bottom HUD Sliders & Scale Legend */
+.viewport-hud-bottom {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.hud-sliders-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: var(--ground);
+  border: 1px solid var(--rule);
+  padding: 6px 12px;
+  pointer-events: auto;
+}
+
+.slider-group {
   display: flex;
   align-items: center;
   gap: 6px;
-}
-
-.iso-tower {
-  width: 680px;
-  max-width: 92vw;
-  display: flex;
-  flex-direction: column;
-  gap: var(--iso-gap, 18px);
-  transform-style: preserve-3d;
-  transform: rotateX(var(--iso-rx, 52deg)) rotateZ(var(--iso-rz, -18deg));
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), gap 0.3s ease;
-  margin: 20px auto;
-}
-
-.iso-slab {
-  position: relative;
-  width: 100%;
-  min-height: 82px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 2px solid rgba(56, 189, 248, 0.45);
-  border-radius: 12px;
-  padding: 10px 14px;
-  display: grid;
-  grid-template-columns: 145px 1fr 185px;
-  gap: 10px;
-  align-items: center;
-  box-shadow:
-    -8px 10px 0 rgba(15, 23, 42, 0.95),
-    -8px 10px 0 1px rgba(148, 163, 184, 0.3),
-    0 18px 30px rgba(0, 0, 0, 0.55);
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.iso-slab:hover, .iso-slab.iso-active {
-  transform: translateZ(16px) translateX(6px);
-  border-color: #f59e0b;
-  box-shadow:
-    -10px 12px 0 rgba(30, 58, 138, 0.95),
-    0 0 25px rgba(245, 158, 11, 0.55);
-}
-
-.iso-slab-badge {
-  position: absolute;
-  left: -58px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #0ea5e9;
-  color: #082f49;
-  font-family: var(--font-mono);
-  font-weight: 900;
-  font-size: 13px;
-  padding: 4px 9px;
-  border-radius: 6px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-}
-
-.iso-zone-box {
-  padding: 6px 8px;
-  border-radius: 6px;
   font-size: 11px;
-  font-weight: 700;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-weight: 600;
+  color: var(--ink-secondary);
+  white-space: nowrap;
 }
 
-.iso-west { background: rgba(234, 88, 12, 0.22); color: #fed7aa; }
-.iso-rail { background: rgba(29, 78, 216, 0.32); color: #bfdbfe; }
-.iso-east { background: rgba(5, 150, 105, 0.28); color: #a7f3d0; }
-.iso-l46  { background: linear-gradient(90deg, rgba(0, 178, 169, 0.45), rgba(218, 41, 28, 0.45)); color: #fff; }
-.iso-l5   { background: rgba(155, 81, 224, 0.42); color: #f3e8ff; border-color: #eab308; }
+.slider-group input[type="range"] {
+  width: 82px;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+
+.hud-legend-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--ground);
+  border: 1px solid var(--rule);
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--ink-secondary);
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
 
 /* ==========================================================================
-   5. 右侧导航栏：旅客智能路径规划器 + 节点详情面板 + 首末班车表
+   6. RIGHT SHEET: PASSENGER WAYFINDING FLOWS & TIMETABLE
    ========================================================================== */
-.route-presets-list {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin-bottom: 14px;
-}
-
-.route-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 9px 11px;
-  color: var(--text-main);
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.15s ease;
+.flow-list {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.route-btn:hover, .route-btn.active {
-  background: rgba(22, 163, 74, 0.22);
-  border-color: #4ade80;
+.flow-item {
+  padding: 7px 10px;
+  background-color: var(--ground-elevated);
+  border: none;
+  border-left: 3px solid transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.14s ease;
 }
 
-.route-btn-top {
+.flow-item:hover {
+  background-color: var(--ground-recessed);
+}
+
+.flow-item.is-active {
+  background-color: var(--signal-tint);
+  border-left-color: var(--signal);
+}
+
+.flow-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  font-size: 12.5px;
+  gap: 6px;
+  font-size: 12px;
   font-weight: 700;
 }
 
-.route-time-badge {
-  font-size: 11px;
+.flow-duration {
   font-family: var(--font-mono);
-  color: #4ade80;
-  background: rgba(22, 163, 74, 0.2);
-  padding: 1px 6px;
-  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--signal);
+  white-space: nowrap;
 }
 
-.route-steps-card {
-  background: rgba(15, 23, 42, 0.78);
-  border: 1px solid rgba(74, 222, 128, 0.4);
-  border-radius: var(--radius-md);
-  padding: 12px;
-  margin-bottom: 16px;
+.flow-summary {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.step-timeline {
-  list-style: none;
+/* Active Wayfinding Step-by-Step Instructions */
+.wayfinding-steps {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background-color: var(--ground-elevated);
+  border-top: 2px solid var(--ink);
+}
+
+.wayfinding-steps h4 {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+
+.wayfinding-ol {
+  padding-left: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  line-height: 1.42;
 }
 
-.step-timeline li {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  align-items: start;
+.wayfinding-ol li strong {
+  color: var(--ink);
 }
 
-.step-num {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #16a34a;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1px;
+/* Selected Architectural Element Inspector */
+.element-inspector {
+  padding: 10px 12px;
+  background-color: var(--ground-elevated);
+  border-left: 3px solid var(--ink);
 }
 
-/* 选中区域的详情卡片 */
-.poi-inspector-card {
-  background: rgba(15, 23, 42, 0.72);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: var(--radius-md);
-  padding: 12px;
-  margin-bottom: 16px;
+.element-inspector h4 {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
 }
 
-.poi-inspector-card h4 {
-  font-size: 14px;
-  color: #38bdf8;
+.element-inspector .inspector-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--signal);
   margin-bottom: 4px;
 }
 
-.poi-inspector-card p {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
+.element-inspector p {
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  line-height: 1.45;
 }
 
-/* 首末班车紧凑表格 */
-.timetable-table {
+/* Swiss Transit Timetable */
+.transit-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11.5px;
-  margin-top: 6px;
+  font-size: 11px;
 }
 
-.timetable-table th, .timetable-table td {
-  padding: 6px 7px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+.transit-table th,
+.transit-table td {
+  padding: 4px 3px;
+  border-bottom: 1px solid var(--rule);
   text-align: left;
+  white-space: nowrap;
 }
 
-.timetable-table th {
-  color: #94a3b8;
+.transit-table th {
+  font-size: 10px;
   font-weight: 700;
-  background: rgba(15, 23, 42, 0.6);
+  color: var(--ink-muted);
 }
 
-.timetable-table td.mono {
+.transit-table td.num {
   font-family: var(--font-mono);
   text-align: right;
-  color: #f8fafc;
+  font-weight: 600;
 }
 
-/* 底部图例与旅客防走错贴士 */
-.stage-footer-legend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 18px;
-  background: rgba(15, 23, 42, 0.9);
-  border-top: 1px solid var(--border-subtle);
-  font-size: 11.5px;
-  color: var(--text-secondary);
-}
-
-.legend-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-}
-
-.legend-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  margin-right: 5px;
-}
-
-
-/* CSS 源码查看器弹窗样式 */
-.css-modal-backdrop {
+/* ==========================================================================
+   7. BUILT-IN STYLE.CSS DRAWER (For inspecting & downloading style.css)
+   ========================================================================== */
+.css-drawer-backdrop {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 23, 0.82);
-  backdrop-filter: blur(4px);
-  z-index: 999;
+  background-color: rgba(20, 20, 19, 0.65);
+  z-index: 200;
   align-items: center;
   justify-content: center;
   padding: 24px;
 }
-.css-modal-backdrop.open {
+
+.css-drawer-backdrop.is-open {
   display: flex;
 }
-.css-modal-dialog {
-  width: 920px;
-  max-width: 95vw;
-  max-height: 88vh;
-  background: #0f172a;
-  border: 1px solid #38bdf8;
-  border-radius: 14px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+
+.css-drawer {
+  width: 880px;
+  max-width: 96vw;
+  height: 82vh;
+  background-color: var(--ground);
+  border: 1px solid var(--ink);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
-.css-modal-header {
+
+.css-drawer-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  background: #1e293b;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--rule);
 }
-.css-modal-header h3 {
-  font-size: 15px;
-  color: #fff;
+
+.css-drawer-bar h3 {
+  font-size: 14px;
+  font-weight: 700;
 }
-.css-modal-actions {
-  display: flex;
-  gap: 8px;
-}
-.css-code-area {
+
+.css-drawer-pre {
   flex: 1;
   width: 100%;
-  min-height: 480px;
-  padding: 16px 20px;
-  background: #090d16;
-  color: #e2e8f0;
+  padding: 16px 18px;
+  background-color: var(--ground-elevated);
+  color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.5;
   border: none;
   resize: none;
   overflow: auto;
