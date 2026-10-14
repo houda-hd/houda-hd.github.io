@@ -1,7 +1,7 @@
 /* ==========================================================================
    SHENZHEN NORTH STATION · 3D ARCHITECTURAL PASSENGER WAYFINDING MODEL
    Art Direction: Swiss Architectural Maquette & Precision Transit Cartography
-   Reference Discipline: Leonxlnx/taste-skill (Anti-Slop, Zero Emoji, Flat Tone Steps)
+   Reference Discipline: Leonxlnx/taste-skill (1440px / 768px / 390px Responsive)
    Files: Shenzhen/index.html + Shenzhen/style.css
    ========================================================================== */
 
@@ -55,6 +55,7 @@ body[data-theme="carbon"] {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -83,7 +84,7 @@ html, body {
 }
 
 /* ==========================================================================
-   1. TOP NAVIGATION BAR (Strict 54px height cap, single-line nowrap)
+   1. TOP NAVIGATION BAR (Strict 54px Desktop / 48px Mobile Cap)
    ========================================================================== */
 .topbar {
   height: 54px;
@@ -102,17 +103,17 @@ html, body {
 .topbar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .station-mark {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 15px;
   font-weight: 700;
-  white-space: nowrap;
   letter-spacing: -0.02em;
   color: var(--ink);
   white-space: nowrap;
@@ -126,6 +127,7 @@ html, body {
   background-color: var(--ink);
   color: var(--ground);
   letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
 .topbar-meta {
@@ -222,13 +224,24 @@ html, body {
 }
 
 /* ==========================================================================
-   2. MAIN ARCHITECTURAL WORKSPACE (Asymmetric Split: 3D Stage + Control Sheet)
+   2. MAIN ARCHITECTURAL WORKSPACE (Desktop 3-Col vs Mobile Split-Screen)
    ========================================================================== */
 .app-shell {
   display: grid;
   grid-template-columns: 300px 1fr 350px;
+  grid-template-areas: "left stage right";
   height: calc(100vh - 54px);
   width: 100%;
+}
+
+.side-sheet.sheet-left {
+  grid-area: left;
+}
+.viewport-stage {
+  grid-area: stage;
+}
+.side-sheet.sheet-right {
+  grid-area: right;
 }
 
 @media (max-width: 1240px) {
@@ -237,14 +250,10 @@ html, body {
   }
 }
 
-@media (max-width: 980px) {
-  html, body {
-    overflow: auto;
-  }
-  .app-shell {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
+/* Mobile-only thumb controls hidden on desktop */
+.mobile-tabbar,
+.mobile-floor-rail {
+  display: none;
 }
 
 /* Left & Right Editorial Control Columns */
@@ -362,7 +371,7 @@ html, body {
 
 .arch-select {
   width: 100%;
-  height: 34px;
+  height: 36px;
   padding: 0 8px;
   background-color: var(--ground-elevated);
   color: var(--ink);
@@ -384,7 +393,7 @@ html, body {
 }
 
 .gate-chip {
-  padding: 4px 2px;
+  padding: 5px 2px;
   background-color: var(--ground-elevated);
   border: 1px solid transparent;
   color: var(--ink);
@@ -429,12 +438,13 @@ html, body {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 640px;
+  min-height: 520px;
   background-color: var(--ground-canvas);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   user-select: none;
+  touch-action: none;
 }
 
 /* Top Floating Architectural Title & Camera Bar */
@@ -456,7 +466,7 @@ html, body {
   border: 1px solid var(--rule);
   padding: 10px 14px;
   pointer-events: auto;
-  max-width: 460px;
+  max-width: 390px;
 }
 
 .hud-title-block h2 {
@@ -482,6 +492,8 @@ html, body {
   border: 1px solid var(--rule);
   padding: 3px;
   pointer-events: auto;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .cam-btn {
@@ -494,6 +506,7 @@ html, body {
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .cam-btn:hover,
@@ -508,6 +521,7 @@ html, body {
   height: 100%;
   display: block;
   cursor: grab;
+  touch-action: none;
 }
 
 #station3DCanvas:active {
@@ -601,6 +615,8 @@ html, body {
   color: var(--ink-secondary);
   pointer-events: auto;
   white-space: nowrap;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .legend-item {
@@ -608,6 +624,7 @@ html, body {
   align-items: center;
   gap: 5px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -759,7 +776,7 @@ html, body {
   z-index: 200;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
 }
 
 .css-drawer-backdrop.is-open {
@@ -780,26 +797,277 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 18px;
+  gap: 8px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
 }
 
 .css-drawer-bar h3 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .css-drawer-pre {
   flex: 1;
   width: 100%;
-  padding: 16px 18px;
+  padding: 14px;
   background-color: var(--ground-elevated);
   color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.5;
   border: none;
   resize: none;
   overflow: auto;
   white-space: pre;
+}
+
+/* ==========================================================================
+   8. TABLET & MOBILE ARCHITECTURE (<= 1024px & <= 600px Thumb-First Layout)
+   Follows taste-skill rule: "a phone layout that is its own composition"
+   ========================================================================== */
+@media (max-width: 1024px) {
+  html, body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .topbar {
+    height: 48px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .topbar-nav {
+    display: none;
+  }
+
+  .station-mark {
+    font-size: 14px;
+    gap: 6px;
+  }
+
+  .station-mark-code {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+
+  .action-btn {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  /* Split screen: Top 50vh = Interactive 3D Stage, Middle 42px = Thumb Tab Bar, Bottom = Active Control Deck */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
+    overflow: hidden;
+  }
+
+  .viewport-stage {
+    order: 1;
+    height: 50vh;
+    height: 50dvh;
+    min-height: 310px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Left-edge thumb floor rail inside the 3D viewport on mobile/tablet */
+  .mobile-floor-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 25;
+    background-color: var(--ground);
+    border: 1px solid var(--rule);
+    padding: 2px;
+    pointer-events: auto;
+  }
+
+  .m-floor-pill {
+    width: 34px;
+    height: 26px;
+    border: none;
+    background-color: transparent;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .m-floor-pill.is-selected {
+    background-color: var(--signal);
+    color: #ffffff;
+  }
+
+  /* Mobile 4-Tab Thumb Switcher Bar */
+  .mobile-tabbar {
+    order: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 42px;
+    flex-shrink: 0;
+    background-color: var(--ground);
+    border-bottom: 1px solid var(--rule);
+    z-index: 30;
+  }
+
+  .m-tab-btn {
+    border: none;
+    border-right: 1px solid var(--rule);
+    border-bottom: 3px solid transparent;
+    background-color: var(--ground-elevated);
+    color: var(--ink-secondary);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .m-tab-btn:last-child {
+    border-right: none;
+  }
+
+  .m-tab-btn.is-active {
+    background-color: var(--ground);
+    color: var(--ink);
+    border-bottom-color: var(--signal);
+  }
+
+  /* Bottom Control Deck: Only the active mobile tab section is displayed */
+  .side-sheet {
+    order: 3;
+    border: none;
+    flex: 1;
+    overflow-y: auto;
+    display: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .side-sheet.m-sheet-active {
+    display: flex;
+  }
+
+  .sheet-section {
+    display: none;
+    padding: 12px 14px;
+    border-bottom: none;
+  }
+
+  .sheet-section.m-section-active {
+    display: block;
+  }
+
+  /* Compact HUD inside the 3D Stage for Mobile & Tablet */
+  .viewport-hud-top {
+    top: 8px;
+    left: 10px;
+    right: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .hud-title-block {
+    max-width: 100%;
+    padding: 6px 10px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .hud-title-block h2 {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hud-title-block p {
+    display: none;
+  }
+
+  .hud-camera-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cam-btn {
+    flex: 1;
+    text-align: center;
+    padding: 5px 4px;
+    font-size: 11px;
+  }
+
+  .viewport-hud-bottom {
+    bottom: 8px;
+    left: 52px;
+    right: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .hud-sliders-bar {
+    width: 100%;
+    justify-content: space-between;
+    padding: 5px 10px;
+    gap: 8px;
+  }
+
+  .slider-group input[type="range"] {
+    width: 64px;
+  }
+
+  .hud-legend-bar {
+    display: none;
+  }
+}
+
+/* Extra-compact adjustments for 390px phone screens */
+@media (max-width: 600px) {
+  .station-mark span:last-child {
+    font-size: 13.5px;
+  }
+
+  .slider-group.hide-on-phone {
+    display: none;
+  }
+
+  .hud-sliders-bar {
+    justify-content: space-between;
+  }
+
+  .slider-group input[type="range"] {
+    width: 90px;
+  }
+
+  .pin-card {
+    padding: 2px 6px;
+    font-size: 9.5px;
+  }
+
+  .gate-chip {
+    padding: 7px 2px;
+    font-size: 11px;
+  }
+
+  .flow-item {
+    padding: 9px 10px;
+  }
 }
