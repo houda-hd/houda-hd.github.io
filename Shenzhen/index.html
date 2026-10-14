@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>深圳北站 · V7 BIM级三维建筑空间与旅客换乘导览系统</title>
+  <title>深圳北站 · V8 1:1真实工程比例 (950m×480m) 三维建筑与旅客换乘系统</title>
   <link rel="stylesheet" href="style.css" />
   <style>
 /* ==========================================================================
-   SHENZHEN NORTH STATION · V7 BIM-GRADE 3D ARCHITECTURAL WAYFINDING SYSTEM
-   Art Direction: Swiss Architectural Maquette & Precision Transit Cartography
-   Reference Discipline: Leonxlnx/taste-skill (1440px / 768px / 390px Responsive)
-   Files: Shenzhen/index.html + Shenzhen/style.css
+   SHENZHEN NORTH STATION · V8 1:1 TRUE-SCALE (1 UNIT = 1 METER) BIM SYSTEM
+   Engineering Data Source: National Railway Administration (国家铁路局)
+   - Hub Total Span: 950m (E-W) x 480m (N-S), Total Area 594,000 m²
+   - Main Station Building: 409m (E-W) x 208m (N-S) x 43.6m (H), 182,074 m²
+   - Waiting Hall (F2): 260m (E-W) x 148m (N-S) = 38,480 m² (~3.9万㎡)
+   - N/S Pillarless Canopies: 260m (E-W) x 130m (N) + 130m (S) x 18.1m (H)
+   - HSR 11 Platforms / 20 Tracks: 260m (E-W) x 450m (N-S)
    ========================================================================== */
 
 :root {
-  /* Warm Architectural Maquette Daylight Palette */
   --ground: #e8e4dc;
   --ground-grid: #dcd6ca;
   --surface: rgba(245, 242, 236, 0.96);
@@ -27,26 +29,22 @@
   --rule: #cfc9bc;
   --rule-strong: #141413;
 
-  /* Primary Wayfinding Signal (International Architectural Orange) */
   --signal: #d94e1f;
   --signal-tint: rgba(217, 78, 31, 0.12);
 
-  /* Authentic Rail & Shenzhen Metro Identity Colors */
-  --cr-navy: #003a70;       /* China Railway High-Speed Rail */
-  --cr-crimson: #b81d24;    /* Platforms 8-15 HK West Kowloon Cross-Border */
-  --metro-l4: #d62828;      /* Shenzhen Metro Line 4 (Longhua) */
-  --metro-l5: #7b3f98;      /* Shenzhen Metro Line 5 (Huanzhong) */
-  --metro-l6: #009b8d;      /* Shenzhen Metro Line 6 (Guangming) */
-  --intercity: #1f6fa8;     /* Shenhui Intercity (Under Construction) */
-  --east-green: #1b6b4c;    /* East Square Public Transit Hub */
-  --west-ochre: #b5651d;    /* West Square Ride-Hailing Zone A/B */
+  --cr-navy: #003a70;
+  --cr-crimson: #b81d24;
+  --metro-l4: #d62828;
+  --metro-l5: #7b3f98;
+  --metro-l6: #009b8d;
+  --intercity: #1f6fa8;
+  --east-green: #1b6b4c;
+  --west-ochre: #b5651d;
 
-  /* Typography — Strict 2-Font Discipline + Tabular Numerals */
   --font-sans: "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-/* Blueprint Carbon Dark Mode */
 body[data-theme="carbon"] {
   --ground: #111110;
   --ground-grid: #1c1c1a;
@@ -96,7 +94,7 @@ html, body {
 }
 
 /* ==========================================================================
-   1. FULL-BLEED 3D STAGE CANVAS (100vw x 100dvh on ALL viewports)
+   1. FULL-BLEED 3D STAGE CANVAS (100vw x 100dvh)
    ========================================================================== */
 .stage-viewport {
   position: fixed;
@@ -176,7 +174,7 @@ html, body {
   padding-left: 10px;
 }
 
-@media (max-width: 1320px) {
+@media (max-width: 1360px) {
   .station-subtitle {
     display: none;
   }
@@ -590,7 +588,7 @@ html, body {
   color: var(--ink);
 }
 
-/* Selected Zone Inspector & Timetable */
+/* Selected Zone Inspector & Scale Specs Table */
 .inspector-card {
   padding: 9px 11px;
   background-color: var(--surface-elevated);
@@ -779,7 +777,6 @@ html, body {
 
 /* ==========================================================================
    8. NATIVE-GRADE MOBILE & TABLET ARCHITECTURE (<= 960px)
-      100% Full-Screen 3D Viewport + 3-State Draggable Bottom Sheet
    ========================================================================== */
 @media (max-width: 960px) {
   .topbar {
@@ -791,9 +788,12 @@ html, body {
     display: none;
   }
 
+  .brand-cluster {
+    gap: 6px;
+  }
+
   .station-badge {
-    font-size: 10px;
-    padding: 2px 5px;
+    display: none;
   }
 
   .station-title {
@@ -801,12 +801,11 @@ html, body {
   }
 
   .ctrl-btn {
-    height: 26px;
-    padding: 0 7px;
-    font-size: 10.5px;
+    height: 25px;
+    padding: 0 6px;
+    font-size: 10px;
   }
 
-  /* Horizontal scrollable camera preset bar directly under topbar */
   .mobile-cam-strip {
     display: flex;
     align-items: center;
@@ -836,7 +835,6 @@ html, body {
     text-align: center;
   }
 
-  /* Compact route step ribbon under mobile camera strip */
   .telemetry-ribbon {
     top: 82px;
     left: 8px;
@@ -854,7 +852,6 @@ html, body {
     font-size: 10px;
   }
 
-  /* Right-Edge Vertical Quick Floor Slicer Rail (ALL / F4..B2) */
   .mobile-floor-rail {
     display: flex;
     flex-direction: column;
@@ -892,10 +889,6 @@ html, body {
     display: none;
   }
 
-  /* 3-State Mobile Bottom Sheet:
-     - peek: 0px body height (only the 68px header bar is visible at bottom!)
-     - half: 32dvh body height (default — leaves 60% of phone screen for 3D model!)
-     - full: 66dvh body height (expanded details) */
   body[data-sheet="peek"] {
     --sheet-h: 0px;
   }
@@ -929,7 +922,6 @@ html, body {
     display: flex;
   }
 
-  /* Mobile Sheet Header (Grabber Pill + 3 Height Buttons + Explosion Slider + 4 Tabs) */
   .mobile-sheet-header {
     display: flex;
     flex-direction: column;
@@ -1040,28 +1032,28 @@ html, body {
 
   <!-- ==================== 1. FULL-BLEED 3D STAGE CANVAS (100vw x 100dvh) ==================== -->
   <main class="stage-viewport" id="stageViewport">
-    <canvas id="station3DCanvas" aria-label="深圳北站三维实体建筑与国铁地铁立体换乘模型"></canvas>
+    <canvas id="station3DCanvas" aria-label="深圳北站 1:1 真实工程比例三维建筑模型 (1单位=1米)"></canvas>
   </main>
 
   <!-- ==================== 2. TOP ARCHITECTURAL HEADER BAR ==================== -->
   <header class="topbar">
     <div class="brand-cluster">
-      <span class="station-badge">SZB · IOQ</span>
-      <span class="station-title">深圳北站三维立体导览</span>
-      <span class="station-subtitle">国铁 11台20线 (A1–A20 / B1–B20) · 深圳地铁 4 / 5 / 6 号线正交枢纽</span>
+      <span class="station-badge">1:1 METER BIM</span>
+      <span class="station-title">深圳北站 1:1 真实比例三维导览</span>
+      <span class="station-subtitle">枢纽 950m×480m · 主站房 409m×208m×43.6m · 站台 260m×450m · 上进上出</span>
     </div>
 
     <nav class="camera-presets-bar" aria-label="三维预设机位">
-      <button class="cam-pill is-active" data-cam="iso" onclick="setCameraPreset('iso', this)">东南全景轴测</button>
-      <button class="cam-pill" data-cam="east" onclick="setCameraPreset('east', this)">东广场地铁剖面</button>
+      <button class="cam-pill is-active" data-cam="iso" onclick="setCameraPreset('iso', this)">东南十字全景</button>
+      <button class="cam-pill" data-cam="east" onclick="setCameraPreset('east', this)">东广场与4/6号线</button>
       <button class="cam-pill" data-cam="west" onclick="setCameraPreset('west', this)">西广场网约车视角</button>
-      <button class="cam-pill" data-cam="top" onclick="setCameraPreset('top', this)">正交俯视总图</button>
-      <button class="cam-pill" data-cam="under" onclick="setCameraPreset('under', this)">B1/B2地下正交</button>
+      <button class="cam-pill" data-cam="top" onclick="setCameraPreset('top', this)">950m×480m总平图</button>
+      <button class="cam-pill" data-cam="under" onclick="setCameraPreset('under', this)">剖切内部/地下5号线</button>
     </nav>
 
     <div class="top-actions">
-      <button class="ctrl-btn is-active" id="btnTrains" onclick="toggleLiveTrains()">列车运行</button>
-      <button class="ctrl-btn is-active" id="btnRoof" onclick="toggleRoof()">波浪网架</button>
+      <button class="ctrl-btn is-active" id="btnScaleMode" onclick="toggleScaleMode()">1:1真实比例</button>
+      <button class="ctrl-btn is-active" id="btnRoof" onclick="toggleRoof()">屋盖与雨棚</button>
       <button class="ctrl-btn" id="btnTheme" onclick="toggleTheme()">炭黑图纸</button>
       <button class="ctrl-btn ctrl-signal" onclick="openCssModal()">style.css</button>
     </div>
@@ -1069,11 +1061,11 @@ html, body {
 
   <!-- ==================== 3. MOBILE CAMERA PRESET STRIP & FLOOR RAIL ==================== -->
   <nav class="mobile-cam-strip" aria-label="移动端机位切换">
-    <button class="cam-pill is-active" data-cam="iso" onclick="setCameraPreset('iso', this)">东南全景</button>
+    <button class="cam-pill is-active" data-cam="iso" onclick="setCameraPreset('iso', this)">十字全景(1:1)</button>
     <button class="cam-pill" data-cam="east" onclick="setCameraPreset('east', this)">东广场地铁</button>
     <button class="cam-pill" data-cam="west" onclick="setCameraPreset('west', this)">西广场网约车</button>
-    <button class="cam-pill" data-cam="top" onclick="setCameraPreset('top', this)">正交俯视</button>
-    <button class="cam-pill" data-cam="under" onclick="setCameraPreset('under', this)">地下5号线</button>
+    <button class="cam-pill" data-cam="top" onclick="setCameraPreset('top', this)">950m总平图</button>
+    <button class="cam-pill" data-cam="under" onclick="setCameraPreset('under', this)">剖切检视</button>
   </nav>
 
   <aside class="mobile-floor-rail" aria-label="快速楼层剖切">
@@ -1089,11 +1081,11 @@ html, body {
   <!-- ==================== 4. TOP WAYFINDING TELEMETRY RIBBON + 3D TOUR ==================== -->
   <div class="telemetry-ribbon" id="telemetryRibbon">
     <div class="telemetry-steps" id="telemetrySteps">
-      <span class="t-step-badge">1</span><span>F1站台</span><span class="t-step-arrow">→</span>
-      <span class="t-step-badge">2</span><span>F2东侧A2口</span><span class="t-step-arrow">→</span>
+      <span class="t-step-badge">1</span><span>F1站台(450m)</span><span class="t-step-arrow">→</span>
+      <span class="t-step-badge">2</span><span>上F2南出站廊(A2口)</span><span class="t-step-arrow">→</span>
       <span class="t-step-badge">3</span><span>东广场免安检梯</span><span class="t-step-arrow">→</span>
       <span class="t-step-badge">4</span><span>B1五号线厅</span><span class="t-step-arrow">→</span>
-      <span class="t-step-badge">5</span><span>B2站台</span>
+      <span class="t-step-badge">5</span><span>B2站台(140m)</span>
     </div>
     <button class="tour-play-btn" id="btnTourPlay" onclick="toggleCameraTour()">▶ 3D巡航</button>
   </div>
@@ -1102,114 +1094,114 @@ html, body {
   <aside class="dock-left" id="dockLeft">
     <section class="panel-block" id="blockFloors">
       <div class="block-header">
-        <span class="block-title">垂直楼层剖切导航</span>
-        <span class="block-meta">点选单层自动剖开上层</span>
+        <span class="block-title">垂直楼层标高与剖切 (1单位=1米)</span>
+        <span class="block-meta">国家铁路局竣工尺度</span>
       </div>
       <div class="floor-stack">
         <button class="floor-item is-selected" data-lvl="ALL" onclick="focusLayer('ALL')">
           <span class="floor-code">ALL</span>
           <div class="floor-desc">
-            <strong>全站 6 层立体总览</strong>
-            <span>高架4·6号线 + 国铁站房 + 地下5号线</span>
+            <strong>全站“十”字形真实比例总览</strong>
+            <span>主站房409×208m · 站台及雨棚260×468m</span>
           </div>
-          <span class="floor-elev">6 层</span>
+          <span class="floor-elev">43.6m</span>
         </button>
         <button class="floor-item" data-lvl="F4" onclick="focusLayer('F4')">
           <span class="floor-code" style="color:var(--metro-l4);">F4</span>
           <div class="floor-desc">
-            <strong>4 / 6 号线高架站台层</strong>
-            <span>东广场上空 · 双岛四线同层平行</span>
+            <strong>4 / 6 号线穿堂高架站台层</strong>
+            <span>主站房东翼上空 · 140m双岛四线站台</span>
           </div>
-          <span class="floor-elev">+102m</span>
+          <span class="floor-elev">+26.5m</span>
         </button>
         <button class="floor-item" data-lvl="F3" onclick="focusLayer('F3')">
           <span class="floor-code" style="color:var(--metro-l6);">F3</span>
           <div class="floor-desc">
-            <strong>4 / 6 号线站厅 &amp; 商业夹层</strong>
-            <span>6台天地换乘大扶梯上口 · 餐饮区</span>
+            <strong>4 / 6 号线站厅 &amp; 无柱雨棚顶</strong>
+            <span>6台天地大扶梯上口 · 南北雨棚高18.1m</span>
           </div>
-          <span class="floor-elev">+96m</span>
+          <span class="floor-elev">+18.5m</span>
         </button>
         <button class="floor-item" data-lvl="F2" onclick="focusLayer('F2')">
           <span class="floor-code" style="color:var(--cr-navy);">F2</span>
           <div class="floor-desc">
-            <strong>国铁高架候车厅 &amp; 东西广场</strong>
-            <span>A1–A20 / B1–B20检票口 · 进出站口</span>
+            <strong>国铁“上进上出”主站房层</strong>
+            <span>260×148m候车厅(3.9万㎡) + 南北高架出站</span>
           </div>
-          <span class="floor-elev">+90m</span>
+          <span class="floor-elev">+9.5m</span>
         </button>
         <button class="floor-item" data-lvl="F1" onclick="focusLayer('F1')">
           <span class="floor-code" style="color:var(--cr-crimson);">F1</span>
           <div class="floor-desc">
-            <strong>国铁 11台20线 站台层</strong>
-            <span>1–20站台 · 8–15跨境区 · 公交2F</span>
+            <strong>国铁 11台20线 站台层 (基准0m)</strong>
+            <span>宽260m × 长450m · 16编组复兴号(414m)</span>
           </div>
-          <span class="floor-elev">+84m</span>
+          <span class="floor-elev">±0.0m</span>
         </button>
         <button class="floor-item" data-lvl="B1" onclick="focusLayer('B1')">
           <span class="floor-code" style="color:var(--west-ochre);">B1</span>
           <div class="floor-desc">
-            <strong>5 号线站厅 &amp; 东西广场地下</strong>
-            <span>天地扶梯下口 · 出租1F · 网约车A区</span>
+            <strong>5 号线站厅 &amp; 东西广场地下层</strong>
+            <span>免安检扶梯落点 · 西广场1971车位/网约车A区</span>
           </div>
-          <span class="floor-elev">+78m</span>
+          <span class="floor-elev">-7.5m</span>
         </button>
         <button class="floor-item" data-lvl="B2" onclick="focusLayer('B2')">
           <span class="floor-code" style="color:var(--metro-l5);">B2</span>
           <div class="floor-desc">
-            <strong>5 号线东西向正交站台层</strong>
-            <span>双侧式站台(开右门) · 深惠城际在建</span>
+            <strong>5 号线正交下穿站台层</strong>
+            <span>410m东西隧道 · 140m侧式站台(开右门)</span>
           </div>
-          <span class="floor-elev">+72m</span>
+          <span class="floor-elev">-14.5m</span>
         </button>
       </div>
     </section>
 
     <section class="panel-block" id="blockGates">
       <div class="block-header">
-        <span class="block-title">车票检票口与站台定位</span>
+        <span class="block-title">车票检票口与 450m 站台定位</span>
         <span class="block-meta">A1–A20 / B1–B20</span>
       </div>
       <select id="gateSelect" class="gate-select" onchange="selectPlatformGate(this.value)">
         <option value="">选择检票口或站台编号...</option>
-        <optgroup label="常规动车/高铁站台 (1–7站台)">
-          <option value="1">A1 / B1 检票口 → 1站台 (东侧边台)</option>
-          <option value="2">A2 / B2 检票口 → 2站台 (广深港/京港)</option>
-          <option value="3">A3 / B3 检票口 → 3站台 (广深港/京港)</option>
-          <option value="4">A4 / B4 检票口 → 4站台 (广深港/京港)</option>
-          <option value="5">A5 / B5 检票口 → 5站台 (广深港/京港)</option>
-          <option value="6">A6 / B6 检票口 → 6站台 (广深港/京港)</option>
-          <option value="7">A7 / B7 检票口 → 7站台 (广深港/京港)</option>
+        <optgroup label="东侧常规高铁站台 (1–7站台)">
+          <option value="1">A1 / B1 检票口 → 1站台 (东侧6.5m边台 · X=+125m)</option>
+          <option value="2">A2 / B2 检票口 → 2站台 (12m岛式 · X=+101m)</option>
+          <option value="3">A3 / B3 检票口 → 3站台 (12m岛式 · X=+101m)</option>
+          <option value="4">A4 / B4 检票口 → 4站台 (12m岛式 · X=+76m)</option>
+          <option value="5">A5 / B5 检票口 → 5站台 (12m岛式 · X=+76m)</option>
+          <option value="6">A6 / B6 检票口 → 6站台 (12m岛式 · X=+51m)</option>
+          <option value="7">A7 / B7 检票口 → 7站台 (12m岛式 · X=+51m)</option>
         </optgroup>
-        <optgroup label="香港西九龙跨境核心区 (8–15站台)">
-          <option value="8">A8 / B8 检票口 → 8站台 (香港西九龙/干线)</option>
-          <option value="9">A9 / B9 检票口 → 9站台 (香港西九龙/干线)</option>
-          <option value="10">A10 / B10 检票口 → 10站台 (香港西九龙/干线)</option>
-          <option value="11">A11 / B11 检票口 → 11站台 (香港西九龙/干线)</option>
-          <option value="12">A12 / B12 检票口 → 12站台 (香港西九龙/干线)</option>
-          <option value="13">A13 / B13 检票口 → 13站台 (香港西九龙/干线)</option>
-          <option value="14">A14 / B14 检票口 → 14站台 (香港西九龙/干线)</option>
-          <option value="15">A15 / B15 检票口 → 15站台 (香港西九龙/干线)</option>
+        <optgroup label="中部香港西九龙跨境核心区 (8–15站台)">
+          <option value="8">A8 / B8 检票口 → 8站台 (香港西九龙 · X=+26m)</option>
+          <option value="9">A9 / B9 检票口 → 9站台 (香港西九龙 · X=+26m)</option>
+          <option value="10">A10 / B10 检票口 → 10站台 (正中轴 · X=0m)</option>
+          <option value="11">A11 / B11 检票口 → 11站台 (正中轴 · X=0m)</option>
+          <option value="12">A12 / B12 检票口 → 12站台 (香港西九龙 · X=-26m)</option>
+          <option value="13">A13 / B13 检票口 → 13站台 (香港西九龙 · X=-26m)</option>
+          <option value="14">A14 / B14 检票口 → 14站台 (香港西九龙 · X=-51m)</option>
+          <option value="15">A15 / B15 检票口 → 15站台 (香港西九龙 · X=-51m)</option>
         </optgroup>
-        <optgroup label="厦深/赣深/梅汕方向 (16–20站台)">
-          <option value="16">A16 / B16 检票口 → 16站台 (厦深/赣深)</option>
-          <option value="17">A17 / B17 检票口 → 17站台 (厦深/赣深)</option>
-          <option value="18">A18 / B18 检票口 → 18站台 (厦深/赣深)</option>
-          <option value="19">A19 / B19 检票口 → 19站台 (厦深/赣深)</option>
-          <option value="20">A20 / B20 检票口 → 20站台 (西侧边台)</option>
+        <optgroup label="西侧厦深/赣深/梅汕方向 (16–20站台)">
+          <option value="16">A16 / B16 检票口 → 16站台 (厦深/赣深 · X=-76m)</option>
+          <option value="17">A17 / B17 检票口 → 17站台 (厦深/赣深 · X=-76m)</option>
+          <option value="18">A18 / B18 检票口 → 18站台 (厦深/赣深 · X=-101m)</option>
+          <option value="19">A19 / B19 检票口 → 19站台 (厦深/赣深 · X=-101m)</option>
+          <option value="20">A20 / B20 检票口 → 20站台 (西侧6.5m边台 · X=-125m)</option>
         </optgroup>
       </select>
 
       <div class="gate-matrix" id="gateMatrix"></div>
 
       <div class="gate-callout" id="gateCallout">
-        <strong>东西进站口定位法则</strong><br/>
-        候车大厅东侧为 <strong>A1–A20 检票口</strong>（地铁 4/5/6 号线及东广场进站最近）；西侧为 <strong>B1–B20 检票口</strong>（西广场网约车/出租车落客进站最近）。同一数字对应下方同一座站台。
+        <strong>真实工程尺度定位法则</strong><br/>
+        F2 中央候车厅东西跨度 <strong>260m</strong>、南北宽 <strong>148m</strong>（面积 3.9 万㎡）：东侧检票岛为 <strong>A1–A20</strong>（距地铁 4/5/6 号线仅 60m），西侧检票岛为 <strong>B1–B20</strong>（距西广场落客区最近）。
       </div>
     </section>
   </aside>
 
-  <!-- ==================== 6. RIGHT DOCK: 7 WAYFINDING FLOWS & TIMETABLE ==================== -->
+  <!-- ==================== 6. RIGHT DOCK: 7 WAYFINDING FLOWS & SCALE SPECS ==================== -->
   <aside class="dock-right m-dock-active" id="dockRight">
     <section class="panel-block m-block-active" id="blockRoutes">
       <div class="block-header">
@@ -1223,7 +1215,7 @@ html, body {
             <span>1. 高铁到达 → 地铁 5 号线 (免安检)</span>
             <span class="route-time">04-06 min</span>
           </div>
-          <div class="route-sub">F1站台 → F2东侧A2出站口 → 免安检扶梯直下B1 → B2站台</div>
+          <div class="route-sub">F1站台上行 → F2南高架廊A2口 → 免安检扶梯下B1 → B2站台</div>
         </button>
 
         <button class="route-card" data-flow="hsr_to_m46" onclick="activateWayfindingFlow('hsr_to_m46', this)">
@@ -1231,7 +1223,7 @@ html, body {
             <span>2. 高铁到达 → 地铁 4 / 6 号线 (高架)</span>
             <span class="route-time">05-07 min</span>
           </div>
-          <div class="route-sub">F1站台 → F2东侧A1/A2口 → 东广场地铁B/C口上F3 → F4双岛</div>
+          <div class="route-sub">F1站台上行 → F2北高架廊A1口 → 主站房东翼上F3 → F4双岛</div>
         </button>
 
         <button class="route-card" data-flow="metro_to_hsr" onclick="activateWayfindingFlow('metro_to_hsr', this)">
@@ -1239,7 +1231,7 @@ html, body {
             <span>3. 地铁 4 / 5 / 6 号线 → 进站乘高铁</span>
             <span class="route-time">06-10 min</span>
           </div>
-          <div class="route-sub">东广场F2集散 → 国铁东进站口(A口)验检合一 → 候车厅A/B检票</div>
+          <div class="route-sub">东广场F2集散 → 主站房东进站口(A口) → 3.9万㎡候车厅检票下F1</div>
         </button>
 
         <button class="route-card" data-flow="m46_to_m5" onclick="activateWayfindingFlow('m46_to_m5', this)">
@@ -1247,7 +1239,7 @@ html, body {
             <span>4. 4 / 6 号线 ⇄ 5 号线 (天地大扶梯)</span>
             <span class="route-time">03-05 min</span>
           </div>
-          <div class="route-sub">F3付费区西侧 6台超长扶梯跨越三层直通 B1五号线付费区</div>
+          <div class="route-sub">F3付费区西端 6台超长扶梯跨越 26m 垂高直通 B1五号线付费区</div>
         </button>
 
         <button class="route-card" data-flow="hsr_to_west_ride" onclick="activateWayfindingFlow('hsr_to_west_ride', this)">
@@ -1255,7 +1247,7 @@ html, body {
             <span>5. 高铁到达 → 西广场网约车 B 区 / A 区</span>
             <span class="route-time">04-06 min</span>
           </div>
-          <div class="route-sub">F1站台 → 西侧B1/B2口 → 地面空调候车室输车牌 或 垂梯下B1</div>
+          <div class="route-sub">F1站台上行 → F2西侧B1/B2出站口 → 西广场B区候车室或B1层A区</div>
         </button>
 
         <button class="route-card" data-flow="hsr_to_east_bus" onclick="activateWayfindingFlow('hsr_to_east_bus', this)">
@@ -1263,25 +1255,25 @@ html, body {
             <span>6. 高铁到达 → 东广场出租车 / 公交总站</span>
             <span class="route-time">04-06 min</span>
           </div>
-          <div class="route-sub">F1站台 → 东侧A2出站口 → 换乘厅F1/B1两层出租车及公交2F</div>
+          <div class="route-sub">F1站台上行 → F2东侧A1/A2口 → 东广场270m交通核公交/出租车场</div>
         </button>
 
         <button class="route-card" data-flow="hsr_transfer" onclick="activateWayfindingFlow('hsr_transfer', this)">
           <div class="route-card-top">
-            <span>7. 国铁联程同站中转换乘 (不出站)</span>
+            <span>7. 国铁联程同站中转换乘 (上出同层换乘)</span>
             <span class="route-time">05-08 min</span>
           </div>
-          <div class="route-sub">F1到达站台寻“便捷换乘”通道 → 刷身份证直上F2候车大厅</div>
+          <div class="route-sub">F1站台上行至F2高架出站廊 → 内移15m中转换乘闸机 → 同层入候车厅</div>
         </button>
       </div>
 
       <div class="route-detail-box" id="routeDetailBox">
         <h4 id="routeDetailTitle">高铁到达 → 换乘地铁 5 号线 (免安检通道)</h4>
         <ol class="route-ol" id="routeDetailList">
-          <li><strong>F1 站台下车：</strong>认准东侧方向，乘扶梯上行至 <strong>A1 / A2 出站口</strong>（切勿前往西侧 B1/B2 口）。</li>
-          <li><strong>F2 东广场出闸：</strong>优先走 <strong>A2 出站口</strong>，出闸即进入东广场常态化免安检隔离区。</li>
-          <li><strong>直达 B1 站厅：</strong>乘坐新增免安检自动扶梯从东广场 (F2) 直接下达 <strong>B1 层 5 号线站厅</strong>。</li>
-          <li><strong>B2 侧式站台：</strong>5 号线为侧式站台（开右门），在 B1 核对方向后下楼（北侧往赤湾，南侧往大剧院）。</li>
+          <li><strong>F1 站台上行（“上出”）：</strong>在 450m 站台下车后向南端走，乘扶梯上行至 <strong>F2 南侧跨线高架出站通廊 (+9.5m)</strong>。</li>
+          <li><strong>F2 东侧 A2 口出闸：</strong>向东走出 <strong>A2 出站口</strong>，即进入主站房东翼常态化免安检隔离区。</li>
+          <li><strong>直达 B1 站厅：</strong>乘坐免安检自动扶梯从 F2 (+9.5m) 直接下达 <strong>B1 层 (-7.5m) 5 号线站厅</strong>。</li>
+          <li><strong>B2 侧式站台：</strong>5 号线为 140m 双侧式站台（开右门），在 B1 核对方向后下至 B2 (-14.5m)。</li>
         </ol>
       </div>
     </section>
@@ -1289,65 +1281,63 @@ html, body {
     <section class="panel-block" id="blockInspector">
       <div class="block-header">
         <span class="block-title">当前选中三维空间构件</span>
-        <span class="block-meta">点击3D标签或楼层切换</span>
+        <span class="block-meta">1单位 = 1米真实比例</span>
       </div>
       <div class="inspector-card">
-        <h4 id="inspTitle">深圳北站全站 6 层立体枢纽</h4>
-        <div class="inspector-tag" id="inspMeta">上跨高架 4/6 号线 · 中层国铁 11台20线 · 下穿 5 号线</div>
-        <p id="inspDesc">全站实现“上进下出、东铁西车、人车立体分流”。东广场集中地铁 4/5/6 号线、出租车与公交；西广场集中网约车 A/B 区、长途客运与社会停车场。</p>
+        <h4 id="inspTitle">深圳北站“十”字形枢纽 (950m × 480m)</h4>
+        <div class="inspector-tag" id="inspMeta">主站房 409m×208m×43.6m · 站台及雨棚 260m×468m×18.1m</div>
+        <p id="inspDesc">严格依据国家铁路局竣工参数按 1:1 米制比例建模：南北向 450m 高铁站台（含南北各 130m 无柱雨棚，总长 468m、宽 260m）与东西向 409m 主站房及东西广场（总长 950m）正交咬合，构成宏伟的“十”字形立体枢纽。</p>
       </div>
     </section>
 
     <section class="panel-block" id="blockTimetable">
       <div class="block-header">
-        <span class="block-title">深圳北站地铁首末班车时刻</span>
-        <span class="block-meta">常规工作日 / 节假日延长</span>
+        <span class="block-title">真实工程尺度参数 &amp; 地铁首末班车</span>
+        <span class="block-meta">国家铁路局 / 深铁数据</span>
       </div>
       <table class="schedule-table">
         <thead>
           <tr>
-            <th>线路</th>
-            <th>运行方向</th>
-            <th>位置</th>
-            <th style="text-align:right;">首班 / 末班</th>
+            <th>建筑构件 / 线路</th>
+            <th>真实工程尺度 (X×Z×Y)</th>
+            <th style="text-align:right;">标高 / 首末班</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong style="color:var(--metro-l4);">4号线</strong></td>
-            <td>往 福田口岸</td>
-            <td>F4高架</td>
-            <td class="mono-r">06:09 / 23:39</td>
+            <td><strong>枢纽总用地</strong></td>
+            <td>东西 950m × 南北 480m</td>
+            <td class="mono-r">59.4 万㎡</td>
           </tr>
           <tr>
-            <td><strong style="color:var(--metro-l4);">4号线</strong></td>
-            <td>往 牛湖</td>
-            <td>F4高架</td>
-            <td class="mono-r">06:19 / 23:49</td>
+            <td><strong>国铁主站房</strong></td>
+            <td>东西 409m × 南北 208m</td>
+            <td class="mono-r">高 43.6m</td>
           </tr>
           <tr>
-            <td><strong style="color:var(--metro-l5);">5号线</strong></td>
-            <td>往 赤湾</td>
-            <td>B2北侧</td>
-            <td class="mono-r">06:16 / 23:34</td>
+            <td><strong>F2 中央候车厅</strong></td>
+            <td>东西 260m × 南北 148m</td>
+            <td class="mono-r">3.85 万㎡</td>
           </tr>
           <tr>
-            <td><strong style="color:var(--metro-l5);">5号线</strong></td>
-            <td>往 大剧院/黄贝岭</td>
-            <td>B2南侧</td>
+            <td><strong>南北无柱雨棚</strong></td>
+            <td>宽 260m × 南北各 130m</td>
+            <td class="mono-r">高 18.1m</td>
+          </tr>
+          <tr>
+            <td><strong>11台20线站台</strong></td>
+            <td>宽 260m × 长 450m</td>
+            <td class="mono-r">±0.0m 基准</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--metro-l4);">4号线</strong> / <strong style="color:var(--metro-l6);">6号线</strong></td>
+            <td>东翼高架 · 140m双岛四线</td>
+            <td class="mono-r">06:09 / 23:52</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--metro-l5);">5号线 (B2层)</strong></td>
+            <td>正交下穿 · 140m双侧站台</td>
             <td class="mono-r">06:13 / 23:46</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--metro-l6);">6号线</strong></td>
-            <td>往 科学馆</td>
-            <td>F4高架</td>
-            <td class="mono-r">06:12 / 23:52</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--metro-l6);">6号线</strong></td>
-            <td>往 松岗</td>
-            <td>F4高架</td>
-            <td class="mono-r">06:16 / 23:31</td>
           </tr>
         </tbody>
       </table>
@@ -1363,15 +1353,15 @@ html, body {
         <button class="size-pill" id="pillFull" onclick="setSheetHeight('full')">全屏详情</button>
       </div>
       <div class="m-explode-inline">
-        <span>层距展开</span>
-        <input type="range" id="mExplodeRange" min="0.65" max="2.4" step="0.05" value="1.20" oninput="updateExplosion(this.value)" />
+        <span>垂向比例</span>
+        <input type="range" id="mExplodeRange" min="1.0" max="3.4" step="0.1" value="1.0" oninput="updateExplosion(this.value)" />
       </div>
     </div>
     <div class="m-tabs-row">
       <button class="m-tab is-active" onclick="switchMobileTab('routes', this)">换乘流线(7)</button>
       <button class="m-tab" onclick="switchMobileTab('gates', this)">A/B检票口</button>
       <button class="m-tab" onclick="switchMobileTab('floors', this)">楼层剖切</button>
-      <button class="m-tab" onclick="switchMobileTab('timetable', this)">首末班车</button>
+      <button class="m-tab" onclick="switchMobileTab('timetable', this)">真实尺度表</button>
     </div>
   </div>
 
@@ -1379,8 +1369,8 @@ html, body {
   <footer class="bottom-dock">
     <div class="slider-cluster">
       <label class="slider-item">
-        <span>层间剖开间距</span>
-        <input type="range" id="explodeRange" min="0.65" max="2.4" step="0.05" value="1.20" oninput="updateExplosion(this.value)" />
+        <span id="explodeLabel">垂向比例 (1.0x真实)</span>
+        <input type="range" id="explodeRange" min="1.0" max="3.4" step="0.1" value="1.0" oninput="updateExplosion(this.value)" />
       </label>
       <label class="slider-item">
         <span>水平旋转</span>
@@ -1388,17 +1378,17 @@ html, body {
       </label>
       <label class="slider-item">
         <span>俯仰角</span>
-        <input type="range" id="pitchRange" min="15" max="80" step="1" value="28" oninput="updatePitchFromSlider(this.value)" />
+        <input type="range" id="pitchRange" min="15" max="80" step="1" value="27" oninput="updatePitchFromSlider(this.value)" />
       </label>
     </div>
 
     <div class="legend-cluster">
-      <span class="leg-chip"><i class="leg-dot" style="background:var(--cr-navy);"></i>国铁11台20线</span>
+      <span class="leg-chip"><i class="leg-dot" style="background:var(--cr-navy);"></i>主站房(409×208m)</span>
+      <span class="leg-chip"><i class="leg-dot" style="background:#5a7696;"></i>无柱雨棚(260×130m×2)</span>
       <span class="leg-chip"><i class="leg-dot" style="background:var(--cr-crimson);"></i>8–15西九龙跨境</span>
-      <span class="leg-chip"><i class="leg-dot" style="background:var(--metro-l4);"></i>4号线(F4高架)</span>
-      <span class="leg-chip"><i class="leg-dot" style="background:var(--metro-l6);"></i>6号线(F4高架)</span>
-      <span class="leg-chip"><i class="leg-dot" style="background:var(--metro-l5);"></i>5号线(B2地下)</span>
-      <span class="leg-chip"><i class="leg-dot" style="background:var(--signal);"></i>流光导航走廊</span>
+      <span class="leg-chip"><i class="leg-dot" style="background:var(--metro-l4);"></i>4号线(140m)</span>
+      <span class="leg-chip"><i class="leg-dot" style="background:var(--metro-l6);"></i>6号线(140m)</span>
+      <span class="leg-chip"><i class="leg-dot" style="background:var(--metro-l5);"></i>5号线(B2正交)</span>
     </div>
   </footer>
 
@@ -1417,7 +1407,7 @@ html, body {
     </div>
   </div>
 
-  <!-- ==================== V7 BIM-GRADE 3D ARCHITECTURAL ENGINE ==================== -->
+  <!-- ==================== V8 1:1 TRUE-SCALE (1 UNIT = 1 METER) 3D ENGINE ==================== -->
   <script>
     // =========================================================================
     // 1. INITIALIZE 40-GATE MATRIX (A1-A20 / B1-B20)
@@ -1434,190 +1424,192 @@ html, body {
     }
 
     // =========================================================================
-    // 2. PASSENGER WAYFINDING ROUTES & LAYER METADATA
+    // 2. TRUE METER-SCALE WAYFINDING ROUTES & LAYER METADATA (1 unit = 1 meter)
     // =========================================================================
     const WAYFINDING_FLOWS = {
       hsr_to_m5: {
         title: '高铁到达 → 换乘地铁 5 号线 (免安检直达通道)',
-        shortSteps: ['F1站台', 'F2东侧A2口', '东广场免安检梯', 'B1五号线厅', 'B2站台'],
+        shortSteps: ['F1站台(450m)', '上F2南出站廊(A2口)', '东广场免安检梯', 'B1五号线厅', 'B2站台(140m)'],
         steps: [
-          '<strong>F1 站台下车：</strong>认准东侧方向，乘扶梯上行至 <strong>A1 / A2 出站口</strong>（切勿前往西侧 B1/B2 口）。',
-          '<strong>F2 东广场出闸：</strong>优先走 <strong>A2 出站口</strong>，出闸即进入东广场常态化免安检隔离区。',
-          '<strong>直达 B1 站厅：</strong>乘坐新增免安检自动扶梯从东广场 (F2) 直接下达 <strong>B1 层 5 号线站厅</strong>。',
-          '<strong>B2 侧式站台：</strong>5 号线为侧式站台（开右门），在 B1 核对方向后下楼（北侧往赤湾，南侧往大剧院）。'
+          '<strong>F1 站台上行（“上出”）：</strong>在 450m 站台下车后向南走，乘扶梯上行 9.5m 至 <strong>F2 南侧跨线高架出站通廊</strong>。',
+          '<strong>F2 东侧 A2 口出闸：</strong>向东走出 <strong>A2 出站口 (X=+130m, Z=+89m)</strong>，即进入主站房东翼免安检隔离区。',
+          '<strong>直达 B1 站厅：</strong>乘坐新增免安检自动扶梯从 F2 (+9.5m) 直接下达 <strong>B1 层 (-7.5m) 5 号线站厅</strong>。',
+          '<strong>B2 侧式站台：</strong>5 号线为 140m 双侧式站台（开右门），在 B1 核对方向后下至 B2 (-14.5m)。'
         ],
-        cam: { yaw: -0.60, pitch: 0.46 },
+        cam: { yaw: -0.60, pitch: 0.45 },
         path: [
-          { x: 0,    lvl: 'F1', dy: 5,  z: 28,  label: '1 F1站台' },
-          { x: 86,   lvl: 'F2', dy: 7,  z: 28,  label: '2 A2东出站' },
-          { x: 148,  lvl: 'F2', dy: 7,  z: 28,  label: '3 免安检梯' },
-          { x: 148,  lvl: 'B1', dy: 7,  z: 8,   label: '4 B1五号厅' },
-          { x: 96,   lvl: 'B2', dy: 7,  z: -16, label: '5 B2站台' }
+          { x: 0,    lvl: 'F1', dy: 2.5, z: 55,  label: '1 F1站台' },
+          { x: 0,    lvl: 'F2', dy: 4.5, z: 89,  label: '2 上F2南廊' },
+          { x: 132,  lvl: 'F2', dy: 4.5, z: 89,  label: '3 A2东出站' },
+          { x: 168,  lvl: 'B1', dy: 3.5, z: 24,  label: '4 B1五号厅' },
+          { x: 110,  lvl: 'B2', dy: 3.5, z: -12, label: '5 B2站台' }
         ]
       },
       hsr_to_m46: {
-        title: '高铁到达 → 换乘地铁 4 号线 / 6 号线 (高架共站)',
-        shortSteps: ['F1站台', 'F2东侧A1/A2口', '东广场地铁大厅', 'F3高架站厅', 'F4双岛站台'],
+        title: '高铁到达 → 换乘地铁 4 号线 / 6 号线 (穿堂高架共站)',
+        shortSteps: ['F1站台', '上F2北出站廊(A1口)', '主站房东翼前厅', 'F3高架站厅', 'F4双岛(140m)'],
         steps: [
-          '<strong>F1 站台出站：</strong>下车后向东上行至 <strong>A1 或 A2 出站口</strong>（F2 层东侧）。',
-          '<strong>东广场集散层：</strong>出闸后直行步入 <strong>东广场地铁换乘大厅</strong>，按头顶红/青色灯箱乘大扶梯上行。',
-          '<strong>F3 站厅安检：</strong>到达 F3 层地铁站厅完成安检入闸（若在免安检时段可走专用通道）。',
-          '<strong>F4 同层双岛：</strong>上至 F4 高架站台，西侧岛台为 <strong>4 号线</strong>，东侧岛台为 <strong>6 号线</strong>。'
+          '<strong>F1 站台上行：</strong>下车后向北端乘扶梯上行至 <strong>F2 北高架出站通廊</strong>，向东出 <strong>A1 出站口</strong>。',
+          '<strong>主站房东翼换乘核：</strong>出 A1 闸机即位于 409m 主站房东翼内廊，按红/青色指示牌乘扶梯上行。',
+          '<strong>F3 站厅过检 (+18.5m)：</strong>到达主站房东翼 F3 层地铁站厅完成安检入闸。',
+          '<strong>F4 同层双岛 (+26.5m)：</strong>上至 F4 层 140m 高架站台，西侧岛台为 <strong>4 号线 (X=+154m)</strong>，东侧岛台为 <strong>6 号线 (X=+184m)</strong>。'
         ],
         cam: { yaw: -0.52, pitch: 0.44 },
         path: [
-          { x: -10,  lvl: 'F1', dy: 5,  z: -16, label: '1 F1站台' },
-          { x: 86,   lvl: 'F2', dy: 7,  z: -16, label: '2 A1出站口' },
-          { x: 156,  lvl: 'F2', dy: 7,  z: -16, label: '3 东广场厅' },
-          { x: 166,  lvl: 'F3', dy: 7,  z: -12, label: '4 F3站厅' },
-          { x: 172,  lvl: 'F4', dy: 9,  z: -12, label: '5 F4站台' }
+          { x: 26,   lvl: 'F1', dy: 2.5, z: -50, label: '1 F1站台' },
+          { x: 128,  lvl: 'F2', dy: 4.5, z: -89, label: '2 A1出站口' },
+          { x: 158,  lvl: 'F2', dy: 4.5, z: -38, label: '3 东翼大厅' },
+          { x: 168,  lvl: 'F3', dy: 4.0, z: -15, label: '4 F3站厅' },
+          { x: 168,  lvl: 'F4', dy: 5.0, z: 0,   label: '5 F4站台' }
         ]
       },
       metro_to_hsr: {
         title: '地铁 4 / 5 / 6 号线 → 进站乘坐高铁 (东进站口 A)',
-        shortSteps: ['地铁抵达', '东广场F2集散', '国铁东进站口(A)', 'F2候车大厅', 'A/B检票下F1'],
+        shortSteps: ['地铁抵达', '东翼F2集散厅', '国铁东进站口(A)', '3.9万㎡候车厅', 'A/B检票下F1'],
         steps: [
-          '<strong>地铁出闸汇合：</strong>4/6 号线从 F4 下至 F3 出闸；5 号线从 B2 上至 B1 出闸，均汇集至 <strong>东广场 F2 集散大厅</strong>。',
-          '<strong>东进站口 (A口)：</strong>向西直行约 60 米即达国铁 <strong>东进站口 (A口)</strong>，切勿绕去西广场。',
-          '<strong>验检合一过检：</strong>刷身份证通过实名制闸机与安检，直接步入 F2 候车大厅东侧（A1–A20 检票区）。',
-          '<strong>检票下达站台：</strong>A 检票口与 B 检票口互通，开车前 15 分钟检票下至 F1 对应站台。'
+          '<strong>地铁出闸汇合：</strong>4/6 号线从 F4 (+26.5m) 下至 F3 出闸；5 号线从 B2 (-14.5m) 上至 B1 出闸，均汇集至 <strong>F2 东广场集散大厅 (+9.5m)</strong>。',
+          '<strong>东进站口 (A口)：</strong>向西直行进入 409m 主站房东立面 <strong>东进站口 (A口, X=+130m)</strong>，距离地铁口仅数步之遥。',
+          '<strong>步入 3.9 万㎡候车大厅：</strong>过安检后直接进入 <strong>260m×148m 中央无柱候车大厅</strong>（东侧为 A1–A20 检票口，西侧为 B1–B20 检票口）。',
+          '<strong>检票下达 F1 站台：</strong>开车前 15 分钟检票，乘扶梯下行 9.5m 到达 F1 对应 450m 站台。'
         ],
-        cam: { yaw: -0.68, pitch: 0.50 },
+        cam: { yaw: -0.66, pitch: 0.48 },
         path: [
-          { x: 178,  lvl: 'F4', dy: 8,  z: -35, label: '1 地铁到达' },
-          { x: 158,  lvl: 'F2', dy: 7,  z: -15, label: '2 东广场F2' },
-          { x: 108,  lvl: 'F2', dy: 8,  z: 0,   label: '3 东进站口A' },
-          { x: 16,   lvl: 'F2', dy: 8,  z: 0,   label: '4 候车大厅' },
-          { x: 16,   lvl: 'F1', dy: 6,  z: 0,   label: '5 F1站台' }
+          { x: 184,  lvl: 'F4', dy: 4.5, z: -30, label: '1 地铁到达' },
+          { x: 165,  lvl: 'F2', dy: 4.5, z: -10, label: '2 东广场F2' },
+          { x: 128,  lvl: 'F2', dy: 4.5, z: 0,   label: '3 东进站口A' },
+          { x: 26,   lvl: 'F2', dy: 4.5, z: 0,   label: '4 候车大厅' },
+          { x: 26,   lvl: 'F1', dy: 2.5, z: 0,   label: '5 F1站台' }
         ]
       },
       m46_to_m5: {
-        title: '地铁 4 / 6 号线 ⇄ 地铁 5 号线 (付费区天地大扶梯)',
+        title: '地铁 4 / 6 号线 ⇄ 地铁 5 号线 (付费区 6 台天地大扶梯)',
         shortSteps: ['F4高架站台', 'F3付费区西端', '6台天地大扶梯', 'B1五号线付费区', 'B2侧式站台'],
         steps: [
-          '<strong>切勿出闸：</strong>地铁线网内部换乘无需出站，全程在付费区内完成。',
-          '<strong>F3 付费区西侧：</strong>从 F4 站台下至 F3 站厅后，前往站厅西侧的 <strong>6 台超长天地换乘大扶梯</strong>。',
-          '<strong>跨越三层直达：</strong>乘坐大扶梯一次性跨越 F3 → F2 → F1 直达 <strong>B1 层 5 号线站厅付费区</strong>。',
-          '<strong>看清 5 号线方向：</strong>在 B1 看清“赤湾”或“大剧院/黄贝岭”方向指示牌后再下至 B2 对应侧式站台。'
+          '<strong>付费区内直通：</strong>地铁 4/6 号线与 5 号线换乘全程在付费区内完成，切勿出闸。',
+          '<strong>F3 付费区西侧 (+18.5m)：</strong>从 F4 站台下至 F3 站厅后，前往西侧的 <strong>6 台超长天地换乘大扶梯</strong>。',
+          '<strong>跨越 26m 垂高直达：</strong>乘坐大扶梯从 F3 (+18.5m) 穿过 F2、F1 直达 <strong>B1 层 (-7.5m) 5 号线付费区</strong>。',
+          '<strong>B2 侧式站台 (-14.5m)：</strong>在 B1 看清“赤湾（北侧）”或“大剧院/黄贝岭（南侧）”方向牌后再下至 B2。'
         ],
-        cam: { yaw: -0.45, pitch: 0.42 },
+        cam: { yaw: -0.46, pitch: 0.42 },
         path: [
-          { x: 184,  lvl: 'F4', dy: 8,  z: 24,  label: '1 F4高架台' },
-          { x: 160,  lvl: 'F3', dy: 7,  z: 24,  label: '2 F3付费区' },
-          { x: 138,  lvl: 'F1', dy: 7,  z: 12,  label: '3 天地扶梯' },
-          { x: 138,  lvl: 'B1', dy: 7,  z: 0,   label: '4 B1付费区' },
-          { x: 96,   lvl: 'B2', dy: 7,  z: 18,  label: '5 B2五号线' }
+          { x: 184,  lvl: 'F4', dy: 4.5, z: 22,  label: '1 F4高架台' },
+          { x: 158,  lvl: 'F3', dy: 4.0, z: 22,  label: '2 F3付费区' },
+          { x: 146,  lvl: 'F1', dy: 3.5, z: 10,  label: '3 天地扶梯' },
+          { x: 146,  lvl: 'B1', dy: 3.5, z: 0,   label: '4 B1付费区' },
+          { x: 95,   lvl: 'B2', dy: 3.5, z: 12,  label: '5 B2五号线' }
         ]
       },
       hsr_to_west_ride: {
         title: '高铁到达 → 西广场网约车上车点 (B区地面 / A区地下)',
-        shortSteps: ['F1站台', 'F2西侧B1/B2口', '西广场地面层', '网约车B区候车室', '或下B1网约车A区'],
+        shortSteps: ['F1站台', '上F2西侧B1/B2口', '西广场270m平台', '网约车B区候车室', '或下B1网约车A区'],
         steps: [
-          '<strong>认准西侧出站：</strong>在 F1 站台下车后，朝西侧走上至 <strong>B1 / B2 出站口</strong>（出站即达西广场）。',
-          '<strong>网约车 B 区（推荐）：</strong>出 B1 口左转步入西广场地面 <strong>网约车空调候车室 (B区)</strong>，在终端输入车牌号查看车位。',
-          '<strong>网约车 A 区（地下）：</strong>或乘垂梯下至 <strong>B1 层西广场地下网约车 A 区</strong> 上车。',
-          '<strong>送客极速进站：</strong>打车来深圳北站乘高铁，直接定位“深圳北站西广场落客区”，进 B 口安检最快。'
+          '<strong>F1 站台上行至 F2：</strong>在 F1 站台下车后上至 F2 高架出站廊，向西走由 <strong>B1 或 B2 出站口 (X=-130m)</strong> 出闸。',
+          '<strong>网约车 B 区（推荐）：</strong>出 B1 口步入西广场平台 <strong>网约车空调候车室 (B区, X=-245m)</strong>，输入车牌号查看车位。',
+          '<strong>网约车 A 区（地下）：</strong>或乘垂梯下至 <strong>B1 层 (-7.5m) 西广场地下网约车 A 区</strong> 上车。',
+          '<strong>送客极速进站：</strong>打车来深圳北站乘高铁，直接定位“西广场落客平台”，由 <strong>西进站口 (B口)</strong> 进站最快。'
         ],
-        cam: { yaw: -2.28, pitch: 0.48 },
+        cam: { yaw: -2.32, pitch: 0.46 },
         path: [
-          { x: -16,  lvl: 'F1', dy: 5,  z: 16,  label: '1 F1站台' },
-          { x: -88,  lvl: 'F2', dy: 7,  z: 16,  label: '2 B1西出站' },
-          { x: -145, lvl: 'F2', dy: 7,  z: 28,  label: '3 西广场B区' },
-          { x: -158, lvl: 'B1', dy: 7,  z: -24, label: '4 B1网约A区' }
+          { x: -26,  lvl: 'F1', dy: 2.5, z: 50,  label: '1 F1站台' },
+          { x: -128, lvl: 'F2', dy: 4.5, z: 89,  label: '2 B2西出站' },
+          { x: -245, lvl: 'F2', dy: 4.5, z: 45,  label: '3 西广场B区' },
+          { x: -265, lvl: 'B1', dy: 3.5, z: -25, label: '4 B1网约A区' }
         ]
       },
       hsr_to_east_bus: {
         title: '高铁到达 → 东广场出租车场 (1F/B1) & 公交总站 (1F/2F)',
-        shortSteps: ['F1站台', 'F2东侧A1/A2口', '东广场交通核', '北侧公交总站', '南侧出租车场'],
+        shortSteps: ['F1站台', '上F2东侧A1/A2口', '东广场270m平台', '北翼公交总站', '南翼出租车场'],
         steps: [
-          '<strong>东侧出站：</strong>从 F1 站台向东上行，由 <strong>A1 或 A2 出站口</strong> 步入东广场。',
-          '<strong>公交总站（北翼）：</strong>出 A1 口向东北方向下至 F1/2F <strong>东广场公交总站</strong>，覆盖高峰专线与夜班线。',
-          '<strong>出租车场（南翼）：</strong>出 A2 口向东南方向下至 <strong>F1 / B1 两层出租车候客区</strong> 排队上车。'
+          '<strong>东侧上行出站：</strong>从 F1 站台上至 F2 高架出站通廊，向东出 <strong>A1 或 A2 出站口 (X=+130m)</strong>。',
+          '<strong>公交总站（北翼）：</strong>出 A1 口向东北走入东广场北翼 <strong>F1/F2 公交总站 (X=+280m, Z=-80m)</strong>。',
+          '<strong>出租车场（南翼）：</strong>出 A2 口向东南下至东广场南翼 <strong>F1/B1 出租车候客区 (X=+280m, Z=+80m)</strong>。'
         ],
-        cam: { yaw: -0.58, pitch: 0.46 },
+        cam: { yaw: -0.56, pitch: 0.45 },
         path: [
-          { x: 16,   lvl: 'F1', dy: 5,  z: 36,  label: '1 F1站台' },
-          { x: 86,   lvl: 'F2', dy: 7,  z: 36,  label: '2 A2出站口' },
-          { x: 162,  lvl: 'F2', dy: 7,  z: 45,  label: '3 东广场核' },
-          { x: 178,  lvl: 'F1', dy: 6,  z: 75,  label: '4 出租/公交' }
+          { x: 26,   lvl: 'F1', dy: 2.5, z: 55,  label: '1 F1站台' },
+          { x: 132,  lvl: 'F2', dy: 4.5, z: 89,  label: '2 A2出站口' },
+          { x: 235,  lvl: 'F2', dy: 4.5, z: 65,  label: '3 东广场核' },
+          { x: 295,  lvl: 'F1', dy: 3.0, z: 85,  label: '4 出租/公交' }
         ]
       },
       hsr_transfer: {
-        title: '国铁联程同站中转换乘 (不出站便捷换乘走廊)',
-        shortSteps: ['F1前车到达', '站台便捷换乘梯', '刷身份证核验', 'F2候车大厅', '后车A/B口下F1'],
+        title: '国铁联程同站中转换乘 (上出至F2同层中转换乘闸机)',
+        shortSteps: ['F1前车到达', '上行至F2出站廊', 'F2中转换乘闸机', '同层入F2候车厅', '后车A/B口下F1'],
         steps: [
-          '<strong>无需出站：</strong>已购买联程车票的旅客，下车后切勿跟随“出站”人流走东/西出站口。',
-          '<strong>站台中部换乘梯：</strong>在 F1 站台中部寻找蓝底白字 <strong>“便捷换乘”</strong> 标识通道。',
-          '<strong>直达候车厅：</strong>刷身份证核验联程票后，乘专用扶梯直接逆向上至 <strong>F2 高架候车大厅</strong>。',
-          '<strong>二次检票：</strong>对照大屏找到下一趟列车的 A/B 检票口，检票下至新站台（建议预留 ≥20 分钟）。'
+          '<strong>上行至 F2 出站通廊：</strong>深圳北站为“上进上出”，下车后顺出站扶梯上行 9.5m 至 <strong>F2 南/北高架出站通廊 (Z=±89m)</strong>。',
+          '<strong>切勿出站过闸：</strong>在抵达 A1/A2/B1/B2 出站口前，走内侧缓冲区的 <strong>“便捷中转换乘”闸机（内移15m扩容区）</strong>。',
+          '<strong>F2 同层步入候车厅：</strong>刷身份证通过换乘闸机，直接在 <strong>F2 同层步入 260m×148m 中央候车大厅</strong>。',
+          '<strong>二次检票下 F1：</strong>核对大屏找到后车 A/B 检票口，检票下至 F1 新站台（建议预留 ≥20 分钟）。'
         ],
-        cam: { yaw: -0.78, pitch: 0.54 },
+        cam: { yaw: -0.76, pitch: 0.52 },
         path: [
-          { x: -34,  lvl: 'F1', dy: 5,  z: -30, label: '1 前车到达' },
-          { x: -34,  lvl: 'F2', dy: 8,  z: 0,   label: '2 换乘专梯' },
-          { x: 26,   lvl: 'F2', dy: 8,  z: 0,   label: '3 F2候车厅' },
-          { x: 26,   lvl: 'F1', dy: 5,  z: 34,  label: '4 后车站台' }
+          { x: -51,  lvl: 'F1', dy: 2.5, z: 55,  label: '1 前车到达' },
+          { x: -51,  lvl: 'F2', dy: 4.5, z: 89,  label: '2 上F2出站廊' },
+          { x: 35,   lvl: 'F2', dy: 4.5, z: 75,  label: '3 换乘闸机' },
+          { x: 26,   lvl: 'F2', dy: 4.5, z: 12,  label: '4 F2候车厅' },
+          { x: 26,   lvl: 'F1', dy: 2.5, z: -40, label: '5 后车站台' }
         ]
       }
     };
 
     const LAYER_INFO = {
       ALL: {
-        title: '深圳北站全站 6 层立体枢纽',
-        meta: '上跨高架 4/6 号线 · 中层国铁 11台20线 · 下穿 5 号线',
-        desc: '全站实现“上进下出、东铁西车、人车立体分流”。东广场集中地铁 4/5/6 号线、出租车与公交；西广场集中网约车 A/B 区、长途客运与社会停车场。'
+        title: '深圳北站“十”字形枢纽 (950m × 480m · 1:1真实工程比例)',
+        meta: '主站房 409m×208m×43.6m · 站台及雨棚 260m×468m×18.1m',
+        desc: '严格依据国家铁路局竣工参数按 1:1 米制比例建模：南北向 450m 高铁站台（含南北各 130m 无柱雨棚，总长 468m、宽 260m）与东西向 409m 主站房及东西广场（总长 950m）正交咬合，构成宏伟的“十”字形立体枢纽。'
       },
       F4: {
-        title: 'F4 · 地铁 4 号线 / 6 号线高架站台层 (+102m)',
-        meta: '东广场上空 · 同层双岛四线平行布置',
-        desc: '西侧岛式站台为 4 号线（红线：福田口岸—牛湖），东侧岛式站台为 6 号线（青线：科学馆—松岗），两线通过连桥与 F3 站厅实现便捷换乘。'
+        title: 'F4 · 地铁 4 / 6 号线穿堂高架站台层 (+26.5m / 绝对标高+110.5m)',
+        meta: '主站房东翼上空 (X=+154m / +184m) · 140m标准6节编组双岛四线',
+        desc: '4号线与6号线高架车站直接穿堂进入 409m 主站房东翼上空。两座岛式站台有效长度均为 140m（停靠 6 节编组地铁列车），与 450m 长的国铁站台形成鲜明的真实尺度对比。'
       },
       F3: {
-        title: 'F3 · 4 / 6 号线高架站厅 & 商业夹层 (+96m)',
-        meta: '6 台天地换乘大扶梯上口 · 东广场商业餐饮环廊',
-        desc: '连接东广场地面与 F4 高架站台。付费区西端设有 6 台跨越 3 层的超长“天地大扶梯”，直通 B1 层 5 号线付费区；国铁站房南北两侧为餐饮休闲夹层。'
+        title: 'F3 · 4 / 6 号线站厅 & 南北无站台柱雨棚层 (+18.5m)',
+        meta: '南北无柱雨棚顶高 +18.1m (260m×130m×2) · 6台天地大扶梯上口',
+        desc: '主站房东翼 F3 层为地铁 4/6 号线站厅，西侧设 6 台跨越 26m 垂高的天地大扶梯直通 B1；主站房南北外侧为各长 130m、宽 260m、高 18.1m 的四边形环索弦支拱无站台柱雨棚。'
       },
       F2: {
-        title: 'F2 · 国铁高架候车大厅 & 东西广场地面层 (+90m)',
-        meta: '东侧 A1–A20 / 西侧 B1–B20 检票口 · 东(A)/西(B)进站口',
-        desc: '中央为无柱大跨度高架候车厅，东侧设 A1–A20 检票口及 A1/A2 出站口（接地铁），西侧设 B1–B20 检票口及 B1/B2 出站口（接西广场网约车 B 区空调候车室）。'
+        title: 'F2 · 国铁“上进上出”主站房高架层 (+9.5m · 409m × 208m)',
+        meta: '中央候车厅 260m×148m (3.85万㎡) + 南北高架出站廊 260m×30m×2',
+        desc: '主站房核心层：东西总长 409m（横跨 260m 股道并向东西广场各延伸 74.5m），南北总宽 208m（中部 148m 为无柱候车室，南北两侧各 30m 为 A1↔B1、A2↔B2 跨线高架出站通廊）。'
       },
       F1: {
-        title: 'F1 · 国铁 11台20线 高铁站台层 (+84m)',
-        meta: '2 座侧式 + 9 座岛式站台 · 8–15站台为香港西九龙跨境专区',
-        desc: '南北向铺设 20 条正线及到发线。自东向西依次为 1 至 20 站台，其中中部 8–15 站台（对应 A8–A15 / B8–B15）为广深港跨境高铁与长途重联列车核心停靠区。'
+        title: 'F1 · 国铁 11台20线 高铁站台层 (±0.0m基准 · 260m × 450m)',
+        meta: '2座6.5m边台 + 9座12m岛台 · 可停靠 414m 重联16编组复兴号',
+        desc: '20 条股道与 11 座 450m 长站台在 260m 东西宽度内平行排列：北段 130m 位于北雨棚下，中段 208m 位于主站房高架候车厅正下方，南段 130m 位于南雨棚下。'
       },
       B1: {
-        title: 'B1 · 5 号线站厅 & 东西出站换乘通廊 (+78m)',
-        meta: '东广场免安检扶梯落点 · 6台天地大扶梯下口 · 西广场网约车A区',
-        desc: '高铁站台下方设有南北两条地下出站通道；东侧为地铁 5 号线站厅（接东广场免安检直达扶梯及 F3 天地大扶梯），西侧为网约车 A 区与社会停车场。'
+        title: 'B1 · 东广场 5 号线站厅 & 西广场地下车库/网约车 A 区 (-7.5m)',
+        meta: '东广场免安检扶梯落点 · 西广场 1971 车位大型地下车库',
+        desc: '东侧为地铁 5 号线站厅及出租车场；西侧为 270.5m×320m 地下车库与网约车 A 区。'
       },
       B2: {
-        title: 'B2 · 地铁 5 号线东西向正交站台 & 深惠城际 (+72m)',
-        meta: '东西向垂直下穿国铁 20 条股道 · 双侧式站台（开右侧车门）',
-        desc: '5 号线呈东西向正交下穿国铁站房。采用双侧式站台设计，列车开启右侧车门，下楼前务必在 B1 站厅看清“赤湾（北侧）”或“大剧院/黄贝岭（南侧）”方向。'
+        title: 'B2 · 地铁 5 号线东西向正交下穿站台层 (-14.5m)',
+        meta: '410m 东西正交箱体 · 140m 双侧式站台（开右侧车门）',
+        desc: '地铁 5 号线在 Z=0m 中轴处以 90° 正交下穿国铁 20 条股道与东广场，站台有效长度 140m，采用双侧式站台设计（北侧往赤湾，南侧往大剧院/黄贝岭）。'
       }
     };
 
     // =========================================================================
-    // 3. 3D ENGINE STATE, ANIMATED TRAINS & SAFE VIEWPORT PROJECTION
+    // 3. 1:1 TRUE METER-SCALE COORDINATE SYSTEM & VIEWPORT PROJECTION
+    //    Every X, Y, Z coordinate in this engine is in REAL METERS (1 unit = 1m)!
     // =========================================================================
     const canvas = document.getElementById('station3DCanvas');
     const ctx = canvas.getContext('2d');
 
     const state = {
       yaw: -0.66,          // -38 deg default isometric
-      pitch: 0.49,         // 28 deg default elevation
+      pitch: 0.47,         // 27 deg default elevation
       targetYaw: -0.66,
-      targetPitch: 0.49,
+      targetPitch: 0.47,
       zoom: 1.0,
       targetZoom: 1.0,
       panX: 0,
       panY: 0,
       targetPanX: 0,
       targetPanY: 0,
-      explode: 1.20,
-      targetExplode: 1.20,
+      explode: 1.0,        // 1.0 = strict 1:1 true engineering scale (1m vertical = 1m horizontal)!
+      targetExplode: 1.0,
       selectedLevel: 'ALL',
       selectedGate: null,
       activeFlow: 'hsr_to_m5',
@@ -1627,17 +1619,18 @@ html, body {
       sheetMode: 'half',
       tourActive: false,
       tourProgress: 0,
-      clock: 0,
-      hoveredBadge: null
+      clock: 0
     };
 
-    const BASE_LEVEL_Y = {
-      B2: -76,
-      B1: -38,
-      F1: 0,
-      F2: 40,
-      F3: 78,
-      F4: 114
+    // Real-World Vertical Elevations in Meters (relative to F1 Trackbed = 0.0m)
+    const REAL_LEVEL_Y_METERS = {
+      B2: -14.5,   // Metro Line 5 rail level (-14.5m, abs +69.5m)
+      B1: -7.5,    // Metro Line 5 concourse & underground garage (-7.5m, abs +76.5m)
+      F1: 0.0,     // HSR 11-Platform 20-Track datum (0.0m, abs +84.0m)
+      F2: 9.5,     // HSR Elevated Waiting Hall & Upper-Exit Corridors (+9.5m, abs +93.5m)
+      F3: 18.5,    // Metro Line 4/6 Concourse (+18.5m; N/S Canopy height is +18.1m)
+      F4: 26.5,    // Metro Line 4/6 Elevated Platforms (+26.5m, abs +110.5m)
+      ROOF: 43.6   // Main Station Building Roof (+43.6m, abs +127.6m)
     };
 
     const TIER_MAP = {
@@ -1645,17 +1638,18 @@ html, body {
       B2: 1,
       B1: 2,
       F1: 3,
-      F2: 4,
-      F3: 5,
-      F4: 6,
-      ROOF: 7,
-      PATH: 8,
-      PATH_NODE: 9,
-      HUD: 10
+      CANOPY: 4,
+      F2: 5,
+      F3: 6,
+      F4: 7,
+      ROOF: 8,
+      PATH: 9,
+      PATH_NODE: 10,
+      HUD: 11
     };
 
     function getLevelY(lvl) {
-      return BASE_LEVEL_Y[lvl] * state.explode;
+      return REAL_LEVEL_Y_METERS[lvl] * state.explode;
     }
 
     function project3D(pt) {
@@ -1674,7 +1668,6 @@ html, body {
       const h = canvas.clientHeight || 800;
       const isMobile = w <= 960;
 
-      // Calculate the unobstructed safe viewport rectangle (accounting for docks/bottom sheet)
       let safeLeft = 304;
       let safeRight = w - 350;
       let safeTop = 98;
@@ -1682,24 +1675,26 @@ html, body {
 
       if (isMobile) {
         safeLeft = 10;
-        safeRight = w - 42; // Leave room for right-edge floor rail
-        safeTop = 112;      // Below mobile camera strip & telemetry bar
+        safeRight = w - 42;
+        safeTop = 112;
         const sheetPx = state.sheetMode === 'peek' ? 68 : (state.sheetMode === 'full' ? h * 0.66 + 68 : h * 0.31 + 68);
         safeBottom = h - sheetPx - 8;
       }
 
       const usableW = Math.max(200, safeRight - safeLeft);
       const usableH = Math.max(150, safeBottom - safeTop);
-      const divW = isMobile ? 535 : 495;
-      const divH = isMobile ? 375 : 340;
+
+      // Entire 950m x 480m hub projected span in meters
+      const divW = isMobile ? 990 : 920;
+      const divH = isMobile ? 560 : 510;
       const baseScale = Math.min(usableW / divW, usableH / divH);
 
-      const dist = 3200;
+      const dist = 4800;
       const persp = dist / (dist - camProx);
       const scale = baseScale * persp * state.zoom;
 
       const cx = (safeLeft + safeRight) * 0.5 + state.panX;
-      const cy = (safeTop + safeBottom) * 0.51 + state.panY;
+      const cy = (safeTop + safeBottom) * 0.52 + state.panY;
 
       return {
         x: cx + x1 * scale,
@@ -1765,13 +1760,13 @@ html, body {
       });
     }
 
-    function pushSurfaceLabel(pt3d, text, color, fontSize = 9.5, alpha = 1, tier = 3) {
+    function pushSurfaceLabel(pt3d, text, color, fontSize = 9.0, alpha = 1, tier = 3) {
       if (alpha <= 0.12) return;
       const p = project3D(pt3d);
       drawQueue.push({
         type: 'surfaceLabel',
         tier: tier,
-        depth: p.camProx + 4,
+        depth: p.camProx + 6,
         p,
         text,
         color,
@@ -1780,7 +1775,7 @@ html, body {
       });
     }
 
-    function pushBadge(pt3d, text, bg, fg, border, isPill = false, alpha = 1, tier = 10, clickAction = null) {
+    function pushBadge(pt3d, text, bg, fg, border, isPill = false, alpha = 1, tier = 11, clickAction = null) {
       if (alpha <= 0.05) return;
       const p = project3D(pt3d);
       drawQueue.push({
@@ -1798,7 +1793,6 @@ html, body {
       });
     }
 
-    // Subdivided 3D box generator with dynamic Lambertian sun shading
     function pushBox(x, y, z, w, h, d, palette, alpha = 1, tier = 3, segX = 1, segZ = 1) {
       if (alpha <= 0.01) return;
 
@@ -1837,48 +1831,47 @@ html, body {
           const p111 = { x: cx + hw, y: y + h, z: cz + hd };
           const p011 = { x: cx - hw, y: y + h, z: cz + hd };
 
-          pushPoly([p010, p110, p111, p011], palette.top, palette.stroke, 0.75, alpha, tier);
+          pushPoly([p010, p110, p111, p011], palette.top, palette.stroke, 0.7, alpha, tier);
 
           if (iz === segZ - 1 && showZMax) {
-            pushPoly([p001, p101, p111, p011], fZMax, palette.stroke, 0.75, alpha, tier);
+            pushPoly([p001, p101, p111, p011], fZMax, palette.stroke, 0.7, alpha, tier);
           }
           if (iz === 0 && showZMin) {
-            pushPoly([p100, p000, p010, p110], fZMin, palette.stroke, 0.75, alpha, tier);
+            pushPoly([p100, p000, p010, p110], fZMin, palette.stroke, 0.7, alpha, tier);
           }
           if (ix === segX - 1 && showXMax) {
-            pushPoly([p101, p100, p110, p111], fXMax, palette.stroke, 0.75, alpha, tier);
+            pushPoly([p101, p100, p110, p111], fXMax, palette.stroke, 0.7, alpha, tier);
           }
           if (ix === 0 && showXMin) {
-            pushPoly([p000, p001, p011, p010], fXMin, palette.stroke, 0.75, alpha, tier);
+            pushPoly([p000, p001, p011, p010], fXMin, palette.stroke, 0.7, alpha, tier);
           }
         }
       }
     }
 
-    // Articulated Multi-Car 3D Train Builder + Headlights + Telemetry Tag
-    function pushArticulatedTrain(x, y, z, length, width, height, axis, bodyPalette, stripeColor, alpha, tier, trainTag = null) {
+    // True-Scale Articulated Train Builder (8-car 209m / 16-car 414m HSR, 6-car 140m Metro)
+    function pushArticulatedTrain(x, y, z, length, width, height, axis, cars, bodyPalette, stripeColor, alpha, tier, trainTag = null) {
       if (alpha <= 0.04) return;
-      const cars = 5;
-      const gap = 2.0;
+      const gap = 1.6;
       const carLen = (length - gap * (cars - 1)) / cars;
 
       for (let c = 0; c < cars; c++) {
         const offset = -length / 2 + carLen / 2 + c * (carLen + gap);
         if (axis === 'z') {
           pushBox(x, y, z + offset, width, height, carLen, bodyPalette, alpha, tier, 1, 1);
-          pushBox(x, y + height + 0.1, z + offset, width * 0.56, 0.7, carLen * 0.88, {
+          pushBox(x, y + height + 0.1, z + offset, width * 0.6, 0.5, carLen * 0.9, {
             top: stripeColor, front: stripeColor, side: stripeColor, stroke: stripeColor
           }, alpha, tier, 1, 1);
         } else {
           pushBox(x + offset, y, z, carLen, height, width, bodyPalette, alpha, tier, 1, 1);
-          pushBox(x + offset, y + height + 0.1, z, carLen * 0.88, 0.7, width * 0.56, {
+          pushBox(x + offset, y + height + 0.1, z, carLen * 0.9, 0.5, width * 0.6, {
             top: stripeColor, front: stripeColor, side: stripeColor, stroke: stripeColor
           }, alpha, tier, 1, 1);
         }
       }
 
       if (trainTag && alpha > 0.45) {
-        pushSurfaceLabel({ x: x, y: y + height + 5.5, z: z }, trainTag, stripeColor, 8.5, alpha * 0.92, tier);
+        pushSurfaceLabel({ x: x, y: y + height + 5.0, z: z }, trainTag, stripeColor, 8.5, alpha * 0.92, tier);
       }
     }
 
@@ -1925,7 +1918,7 @@ html, body {
           ctx.textBaseline = 'middle';
           const tw = ctx.measureText(item.text).width + 6;
           const th = item.fontSize + 4;
-          ctx.fillStyle = state.theme === 'carbon' ? 'rgba(18,18,16,0.82)' : 'rgba(245,242,236,0.84)';
+          ctx.fillStyle = state.theme === 'carbon' ? 'rgba(18,18,16,0.82)' : 'rgba(245,242,236,0.85)';
           ctx.fillRect(item.p.x - tw / 2, item.p.y - th / 2, tw, th);
           ctx.fillStyle = item.color;
           ctx.fillText(item.text, item.p.x, item.p.y + 0.5);
@@ -1977,12 +1970,31 @@ html, body {
     }
 
     // =========================================================================
-    // 5. FULL 6-LEVEL SHENZHEN NORTH STATION BIM ARCHITECTURAL SCENE BUILDER
+    // 5. V8 1:1 TRUE-SCALE (950m x 480m) ARCHITECTURAL SCENE BUILDER
     // =========================================================================
     const LEVEL_ORDER = ['B2', 'B1', 'F1', 'F2', 'F3', 'F4'];
 
+    // Exact 11 Physical Platforms across the 260m Trackbed (-130m to +130m)
+    const PLATFORMS_SPEC = [
+      { x: 125,  nums: [1],      w: 6.5 },
+      { x: 101,  nums: [2, 3],   w: 12.0 },
+      { x: 76,   nums: [4, 5],   w: 12.0 },
+      { x: 51,   nums: [6, 7],   w: 12.0 },
+      { x: 26,   nums: [8, 9],   w: 12.0 },
+      { x: 0,    nums: [10, 11], w: 12.0 },
+      { x: -26,  nums: [12, 13], w: 12.0 },
+      { x: -51,  nums: [14, 15], w: 12.0 },
+      { x: -76,  nums: [16, 17], w: 12.0 },
+      { x: -101, nums: [18, 19], w: 12.0 },
+      { x: -125, nums: [20],     w: 6.5 }
+    ];
+
     function getPlatformX(num) {
-      return 112 - ((num - 1) / 19) * 224;
+      const n = Number(num);
+      for (let i = 0; i < PLATFORMS_SPEC.length; i++) {
+        if (PLATFORMS_SPEC[i].nums.includes(n)) return PLATFORMS_SPEC[i].x;
+      }
+      return 0;
     }
 
     function getFloorVisibility(lvl) {
@@ -2010,88 +2022,96 @@ html, body {
       const isMobile = w <= 960;
       clearQueue();
 
-      // 0. Architectural Ground Reference Grid & 3D Vertical Elevation Staff
-      const gridY = getLevelY('B2') - 14;
-      const gridStroke = isCarbon ? 'rgba(255,255,255,0.05)' : 'rgba(20,20,19,0.065)';
-      for (let gx = -240; gx <= 240; gx += 40) {
-        pushLine({ x: gx, y: gridY, z: -180 }, { x: gx, y: gridY, z: 180 }, gridStroke, 1, null, 1, TIER_MAP.GRID);
-      }
-      for (let gz = -180; gz <= 180; gz += 40) {
-        pushLine({ x: -240, y: gridY, z: gz }, { x: 240, y: gridY, z: gz }, gridStroke, 1, null, 1, TIER_MAP.GRID);
-      }
+      const yB2 = getLevelY('B2');
+      const yB1 = getLevelY('B1');
+      const yF1 = getLevelY('F1');
+      const yF2 = getLevelY('F2');
+      const yF3 = getLevelY('F3');
+      const yF4 = getLevelY('F4');
+      const yRoof = REAL_LEVEL_Y_METERS.ROOF * state.explode;
+      const yCanopy = 18.1 * state.explode; // Official 18.1m height of N/S pillarless canopies
 
-      // 3D Vertical Elevation Staff at North-East corner (x: 222, z: -156)
-      const staffX = 222, staffZ = -156;
-      pushLine(
-        { x: staffX, y: getLevelY('B2'), z: staffZ },
-        { x: staffX, y: getLevelY('F4') + 12, z: staffZ },
-        isCarbon ? 'rgba(255,255,255,0.22)' : 'rgba(20,20,19,0.22)',
-        1.2, [3, 3], 1, TIER_MAP.GRID
-      );
-      LEVEL_ORDER.forEach(lvl => {
-        const ly = getLevelY(lvl);
+      // 0. 100-Meter Engineering Reference Grid (-500m..+500m E-W, -300m..+300m N-S)
+      const gridY = yB2 - 6;
+      const gridStroke = isCarbon ? 'rgba(255,255,255,0.055)' : 'rgba(20,20,19,0.065)';
+      for (let gx = -500; gx <= 500; gx += 50) {
+        const isMajor = (gx % 100 === 0);
         pushLine(
-          { x: staffX - 5, y: ly, z: staffZ },
-          { x: staffX + 5, y: ly, z: staffZ },
-          isCarbon ? '#88847c' : '#6e6a62',
-          1.4, null, 0.85, TIER_MAP.GRID
+          { x: gx, y: gridY, z: -260 },
+          { x: gx, y: gridY, z: 260 },
+          gridStroke, isMajor ? 1.1 : 0.6, null, 1, TIER_MAP.GRID
         );
-      });
+      }
+      for (let gz = -250; gz <= 250; gz += 50) {
+        const isMajor = (gz % 100 === 0);
+        pushLine(
+          { x: -500, y: gridY, z: gz },
+          { x: 500,  y: gridY, z: gz },
+          gridStroke, isMajor ? 1.1 : 0.6, null, 1, TIER_MAP.GRID
+        );
+      }
 
-      // Train animation wave offsets
+      // 3D Engineering Dimension Lines on Ground Plane (True NRA Meter Specs!)
+      const dimColor = isCarbon ? 'rgba(244,241,234,0.45)' : 'rgba(20,20,19,0.42)';
+      // 1) Total 950m East-West Hub Dimension Line at South Edge (z = +252m)
+      pushLine({ x: -475, y: yF1, z: 252 }, { x: 475, y: yF1, z: 252 }, dimColor, 1.3, [4, 4], 0.9, TIER_MAP.GRID);
+      pushSurfaceLabel({ x: 0, y: yF1, z: 255 }, '← 枢纽东西总长 950m (西广场270.5m + 主站房409m + 东广场270.5m) →', isCarbon ? '#b8b4aa' : '#4a4842', 8.5, 0.9, TIER_MAP.GRID);
+
+      // 2) Total 450m Platform / 468m Canopy North-South Dimension Line at West Edge (x = -148m)
+      pushLine({ x: -142, y: yF1, z: -234 }, { x: -142, y: yF1, z: 234 }, dimColor, 1.3, [4, 4], 0.9, TIER_MAP.GRID);
+      if (!isMobile) {
+        pushSurfaceLabel({ x: -155, y: yF1, z: -168 }, '北雨棚 130m', '#003a70', 8.0, 0.85, TIER_MAP.GRID);
+        pushSurfaceLabel({ x: -155, y: yF1, z: 168 },  '南雨棚 130m', '#003a70', 8.0, 0.85, TIER_MAP.GRID);
+      }
+
+      // Train animation wave offsets (in real meters)
       const tAnim = state.liveTrains ? state.clock : 0;
-      const hsrShift1 = Math.sin(tAnim * 0.9) * 36;
-      const hsrShift2 = Math.cos(tAnim * 0.75) * 42;
-      const hsrShift3 = Math.sin(tAnim * 0.6 + 1.5) * 32;
-      const m4Shift = ((tAnim * 28) % 160) - 80;
-      const m6Shift = 80 - ((tAnim * 26) % 160);
-      const m5ShiftN = ((tAnim * 34) % 240) - 120;
-      const m5ShiftS = 120 - ((tAnim * 34) % 240);
+      const hsrShift1 = Math.sin(tAnim * 0.7) * 18;
+      const hsrShift2 = Math.cos(tAnim * 0.65) * 45;
+      const hsrShift3 = Math.sin(tAnim * 0.55 + 1.2) * 40;
+      const m4Shift = ((tAnim * 26) % 220) - 110;
+      const m6Shift = 110 - ((tAnim * 24) % 220);
+      const m5ShiftN = ((tAnim * 32) % 260) - 90;
+      const m5ShiftS = 170 - ((tAnim * 32) % 260);
 
       // =====================================================================
-      // LEVEL B2: METRO LINE 5 ORTHOGONAL EAST-WEST TUNNEL + SHENHUI INTERCITY
+      // LEVEL B2 (-14.5m): METRO LINE 5 ORTHOGONAL TUNNEL (410m E-W, 140m Platform)
       // =====================================================================
       const aB2 = getFloorVisibility('B2');
-      const yB2 = getLevelY('B2');
 
-      pushBox(0, yB2, 0, 430, 5, 118, {
+      // Line 5 East-West Underground Box (x: -130m..+280m = 410m, z: -18m..+18m = 36m)
+      pushBox(75, yB2, 0, 410, 3.2, 38, {
         top: isCarbon ? '#1e1c29' : '#e4dff0',
         front: isCarbon ? '#161420' : '#d2cae4',
         side: isCarbon ? '#12101a' : '#c2b8d8',
         stroke: '#7b3f98'
       }, aB2, TIER_MAP.B2, 6, 1);
 
-      // Line 5 North Side Platform (To Chiwan - Right-hand doors)
-      pushBox(0, yB2 + 5, -24, 412, 4.5, 14, {
+      // Line 5 Actual 140m Dual Side Platforms (centered at East Square / East Trackbed x = +110m)
+      pushBox(110, yB2 + 3.2, -11, 140, 2.8, 6.5, {
         top: '#8e52ab', front: '#6c3586', side: '#58286f', stroke: '#461d59'
-      }, aB2, TIER_MAP.B2, 6, 1);
+      }, aB2, TIER_MAP.B2, 3, 1);
 
-      // Line 5 South Side Platform (To Grand Theater / Huangbeiling - Right-hand doors)
-      pushBox(0, yB2 + 5, 24, 412, 4.5, 14, {
+      pushBox(110, yB2 + 3.2, 11,  140, 2.8, 6.5, {
         top: '#8e52ab', front: '#6c3586', side: '#58286f', stroke: '#461d59'
-      }, aB2, TIER_MAP.B2, 6, 1);
+      }, aB2, TIER_MAP.B2, 3, 1);
 
-      // Line 5 Twin Tracks
-      pushLine({ x: -206, y: yB2 + 6, z: -8 }, { x: 206, y: yB2 + 6, z: -8 }, '#7b3f98', 2.2, [6, 4], aB2, TIER_MAP.B2);
-      pushLine({ x: -206, y: yB2 + 6, z: 8 },  { x: 206, y: yB2 + 6, z: 8 },  '#7b3f98', 2.2, [6, 4], aB2, TIER_MAP.B2);
+      // Line 5 Tracks
+      pushLine({ x: -125, y: yB2 + 3.6, z: -4 }, { x: 275, y: yB2 + 3.6, z: -4 }, '#7b3f98', 1.8, [6, 4], aB2, TIER_MAP.B2);
+      pushLine({ x: -125, y: yB2 + 3.6, z: 4 },  { x: 275, y: yB2 + 3.6, z: 4 },  '#7b3f98', 1.8, [6, 4], aB2, TIER_MAP.B2);
 
-      // Shield Tunnel Structural Rings along B2
-      for (let rx = -180; rx <= 180; rx += 60) {
-        pushLine({ x: rx, y: yB2 + 5.2, z: -32 }, { x: rx, y: yB2 + 5.2, z: 32 }, 'rgba(123,63,152,0.35)', 1.2, null, aB2, TIER_MAP.B2);
-      }
-
-      // Articulated 5-Car Metro Line 5 Trains (Animated)
+      // True-Scale 140m 6-Car Metro Line 5 Trains
       const trainBodyPal = {
         top: isCarbon ? '#eae6df' : '#ffffff',
         front: '#dcd7ce',
         side: '#c8c2b8',
         stroke: '#7b3f98'
       };
-      pushArticulatedTrain(m5ShiftN, yB2 + 5.5, -8, 92, 6.5, 5.2, 'x', trainBodyPal, '#7b3f98', aB2, TIER_MAP.B2, '5号线 → 赤湾');
-      pushArticulatedTrain(m5ShiftS, yB2 + 5.5, 8,  92, 6.5, 5.2, 'x', trainBodyPal, '#7b3f98', aB2, TIER_MAP.B2, null);
+      pushArticulatedTrain(m5ShiftN, yB2 + 3.5, -4, 140, 3.0, 3.8, 'x', 6, trainBodyPal, '#7b3f98', aB2, TIER_MAP.B2, '5号线(140m) → 赤湾');
+      pushArticulatedTrain(m5ShiftS, yB2 + 3.5, 4,  140, 3.0, 3.8, 'x', 6, trainBodyPal, '#7b3f98', aB2, TIER_MAP.B2, null);
 
-      // Shenhui Intercity Parallel Corridor (Under Construction)
-      pushBox(0, yB2 + 3, 46, 412, 3.5, 14, {
+      // Shenhui Intercity Parallel Underground Corridor (x: -130m..+280m, z: +36m)
+      pushBox(75, yB2 + 1.5, 36, 410, 2.8, 14, {
         top: isCarbon ? '#192a3a' : '#d2e2ef',
         front: '#1f6fa8',
         side: '#17527d',
@@ -2099,72 +2119,41 @@ html, body {
       }, aB2 * 0.85, TIER_MAP.B2, 6, 1);
 
       // =====================================================================
-      // LEVEL B1: LINE 5 CONCOURSE, N/S EXIT CORRIDORS & WEST RIDE-HAILING A
+      // LEVEL B1 (-7.5m): EAST SQUARE LINE 5 CONCOURSE & WEST SQUARE GARAGE (1971 SPACES)
       // =====================================================================
       const aB1 = getFloorVisibility('B1');
-      const yB1 = getLevelY('B1');
 
-      // East Square B1 Metro Line 5 Concourse & Security-Free Landing
-      pushBox(156, yB1, 0, 96, 4.5, 196, {
+      // East Square B1 Metro Line 5 Concourse & Taxi/Bus Underground Hub (x: +130m..+360m, z: -110m..+110m)
+      pushBox(245, yB1, 0, 230, 3.2, 220, {
         top: isCarbon ? '#231f2e' : '#e8e2f2',
         front: isCarbon ? '#1a1722' : '#d5cce6',
         side: isCarbon ? '#14111b' : '#c5b9dc',
         stroke: '#7b3f98'
-      }, aB1, TIER_MAP.B1, 2, 3);
+      }, aB1, TIER_MAP.B1, 3, 3);
 
-      // North & South Underground HSR Exit Corridors
-      pushBox(0, yB1, -55, 224, 4, 30, {
-        top: isCarbon ? '#252522' : '#e4dfd5',
-        front: isCarbon ? '#1c1c1a' : '#d2ccc0',
-        side: isCarbon ? '#161614' : '#c2bcb0',
-        stroke: isCarbon ? '#484640' : '#aba496'
-      }, aB1, TIER_MAP.B1, 3, 1);
-
-      pushBox(0, yB1, 55, 224, 4, 30, {
-        top: isCarbon ? '#252522' : '#e4dfd5',
-        front: isCarbon ? '#1c1c1a' : '#d2ccc0',
-        side: isCarbon ? '#161614' : '#c2bcb0',
-        stroke: isCarbon ? '#484640' : '#aba496'
-      }, aB1, TIER_MAP.B1, 3, 1);
-
-      // West Square B1 Underground Ride-Hailing Zone A & Parking
-      pushBox(-156, yB1, 0, 94, 4.5, 188, {
+      // West Square B1 Underground Parking (1971 spaces) & Ride-Hailing Zone A (x: -360m..-130m, z: -120m..+120m)
+      pushBox(-245, yB1, 0, 230, 3.2, 240, {
         top: isCarbon ? '#2c2319' : '#efe3d2',
         front: isCarbon ? '#221b13' : '#dfd0ba',
         side: isCarbon ? '#1a140e' : '#cfbda4',
         stroke: '#b5651d'
-      }, aB1, TIER_MAP.B1, 2, 3);
+      }, aB1, TIER_MAP.B1, 3, 3);
 
       // =====================================================================
-      // LEVEL F1: NATIONAL RAILWAY 11 PLATFORMS & 20 TRACKS (1-20站台)
+      // LEVEL F1 (±0.0m): 11 PLATFORMS & 20 TRACKS (260m Wide x 450m Long!)
       // =====================================================================
       const aF1 = getFloorVisibility('F1');
-      const yF1 = getLevelY('F1');
 
-      // Main Trackbed Deck
-      pushBox(0, yF1, 0, 248, 4.5, 286, {
+      // 260m x 450m Main Railway Trackbed Slab
+      pushBox(0, yF1, 0, 260, 2.5, 450, {
         top: isCarbon ? '#16202b' : '#dde4ec',
         front: isCarbon ? '#101820' : '#c8d2de',
         side: isCarbon ? '#0c1218' : '#b6c2d0',
         stroke: '#003a70'
-      }, aF1, TIER_MAP.F1, 4, 4);
+      }, aF1, TIER_MAP.F1, 4, 6);
 
-      // Render 11 Physical Platforms + Escalator Cores + 20 Ballastless Tracks
-      const platPositions = [
-        { x: 112, nums: [1],      w: 7.5 },
-        { x: 92,  nums: [2, 3],   w: 11.5 },
-        { x: 70,  nums: [4, 5],   w: 11.5 },
-        { x: 48,  nums: [6, 7],   w: 11.5 },
-        { x: 26,  nums: [8, 9],   w: 11.5 },
-        { x: 4,   nums: [10, 11], w: 11.5 },
-        { x: -18, nums: [12, 13], w: 11.5 },
-        { x: -40, nums: [14, 15], w: 11.5 },
-        { x: -62, nums: [16, 17], w: 11.5 },
-        { x: -84, nums: [18, 19], w: 11.5 },
-        { x: -106,nums: [20],     w: 7.5 }
-      ];
-
-      platPositions.forEach(p => {
+      // Render All 11 Platforms (450m long, 12m island / 6.5m side width)
+      PLATFORMS_SPEC.forEach(p => {
         const isHkZone = p.nums.some(n => n >= 8 && n <= 15);
         const isSelected = state.selectedGate && p.nums.includes(Number(state.selectedGate));
 
@@ -2191,81 +2180,110 @@ html, body {
           };
         }
 
-        pushBox(p.x, yF1 + 4.5, 0, p.w, isSelected ? 6.5 : 4.2, 262, pal, aF1, TIER_MAP.F1, 1, 3);
+        // Subdivide each 450m platform into 5 longitudinal segments for crisp Z-sorting with F2
+        pushBox(p.x, yF1 + 2.5, 0, p.w, isSelected ? 3.2 : 1.8, 450, pal, aF1, TIER_MAP.F1, 1, 5);
 
-        // Tactile yellow safety edge lines along platform edges
-        pushLine(
-          { x: p.x - p.w * 0.42, y: yF1 + 8.8, z: -126 },
-          { x: p.x - p.w * 0.42, y: yF1 + 8.8, z: 126 },
-          isHkZone ? '#d94e1f' : '#d49b1f', 0.8, null, aF1 * 0.75, TIER_MAP.F1
-        );
-
-        // Vertical escalator cores connecting F1 platform to F2 waiting hall
+        // Escalator shafts connecting F1 platform up to F2 Waiting Hall & N/S Exit Corridors
         if (aF1 > 0.35) {
           pushLine(
-            { x: p.x, y: yF1 + 8.5, z: -45 },
-            { x: p.x, y: getLevelY('F2'), z: -25 },
-            isHkZone ? 'rgba(184,29,36,0.45)' : 'rgba(0,58,112,0.40)', 1.3, [2, 2], aF1, TIER_MAP.F1
+            { x: p.x, y: yF1 + 4.3, z: -89 },
+            { x: p.x, y: yF2,       z: -89 },
+            '#d94e1f', 1.1, [2, 2], aF1 * 0.7, TIER_MAP.F1
           );
           pushLine(
-            { x: p.x, y: yF1 + 8.5, z: 45 },
-            { x: p.x, y: getLevelY('F2'), z: 25 },
-            isHkZone ? 'rgba(184,29,36,0.45)' : 'rgba(0,58,112,0.40)', 1.3, [2, 2], aF1, TIER_MAP.F1
+            { x: p.x, y: yF1 + 4.3, z: 89 },
+            { x: p.x, y: yF2,       z: 89 },
+            '#d94e1f', 1.1, [2, 2], aF1 * 0.7, TIER_MAP.F1
           );
         }
       });
 
-      // Platform Number Surface Labels at South End of F1
+      // Platform Surface Labels at South End of 450m Platforms (z = +215m)
       if (aF1 > 0.4) {
-        pushSurfaceLabel({ x: 112,  y: yF1 + 9.5, z: 132 }, '1站台', '#003a70', 8.5, aF1, TIER_MAP.F1);
-        pushSurfaceLabel({ x: 4,    y: yF1 + 9.5, z: 132 }, '8-15跨境区', '#b81d24', 8.5, aF1, TIER_MAP.F1);
-        pushSurfaceLabel({ x: -106, y: yF1 + 9.5, z: 132 }, '20站台', '#003a70', 8.5, aF1, TIER_MAP.F1);
+        pushSurfaceLabel({ x: 125,  y: yF1 + 5, z: 215 }, '1站台(450m)', '#003a70', 8.0, aF1, TIER_MAP.F1);
+        pushSurfaceLabel({ x: 0,    y: yF1 + 5, z: 215 }, '8-15西九龙跨境区', '#b81d24', 8.5, aF1, TIER_MAP.F1);
+        pushSurfaceLabel({ x: -125, y: yF1 + 5, z: 215 }, '20站台(450m)', '#003a70', 8.0, aF1, TIER_MAP.F1);
       }
 
-      // Animated High-Speed Rail Trains on F1 Tracks
+      // True-Scale High-Speed Rail Trains on 450m Tracks:
       const cr400Pal = {
         top: '#ffffff', front: '#e4e0d8', side: '#d0ccc2', stroke: '#003a70'
       };
-      // 1. CR400AF Fuxing on Track 6
-      pushArticulatedTrain(59,  yF1 + 5, -20 + hsrShift1, 148, 5.2, 5.2, 'z', cr400Pal, '#b81d24', aF1, TIER_MAP.F1, 'G80 北京西');
-      // 2. HK Vibrant Express on Track 11 (Cross-Border Zone)
-      pushArticulatedTrain(-7,  yF1 + 5, 18 + hsrShift2,  156, 5.2, 5.2, 'z', cr400Pal, '#d94e1f', aF1, TIER_MAP.F1, 'G5623 西九龙');
-      // 3. CRH1A/CR400 on Track 17 (Xiashen Line)
-      pushArticulatedTrain(-73, yF1 + 5, -28 + hsrShift3, 142, 5.2, 5.2, 'z', cr400Pal, '#003a70', aF1, TIER_MAP.F1, 'D7165 潮汕');
-
-      // East Square F1 Bus & Taxi Transfer Level
-      pushBox(162, yF1, 0, 82, 4, 210, {
-        top: isCarbon ? '#192b23' : '#d8eae2',
-        front: isCarbon ? '#13211b' : '#c2dcd0',
-        side: isCarbon ? '#0e1814' : '#b0cfc1',
-        stroke: '#1b6b4c'
-      }, aF1, TIER_MAP.F1, 2, 3);
+      // 1. 16-Car Coupled CR400AF Fuxing (True length: 414m!) on Track 5 (x = +63m)
+      pushArticulatedTrain(63,  yF1 + 2.6, hsrShift1,       414, 3.4, 4.0, 'z', 8, cr400Pal, '#b81d24', aF1, TIER_MAP.F1, 'G80 复兴号16编组(414m)');
+      // 2. 8-Car HK West Kowloon Vibrant Express (True length: 209m!) on Track 10 (x = +13m)
+      pushArticulatedTrain(13,  yF1 + 2.6, 40 + hsrShift2,  209, 3.4, 4.0, 'z', 5, cr400Pal, '#d94e1f', aF1, TIER_MAP.F1, 'G5623 动感号8编组(209m)');
+      // 3. 8-Car CRH1A/CR400 (True length: 209m) on Track 16 (x = -63m)
+      pushArticulatedTrain(-63, yF1 + 2.6, -50 + hsrShift3, 209, 3.4, 4.0, 'z', 5, cr400Pal, '#003a70', aF1, TIER_MAP.F1, 'D7165 潮汕(209m)');
 
       // =====================================================================
-      // LEVEL F2: ELEVATED HSR WAITING CONCOURSE, A1-A20 / B1-B20 & SQUARES
+      // NORTH & SOUTH PILLARLESS PLATFORM CANOPIES (260m Wide x 130m Each x 18.1m High)
+      // Official NRA Spec: 雨棚东西长260米, 南北各长130米, 建筑高度18.1米
+      // =====================================================================
+      if (state.showRoof && state.selectedLevel === 'ALL') {
+        const canopyColor = isCarbon ? 'rgba(130, 165, 200, 0.22)' : 'rgba(0, 58, 112, 0.14)';
+        const canopyRib = isCarbon ? 'rgba(160, 195, 230, 0.38)' : 'rgba(0, 58, 112, 0.32)';
+
+        // North Pillarless Canopy (x: -130m..+130m = 260m, z: -234m..-104m = 130m, y = 18.1m)
+        pushPoly([
+          { x: -130, y: yCanopy, z: -234 },
+          { x: 130,  y: yCanopy, z: -234 },
+          { x: 130,  y: yCanopy, z: -104 },
+          { x: -130, y: yCanopy, z: -104 }
+        ], canopyColor, canopyRib, 1.2, 0.9, TIER_MAP.CANOPY);
+
+        // South Pillarless Canopy (x: -130m..+130m = 260m, z: +104m..+234m = 130m, y = 18.1m)
+        pushPoly([
+          { x: -130, y: yCanopy, z: 104 },
+          { x: 130,  y: yCanopy, z: 104 },
+          { x: 130,  y: yCanopy, z: 234 },
+          { x: -130, y: yCanopy, z: 234 }
+        ], canopyColor, canopyRib, 1.2, 0.9, TIER_MAP.CANOPY);
+
+        // Chord arches across North & South 130m Canopies
+        for (let cz = -214; cz <= -124; cz += 30) {
+          pushLine({ x: -130, y: yCanopy, z: cz }, { x: 130, y: yCanopy, z: cz }, canopyRib, 0.9, null, 0.8, TIER_MAP.CANOPY);
+        }
+        for (let cz = 124; cz <= 214; cz += 30) {
+          pushLine({ x: -130, y: yCanopy, z: cz }, { x: 130, y: yCanopy, z: cz }, canopyRib, 0.9, null, 0.8, TIER_MAP.CANOPY);
+        }
+      }
+
+      // =====================================================================
+      // LEVEL F2 (+9.5m): MAIN STATION BUILDING (409m E-W x 208m N-S)
+      // + EAST SQUARE (270.5m) + WEST SQUARE (270.5m) => TOTAL 950m E-W!
       // =====================================================================
       const aF2 = getFloorVisibility('F2');
-      const yF2 = getLevelY('F2');
 
-      // Central HSR Elevated Waiting Hall Slab
-      pushBox(0, yF2, 0, 216, 6.5, 196, {
+      // 1. Main Station Building F2 Structural Deck (409m E-W: -204.5m..+204.5m, 208m N-S: -104m..+104m)
+      pushBox(0, yF2, 0, 409, 3.2, 208, {
         top: isCarbon ? '#232830' : '#f4f1ea',
         front: isCarbon ? '#1b1f26' : '#e0dbd0',
         side: isCarbon ? '#15181e' : '#cfcac0',
         stroke: '#003a70'
-      }, aF2, TIER_MAP.F2, 3, 3);
+      }, aF2, TIER_MAP.F2, 5, 3);
 
-      // Central Skylight Atrium Void on F2
-      pushBox(0, yF2 + 6.6, 0, 74, 1.2, 118, {
-        top: isCarbon ? '#18222c' : '#dfeaf2',
+      // 2. Central Elevated Waiting Hall (260m E-W x 148m N-S = 38,480 m² ≈ 3.9万㎡)
+      pushBox(0, yF2 + 3.2, 0, 260, 1.2, 148, {
+        top: isCarbon ? '#1b242e' : '#e6eef5',
         front: '#003a70',
         side: '#003a70',
         stroke: '#003a70'
-      }, aF2, TIER_MAP.F2, 1, 2);
+      }, aF2, TIER_MAP.F2, 3, 2);
 
-      // East Ticket Gate Spine (A1 - A20) & West Ticket Gate Spine (B1 - B20)
+      // 3. F2 North & South Elevated Exit Corridors ("上出": 260m E-W x 30m N-S each at z = ±89m)
+      const exitCorridorPal = {
+        top: isCarbon ? '#2c333d' : '#f7e6de',
+        front: isCarbon ? '#20262e' : '#e5cabd',
+        side: isCarbon ? '#181d24' : '#d4b5a7',
+        stroke: '#d94e1f'
+      };
+      pushBox(0, yF2 + 3.2, -89, 260, 2.2, 28, exitCorridorPal, aF2, TIER_MAP.F2, 3, 1);
+      pushBox(0, yF2 + 3.2, 89,  260, 2.2, 28, exitCorridorPal, aF2, TIER_MAP.F2, 3, 1);
+
+      // 4. East Ticket Gate Spine (A1-A20 at x = +108m) & West Ticket Gate Spine (B1-B20 at x = -108m)
       for (let g = 0; g < 10; g++) {
-        const gz = -76 + g * 16.8;
+        const gz = -62 + g * 13.8;
         const gatePairIdx = g * 2 + 1;
         const isHk = (gatePairIdx >= 7 && gatePairIdx <= 15);
         const isSelGate = state.selectedGate && (
@@ -2280,147 +2298,144 @@ html, body {
           stroke: isSelGate ? '#ffffff' : gateColor
         };
 
-        pushBox(82,  yF2 + 6.5, gz, 11, isSelGate ? 7.5 : 4.2, 9.2, gatePal, aF2, TIER_MAP.F2, 1, 1);
-        pushBox(-82, yF2 + 6.5, gz, 11, isSelGate ? 7.5 : 4.2, 9.2, gatePal, aF2, TIER_MAP.F2, 1, 1);
+        pushBox(108,  yF2 + 4.4, gz, 10, isSelGate ? 5.0 : 2.8, 8.0, gatePal, aF2, TIER_MAP.F2, 1, 1);
+        pushBox(-108, yF2 + 4.4, gz, 10, isSelGate ? 5.0 : 2.8, 8.0, gatePal, aF2, TIER_MAP.F2, 1, 1);
       }
 
-      // Direct 3D Floor Labels on F2 Waiting Hall
+      // Direct 3D Floor Labels on F2 Waiting Hall & A1/A2/B1/B2 Upper-Exit Portals
       if (aF2 > 0.45) {
-        pushSurfaceLabel({ x: 82,  y: yF2 + 12, z: -64 }, 'A1-A7', '#003a70', 8.5, aF2, TIER_MAP.F2);
-        pushSurfaceLabel({ x: 82,  y: yF2 + 12, z: 0 },   'A8-A15跨境', '#b81d24', 8.5, aF2, TIER_MAP.F2);
-        pushSurfaceLabel({ x: 82,  y: yF2 + 12, z: 64 },  'A16-A20', '#003a70', 8.5, aF2, TIER_MAP.F2);
-        pushSurfaceLabel({ x: -82, y: yF2 + 12, z: -64 }, 'B1-B7', '#003a70', 8.5, aF2, TIER_MAP.F2);
-        pushSurfaceLabel({ x: -82, y: yF2 + 12, z: 0 },   'B8-B15跨境', '#b81d24', 8.5, aF2, TIER_MAP.F2);
-        pushSurfaceLabel({ x: -82, y: yF2 + 12, z: 64 },  'B16-B20', '#003a70', 8.5, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: 108,  y: yF2 + 9, z: -52 }, 'A1-A7', '#003a70', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: 108,  y: yF2 + 9, z: 0 },   'A8-A15跨境', '#b81d24', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: 108,  y: yF2 + 9, z: 52 },  'A16-A20', '#003a70', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: -108, y: yF2 + 9, z: -52 }, 'B1-B7', '#003a70', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: -108, y: yF2 + 9, z: 0 },   'B8-B15跨境', '#b81d24', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: -108, y: yF2 + 9, z: 52 },  'B16-B20', '#003a70', 8.0, aF2, TIER_MAP.F2);
+
+        pushSurfaceLabel({ x: 132,  y: yF2 + 7, z: -89 }, 'A1出站口(上出)', '#d94e1f', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: 132,  y: yF2 + 7, z: 89 },  'A2出站口(上出)', '#d94e1f', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: -132, y: yF2 + 7, z: -89 }, 'B1出站口(上出)', '#d94e1f', 8.0, aF2, TIER_MAP.F2);
+        pushSurfaceLabel({ x: -132, y: yF2 + 7, z: 89 },  'B2出站口(上出)', '#d94e1f', 8.0, aF2, TIER_MAP.F2);
       }
 
-      // East Entrance Security Hall (东进站口 A) & West Entrance Security Hall (西进站口 B)
+      // East Entrance Hall (东进站口 A at x = +130m) & West Entrance Hall (西进站口 B at x = -130m)
       const secPal = {
         top: '#d94e1f', front: '#b33c14', side: '#8f2e0e', stroke: '#141413'
       };
-      pushBox(104,  yF2 + 6.5, 0, 12, 6.5, 52, secPal, aF2, TIER_MAP.F2, 1, 1);
-      pushBox(-104, yF2 + 6.5, 0, 12, 6.5, 52, secPal, aF2, TIER_MAP.F2, 1, 1);
+      pushBox(130,  yF2 + 4.4, 0, 12, 4.5, 56, secPal, aF2, TIER_MAP.F2, 1, 1);
+      pushBox(-130, yF2 + 4.4, 0, 12, 4.5, 56, secPal, aF2, TIER_MAP.F2, 1, 1);
 
-      // East Square F2 Concourse Plaza
-      pushBox(162, yF2, 0, 88, 5, 224, {
+      // 5. East Square Landscape & Transit Plaza (x: +204.5m..+475m = 270.5m, z: -150m..+150m = 300m)
+      pushBox(340, yF2, 0, 270, 2.8, 300, {
         top: isCarbon ? '#1e2e26' : '#e2efe9',
         front: isCarbon ? '#16221c' : '#cce0d7',
         side: isCarbon ? '#101915' : '#b8d0c5',
         stroke: '#1b6b4c'
-      }, aF2, TIER_MAP.F2, 2, 3);
+      }, aF2, TIER_MAP.F2, 3, 3);
 
-      // East Square 免安检换乘地铁5号线专区 (Security-Free Direct Escalator Hub)
-      pushBox(146, yF2 + 5, 28, 26, 4.5, 38, {
+      // East Square 免安检换乘地铁5号线专区 (at x = +165m, z = +65m)
+      pushBox(165, yF2 + 3.2, 65, 32, 3.2, 38, {
         top: '#7b3f98', front: '#5e2d75', side: '#48205b', stroke: '#ffffff'
       }, aF2, TIER_MAP.F2, 1, 1);
 
-      // West Square F2 Concourse & Ride-Hailing Zone B Lounge
-      pushBox(-158, yF2, 0, 84, 5, 210, {
+      // 6. West Square Plaza & Ride-Hailing Zone B Lounge (x: -475m..-204.5m = 270.5m, z: -150m..+150m = 300m)
+      pushBox(-340, yF2, 0, 270, 2.8, 300, {
         top: isCarbon ? '#2f251b' : '#f2e8da',
         front: isCarbon ? '#241c14' : '#e2d3be',
         side: isCarbon ? '#1b150f' : '#d2c0a6',
         stroke: '#b5651d'
-      }, aF2, TIER_MAP.F2, 2, 3);
+      }, aF2, TIER_MAP.F2, 3, 3);
 
-      pushBox(-154, yF2 + 5, 36, 46, 6.5, 58, {
+      pushBox(-255, yF2 + 2.8, 45, 56, 4.5, 68, {
         top: '#d94e1f', front: '#b33c14', side: '#8f2e0e', stroke: '#141413'
       }, aF2, TIER_MAP.F2, 1, 1);
 
       // =====================================================================
-      // LEVEL F3: METRO LINE 4/6 CONCOURSE, COMMERCIAL MEZZANINE & 6 SKY ESCALATORS
+      // LEVEL F3 (+18.5m): METRO LINE 4/6 CONCOURSE IN EAST WING & 6 SKY ESCALATORS
       // =====================================================================
       const aF3 = getFloorVisibility('F3');
-      const yF3 = getLevelY('F3');
 
-      // East Square F3 Elevated Metro Concourse
-      pushBox(172, yF3, 0, 66, 5, 232, {
+      // East Wing F3 Elevated Metro Concourse (x: +135m..+204.5m = 69.5m, z: -104m..+104m = 208m)
+      pushBox(169, yF3, 0, 68, 3.0, 208, {
         top: isCarbon ? '#1d2d2b' : '#e0f0ee',
         front: isCarbon ? '#152220' : '#c8e0dd',
         side: isCarbon ? '#101918' : '#b4d0cc',
         stroke: '#009b8d'
       }, aF3, TIER_MAP.F3, 2, 3);
 
-      // 6 Giant Sky-to-Ground Escalators (6台30米天地大扶梯 F3 -> B1)
+      // 6 Giant Sky-to-Ground Escalators (F3 +18.5m down to B1 -7.5m = 26m vertical drop)
       for (let eIdx = -1; eIdx <= 1; eIdx++) {
-        const ez = eIdx * 18;
+        const ez = eIdx * 20;
         pushLine(
-          { x: 146, y: yF3 + 2, z: ez },
-          { x: 136, y: yB1 + 4, z: ez - 8 },
-          '#d94e1f', 2.4, [4, 3], Math.max(aF3, aB1) * 0.85, TIER_MAP.F3
+          { x: 152, y: yF3 + 1.5, z: ez },
+          { x: 142, y: yB1 + 3.0, z: ez - 10 },
+          '#d94e1f', 2.2, [4, 3], Math.max(aF3, aB1) * 0.85, TIER_MAP.F3
         );
       }
 
-      // Station North & South Commercial Mezzanine Decks
-      const mezPal = {
-        top: isCarbon ? '#282623' : '#eae5dc',
-        front: isCarbon ? '#1f1d1b' : '#d8d2c6',
-        side: isCarbon ? '#181614' : '#c6bfb2',
-        stroke: isCarbon ? '#4a4740' : '#b0a99c'
-      };
-      pushBox(0, yF3, -84, 194, 4.5, 24, mezPal, aF3, TIER_MAP.F3, 3, 1);
-      pushBox(0, yF3, 84,  194, 4.5, 24, mezPal, aF3, TIER_MAP.F3, 3, 1);
-
       // =====================================================================
-      // LEVEL F4: METRO LINE 4 & LINE 6 DUAL-ISLAND ELEVATED PLATFORMS
+      // LEVEL F4 (+26.5m): METRO LINE 4 & LINE 6 VIADUCT & 140m DUAL ISLAND PLATFORMS
+      // Passing directly through the East Wing of the 409m Main Station Building!
       // =====================================================================
       const aF4 = getFloorVisibility('F4');
-      const yF4 = getLevelY('F4');
 
-      // Elevated Viaduct Deck
-      pushBox(172, yF4, 0, 68, 4.5, 252, {
+      // Continuous North-South Metro Viaduct Guideway (z: -240m..+240m = 480m, x: +138m..+200m = 62m)
+      pushBox(169, yF4, 0, 62, 2.5, 480, {
         top: isCarbon ? '#252523' : '#ece8e0',
         front: isCarbon ? '#1c1c1a' : '#dad4c8',
         side: isCarbon ? '#151513' : '#c8c1b4',
         stroke: isCarbon ? '#524f48' : '#a69f92'
-      }, aF4, TIER_MAP.F4, 2, 3);
+      }, aF4, TIER_MAP.F4, 2, 5);
 
-      // Metro Line 4 Island Platform (West Island - Red)
-      pushBox(157, yF4 + 4.5, 0, 17, 5, 232, {
+      // Metro Line 4 Island Platform (True length: 140m, x = +154m, width 14m)
+      pushBox(154, yF4 + 2.5, 0, 14, 3.2, 140, {
         top: '#d62828', front: '#ad1d1d', side: '#8a1515', stroke: '#5e0c0c'
-      }, aF4, TIER_MAP.F4, 1, 3);
+      }, aF4, TIER_MAP.F4, 1, 2);
 
-      // Metro Line 6 Island Platform (East Island - Teal)
-      pushBox(187, yF4 + 4.5, 0, 17, 5, 232, {
+      // Metro Line 6 Island Platform (True length: 140m, x = +184m, width 14m)
+      pushBox(184, yF4 + 2.5, 0, 14, 3.2, 140, {
         top: '#009b8d', front: '#007a6f', side: '#005e55', stroke: '#00423c'
-      }, aF4, TIER_MAP.F4, 1, 3);
+      }, aF4, TIER_MAP.F4, 1, 2);
 
-      // Overhead Catenary Portals across F4 Viaduct
-      for (let cz = -90; cz <= 90; cz += 45) {
-        pushLine({ x: 142, y: yF4 + 4.5, z: cz }, { x: 142, y: yF4 + 17, z: cz }, 'rgba(120,116,108,0.55)', 1.2, null, aF4, TIER_MAP.F4);
-        pushLine({ x: 202, y: yF4 + 4.5, z: cz }, { x: 202, y: yF4 + 17, z: cz }, 'rgba(120,116,108,0.55)', 1.2, null, aF4, TIER_MAP.F4);
-        pushLine({ x: 142, y: yF4 + 17,  z: cz }, { x: 202, y: yF4 + 17,  z: cz }, 'rgba(120,116,108,0.55)', 1.2, null, aF4, TIER_MAP.F4);
-      }
-
-      // Animated Articulated Metro Trains on F4 (Line 4 & Line 6)
-      pushArticulatedTrain(157, yF4 + 9.5, m4Shift, 86, 6.2, 5.2, 'z', trainBodyPal, '#d62828', aF4, TIER_MAP.F4, '4号线 龙华线');
-      pushArticulatedTrain(187, yF4 + 9.5, m6Shift, 86, 6.2, 5.2, 'z', trainBodyPal, '#009b8d', aF4, TIER_MAP.F4, '6号线 光明线');
+      // True-Scale 140m 6-Car Metro Trains on F4 (Line 4 & Line 6)
+      pushArticulatedTrain(154, yF4 + 5.8, m4Shift, 140, 3.0, 3.8, 'z', 6, trainBodyPal, '#d62828', aF4, TIER_MAP.F4, '4号线(140m)');
+      pushArticulatedTrain(184, yF4 + 5.8, m6Shift, 140, 3.0, 3.8, 'z', 6, trainBodyPal, '#009b8d', aF4, TIER_MAP.F4, '6号线(140m)');
 
       // =====================================================================
-      // 6. ICONIC 3-WAVE ARCHED SPACE-FRAME ROOF CANOPY (27榀波浪形钢网架)
+      // 6. MAIN STATION BUILDING ROOF (409m E-W x 208m N-S at +43.6m Height!)
+      // Official NRA Spec: 主站房东西长409米, 南北宽208米, 建筑高度43.6米
       // =====================================================================
       if (state.showRoof && state.selectedLevel === 'ALL') {
-        const yRoofBase = yF4 + 18;
-        const ribColor = isCarbon ? 'rgba(244,241,234,0.28)' : 'rgba(20,20,19,0.24)';
-        const purlinColor = isCarbon ? 'rgba(244,241,234,0.12)' : 'rgba(20,20,19,0.11)';
+        const ribColor = isCarbon ? 'rgba(244,241,234,0.34)' : 'rgba(20,20,19,0.28)';
+        const purlinColor = isCarbon ? 'rgba(244,241,234,0.14)' : 'rgba(20,20,19,0.13)';
 
-        // 9 Wave Arched Trusses across the main station hall
         const prevWavePts = [];
-        for (let rz = -128; rz <= 128; rz += 32) {
+        // Span Z from -104m to +104m (208m N-S width) and X from -204.5m to +204.5m (409m E-W length)
+        for (let rz = -104; rz <= 104; rz += 26) {
           const curWavePts = [];
-          for (let rx = -120; rx <= 120; rx += 20) {
-            // Iconic 3-crest wave profile of Shenzhen North Station roof
-            const archH = Math.cos((rx / 120) * Math.PI * 0.5) * 14 + Math.cos((rx / 42) * Math.PI) * 3.5;
-            curWavePts.push({ x: rx, y: yRoofBase + archH, z: rz });
+          for (let rx = -204.5; rx <= 204.5; rx += 25.5625) {
+            const waveH = Math.cos((rx / 204.5) * Math.PI * 0.5) * 4.5 + Math.cos((rx / 68) * Math.PI) * 1.8;
+            curWavePts.push({ x: rx, y: yRoof - 3.0 + waveH, z: rz });
           }
           for (let k = 0; k < curWavePts.length - 1; k++) {
-            pushLine(curWavePts[k], curWavePts[k + 1], ribColor, 1.5, null, 0.9, TIER_MAP.ROOF);
+            pushLine(curWavePts[k], curWavePts[k + 1], ribColor, 1.5, null, 0.92, TIER_MAP.ROOF);
             if (prevWavePts.length === curWavePts.length) {
-              pushLine(prevWavePts[k], curWavePts[k], purlinColor, 1.0, null, 0.8, TIER_MAP.ROOF);
+              pushLine(prevWavePts[k], curWavePts[k], purlinColor, 1.0, null, 0.82, TIER_MAP.ROOF);
             }
           }
           prevWavePts.length = 0;
           curWavePts.forEach(pt => prevWavePts.push(pt));
         }
+
+        // 8 Octagonal Heavy Steel Box Columns (八边形大吨位钢箱柱) supporting the 43.6m roof
+        const colCoords = [
+          { x: -130, z: -104 }, { x: 130, z: -104 },
+          { x: -130, z: 104 },  { x: 130, z: 104 },
+          { x: -204, z: -80 },  { x: 204, z: -80 },
+          { x: -204, z: 80 },   { x: 204, z: 80 }
+        ];
+        colCoords.forEach(c => {
+          pushLine({ x: c.x, y: yF2, z: c.z }, { x: c.x, y: yRoof - 2, z: c.z }, ribColor, 1.8, null, 0.75, TIER_MAP.ROOF);
+        });
       }
 
       // =====================================================================
@@ -2439,12 +2454,9 @@ html, body {
           const pA = pts3d[i];
           const pB = pts3d[i + 1];
 
-          // Outer high-contrast casing
-          pushLine(pA, pB, isCarbon ? '#111110' : '#f5f2ec', 6.5, null, 0.95, TIER_MAP.PATH);
-          // Inner international orange signal path
-          pushLine(pA, pB, '#d94e1f', 3.6, [8, 5], 1.0, TIER_MAP.PATH);
+          pushLine(pA, pB, isCarbon ? '#111110' : '#f5f2ec', 6.2, null, 0.95, TIER_MAP.PATH);
+          pushLine(pA, pB, '#d94e1f', 3.5, [8, 5], 1.0, TIER_MAP.PATH);
 
-          // Animated flowing pulse particle along each segment
           const pulseT = (state.clock * 0.85 + i * 0.25) % 1.0;
           const px = pA.x + (pB.x - pA.x) * pulseT;
           const py = pA.y + (pB.y - pA.y) * pulseT;
@@ -2468,10 +2480,9 @@ html, body {
           });
         }
 
-        // Numbered Waypoint Pills (1..N) — Tappable to focus camera on that waypoint!
         pts3d.forEach((pt, idx) => {
           pushBadge(
-            { x: pt.x, y: pt.y + 8, z: pt.z },
+            { x: pt.x, y: pt.y + 7, z: pt.z },
             String(idx + 1),
             '#d94e1f',
             '#ffffff',
@@ -2490,7 +2501,7 @@ html, body {
       }
 
       // =====================================================================
-      // 8. PERIMETER ARCHITECTURAL CALLOUT BADGES (WITH LEADER LINES & TAP)
+      // 8. PERIMETER ARCHITECTURAL CALLOUT BADGES (WITH TRUE METER SPECS)
       // =====================================================================
       const badgeBg = isCarbon ? 'rgba(24,24,22,0.95)' : 'rgba(245,242,236,0.96)';
       const badgeFg = isCarbon ? '#f4f1ea' : '#141413';
@@ -2499,33 +2510,33 @@ html, body {
       const callouts = [
         {
           lvl: 'F4',
-          anchor: { x: 187, y: yF4 + 12, z: -85 },
-          pin:    { x: 214, y: yF4 + 28, z: -102 },
-          text: isMobile ? 'F4 · 4/6号线高架' : 'F4 · 地铁4/6号线高架双岛站台'
+          anchor: { x: 184,  y: yF4 + 6,  z: -65 },
+          pin:    isMobile ? { x: 195, y: yF4 + 52, z: -175 } : { x: 225, y: yF4 + 42, z: -165 },
+          text: isMobile ? 'F4 · 4/6号线(140m)' : 'F4 · 穿堂高架4/6号线双岛 (长140m)'
         },
         {
           lvl: 'F2',
-          anchor: { x: 146, y: yF2 + 9,  z: 28 },
-          pin:    { x: 210, y: yF2 + 22, z: 58 },
-          text: isMobile ? 'F2 · 东广场/A口' : 'F2 · 东广场 & 国铁东进站口(A)'
+          anchor: { x: 204,  y: yF2 + 5,  z: 35 },
+          pin:    isMobile ? { x: 215, y: yF2 + 12, z: 125 }  : { x: 255, y: yF2 + 24, z: 95 },
+          text: isMobile ? 'F2 · 主站房(409×208m)' : 'F2 · 主站房(409×208m) & 东广场'
         },
         {
           lvl: 'F1',
-          anchor: { x: -20, y: yF1 + 8,  z: -80 },
-          pin:    { x: -175,y: yF1 + 18, z: -98 },
-          text: isMobile ? 'F1 · 国铁11台20线' : 'F1 · 国铁11台20线 (8–15跨境区)'
+          anchor: { x: -40,  y: yF1 + 5,  z: -165 },
+          pin:    isMobile ? { x: -115,y: yF1 + 48, z: -215 } : { x: -125,y: yF1 + 38, z: -215 },
+          text: isMobile ? 'F1 · 站台(260×450m)' : 'F1 · 11台20线(260×450m) & 雨棚'
         },
         {
           lvl: 'F2',
-          anchor: { x: -154,y: yF2 + 11, z: 36 },
-          pin:    { x: -202,y: yF2 + 24, z: 70 },
-          text: isMobile ? 'F2 · 西广场/网约车' : 'F2 · 西广场 & 地面网约车B区'
+          anchor: { x: -255, y: yF2 + 6,  z: 45 },
+          pin:    isMobile ? { x: -255,y: yF2 + 26, z: 55 }   : { x: -265,y: yF2 + 24, z: 85 },
+          text: isMobile ? 'F2 · 西广场(270.5m)' : 'F2 · 西广场(270.5m) & 网约车B区'
         },
         {
           lvl: 'B2',
-          anchor: { x: -120,y: yB2 + 8,  z: 24 },
-          pin:    { x: -195,y: yB2 + 16, z: 88 },
-          text: isMobile ? 'B2 · 5号线正交台' : 'B2 · 5号线东西向正交侧式站台'
+          anchor: { x: 110,  y: yB2 + 4,  z: 11 },
+          pin:    isMobile ? { x: -55, y: yB2 - 28, z: 235 }  : { x: -95, y: yB2 - 14, z: 225 },
+          text: isMobile ? 'B2 · 5号线正交(410m)' : 'B2 · 5号线正交隧道(410m) & 140m站台'
         }
       ];
 
@@ -2540,12 +2551,12 @@ html, body {
       // Selected Platform / Gate Callout Flag
       if (state.selectedGate) {
         const gx = getPlatformX(Number(state.selectedGate));
-        const anchor = { x: gx, y: yF1 + 10, z: 0 };
-        const pin    = { x: gx, y: yF2 + 34, z: 0 };
+        const anchor = { x: gx, y: yF1 + 5,  z: 0 };
+        const pin    = { x: gx, y: yRoof + 14, z: 0 };
         pushLine(anchor, pin, '#d94e1f', 2.2, null, 1.0, TIER_MAP.HUD);
         pushBadge(
           pin,
-          'A' + state.selectedGate + '/B' + state.selectedGate + ' → ' + state.selectedGate + '站台',
+          'A' + state.selectedGate + '/B' + state.selectedGate + ' → ' + state.selectedGate + '站台 (长450m · X=' + (gx >= 0 ? '+' : '') + gx + 'm)',
           '#d94e1f', '#ffffff', '#141413', false, 1.0, TIER_MAP.HUD
         );
       }
@@ -2598,9 +2609,8 @@ html, body {
         state.targetPanX += dx;
         state.targetPanY += dy;
       } else {
-        // Natural 1:1 direct manipulation: dragging right pulls front of model right
         state.targetYaw -= dx * 0.0075;
-        state.targetPitch = Math.max(0.22, Math.min(1.42, state.targetPitch + dy * 0.0065));
+        state.targetPitch = Math.max(0.20, Math.min(1.45, state.targetPitch + dy * 0.0065));
         document.getElementById('yawRange').value = Math.round((state.targetYaw * 180) / Math.PI);
         document.getElementById('pitchRange').value = Math.round((state.targetPitch * 180) / Math.PI);
       }
@@ -2617,15 +2627,13 @@ html, body {
     canvas.addEventListener('wheel', e => {
       e.preventDefault();
       const factor = e.deltaY > 0 ? 0.92 : 1.08;
-      state.targetZoom = Math.max(0.58, Math.min(2.5, state.targetZoom * factor));
+      state.targetZoom = Math.max(0.55, Math.min(2.8, state.targetZoom * factor));
     }, { passive: false });
 
-    // Mobile Touch Events (1-finger natural 1:1 orbit, 2-finger pinch + pan)
     canvas.addEventListener('touchstart', e => {
       state.tourActive = false;
       updateTourButtons();
 
-      // Auto-collapse sheet from 'full' to 'half' when interacting with 3D model
       if (window.innerWidth <= 960 && state.sheetMode === 'full') {
         setSheetHeight('half');
       }
@@ -2654,13 +2662,13 @@ html, body {
         dragStartY = e.touches[0].clientY;
 
         state.targetYaw -= dx * 0.0085;
-        state.targetPitch = Math.max(0.22, Math.min(1.42, state.targetPitch + dy * 0.0075));
+        state.targetPitch = Math.max(0.20, Math.min(1.45, state.targetPitch + dy * 0.0075));
       } else if (e.touches.length === 2) {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.hypot(dx, dy);
         if (pinchStartDist > 10) {
-          state.targetZoom = Math.max(0.58, Math.min(2.5, pinchStartZoom * (dist / pinchStartDist)));
+          state.targetZoom = Math.max(0.55, Math.min(2.8, pinchStartZoom * (dist / pinchStartDist)));
         }
         const midX = (e.touches[0].clientX + e.touches[1].clientX) * 0.5;
         const midY = (e.touches[0].clientY + e.touches[1].clientY) * 0.5;
@@ -2681,7 +2689,6 @@ html, body {
       isDragging = false;
     }, { passive: true });
 
-    // Mobile Bottom Sheet Touch Swipe Gesture on Header Bar
     const sheetHeaderEl = document.getElementById('mobileSheetHeader');
     let sheetTouchStartY = 0;
     sheetHeaderEl.addEventListener('touchstart', e => {
@@ -2726,7 +2733,7 @@ html, body {
     requestAnimationFrame(animate);
 
     // =========================================================================
-    // 8. UI CONTROLLERS, 3D CAMERA TOUR & MOBILE SHEET STATES
+    // 8. UI CONTROLLERS, 1:1 SCALE TOGGLE & MOBILE SHEET STATES
     // =========================================================================
     function setSheetHeight(mode) {
       state.sheetMode = mode;
@@ -2794,15 +2801,29 @@ html, body {
       }
     }
 
-    function toggleLiveTrains() {
-      state.liveTrains = !state.liveTrains;
-      document.getElementById('btnTrains').classList.toggle('is-active', state.liveTrains);
+    function toggleScaleMode() {
+      if (Math.abs(state.targetExplode - 1.0) < 0.15) {
+        updateExplosion(2.2);
+      } else {
+        updateExplosion(1.0);
+      }
     }
 
     function updateExplosion(val) {
-      state.targetExplode = parseFloat(val);
-      document.getElementById('explodeRange').value = val;
-      document.getElementById('mExplodeRange').value = val;
+      const numVal = parseFloat(val);
+      state.targetExplode = numVal;
+      document.getElementById('explodeRange').value = numVal;
+      document.getElementById('mExplodeRange').value = numVal;
+      const isTrueScale = Math.abs(numVal - 1.0) < 0.12;
+      const btnScale = document.getElementById('btnScaleMode');
+      if (btnScale) {
+        btnScale.textContent = isTrueScale ? '1:1真实比例' : numVal.toFixed(1) + 'x剖切展开';
+        btnScale.classList.toggle('is-active', isTrueScale);
+      }
+      const lbl = document.getElementById('explodeLabel');
+      if (lbl) {
+        lbl.textContent = isTrueScale ? '垂向比例 (1.0x真实)' : '垂向比例 (' + numVal.toFixed(1) + 'x展开)';
+      }
     }
 
     function updateYawFromSlider(deg) {
@@ -2828,29 +2849,29 @@ html, body {
 
       if (preset === 'iso') {
         state.targetYaw = -0.66;
-        state.targetPitch = 0.49;
+        state.targetPitch = 0.47;
         state.targetZoom = 1.0;
-        updateExplosion(1.20);
+        updateExplosion(1.0);
       } else if (preset === 'east') {
-        state.targetYaw = -0.36;
-        state.targetPitch = 0.42;
-        state.targetZoom = 1.12;
-        updateExplosion(1.45);
+        state.targetYaw = -0.38;
+        state.targetPitch = 0.44;
+        state.targetZoom = 1.25;
+        updateExplosion(1.3);
       } else if (preset === 'west') {
         state.targetYaw = -2.35;
-        state.targetPitch = 0.48;
-        state.targetZoom = 1.08;
-        updateExplosion(1.25);
+        state.targetPitch = 0.46;
+        state.targetZoom = 1.18;
+        updateExplosion(1.0);
       } else if (preset === 'top') {
         state.targetYaw = 0.0;
-        state.targetPitch = 1.34;
-        state.targetZoom = 0.96;
-        updateExplosion(0.75);
+        state.targetPitch = 1.42;
+        state.targetZoom = 0.98;
+        updateExplosion(1.0);
       } else if (preset === 'under') {
-        state.targetYaw = -0.82;
-        state.targetPitch = 0.36;
-        state.targetZoom = 1.12;
-        updateExplosion(1.75);
+        state.targetYaw = -0.78;
+        state.targetPitch = 0.42;
+        state.targetZoom = 1.15;
+        updateExplosion(2.4);
       }
 
       document.getElementById('yawRange').value = Math.round((state.targetYaw * 180) / Math.PI);
@@ -2872,9 +2893,9 @@ html, body {
       document.getElementById('inspDesc').textContent = info.desc;
 
       if (lvl !== 'ALL') {
-        updateExplosion(1.50);
+        updateExplosion(2.0);
       } else {
-        updateExplosion(1.20);
+        updateExplosion(1.0);
       }
     }
 
@@ -2894,18 +2915,19 @@ html, body {
       const chip = document.getElementById('gateChip-' + num);
       if (chip) chip.classList.add('is-active');
 
+      const gx = getPlatformX(num);
       const isHk = (num >= 8 && num <= 15);
       const zoneDesc = isHk
-        ? '广深港跨境高铁（香港西九龙）及京广/广深港干线核心站台'
-        : (num <= 7 ? '广深港/京港方向常规站台（靠近东广场侧）' : '厦深/赣深/梅汕方向站台（靠近西广场侧）');
+        ? '广深港跨境高铁（香港西九龙）及京广/广深港干线核心 450m 站台'
+        : (num <= 7 ? '广深港/京港方向常规 450m 站台（靠近东广场侧）' : '厦深/赣深/梅汕方向 450m 站台（靠近西广场侧）');
 
       document.getElementById('gateCallout').innerHTML =
-        '<strong>已定位：A' + num + ' / B' + num + ' 检票口 → F1 层 ' + num + ' 站台</strong><br/>' +
-        '• 定位说明：' + zoneDesc + '<br/>' +
-        '• 进站优选：搭地铁 4/5/6 号线请从 <strong>东进站口(A)</strong> 进 A' + num + '；乘网约车从 <strong>西进站口(B)</strong> 进 B' + num + '。';
+        '<strong>已定位：A' + num + ' / B' + num + ' 检票口 → F1 层 ' + num + ' 站台 (X=' + (gx >= 0 ? '+' : '') + gx + 'm, 长450m)</strong><br/>' +
+        '• 真实尺度：' + zoneDesc + '<br/>' +
+        '• 进站优选：搭地铁 4/5/6 号线请从 <strong>东进站口(A, X=+130m)</strong> 进 A' + num + '；乘网约车从 <strong>西进站口(B, X=-130m)</strong> 进 B' + num + '。';
 
       state.targetYaw = -0.68;
-      state.targetPitch = 0.54;
+      state.targetPitch = 0.52;
     }
 
     function activateWayfindingFlow(flowKey, btnEl) {
@@ -2919,7 +2941,6 @@ html, body {
       document.getElementById('routeDetailTitle').textContent = flow.title;
       document.getElementById('routeDetailList').innerHTML = flow.steps.map(s => '<li>' + s + '</li>').join('');
 
-      // Update top telemetry ribbon
       const ribbonHtml = flow.shortSteps.map((st, i) => {
         const arrow = i < flow.shortSteps.length - 1 ? '<span class="t-step-arrow">→</span>' : '';
         return '<span class="t-step-badge">' + (i + 1) + '</span><span>' + st + '</span>' + arrow;
@@ -2936,7 +2957,6 @@ html, body {
 
       state.targetYaw = flow.cam.yaw;
       state.targetPitch = flow.cam.pitch;
-      updateExplosion(1.35);
     }
 
     function toggleRoof() {
@@ -2952,8 +2972,7 @@ html, body {
       btn.classList.toggle('is-active', state.theme === 'carbon');
     }
 
-    // Built-in CSS Drawer Functions
-    const rawCssCode = "/* ==========================================================================\n   SHENZHEN NORTH STATION · V7 BIM-GRADE 3D ARCHITECTURAL WAYFINDING SYSTEM\n   Art Direction: Swiss Architectural Maquette & Precision Transit Cartography\n   Reference Discipline: Leonxlnx/taste-skill (1440px / 768px / 390px Responsive)\n   Files: Shenzhen/index.html + Shenzhen/style.css\n   ========================================================================== */\n\n:root {\n  /* Warm Architectural Maquette Daylight Palette */\n  --ground: #e8e4dc;\n  --ground-grid: #dcd6ca;\n  --surface: rgba(245, 242, 236, 0.96);\n  --surface-solid: #f5f2ec;\n  --surface-elevated: #ebe6dc;\n  --surface-recessed: #ded8cc;\n  --ink: #141413;\n  --ink-secondary: #4a4842;\n  --ink-muted: #78746c;\n  --rule: #cfc9bc;\n  --rule-strong: #141413;\n\n  /* Primary Wayfinding Signal (International Architectural Orange) */\n  --signal: #d94e1f;\n  --signal-tint: rgba(217, 78, 31, 0.12);\n\n  /* Authentic Rail & Shenzhen Metro Identity Colors */\n  --cr-navy: #003a70;       /* China Railway High-Speed Rail */\n  --cr-crimson: #b81d24;    /* Platforms 8-15 HK West Kowloon Cross-Border */\n  --metro-l4: #d62828;      /* Shenzhen Metro Line 4 (Longhua) */\n  --metro-l5: #7b3f98;      /* Shenzhen Metro Line 5 (Huanzhong) */\n  --metro-l6: #009b8d;      /* Shenzhen Metro Line 6 (Guangming) */\n  --intercity: #1f6fa8;     /* Shenhui Intercity (Under Construction) */\n  --east-green: #1b6b4c;    /* East Square Public Transit Hub */\n  --west-ochre: #b5651d;    /* West Square Ride-Hailing Zone A/B */\n\n  /* Typography — Strict 2-Font Discipline + Tabular Numerals */\n  --font-sans: \"Helvetica Neue\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", Arial, sans-serif;\n  --font-mono: \"JetBrains Mono\", \"SFMono-Regular\", Menlo, Consolas, monospace;\n}\n\n/* Blueprint Carbon Dark Mode */\nbody[data-theme=\"carbon\"] {\n  --ground: #111110;\n  --ground-grid: #1c1c1a;\n  --surface: rgba(24, 24, 22, 0.96);\n  --surface-solid: #181816;\n  --surface-elevated: #22221f;\n  --surface-recessed: #2c2c28;\n  --ink: #f4f1ea;\n  --ink-secondary: #b8b4aa;\n  --ink-muted: #7d7970;\n  --rule: #2e2d29;\n  --rule-strong: #f4f1ea;\n  --signal: #ff5c26;\n  --signal-tint: rgba(255, 92, 38, 0.16);\n}\n\n*, *::before, *::after {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  -webkit-tap-highlight-color: transparent;\n}\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  background-color: var(--ground);\n  color: var(--ink);\n  font-family: var(--font-sans);\n  font-size: 13.5px;\n  line-height: 1.45;\n  font-variant-numeric: tabular-nums;\n  -webkit-font-smoothing: antialiased;\n  user-select: none;\n}\n\n::-webkit-scrollbar {\n  width: 4px;\n  height: 4px;\n}\n::-webkit-scrollbar-track {\n  background: transparent;\n}\n::-webkit-scrollbar-thumb {\n  background: var(--rule);\n}\n\n/* ==========================================================================\n   1. FULL-BLEED 3D STAGE CANVAS (100vw x 100dvh on ALL viewports)\n   ========================================================================== */\n.stage-viewport {\n  position: fixed;\n  inset: 0;\n  width: 100vw;\n  height: 100vh;\n  height: 100dvh;\n  background-color: var(--ground);\n  z-index: 1;\n  overflow: hidden;\n  touch-action: none;\n}\n\n#station3DCanvas {\n  width: 100%;\n  height: 100%;\n  display: block;\n  cursor: grab;\n  touch-action: none;\n}\n\n#station3DCanvas:active {\n  cursor: grabbing;\n}\n\n/* ==========================================================================\n   2. TOP ARCHITECTURAL HEADER BAR (50px Desktop / 44px Mobile)\n   ========================================================================== */\n.topbar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  height: 50px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 10px;\n  padding: 0 14px;\n  background-color: var(--surface);\n  border-bottom: 1px solid var(--rule);\n  z-index: 50;\n  white-space: nowrap;\n}\n\n.brand-cluster {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  min-width: 0;\n}\n\n.station-badge {\n  font-family: var(--font-mono);\n  font-size: 11px;\n  font-weight: 700;\n  padding: 3px 7px;\n  background-color: var(--ink);\n  color: var(--surface-solid);\n  letter-spacing: 0.04em;\n  flex-shrink: 0;\n}\n\n.station-title {\n  font-size: 15px;\n  font-weight: 700;\n  letter-spacing: -0.02em;\n  color: var(--ink);\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.station-subtitle {\n  font-size: 11.5px;\n  color: var(--ink-muted);\n  border-left: 1px solid var(--rule);\n  padding-left: 10px;\n}\n\n@media (max-width: 1320px) {\n  .station-subtitle {\n    display: none;\n  }\n}\n\n.camera-presets-bar {\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  background-color: var(--surface-elevated);\n  border: 1px solid var(--rule);\n  padding: 2px;\n}\n\n.cam-pill {\n  height: 26px;\n  padding: 0 9px;\n  border: none;\n  background: transparent;\n  color: var(--ink-secondary);\n  font-family: var(--font-sans);\n  font-size: 11.5px;\n  font-weight: 600;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: background-color 0.14s ease, color 0.14s ease;\n}\n\n.cam-pill:hover,\n.cam-pill.is-active {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n}\n\n.top-actions {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  flex-shrink: 0;\n}\n\n.ctrl-btn {\n  height: 28px;\n  padding: 0 9px;\n  background-color: var(--surface-elevated);\n  color: var(--ink);\n  border: 1px solid var(--rule);\n  font-family: var(--font-sans);\n  font-size: 11.5px;\n  font-weight: 600;\n  cursor: pointer;\n  white-space: nowrap;\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  transition: background-color 0.14s ease, color 0.14s ease;\n}\n\n.ctrl-btn:hover,\n.ctrl-btn.is-active {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n  border-color: var(--ink);\n}\n\n.ctrl-btn.ctrl-signal {\n  background-color: var(--signal);\n  color: #ffffff;\n  border-color: var(--signal);\n}\n\n/* ==========================================================================\n   3. FLOATING TOP WAYFINDING TELEMETRY BAR (Route Steps + 3D Tour Play)\n   ========================================================================== */\n.telemetry-ribbon {\n  position: fixed;\n  top: 60px;\n  left: 306px;\n  right: 356px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  background-color: var(--surface);\n  border: 1px solid var(--rule);\n  border-left: 4px solid var(--signal);\n  padding: 5px 10px;\n  z-index: 35;\n  pointer-events: auto;\n}\n\n.telemetry-steps {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  font-size: 11.5px;\n  font-weight: 600;\n  color: var(--ink);\n  overflow-x: auto;\n  white-space: nowrap;\n  scrollbar-width: none;\n}\n\n.telemetry-steps::-webkit-scrollbar {\n  display: none;\n}\n\n.t-step-badge {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-width: 17px;\n  height: 17px;\n  padding: 0 4px;\n  background-color: var(--signal);\n  color: #ffffff;\n  font-family: var(--font-mono);\n  font-size: 10px;\n  font-weight: 700;\n}\n\n.t-step-arrow {\n  color: var(--ink-muted);\n  font-family: var(--font-mono);\n  font-size: 11px;\n  margin: 0 2px;\n}\n\n.tour-play-btn {\n  height: 24px;\n  padding: 0 9px;\n  background-color: var(--signal);\n  color: #ffffff;\n  border: none;\n  font-family: var(--font-sans);\n  font-size: 11px;\n  font-weight: 700;\n  cursor: pointer;\n  flex-shrink: 0;\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n\n.tour-play-btn.is-playing {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n}\n\n/* ==========================================================================\n   4. DESKTOP LEFT & RIGHT ARCHITECTURAL DOCKS\n   ========================================================================== */\n.dock-left {\n  position: fixed;\n  top: 50px;\n  left: 0;\n  bottom: 0;\n  width: 294px;\n  background-color: var(--surface);\n  border-right: 1px solid var(--rule);\n  z-index: 40;\n  display: flex;\n  flex-direction: column;\n  overflow-y: auto;\n}\n\n.dock-right {\n  position: fixed;\n  top: 50px;\n  right: 0;\n  bottom: 0;\n  width: 344px;\n  background-color: var(--surface);\n  border-left: 1px solid var(--rule);\n  z-index: 40;\n  display: flex;\n  flex-direction: column;\n  overflow-y: auto;\n}\n\n.panel-block {\n  padding: 12px 14px;\n  border-bottom: 1px solid var(--rule);\n}\n\n.block-header {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  margin-bottom: 8px;\n}\n\n.block-title {\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 0.01em;\n  color: var(--ink);\n}\n\n.block-meta {\n  font-family: var(--font-mono);\n  font-size: 10.5px;\n  color: var(--ink-muted);\n}\n\n/* Vertical Floor Stack (F4 -> B2) */\n.floor-stack {\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n}\n\n.floor-item {\n  display: grid;\n  grid-template-columns: 32px minmax(0, 1fr) auto;\n  align-items: center;\n  gap: 8px;\n  padding: 6px 9px;\n  background-color: var(--surface-elevated);\n  border: none;\n  border-left: 3px solid transparent;\n  color: var(--ink);\n  text-align: left;\n  cursor: pointer;\n  transition: background-color 0.12s ease;\n}\n\n.floor-item:hover {\n  background-color: var(--surface-recessed);\n}\n\n.floor-item.is-selected {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n  border-left-color: var(--signal);\n}\n\n.floor-code {\n  font-family: var(--font-mono);\n  font-size: 12.5px;\n  font-weight: 700;\n}\n\n.floor-desc strong {\n  display: block;\n  font-size: 11.5px;\n  font-weight: 700;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.floor-desc span {\n  display: block;\n  font-size: 10px;\n  color: var(--ink-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.floor-item.is-selected .floor-desc span,\n.floor-item.is-selected .floor-elev {\n  color: var(--rule);\n}\n\n.floor-elev {\n  font-family: var(--font-mono);\n  font-size: 10px;\n  color: var(--ink-muted);\n}\n\n/* Ticket Gate & Platform Locator */\n.gate-select {\n  width: 100%;\n  height: 32px;\n  padding: 0 8px;\n  background-color: var(--surface-elevated);\n  color: var(--ink);\n  border: 1px solid var(--rule);\n  font-family: var(--font-sans);\n  font-size: 11.5px;\n  font-weight: 600;\n  margin-bottom: 6px;\n}\n\n.gate-matrix {\n  display: grid;\n  grid-template-columns: repeat(5, 1fr);\n  gap: 3px;\n  margin-bottom: 8px;\n}\n\n.gate-btn {\n  padding: 4px 2px;\n  background-color: var(--surface-elevated);\n  border: 1px solid transparent;\n  color: var(--ink);\n  font-family: var(--font-mono);\n  font-size: 10px;\n  font-weight: 600;\n  text-align: center;\n  cursor: pointer;\n}\n\n.gate-btn:hover {\n  border-color: var(--ink);\n}\n\n.gate-btn.is-hk {\n  background-color: rgba(184, 29, 36, 0.11);\n  color: var(--cr-crimson);\n}\n\n.gate-btn.is-active {\n  background-color: var(--signal);\n  color: #ffffff;\n}\n\n.gate-callout {\n  padding: 8px 10px;\n  background-color: var(--surface-elevated);\n  border-left: 3px solid var(--cr-navy);\n  font-size: 11px;\n  color: var(--ink-secondary);\n  line-height: 1.45;\n}\n\n.gate-callout strong {\n  color: var(--ink);\n}\n\n/* Wayfinding Flow Cards */\n.route-stack {\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n}\n\n.route-card {\n  padding: 7px 10px;\n  background-color: var(--surface-elevated);\n  border: none;\n  border-left: 3px solid transparent;\n  color: var(--ink);\n  text-align: left;\n  cursor: pointer;\n  transition: background-color 0.12s ease;\n}\n\n.route-card:hover {\n  background-color: var(--surface-recessed);\n}\n\n.route-card.is-active {\n  background-color: var(--signal-tint);\n  border-left-color: var(--signal);\n}\n\n.route-card-top {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  gap: 6px;\n  font-size: 11.5px;\n  font-weight: 700;\n}\n\n.route-time {\n  font-family: var(--font-mono);\n  font-size: 10px;\n  font-weight: 700;\n  color: var(--signal);\n  flex-shrink: 0;\n}\n\n.route-sub {\n  font-size: 10.5px;\n  color: var(--ink-secondary);\n  margin-top: 1px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.route-detail-box {\n  margin-top: 8px;\n  padding: 9px 11px;\n  background-color: var(--surface-elevated);\n  border-top: 2px solid var(--ink);\n}\n\n.route-detail-box h4 {\n  font-size: 11.5px;\n  font-weight: 700;\n  margin-bottom: 5px;\n  color: var(--ink);\n}\n\n.route-ol {\n  padding-left: 15px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  font-size: 11px;\n  color: var(--ink-secondary);\n  line-height: 1.42;\n}\n\n.route-ol li strong {\n  color: var(--ink);\n}\n\n/* Selected Zone Inspector & Timetable */\n.inspector-card {\n  padding: 9px 11px;\n  background-color: var(--surface-elevated);\n  border-left: 3px solid var(--ink);\n}\n\n.inspector-card h4 {\n  font-size: 12px;\n  font-weight: 700;\n  color: var(--ink);\n}\n\n.inspector-tag {\n  font-family: var(--font-mono);\n  font-size: 10px;\n  color: var(--signal);\n  margin: 2px 0 4px;\n}\n\n.inspector-card p {\n  font-size: 11px;\n  color: var(--ink-secondary);\n  line-height: 1.44;\n}\n\n.schedule-table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 10.5px;\n}\n\n.schedule-table th,\n.schedule-table td {\n  padding: 4px 3px;\n  border-bottom: 1px solid var(--rule);\n  text-align: left;\n  white-space: nowrap;\n}\n\n.schedule-table th {\n  font-size: 9.5px;\n  font-weight: 700;\n  color: var(--ink-muted);\n}\n\n.schedule-table td.mono-r {\n  font-family: var(--font-mono);\n  text-align: right;\n  font-weight: 600;\n}\n\n/* ==========================================================================\n   5. DESKTOP BOTTOM FLOATING DOCK (Sliders + System Color Legend)\n   ========================================================================== */\n.bottom-dock {\n  position: fixed;\n  bottom: 10px;\n  left: 306px;\n  right: 356px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  z-index: 35;\n  pointer-events: none;\n}\n\n.slider-cluster {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  background-color: var(--surface);\n  border: 1px solid var(--rule);\n  padding: 5px 11px;\n  pointer-events: auto;\n}\n\n.slider-item {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 11px;\n  font-weight: 600;\n  color: var(--ink-secondary);\n  white-space: nowrap;\n}\n\n.slider-item input[type=\"range\"] {\n  width: 72px;\n  accent-color: var(--ink);\n  cursor: pointer;\n}\n\n.legend-cluster {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  background-color: var(--surface);\n  border: 1px solid var(--rule);\n  padding: 5px 11px;\n  font-size: 10.5px;\n  font-weight: 600;\n  color: var(--ink-secondary);\n  pointer-events: auto;\n  white-space: nowrap;\n  overflow-x: auto;\n}\n\n.leg-chip {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n\n.leg-dot {\n  width: 8px;\n  height: 8px;\n  display: inline-block;\n}\n\n/* ==========================================================================\n   6. MOBILE-ONLY FLOATING CONTROLS & BOTTOM SHEET (Hidden on Desktop)\n   ========================================================================== */\n.mobile-cam-strip,\n.mobile-floor-rail,\n.mobile-sheet-header {\n  display: none;\n}\n\n/* ==========================================================================\n   7. BUILT-IN STYLE.CSS VIEWER MODAL\n   ========================================================================== */\n.css-modal-backdrop {\n  display: none;\n  position: fixed;\n  inset: 0;\n  background-color: rgba(20, 20, 19, 0.65);\n  z-index: 200;\n  align-items: center;\n  justify-content: center;\n  padding: 16px;\n}\n\n.css-modal-backdrop.is-open {\n  display: flex;\n}\n\n.css-modal-window {\n  width: 860px;\n  max-width: 96vw;\n  height: 80vh;\n  background-color: var(--surface-solid);\n  border: 1px solid var(--ink);\n  display: flex;\n  flex-direction: column;\n}\n\n.css-modal-top {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--rule);\n}\n\n.css-modal-top h3 {\n  font-size: 12.5px;\n  font-weight: 700;\n}\n\n.css-modal-area {\n  flex: 1;\n  width: 100%;\n  padding: 12px;\n  background-color: var(--surface-elevated);\n  color: var(--ink);\n  font-family: var(--font-mono);\n  font-size: 11px;\n  line-height: 1.48;\n  border: none;\n  resize: none;\n  overflow: auto;\n  white-space: pre;\n}\n\n/* ==========================================================================\n   8. NATIVE-GRADE MOBILE & TABLET ARCHITECTURE (<= 960px)\n      100% Full-Screen 3D Viewport + 3-State Draggable Bottom Sheet\n   ========================================================================== */\n@media (max-width: 960px) {\n  .topbar {\n    height: 44px;\n    padding: 0 10px;\n  }\n\n  .camera-presets-bar {\n    display: none;\n  }\n\n  .station-badge {\n    font-size: 10px;\n    padding: 2px 5px;\n  }\n\n  .station-title {\n    font-size: 13.5px;\n  }\n\n  .ctrl-btn {\n    height: 26px;\n    padding: 0 7px;\n    font-size: 10.5px;\n  }\n\n  /* Horizontal scrollable camera preset bar directly under topbar */\n  .mobile-cam-strip {\n    display: flex;\n    align-items: center;\n    gap: 3px;\n    position: fixed;\n    top: 48px;\n    left: 8px;\n    right: 8px;\n    height: 30px;\n    padding: 2px;\n    background-color: var(--surface);\n    border: 1px solid var(--rule);\n    z-index: 38;\n    overflow-x: auto;\n    scrollbar-width: none;\n  }\n\n  .mobile-cam-strip::-webkit-scrollbar {\n    display: none;\n  }\n\n  .mobile-cam-strip .cam-pill {\n    flex: 1;\n    height: 24px;\n    padding: 0 6px;\n    font-size: 11px;\n    text-align: center;\n  }\n\n  /* Compact route step ribbon under mobile camera strip */\n  .telemetry-ribbon {\n    top: 82px;\n    left: 8px;\n    right: 46px;\n    padding: 4px 8px;\n  }\n\n  .telemetry-steps {\n    font-size: 10.5px;\n  }\n\n  .tour-play-btn {\n    height: 22px;\n    padding: 0 7px;\n    font-size: 10px;\n  }\n\n  /* Right-Edge Vertical Quick Floor Slicer Rail (ALL / F4..B2) */\n  .mobile-floor-rail {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    position: fixed;\n    top: 82px;\n    right: 8px;\n    background-color: var(--surface);\n    border: 1px solid var(--rule);\n    padding: 2px;\n    z-index: 39;\n  }\n\n  .m-rail-btn {\n    width: 30px;\n    height: 24px;\n    border: none;\n    background: transparent;\n    color: var(--ink);\n    font-family: var(--font-mono);\n    font-size: 10px;\n    font-weight: 700;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n\n  .m-rail-btn.is-selected {\n    background-color: var(--signal);\n    color: #ffffff;\n  }\n\n  .bottom-dock {\n    display: none;\n  }\n\n  /* 3-State Mobile Bottom Sheet:\n     - peek: 0px body height (only the 68px header bar is visible at bottom!)\n     - half: 32dvh body height (default — leaves 60% of phone screen for 3D model!)\n     - full: 66dvh body height (expanded details) */\n  body[data-sheet=\"peek\"] {\n    --sheet-h: 0px;\n  }\n  body[data-sheet=\"half\"] {\n    --sheet-h: 31dvh;\n  }\n  body[data-sheet=\"full\"] {\n    --sheet-h: 66dvh;\n  }\n\n  .dock-left,\n  .dock-right {\n    position: fixed;\n    top: auto;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    width: 100%;\n    height: var(--sheet-h, 31dvh);\n    background-color: var(--surface-solid);\n    border: none;\n    z-index: 45;\n    transition: height 0.24s cubic-bezier(0.22, 1, 0.36, 1);\n    overflow-y: auto;\n    -webkit-overflow-scrolling: touch;\n    display: none;\n  }\n\n  .dock-left.m-dock-active,\n  .dock-right.m-dock-active {\n    display: flex;\n  }\n\n  /* Mobile Sheet Header (Grabber Pill + 3 Height Buttons + Explosion Slider + 4 Tabs) */\n  .mobile-sheet-header {\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n    left: 0;\n    right: 0;\n    bottom: var(--sheet-h, 31dvh);\n    background-color: var(--surface-solid);\n    border-top: 2px solid var(--ink);\n    border-bottom: 1px solid var(--rule);\n    z-index: 46;\n    transition: bottom 0.24s cubic-bezier(0.22, 1, 0.36, 1);\n    touch-action: none;\n  }\n\n  .sheet-grabber-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 4px 10px;\n    background-color: var(--surface-elevated);\n    border-bottom: 1px solid var(--rule);\n  }\n\n  .sheet-size-btns {\n    display: flex;\n    gap: 3px;\n  }\n\n  .size-pill {\n    padding: 2px 7px;\n    border: 1px solid var(--rule);\n    background-color: var(--surface-solid);\n    color: var(--ink);\n    font-size: 10px;\n    font-weight: 700;\n    cursor: pointer;\n  }\n\n  .size-pill.is-active {\n    background-color: var(--ink);\n    color: var(--surface-solid);\n    border-color: var(--ink);\n  }\n\n  .m-explode-inline {\n    display: flex;\n    align-items: center;\n    gap: 5px;\n    font-size: 10px;\n    font-weight: 600;\n    color: var(--ink-secondary);\n  }\n\n  .m-explode-inline input[type=\"range\"] {\n    width: 64px;\n    accent-color: var(--ink);\n  }\n\n  .m-tabs-row {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    height: 34px;\n  }\n\n  .m-tab {\n    border: none;\n    border-right: 1px solid var(--rule);\n    border-bottom: 3px solid transparent;\n    background-color: var(--surface-solid);\n    color: var(--ink-secondary);\n    font-family: var(--font-sans);\n    font-size: 11.5px;\n    font-weight: 700;\n    cursor: pointer;\n    white-space: nowrap;\n  }\n\n  .m-tab:last-child {\n    border-right: none;\n  }\n\n  .m-tab.is-active {\n    color: var(--ink);\n    background-color: var(--surface-elevated);\n    border-bottom-color: var(--signal);\n  }\n\n  .panel-block {\n    display: none;\n    padding: 10px 12px;\n    border-bottom: none;\n  }\n\n  .panel-block.m-block-active {\n    display: block;\n  }\n\n  .gate-btn {\n    padding: 6px 2px;\n    font-size: 10.5px;\n  }\n}\n";
+    const rawCssCode = "/* ==========================================================================\n   SHENZHEN NORTH STATION · V8 1:1 TRUE-SCALE (1 UNIT = 1 METER) BIM SYSTEM\n   Engineering Data Source: National Railway Administration (国家铁路局)\n   - Hub Total Span: 950m (E-W) x 480m (N-S), Total Area 594,000 m²\n   - Main Station Building: 409m (E-W) x 208m (N-S) x 43.6m (H), 182,074 m²\n   - Waiting Hall (F2): 260m (E-W) x 148m (N-S) = 38,480 m² (~3.9万㎡)\n   - N/S Pillarless Canopies: 260m (E-W) x 130m (N) + 130m (S) x 18.1m (H)\n   - HSR 11 Platforms / 20 Tracks: 260m (E-W) x 450m (N-S)\n   ========================================================================== */\n\n:root {\n  --ground: #e8e4dc;\n  --ground-grid: #dcd6ca;\n  --surface: rgba(245, 242, 236, 0.96);\n  --surface-solid: #f5f2ec;\n  --surface-elevated: #ebe6dc;\n  --surface-recessed: #ded8cc;\n  --ink: #141413;\n  --ink-secondary: #4a4842;\n  --ink-muted: #78746c;\n  --rule: #cfc9bc;\n  --rule-strong: #141413;\n\n  --signal: #d94e1f;\n  --signal-tint: rgba(217, 78, 31, 0.12);\n\n  --cr-navy: #003a70;\n  --cr-crimson: #b81d24;\n  --metro-l4: #d62828;\n  --metro-l5: #7b3f98;\n  --metro-l6: #009b8d;\n  --intercity: #1f6fa8;\n  --east-green: #1b6b4c;\n  --west-ochre: #b5651d;\n\n  --font-sans: \"Helvetica Neue\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", Arial, sans-serif;\n  --font-mono: \"JetBrains Mono\", \"SFMono-Regular\", Menlo, Consolas, monospace;\n}\n\nbody[data-theme=\"carbon\"] {\n  --ground: #111110;\n  --ground-grid: #1c1c1a;\n  --surface: rgba(24, 24, 22, 0.96);\n  --surface-solid: #181816;\n  --surface-elevated: #22221f;\n  --surface-recessed: #2c2c28;\n  --ink: #f4f1ea;\n  --ink-secondary: #b8b4aa;\n  --ink-muted: #7d7970;\n  --rule: #2e2d29;\n  --rule-strong: #f4f1ea;\n  --signal: #ff5c26;\n  --signal-tint: rgba(255, 92, 38, 0.16);\n}\n\n*, *::before, *::after {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  -webkit-tap-highlight-color: transparent;\n}\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  background-color: var(--ground);\n  color: var(--ink);\n  font-family: var(--font-sans);\n  font-size: 13.5px;\n  line-height: 1.45;\n  font-variant-numeric: tabular-nums;\n  -webkit-font-smoothing: antialiased;\n  user-select: none;\n}\n\n::-webkit-scrollbar {\n  width: 4px;\n  height: 4px;\n}\n::-webkit-scrollbar-track {\n  background: transparent;\n}\n::-webkit-scrollbar-thumb {\n  background: var(--rule);\n}\n\n/* ==========================================================================\n   1. FULL-BLEED 3D STAGE CANVAS (100vw x 100dvh)\n   ========================================================================== */\n.stage-viewport {\n  position: fixed;\n  inset: 0;\n  width: 100vw;\n  height: 100vh;\n  height: 100dvh;\n  background-color: var(--ground);\n  z-index: 1;\n  overflow: hidden;\n  touch-action: none;\n}\n\n#station3DCanvas {\n  width: 100%;\n  height: 100%;\n  display: block;\n  cursor: grab;\n  touch-action: none;\n}\n\n#station3DCanvas:active {\n  cursor: grabbing;\n}\n\n/* ==========================================================================\n   2. TOP ARCHITECTURAL HEADER BAR (50px Desktop / 44px Mobile)\n   ========================================================================== */\n.topbar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  height: 50px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 10px;\n  padding: 0 14px;\n  background-color: var(--surface);\n  border-bottom: 1px solid var(--rule);\n  z-index: 50;\n  white-space: nowrap;\n}\n\n.brand-cluster {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  min-width: 0;\n}\n\n.station-badge {\n  font-family: var(--font-mono);\n  font-size: 11px;\n  font-weight: 700;\n  padding: 3px 7px;\n  background-color: var(--ink);\n  color: var(--surface-solid);\n  letter-spacing: 0.04em;\n  flex-shrink: 0;\n}\n\n.station-title {\n  font-size: 15px;\n  font-weight: 700;\n  letter-spacing: -0.02em;\n  color: var(--ink);\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.station-subtitle {\n  font-size: 11.5px;\n  color: var(--ink-muted);\n  border-left: 1px solid var(--rule);\n  padding-left: 10px;\n}\n\n@media (max-width: 1360px) {\n  .station-subtitle {\n    display: none;\n  }\n}\n\n.camera-presets-bar {\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  background-color: var(--surface-elevated);\n  border: 1px solid var(--rule);\n  padding: 2px;\n}\n\n.cam-pill {\n  height: 26px;\n  padding: 0 9px;\n  border: none;\n  background: transparent;\n  color: var(--ink-secondary);\n  font-family: var(--font-sans);\n  font-size: 11.5px;\n  font-weight: 600;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: background-color 0.14s ease, color 0.14s ease;\n}\n\n.cam-pill:hover,\n.cam-pill.is-active {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n}\n\n.top-actions {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  flex-shrink: 0;\n}\n\n.ctrl-btn {\n  height: 28px;\n  padding: 0 9px;\n  background-color: var(--surface-elevated);\n  color: var(--ink);\n  border: 1px solid var(--rule);\n  font-family: var(--font-sans);\n  font-size: 11.5px;\n  font-weight: 600;\n  cursor: pointer;\n  white-space: nowrap;\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  transition: background-color 0.14s ease, color 0.14s ease;\n}\n\n.ctrl-btn:hover,\n.ctrl-btn.is-active {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n  border-color: var(--ink);\n}\n\n.ctrl-btn.ctrl-signal {\n  background-color: var(--signal);\n  color: #ffffff;\n  border-color: var(--signal);\n}\n\n/* ==========================================================================\n   3. FLOATING TOP WAYFINDING TELEMETRY BAR (Route Steps + 3D Tour Play)\n   ========================================================================== */\n.telemetry-ribbon {\n  position: fixed;\n  top: 60px;\n  left: 306px;\n  right: 356px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  background-color: var(--surface);\n  border: 1px solid var(--rule);\n  border-left: 4px solid var(--signal);\n  padding: 5px 10px;\n  z-index: 35;\n  pointer-events: auto;\n}\n\n.telemetry-steps {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  font-size: 11.5px;\n  font-weight: 600;\n  color: var(--ink);\n  overflow-x: auto;\n  white-space: nowrap;\n  scrollbar-width: none;\n}\n\n.telemetry-steps::-webkit-scrollbar {\n  display: none;\n}\n\n.t-step-badge {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-width: 17px;\n  height: 17px;\n  padding: 0 4px;\n  background-color: var(--signal);\n  color: #ffffff;\n  font-family: var(--font-mono);\n  font-size: 10px;\n  font-weight: 700;\n}\n\n.t-step-arrow {\n  color: var(--ink-muted);\n  font-family: var(--font-mono);\n  font-size: 11px;\n  margin: 0 2px;\n}\n\n.tour-play-btn {\n  height: 24px;\n  padding: 0 9px;\n  background-color: var(--signal);\n  color: #ffffff;\n  border: none;\n  font-family: var(--font-sans);\n  font-size: 11px;\n  font-weight: 700;\n  cursor: pointer;\n  flex-shrink: 0;\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n\n.tour-play-btn.is-playing {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n}\n\n/* ==========================================================================\n   4. DESKTOP LEFT & RIGHT ARCHITECTURAL DOCKS\n   ========================================================================== */\n.dock-left {\n  position: fixed;\n  top: 50px;\n  left: 0;\n  bottom: 0;\n  width: 294px;\n  background-color: var(--surface);\n  border-right: 1px solid var(--rule);\n  z-index: 40;\n  display: flex;\n  flex-direction: column;\n  overflow-y: auto;\n}\n\n.dock-right {\n  position: fixed;\n  top: 50px;\n  right: 0;\n  bottom: 0;\n  width: 344px;\n  background-color: var(--surface);\n  border-left: 1px solid var(--rule);\n  z-index: 40;\n  display: flex;\n  flex-direction: column;\n  overflow-y: auto;\n}\n\n.panel-block {\n  padding: 12px 14px;\n  border-bottom: 1px solid var(--rule);\n}\n\n.block-header {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  margin-bottom: 8px;\n}\n\n.block-title {\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 0.01em;\n  color: var(--ink);\n}\n\n.block-meta {\n  font-family: var(--font-mono);\n  font-size: 10.5px;\n  color: var(--ink-muted);\n}\n\n/* Vertical Floor Stack (F4 -> B2) */\n.floor-stack {\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n}\n\n.floor-item {\n  display: grid;\n  grid-template-columns: 32px minmax(0, 1fr) auto;\n  align-items: center;\n  gap: 8px;\n  padding: 6px 9px;\n  background-color: var(--surface-elevated);\n  border: none;\n  border-left: 3px solid transparent;\n  color: var(--ink);\n  text-align: left;\n  cursor: pointer;\n  transition: background-color 0.12s ease;\n}\n\n.floor-item:hover {\n  background-color: var(--surface-recessed);\n}\n\n.floor-item.is-selected {\n  background-color: var(--ink);\n  color: var(--surface-solid);\n  border-left-color: var(--signal);\n}\n\n.floor-code {\n  font-family: var(--font-mono);\n  font-size: 12.5px;\n  font-weight: 700;\n}\n\n.floor-desc strong {\n  display: block;\n  font-size: 11.5px;\n  font-weight: 700;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.floor-desc span {\n  display: block;\n  font-size: 10px;\n  color: var(--ink-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.floor-item.is-selected .floor-desc span,\n.floor-item.is-selected .floor-elev {\n  color: var(--rule);\n}\n\n.floor-elev {\n  font-family: var(--font-mono);\n  font-size: 10px;\n  color: var(--ink-muted);\n}\n\n/* Ticket Gate & Platform Locator */\n.gate-select {\n  width: 100%;\n  height: 32px;\n  padding: 0 8px;\n  background-color: var(--surface-elevated);\n  color: var(--ink);\n  border: 1px solid var(--rule);\n  font-family: var(--font-sans);\n  font-size: 11.5px;\n  font-weight: 600;\n  margin-bottom: 6px;\n}\n\n.gate-matrix {\n  display: grid;\n  grid-template-columns: repeat(5, 1fr);\n  gap: 3px;\n  margin-bottom: 8px;\n}\n\n.gate-btn {\n  padding: 4px 2px;\n  background-color: var(--surface-elevated);\n  border: 1px solid transparent;\n  color: var(--ink);\n  font-family: var(--font-mono);\n  font-size: 10px;\n  font-weight: 600;\n  text-align: center;\n  cursor: pointer;\n}\n\n.gate-btn:hover {\n  border-color: var(--ink);\n}\n\n.gate-btn.is-hk {\n  background-color: rgba(184, 29, 36, 0.11);\n  color: var(--cr-crimson);\n}\n\n.gate-btn.is-active {\n  background-color: var(--signal);\n  color: #ffffff;\n}\n\n.gate-callout {\n  padding: 8px 10px;\n  background-color: var(--surface-elevated);\n  border-left: 3px solid var(--cr-navy);\n  font-size: 11px;\n  color: var(--ink-secondary);\n  line-height: 1.45;\n}\n\n.gate-callout strong {\n  color: var(--ink);\n}\n\n/* Wayfinding Flow Cards */\n.route-stack {\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n}\n\n.route-card {\n  padding: 7px 10px;\n  background-color: var(--surface-elevated);\n  border: none;\n  border-left: 3px solid transparent;\n  color: var(--ink);\n  text-align: left;\n  cursor: pointer;\n  transition: background-color 0.12s ease;\n}\n\n.route-card:hover {\n  background-color: var(--surface-recessed);\n}\n\n.route-card.is-active {\n  background-color: var(--signal-tint);\n  border-left-color: var(--signal);\n}\n\n.route-card-top {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  gap: 6px;\n  font-size: 11.5px;\n  font-weight: 700;\n}\n\n.route-time {\n  font-family: var(--font-mono);\n  font-size: 10px;\n  font-weight: 700;\n  color: var(--signal);\n  flex-shrink: 0;\n}\n\n.route-sub {\n  font-size: 10.5px;\n  color: var(--ink-secondary);\n  margin-top: 1px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.route-detail-box {\n  margin-top: 8px;\n  padding: 9px 11px;\n  background-color: var(--surface-elevated);\n  border-top: 2px solid var(--ink);\n}\n\n.route-detail-box h4 {\n  font-size: 11.5px;\n  font-weight: 700;\n  margin-bottom: 5px;\n  color: var(--ink);\n}\n\n.route-ol {\n  padding-left: 15px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  font-size: 11px;\n  color: var(--ink-secondary);\n  line-height: 1.42;\n}\n\n.route-ol li strong {\n  color: var(--ink);\n}\n\n/* Selected Zone Inspector & Scale Specs Table */\n.inspector-card {\n  padding: 9px 11px;\n  background-color: var(--surface-elevated);\n  border-left: 3px solid var(--ink);\n}\n\n.inspector-card h4 {\n  font-size: 12px;\n  font-weight: 700;\n  color: var(--ink);\n}\n\n.inspector-tag {\n  font-family: var(--font-mono);\n  font-size: 10px;\n  color: var(--signal);\n  margin: 2px 0 4px;\n}\n\n.inspector-card p {\n  font-size: 11px;\n  color: var(--ink-secondary);\n  line-height: 1.44;\n}\n\n.schedule-table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 10.5px;\n}\n\n.schedule-table th,\n.schedule-table td {\n  padding: 4px 3px;\n  border-bottom: 1px solid var(--rule);\n  text-align: left;\n  white-space: nowrap;\n}\n\n.schedule-table th {\n  font-size: 9.5px;\n  font-weight: 700;\n  color: var(--ink-muted);\n}\n\n.schedule-table td.mono-r {\n  font-family: var(--font-mono);\n  text-align: right;\n  font-weight: 600;\n}\n\n/* ==========================================================================\n   5. DESKTOP BOTTOM FLOATING DOCK (Sliders + System Color Legend)\n   ========================================================================== */\n.bottom-dock {\n  position: fixed;\n  bottom: 10px;\n  left: 306px;\n  right: 356px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  z-index: 35;\n  pointer-events: none;\n}\n\n.slider-cluster {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  background-color: var(--surface);\n  border: 1px solid var(--rule);\n  padding: 5px 11px;\n  pointer-events: auto;\n}\n\n.slider-item {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 11px;\n  font-weight: 600;\n  color: var(--ink-secondary);\n  white-space: nowrap;\n}\n\n.slider-item input[type=\"range\"] {\n  width: 72px;\n  accent-color: var(--ink);\n  cursor: pointer;\n}\n\n.legend-cluster {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  background-color: var(--surface);\n  border: 1px solid var(--rule);\n  padding: 5px 11px;\n  font-size: 10.5px;\n  font-weight: 600;\n  color: var(--ink-secondary);\n  pointer-events: auto;\n  white-space: nowrap;\n  overflow-x: auto;\n}\n\n.leg-chip {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n\n.leg-dot {\n  width: 8px;\n  height: 8px;\n  display: inline-block;\n}\n\n/* ==========================================================================\n   6. MOBILE-ONLY FLOATING CONTROLS & BOTTOM SHEET (Hidden on Desktop)\n   ========================================================================== */\n.mobile-cam-strip,\n.mobile-floor-rail,\n.mobile-sheet-header {\n  display: none;\n}\n\n/* ==========================================================================\n   7. BUILT-IN STYLE.CSS VIEWER MODAL\n   ========================================================================== */\n.css-modal-backdrop {\n  display: none;\n  position: fixed;\n  inset: 0;\n  background-color: rgba(20, 20, 19, 0.65);\n  z-index: 200;\n  align-items: center;\n  justify-content: center;\n  padding: 16px;\n}\n\n.css-modal-backdrop.is-open {\n  display: flex;\n}\n\n.css-modal-window {\n  width: 860px;\n  max-width: 96vw;\n  height: 80vh;\n  background-color: var(--surface-solid);\n  border: 1px solid var(--ink);\n  display: flex;\n  flex-direction: column;\n}\n\n.css-modal-top {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 8px;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--rule);\n}\n\n.css-modal-top h3 {\n  font-size: 12.5px;\n  font-weight: 700;\n}\n\n.css-modal-area {\n  flex: 1;\n  width: 100%;\n  padding: 12px;\n  background-color: var(--surface-elevated);\n  color: var(--ink);\n  font-family: var(--font-mono);\n  font-size: 11px;\n  line-height: 1.48;\n  border: none;\n  resize: none;\n  overflow: auto;\n  white-space: pre;\n}\n\n/* ==========================================================================\n   8. NATIVE-GRADE MOBILE & TABLET ARCHITECTURE (<= 960px)\n   ========================================================================== */\n@media (max-width: 960px) {\n  .topbar {\n    height: 44px;\n    padding: 0 10px;\n  }\n\n  .camera-presets-bar {\n    display: none;\n  }\n\n  .brand-cluster {\n    gap: 6px;\n  }\n\n  .station-badge {\n    display: none;\n  }\n\n  .station-title {\n    font-size: 13.5px;\n  }\n\n  .ctrl-btn {\n    height: 25px;\n    padding: 0 6px;\n    font-size: 10px;\n  }\n\n  .mobile-cam-strip {\n    display: flex;\n    align-items: center;\n    gap: 3px;\n    position: fixed;\n    top: 48px;\n    left: 8px;\n    right: 8px;\n    height: 30px;\n    padding: 2px;\n    background-color: var(--surface);\n    border: 1px solid var(--rule);\n    z-index: 38;\n    overflow-x: auto;\n    scrollbar-width: none;\n  }\n\n  .mobile-cam-strip::-webkit-scrollbar {\n    display: none;\n  }\n\n  .mobile-cam-strip .cam-pill {\n    flex: 1;\n    height: 24px;\n    padding: 0 6px;\n    font-size: 11px;\n    text-align: center;\n  }\n\n  .telemetry-ribbon {\n    top: 82px;\n    left: 8px;\n    right: 46px;\n    padding: 4px 8px;\n  }\n\n  .telemetry-steps {\n    font-size: 10.5px;\n  }\n\n  .tour-play-btn {\n    height: 22px;\n    padding: 0 7px;\n    font-size: 10px;\n  }\n\n  .mobile-floor-rail {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    position: fixed;\n    top: 82px;\n    right: 8px;\n    background-color: var(--surface);\n    border: 1px solid var(--rule);\n    padding: 2px;\n    z-index: 39;\n  }\n\n  .m-rail-btn {\n    width: 30px;\n    height: 24px;\n    border: none;\n    background: transparent;\n    color: var(--ink);\n    font-family: var(--font-mono);\n    font-size: 10px;\n    font-weight: 700;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n\n  .m-rail-btn.is-selected {\n    background-color: var(--signal);\n    color: #ffffff;\n  }\n\n  .bottom-dock {\n    display: none;\n  }\n\n  body[data-sheet=\"peek\"] {\n    --sheet-h: 0px;\n  }\n  body[data-sheet=\"half\"] {\n    --sheet-h: 31dvh;\n  }\n  body[data-sheet=\"full\"] {\n    --sheet-h: 66dvh;\n  }\n\n  .dock-left,\n  .dock-right {\n    position: fixed;\n    top: auto;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    width: 100%;\n    height: var(--sheet-h, 31dvh);\n    background-color: var(--surface-solid);\n    border: none;\n    z-index: 45;\n    transition: height 0.24s cubic-bezier(0.22, 1, 0.36, 1);\n    overflow-y: auto;\n    -webkit-overflow-scrolling: touch;\n    display: none;\n  }\n\n  .dock-left.m-dock-active,\n  .dock-right.m-dock-active {\n    display: flex;\n  }\n\n  .mobile-sheet-header {\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n    left: 0;\n    right: 0;\n    bottom: var(--sheet-h, 31dvh);\n    background-color: var(--surface-solid);\n    border-top: 2px solid var(--ink);\n    border-bottom: 1px solid var(--rule);\n    z-index: 46;\n    transition: bottom 0.24s cubic-bezier(0.22, 1, 0.36, 1);\n    touch-action: none;\n  }\n\n  .sheet-grabber-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 4px 10px;\n    background-color: var(--surface-elevated);\n    border-bottom: 1px solid var(--rule);\n  }\n\n  .sheet-size-btns {\n    display: flex;\n    gap: 3px;\n  }\n\n  .size-pill {\n    padding: 2px 7px;\n    border: 1px solid var(--rule);\n    background-color: var(--surface-solid);\n    color: var(--ink);\n    font-size: 10px;\n    font-weight: 700;\n    cursor: pointer;\n  }\n\n  .size-pill.is-active {\n    background-color: var(--ink);\n    color: var(--surface-solid);\n    border-color: var(--ink);\n  }\n\n  .m-explode-inline {\n    display: flex;\n    align-items: center;\n    gap: 5px;\n    font-size: 10px;\n    font-weight: 600;\n    color: var(--ink-secondary);\n  }\n\n  .m-explode-inline input[type=\"range\"] {\n    width: 64px;\n    accent-color: var(--ink);\n  }\n\n  .m-tabs-row {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    height: 34px;\n  }\n\n  .m-tab {\n    border: none;\n    border-right: 1px solid var(--rule);\n    border-bottom: 3px solid transparent;\n    background-color: var(--surface-solid);\n    color: var(--ink-secondary);\n    font-family: var(--font-sans);\n    font-size: 11.5px;\n    font-weight: 700;\n    cursor: pointer;\n    white-space: nowrap;\n  }\n\n  .m-tab:last-child {\n    border-right: none;\n  }\n\n  .m-tab.is-active {\n    color: var(--ink);\n    background-color: var(--surface-elevated);\n    border-bottom-color: var(--signal);\n  }\n\n  .panel-block {\n    display: none;\n    padding: 10px 12px;\n    border-bottom: none;\n  }\n\n  .panel-block.m-block-active {\n    display: block;\n  }\n\n  .gate-btn {\n    padding: 6px 2px;\n    font-size: 10.5px;\n  }\n}\n";
     document.getElementById('cssCodeArea').value = rawCssCode;
 
     function openCssModal() {
